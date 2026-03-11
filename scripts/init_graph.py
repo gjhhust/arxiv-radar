@@ -41,11 +41,11 @@ DEFAULT_SEEDS = {
         "2202.04200",   # MaskGIT
     ],
     "Unified Understanding & Generation": [
-        "2408.01800",   # BAGEL
+        "2408.12528",   # Show-o (unified understanding + generation)
         "2510.11690",   # RAE
-        "2309.11519",   # NextGPT
-        "2401.12945",   # Unified-IO
-        "2304.08485",   # Chameleon
+        "2309.05519",   # NExT-GPT
+        "2312.17172",   # Unified-IO 2
+        "2405.09818",   # Chameleon
     ],
 }
 
@@ -180,6 +180,7 @@ def run_domain_expansion(
     max_papers: int = 800,
     years_back: int = 3,
     run_baseline: bool = True,
+    rank_refs: bool = False,
 ) -> dict:
     """
     Full domain expansion pipeline.
@@ -191,6 +192,7 @@ def run_domain_expansion(
         max_papers: max papers to fetch
         years_back: only include papers from last N years
         run_baseline: also run baseline extraction after expansion
+        rank_refs: use LLM to rank references and extract method variants
 
     Returns:
         stats dict
@@ -219,6 +221,24 @@ def run_domain_expansion(
         p2_stats = process_papers(papers, db, use_llm=False)
         total_stats["baseline"] = p2_stats
 
+    # LLM-powered reference ranking + method variant extraction
+    if rank_refs:
+        logger.info("\nRunning LLM reference ranking + variant extraction...")
+        from reference_ranker import rank_references, store_method_variants
+        papers = db.search_papers(limit=max_papers + 100)
+        variants_total = 0
+        for paper in papers:
+            refs = get_references(paper["id"], limit=40)
+            if not refs:
+                continue
+            result = rank_references(paper, refs, use_llm=True)
+            # Store method variants
+            if result.get("method_variants"):
+                n = store_method_variants(paper["id"], result["method_variants"], db)
+                variants_total += n
+                logger.info(f"  {paper['id']}: {n} variants → {[v['variant_tag'] for v in result['method_variants']]}")
+        total_stats["variants_extracted"] = variants_total
+
     db_stats = db.stats()
     total_stats["db"] = db_stats
     logger.info(f"\nFinal DB stats: {json.dumps(db_stats, indent=2)}")
@@ -238,6 +258,8 @@ if __name__ == "__main__":
     parser.add_argument("--years-back", type=int, default=3)
     parser.add_argument("--db-path", default=None)
     parser.add_argument("--no-baseline", action="store_true")
+    parser.add_argument("--rank-refs", action="store_true",
+                        help="Use LLM (wq/claude46) to rank refs and extract method variants")
     parser.add_argument("--dry-run", action="store_true", help="Test with 2 seeds only")
     args = parser.parse_args()
 
@@ -257,6 +279,7 @@ if __name__ == "__main__":
         max_papers=args.max_papers,
         years_back=args.years_back,
         run_baseline=not args.no_baseline,
+        rank_refs=args.rank_refs,
     )
     print("\n=== Final Stats ===")
     print(json.dumps(stats, indent=2))

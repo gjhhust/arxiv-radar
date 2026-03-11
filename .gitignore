@@ -35,3 +35,7 @@ tests/reports/*.xml
 
 # Logs
 *.log
+data/paper_network.db*
+data/init_graph_run*.log
+data/variant_run.log
+run_variant_analysis.py
