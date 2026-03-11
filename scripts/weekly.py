@@ -21,6 +21,12 @@ from config_parser import parse_config
 
 logger = logging.getLogger(__name__)
 
+# Base paths (derived from script location, not hardcoded)
+SCRIPTS_DIR = Path(__file__).parent
+SKILL_DIR = SCRIPTS_DIR.parent
+CACHE_DIR = SKILL_DIR / "data" / "cache"
+DB_PATH = SKILL_DIR / "data" / "paper_network.db"
+
 
 # ─────────────────────────── Helpers ───────────────────────────
 
@@ -330,8 +336,7 @@ def generate_weekly_report(
                 all_relevant.extend(domain_papers[key])
 
         # Try loading pre-computed analysis first
-        cache_dir = Path(__file__).parent.parent / "data" / "cache"
-        precomputed = cache_dir / "analysis_merged.json"
+        precomputed = CACHE_DIR / "analysis_merged.json"
         pre_analyses = {}
         if precomputed.exists():
             try:
@@ -375,13 +380,12 @@ def generate_weekly_report(
                         enrich_papers(domain_papers[key], analyses)
 
     # 4. Context injection from knowledge graph (if DB available)
-    db_path = Path(__file__).parent.parent / "data" / "paper_network.db"
     db = None
-    if db_path.exists():
+    if DB_PATH.exists():
         try:
             from paper_db import PaperDB
             from context_injector import enrich_weekly_analysis
-            db = PaperDB(db_path)
+            db = PaperDB(DB_PATH)
             ctx_stats = enrich_weekly_analysis(domain_papers, db)
             logger.info(f"Graph context injection: {ctx_stats}")
         except Exception as e:

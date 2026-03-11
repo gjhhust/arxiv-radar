@@ -190,10 +190,10 @@ method_variants (
 |----|------|------|------|
 | P1 | 🔴 | 日报论文不进 DB，知识图谱不增长 | ✅ 已修: main.py 末尾调用 update_db_from_daily |
 | P2 | 🔴 | 4 模块绕过 PaperDB 直接 sqlite3 | ✅ 已修: 全部迁入 PaperDB 方法 |
-| P3 | 🟡 | baseline_extractor 与 reference_ranker 职责重叠 | 📋 下次迭代合并 |
+| P3 | 🟡 | baseline_extractor 与 reference_ranker 职责重叠 | ✅ 已合并: extractor 降级为 heuristic fallback |
 | P4 | 🟡 | cache 文件 6/16 个冗余 | ✅ 已清理: 16→10 文件 |
 | P5 | 🟡 | config_parser + trend 无日志 | ✅ 已修: 统一 log_config.py |
-| P6 | 🟡 | 8 处硬编码路径 | 📋 下次迭代改为 config 驱动 |
+| P6 | 🟡 | 8 处硬编码路径 | ✅ 已修: 改为 SKILL_DIR/CACHE_DIR/DB_PATH 常量 |
 | P7 | 🟢 | 无运行日志文件（跑完即失） | ✅ 已修: data/logs/YYYY-MM-DD.log |
 
 ---

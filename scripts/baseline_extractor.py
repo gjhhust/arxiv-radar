@@ -304,15 +304,20 @@ def build_compares_with_edges(db) -> int:
 
 def process_papers(papers: list[dict], db, use_llm: bool = False) -> dict:
     """
-    Full P2 pipeline: extract baselines → write to DB → build COMPARES_WITH edges.
+    Full baseline/method extraction pipeline.
+
+    Strategy:
+      - Always run keyword extraction (fast, free, covers known method names)
+      - If use_llm=True AND method_variants already stored in DB (from reference_ranker),
+        skip LLM call here (avoid duplicate work)
 
     Returns stats dict.
     """
     if not papers:
         return {"processed": 0, "baselines_total": 0, "compares_edges": 0, "extends_edges": 0}
 
-    logger.info(f"Extracting baselines for {len(papers)} papers (llm={use_llm})...")
-    results = extract_baselines_batch(papers, use_llm=use_llm)
+    logger.info(f"Extracting baselines for {len(papers)} papers (keyword mode)...")
+    results = extract_baselines_batch(papers, use_llm=False)  # always keyword-only here
 
     # Write baselines to DB
     total_baselines = 0
