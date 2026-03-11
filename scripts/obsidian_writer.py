@@ -41,15 +41,10 @@ def _format_authors(authors_json: str, n: int = 3) -> str:
 
 def _get_baselines_for_paper(paper_id: str, db) -> list[str]:
     """Get canonical baseline names for a paper."""
-    import sqlite3
+    if db is None:
+        return []
     try:
-        conn = sqlite3.connect(str(db.db_path))
-        rows = conn.execute(
-            "SELECT DISTINCT canonical_name FROM baselines WHERE paper_id = ? AND canonical_name != ''",
-            (paper_id,)
-        ).fetchall()
-        conn.close()
-        return [r[0] for r in rows if r[0]]
+        return db.get_baselines_for_paper(paper_id)
     except Exception:
         return []
 

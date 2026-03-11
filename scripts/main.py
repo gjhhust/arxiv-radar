@@ -46,11 +46,8 @@ def run_daily(
         dict with keys: report, filter_result, recommendations, stats
     """
     log_level = logging.DEBUG if verbose else logging.INFO
-    logging.basicConfig(
-        level=log_level,
-        format="%(asctime)s %(levelname)s %(name)s — %(message)s",
-        datefmt="%H:%M:%S",
-    )
+    from log_config import setup_logging
+    setup_logging(level=log_level)
 
     # ── 1. Config ──
     if config_path is None:
@@ -128,6 +125,21 @@ def run_daily(
         saved_path = save_report(report, config, str(target_date))
         if saved_path:
             logger.info(f"✅ Report saved to: {saved_path}")
+
+        # ── 7b. Update knowledge graph with today's papers ──
+        db_path = SKILL_DIR / "data" / "paper_network.db"
+        if db_path.exists():
+            try:
+                from paper_db import PaperDB
+                from context_injector import update_db_from_daily
+                db = PaperDB(db_path)
+                # Only add filtered (relevant) papers to DB
+                relevant = filter_result.get("filtered_papers", [])
+                if relevant:
+                    db_stats = update_db_from_daily(relevant, db)
+                    logger.info(f"📊 DB updated: {db_stats}")
+            except Exception as e:
+                logger.warning(f"DB update skipped: {e}")
     else:
         print("\n" + "═" * 60)
         print("DRY RUN — Report Preview:")

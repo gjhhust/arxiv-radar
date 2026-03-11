@@ -38,4 +38,5 @@ tests/reports/*.xml
 data/paper_network.db*
 data/init_graph_run*.log
 data/variant_run.log
+data/logs/
 run_variant_analysis.py

@@ -402,6 +402,100 @@ class PaperDB:
         finally:
             conn.close()
 
+    # ─────────────── Baselines Query ───────────────
+
+    def get_baselines_for_paper(self, paper_id: str) -> list[str]:
+        """Get canonical baseline names for a paper."""
+        conn = self._connect()
+        try:
+            rows = conn.execute(
+                "SELECT DISTINCT canonical_name FROM baselines WHERE paper_id = ? AND canonical_name != ''",
+                (paper_id,)
+            ).fetchall()
+            return [r[0] for r in rows if r[0]]
+        finally:
+            conn.close()
+
+    # ─────────────── Method Variants ───────────────
+
+    def ensure_method_variants_table(self):
+        """Create method_variants table if not exists."""
+        conn = self._connect()
+        try:
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS method_variants (
+                    paper_id TEXT NOT NULL,
+                    base_method TEXT NOT NULL,
+                    variant_tag TEXT NOT NULL,
+                    description TEXT DEFAULT '',
+                    created_at TEXT DEFAULT (datetime('now')),
+                    PRIMARY KEY (paper_id, variant_tag)
+                )
+            """)
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_mv_base ON method_variants(base_method)")
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_mv_tag ON method_variants(variant_tag)")
+            conn.commit()
+        finally:
+            conn.close()
+
+    def store_method_variants(self, paper_id: str, variants: list[dict]) -> int:
+        """Store method variant tags. Returns count stored."""
+        self.ensure_method_variants_table()
+        conn = self._connect()
+        stored = 0
+        try:
+            for v in variants:
+                try:
+                    conn.execute(
+                        "INSERT OR REPLACE INTO method_variants (paper_id, base_method, variant_tag, description) VALUES (?, ?, ?, ?)",
+                        (paper_id, v.get("base_method", ""), v.get("variant_tag", ""), v.get("description", ""))
+                    )
+                    stored += 1
+                except Exception as e:
+                    logger.warning(f"Failed to store variant: {e}")
+            conn.commit()
+        finally:
+            conn.close()
+        return stored
+
+    def get_exploration_branches(self, min_papers: int = 2) -> list[dict]:
+        """Detect method exploration branches: base methods with multiple variant approaches."""
+        self.ensure_method_variants_table()
+        conn = self._connect()
+        try:
+            rows = conn.execute("""
+                SELECT base_method, COUNT(DISTINCT variant_tag) as n_variants,
+                       COUNT(DISTINCT paper_id) as n_papers
+                FROM method_variants
+                GROUP BY base_method
+                HAVING n_papers >= ?
+                ORDER BY n_papers DESC
+            """, (min_papers,)).fetchall()
+
+            branches = []
+            for base, n_variants, n_papers in rows:
+                papers = conn.execute("""
+                    SELECT mv.paper_id, mv.variant_tag, mv.description, p.title, p.date
+                    FROM method_variants mv
+                    LEFT JOIN papers p ON p.id = mv.paper_id
+                    WHERE mv.base_method = ?
+                    ORDER BY p.date DESC
+                """, (base,)).fetchall()
+
+                branches.append({
+                    "base_method": base,
+                    "variant_count": n_variants,
+                    "paper_count": n_papers,
+                    "papers": [
+                        {"paper_id": p[0], "variant_tag": p[1], "description": p[2],
+                         "title": (p[3] or "")[:60], "date": p[4] or ""}
+                        for p in papers
+                    ],
+                })
+            return branches
+        finally:
+            conn.close()
+
 
 # ─────────────────────── CLI Test ───────────────────────
 

@@ -276,10 +276,8 @@ def build_compares_with_edges(db) -> int:
     Returns count of edges added.
     """
     from paper_db import EDGE_COMPARES_WITH
-    import sqlite3
-    conn = sqlite3.connect(str(db.db_path))
+    conn = db._connect()
     try:
-        # Find all baselines that appear in >1 paper
         rows = conn.execute("""
             SELECT canonical_name, GROUP_CONCAT(paper_id) as paper_ids, COUNT(*) as cnt
             FROM baselines
