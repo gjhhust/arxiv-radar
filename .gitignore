@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+
+# Data & Cache (not committed)
+data/cache/
+data/cache/*.json
+data/cache/*.jsonl
+
+# Obsidian output (user-specific path)
+output/
+
+# Env & secrets
+.env
+*.key
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Test artifacts
+tests/reports/*.html
+tests/reports/*.xml
+
+# Logs
+*.log

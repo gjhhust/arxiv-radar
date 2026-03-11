@@ -1,0 +1,5 @@
+BAGEL: Emerging Properties in Unified Multimodal Pretraining (arXiv:2505.14683)
+
+We present BAGEL, a 7B active parameter (14B total MoE) unified multimodal model from ByteDance that can generate, edit, and understand images within a single framework. BAGEL demonstrates that jointly training on multimodal understanding and generation tasks leads to emergent properties not present in specialized models. The model uses a mixture-of-experts architecture with shared parameters for both understanding and generation pathways. By unifying visual understanding (image-to-text) and visual generation (text-to-image) in one model, BAGEL achieves strong performance on both tasks simultaneously while showing surprising emergent capabilities like compositional reasoning and instruction following. The model is fully open-source with weights and training code available.
+
+Keywords: unified model, multimodal learning, image understanding, image generation, text-to-image, visual question answering, unified pretraining, joint training, mixture of experts, emergent properties, multimodal pretraining, visual generation, image editing, instruction following, open-source multimodal
