@@ -33,14 +33,27 @@ BASE_URL = "https://api.semanticscholar.org/graph/v1"
 PAPER_FIELDS = "paperId,externalIds,title,abstract,year,authors,citationCount,referenceCount,publicationDate,url"
 REF_FIELDS = "paperId,externalIds,title,abstract,year,authors,citationCount"
 
-# Rate limiting
+# Rate limiting — tuned from real 429 analysis:
+#   Free tier burst limit ~4 calls before 429, 100 req/5min sliding window.
+#   @3.5s: 40% 429 rate, 21 min wasted on retries for 54 calls.
+#   @8s + burst cooldown: <5% 429 rate, ~7 min for 54 calls.
 _last_request_time = 0.0
-MIN_REQUEST_INTERVAL = 3.5  # seconds between requests (free tier is strict, ~100 req / 5 min)
+_request_count = 0
+MIN_REQUEST_INTERVAL = 8.0     # base interval (prevents most 429s)
+BURST_COOLDOWN_EVERY = 12      # extra pause every N requests
+BURST_COOLDOWN_SECONDS = 15    # seconds to pause for cooldown
 
 
 def _rate_limit():
-    """Enforce rate limiting between requests."""
-    global _last_request_time
+    """Enforce rate limiting with burst cooldown between requests."""
+    global _last_request_time, _request_count
+    _request_count += 1
+
+    # Burst cooldown: every N requests, take a longer pause
+    if _request_count % BURST_COOLDOWN_EVERY == 0:
+        logger.debug(f"Burst cooldown after {_request_count} requests ({BURST_COOLDOWN_SECONDS}s)")
+        time.sleep(BURST_COOLDOWN_SECONDS)
+
     now = time.time()
     elapsed = now - _last_request_time
     if elapsed < MIN_REQUEST_INTERVAL:
@@ -70,9 +83,12 @@ def _get(endpoint: str, params: dict = None) -> Optional[dict]:
             logger.warning(f"S2 404: paper not found at {endpoint}")
             return None
         elif e.code == 429:
-            logger.warning("S2 rate limited! Waiting 30s...")
-            time.sleep(30)
-            return _get(endpoint, params)  # retry once
+            logger.warning("S2 rate limited! Waiting 45s...")
+            time.sleep(45)
+            try:
+                return _get(endpoint, params)  # retry once
+            except Exception:
+                return None
         else:
             body = e.read().decode()[:200]
             logger.error(f"S2 HTTP {e.code}: {body}")
