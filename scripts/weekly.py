@@ -222,12 +222,18 @@ def _render_domain_section(
         # Chinese analysis (if available)
         cn_oneliner = paper.get("cn_oneliner", "")
         cn_abstract = paper.get("cn_abstract", "")
+        graph_context = paper.get("graph_context", "")
         if cn_oneliner:
             lines.append(f"  - 💡 **一句话**: {cn_oneliner}")
         if cn_abstract:
             lines.append(f"  - > {cn_abstract}")
         elif snippet:
             lines.append(f"  - > {snippet}")
+        # Knowledge graph context (only for must-reads to avoid bloat)
+        if graph_context and is_mustreads:
+            for ctx_line in graph_context.strip().split("\n"):
+                if ctx_line.strip():
+                    lines.append(f"  - {ctx_line}")
         lines.append("")
 
     return "\n".join(lines)
@@ -368,7 +374,20 @@ def generate_weekly_report(
                     if key.startswith("domain_"):
                         enrich_papers(domain_papers[key], analyses)
 
-    # 4. Render
+    # 4. Context injection from knowledge graph (if DB available)
+    db_path = Path(__file__).parent.parent / "data" / "paper_network.db"
+    db = None
+    if db_path.exists():
+        try:
+            from paper_db import PaperDB
+            from context_injector import enrich_weekly_analysis
+            db = PaperDB(db_path)
+            ctx_stats = enrich_weekly_analysis(domain_papers, db)
+            logger.info(f"Graph context injection: {ctx_stats}")
+        except Exception as e:
+            logger.warning(f"Context injection skipped: {e}")
+
+    # 5. Render
     sections = [
         _frontmatter(start_date, end_date, stats["total_relevant"], domains),
         _render_header(start_date, end_date, stats),
@@ -383,6 +402,20 @@ def generate_weekly_report(
         )
 
     sections.append(_render_next_week_tips(domain_papers, domains))
+
+    # Trend radar + Idea seeds
+    try:
+        from trend import compute_trends, format_trend_section, generate_idea_seeds
+        all_papers_flat = [
+            p for key, papers in domain_papers.items()
+            if key.startswith("domain_")
+            for p in papers
+        ]
+        trends = compute_trends(all_papers_flat)
+        sections.append(format_trend_section(trends, period_label=f"{start_date} ~ {end_date}"))
+        sections.append(generate_idea_seeds(domain_papers, domains, db=db))
+    except Exception as e:
+        logger.warning(f"Trend/Idea section skipped: {e}")
 
     # Footer
     sections.append(
