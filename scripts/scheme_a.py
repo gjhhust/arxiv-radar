@@ -26,8 +26,12 @@ logger = logging.getLogger(__name__)
 
 # ─────────────────── API config ───────────────────
 
-BASE_URL = os.environ.get("OPENAI_BASE_URL", "http://localhost:4141/v1")
-API_KEY  = os.environ.get("OPENAI_API_KEY", "test")
+BASE_URL    = os.environ.get("OPENAI_BASE_URL", "http://localhost:4141")
+API_KEY     = os.environ.get("OPENAI_API_KEY", "test")
+# All 7 wq models (claude46/45/glm5/katcoder/kimik25/minimaxm21/minimaxm25) use
+# Anthropic Messages API format via the wanqing-proxy on port 4141.
+# Only gpt52/deepseekv32 use OpenAI /chat/completions at 4141/oai.
+ANTHROPIC_MODELS = {"claude46","claude45","glm5","katcoder","kimik25","minimaxm21","minimaxm25","glm47"}
 
 # ─────────────────── Prompts ───────────────────
 
@@ -83,19 +87,34 @@ contribution_type 说明：
 
 # ─────────────────── LLM call helper ───────────────────
 
-def _llm_call(messages: list[dict], model: str, timeout: int = 60) -> tuple[str, float]:
+def _llm_call(messages: list[dict], model: str, timeout: int = 300) -> tuple[str, float]:
     """
-    POST to BASE_URL/chat/completions and return (content, latency_s).
-
+    Call wanqing-proxy at localhost:4141.
+    - Anthropic models (claude46, glm5, etc.) → POST /messages
+    - OpenAI models (gpt52, deepseekv32) → POST /oai/chat/completions
+    Returns (content_str, latency_s).
     Raises urllib.error.URLError / json.JSONDecodeError on failure.
     """
-    url = BASE_URL.rstrip("/") + "/chat/completions"
-    payload = json.dumps({
-        "model": model,
-        "messages": messages,
-        "temperature": 0.3,
-        "max_tokens": 2048,
-    }).encode("utf-8")
+    # Strip "wq/" prefix if present (wq/claude46 → claude46)
+    model_id = model.split("/")[-1] if "/" in model else model
+
+    is_anthropic = model_id in ANTHROPIC_MODELS
+
+    if is_anthropic:
+        url = BASE_URL.rstrip("/") + "/messages"
+        payload = json.dumps({
+            "model": model_id,
+            "messages": messages,
+            "max_tokens": 8192,  # thinking models need high budget (thinking + response)
+        }).encode("utf-8")
+    else:
+        url = BASE_URL.rstrip("/") + "/oai/chat/completions"
+        payload = json.dumps({
+            "model": model_id,
+            "messages": messages,
+            "temperature": 0.3,
+            "max_tokens": 4096,
+        }).encode("utf-8")
 
     req = urllib.request.Request(
         url,
@@ -112,7 +131,18 @@ def _llm_call(messages: list[dict], model: str, timeout: int = 60) -> tuple[str,
     latency = time.time() - t0
 
     data = json.loads(raw)
-    content = data["choices"][0]["message"]["content"].strip()
+    if is_anthropic:
+        # Find the text block (skip thinking blocks if present)
+        content_blocks = data.get("content", [])
+        text_content = next(
+            (b["text"] for b in content_blocks if b.get("type") == "text"),
+            None
+        )
+        if text_content is None:
+            raise ValueError(f"No text block in response: {content_blocks[:1]}")
+        content = text_content.strip()
+    else:
+        content = data["choices"][0]["message"]["content"].strip()
     return content, latency
 
 
@@ -173,6 +203,8 @@ def analyze_paper_scheme_a(paper: dict, refs: list, model: str = "wq/claude46") 
     """
     title    = paper.get("title", "")
     abstract = paper.get("abstract", "")[:800]
+    # Sanitize abstract: replace ASCII double-quotes to avoid breaking JSON output
+    abstract = abstract.replace('"', "'").replace('\u201c', "'").replace('\u201d', "'")
     parse_errors: list[str] = []
     total_latency = 0.0
 
