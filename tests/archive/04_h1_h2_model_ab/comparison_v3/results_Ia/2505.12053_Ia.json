@@ -1,0 +1,201 @@
+{
+  "cn_oneliner": "基于帧比例信息假设的视频tokenizer范式，引入时长比例信息假设和Partial RoPE，实现仅用1/8 tokens达到竞争性重建质量和最先进的视频生成效果",
+  "cn_abstract": "现代基于潜在扩散模型的视频生成框架在tokenization过程中存在低效问题，原因在于采用帧比例信息假设。现有的tokenizer提供固定的时序压缩率，导致扩散模型的计算成本与帧率成线性增长。本文提出时长比例信息假设：视频的信息容量上限与时长成正比而非帧数。基于这一洞察，本文引入VFRTok，一种基于Transformer的视频tokenizer，通过编码器和解码器之间的非对称帧率训练实现可变帧率编码和解码。此外，本文提出Partial Rotary Position Embeddings（Partial RoPE）来解耦位置和内容建模，将相关patch分组为统一token，有效提升内容感知能力。得益于紧凑且连续的时空表示，VFRTok在仅使用1/8 tokens的情况下实现了竞争性的重建质量和最先进的生成保真度。",
+  "contribution_type": "significant",
+  "editorial_note": "本文针对视频生成领域中tokenizer效率问题提出了创新性解决方案。核心贡献在于提出时长比例信息假设，挑战了传统的帧比例压缩范式，为可变帧率视频处理提供了理论基础。作者巧妙地设计了非对称帧率训练策略，使编码器和解码器可以处理不同帧率的视频，从而实现连续时空表示学习。Partial RoPE的提出更是点睛之笔，通过解耦位置和内容建模，显著提升了模型的内容感知能力。实验结果表明，该方法在保持重建质量的同时大幅降低了token数量（仅需1/8），这对于降低视频生成的计算成本具有重要意义。",
+  "why_read": "视频生成研究者 - 了解如何通过时长比例信息假设和Partial RoPE设计高效的视频tokenizer，实现8倍压缩率提升",
+  "method_variants": [
+    {
+      "tag": "base:frame-proportional",
+      "note": "传统帧比例信息假设，token数量与帧数成正比"
+    },
+    {
+      "tag": "base:fixed-frame-rate",
+      "note": "现有tokenizer固定帧率训练，无法处理可变帧率"
+    },
+    {
+      "tag": "base:grid-based",
+      "note": "传统grid-based tokenizer使用固定空间位置的token"
+    },
+    {
+      "tag": "this:duration-proportional",
+      "note": "时长比例信息假设，token数量与视频时长成正比"
+    },
+    {
+      "tag": "this:asymmetric-FR",
+      "note": "非对称帧率训练，编码器和解码器可使用不同帧率"
+    },
+    {
+      "tag": "this:partial-rope",
+      "note": "Partial RoPE仅应用于部分attention heads，解耦位置和内容建模"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Cosmos Tokenizer: A Scalable and Efficient Tokenizer for Visual Generation",
+      "arxiv_id": "2412.03270",
+      "role": "extends",
+      "note": "主流视频tokenizer，使用固定压缩率，是本文的主要对比方法"
+    },
+    {
+      "title": "LTX-VAE: Latent Diffusion Video Generation",
+      "arxiv_id": "2501.00102",
+      "role": "extends",
+      "note": "高压缩率视频tokenizer，支持高达8×32×32的压缩率"
+    },
+    {
+      "title": "TiTok: Tokenized Image Tokenization",
+      "arxiv_id": "2408.14153",
+      "role": "uses",
+      "note": "基于查询的图像tokenizer方法，VFRTok借鉴了其1D潜在表示设计"
+    },
+    {
+      "title": "SoftVQ-VAE: Improving Soft Quantization for Efficient Visual Representation",
+      "arxiv_id": "2411.15338",
+      "role": "uses",
+      "note": "使用软分类后验增加潜在空间的表示能力"
+    },
+    {
+      "title": "MAETok: Masked Autoencoding with Auxiliary Decoder for Visual Tokenization",
+      "arxiv_id": "2501.05730",
+      "role": "uses",
+      "note": "通过mask建模和辅助解码器改进tokenizer的diffusibility"
+    },
+    {
+      "title": "LARP: Language-Aligned Radiance Priors",
+      "arxiv_id": "2412.00459",
+      "role": "extends",
+      "note": "将查询based结构扩展到视频tokenizer，适应自回归视频生成"
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "arxiv_id": "2010.11929",
+      "role": "uses",
+      "note": "Vision Transformer (ViT)作为VFRTok的encoder和decoder骨干"
+    },
+    {
+      "title": "RoFormer: Enhanced Rotary Position Embedding",
+      "arxiv_id": "2104.09864",
+      "role": "uses",
+      "note": "旋转位置嵌入方法，VFRTok提出Partial RoPE改进版"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "uses",
+      "note": "MaskGiT风格的生成方法，TiTok使用此方法进行生成"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "uses",
+      "note": "Latent Diffusion Model (LDM)基础框架，视频生成的主流范式"
+    },
+    {
+      "title": "Video Diffusion Models",
+      "arxiv_id": "2204.03458",
+      "role": "uses",
+      "note": "视频扩散模型基础工作"
+    },
+    {
+      "title": "Scaling Autoregressive Models for Content-Rich Video Generation",
+      "arxiv_id": "2206.10789",
+      "role": "uses",
+      "note": "自回归视频生成模型"
+    }
+  ],
+  "idea": [
+    {
+      "title": "时长比例信息假设",
+      "why": "挑战传统帧比例假设，提出视频信息容量与时长成正比，为可变帧率tokenizer提供理论依据，从根本上解决高帧率视频计算成本线性增长问题"
+    },
+    {
+      "title": "非对称帧率训练",
+      "why": "编码器和解码器使用不同帧率训练，使模型学习连续时空表示，支持任意帧率的视频编码和解码，实现真正的可变帧率能力"
+    },
+    {
+      "title": "Partial RoPE解耦",
+      "why": "将RoPE仅应用于部分attention heads，解耦位置信息和内容建模，增强内容感知能力，提升生成质量同时减少位置先验的负面影响"
+    }
+  ],
+  "_similarities": [
+    {
+      "title": "Cosmos Tokenizer: A Scalable and Efficient Tokenizer for Visual Generation",
+      "best_score": 0.743,
+      "best_match": "OmniTokenizer: A Joint Image-Video Tokenizer for Visual Generation",
+      "pass": false
+    },
+    {
+      "title": "LTX-VAE: Latent Diffusion Video Generation",
+      "best_score": 0.776,
+      "best_match": "Latte: Latent Diffusion Transformer for Video Generation",
+      "pass": false
+    },
+    {
+      "title": "TiTok: Tokenized Image Tokenization",
+      "best_score": 0.524,
+      "best_match": "Language-Guided Image Tokenization for Generation",
+      "pass": false
+    },
+    {
+      "title": "SoftVQ-VAE: Improving Soft Quantization for Efficient Visual Representation",
+      "best_score": 0.473,
+      "best_match": "SoftVQ-VAE: Efficient 1-Dimensional Continuous Tokenizer",
+      "pass": false
+    },
+    {
+      "title": "MAETok: Masked Autoencoding with Auxiliary Decoder for Visual Tokenization",
+      "best_score": 0.492,
+      "best_match": "Latte: Latent Diffusion Transformer for Video Generation",
+      "pass": false
+    },
+    {
+      "title": "LARP: Language-Aligned Radiance Priors",
+      "best_score": 0.481,
+      "best_match": "LARP: Tokenizing Videos with a Learned Autoregressive Generative Prior",
+      "pass": false
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "pass": true
+    },
+    {
+      "title": "RoFormer: Enhanced Rotary Position Embedding",
+      "best_score": 0.838,
+      "best_match": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Video Diffusion Models",
+      "best_score": 0.554,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": false
+    },
+    {
+      "title": "Scaling Autoregressive Models for Content-Rich Video Generation",
+      "best_score": 0.471,
+      "best_match": "Latte: Latent Diffusion Transformer for Video Generation",
+      "pass": false
+    }
+  ],
+  "_matched": 4,
+  "_total": 12,
+  "_pass_rate": 0.333,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14",
+  "_ref_count": 36
+}

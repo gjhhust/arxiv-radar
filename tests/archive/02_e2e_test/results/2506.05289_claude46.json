@@ -1,0 +1,107 @@
+{
+  "arxiv_id": "2506.05289",
+  "model": "claude46",
+  "timestamp": "2026-03-12T21:41:22.258469",
+  "latency_s": 40.34,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于VQ-VAE引入因果解码器约束双向编码器，使AR模型token序列具有前向依赖性，gFID达1.28超越SOTA扩散模型\",\"cn_abstract\":\"自回归图像生成中，传统图像tokenizer产生的token序列具有双向依赖性，与decoder-only AR模型的单向预测范式存在根本冲突。本文提出AliTok（Aligned Tokenizer），其核心设计是用因果解码器（causal decoder）约束双向编码器训练，迫使编码器产生具有前向依赖结构的token序列。此外引入prefix tokens解决首行重建质量差的问题，并采用两阶段tokenizer训练策略（第二阶段冻结编码器重训双向解码器）提升重建保真度。基于AliTok，标准decoder-only AR模型（662M参数）在ImageNet-256上达到gFID 1.28，首次以标准自回归模型超越SOTA扩散模型LightningDiT，采样速度快10倍。\",\"contribution_type\":\"significant\",\"editorial_note\":\"[前驱] 本文建立在VQ-VAE/VQ-GAN离散tokenizer体系上，编码器架构借鉴TiTok和TA-TiTok的transformer-based 1D token设计，AR模型架构直接复用LlamaGen（含RMSNorm、2D RoPE），量化方案采用Online Clustered Codebook，对抗损失来自Open-MagViT2。\\n[贡献] 去掉包装后，核心新意是：训练tokenizer时将解码器替换为因果（causal）解码器，通过重建loss的反向传播迫使双向编码器学习具有因果依赖结构的表示；配合prefix token和两阶段训练平衡生成友好性与重建质量。\\n[判断] 这个想法简洁且有充分的消融验证，解决了一个真实存在但此前被忽视的tokenizer-AR对齐问题，结果也达到新SOTA。贡献是真实的，但核心trick（用causal decoder约束encoder）相对直接，属于有效解法而非范式级突破。\",\"why_read\":\"研究标准causal AR图像生成的人必读——它给出了一个被广泛忽视的tokenizer设计缺陷的清晰诊断和简洁修复方案，并用消融实验精确量化了每个组件的贡献。\",\"method_variants\":[{\"base_method\":\"vq-vae\",\"variant_tag\":\"vq-vae:causal-decoder-constrained\",\"description\":\"原始VQ-VAE用双向decoder重建；本文在Stage 1将decoder替换为causal decoder，使其仅能看到因果上下文，从而迫使双向encoder输出具有前向依赖结构的token序列。\"},{\"base_method\":\"titok\",\"variant_tag\":\"titok:causal-alignment\",\"description\":\"TiTok用双向transformer将2D图像patch编码为1D latent token序列；本文在其基础上引入causal decoder约束、prefix token和两阶段训练，使编码token序列对AR模型更易建模。\"},{\"base_method\":\"llamagen\",\"variant_tag\":\"llamagen:alitok-ar\",\"description\":\"LlamaGen用标准causal transformer对raster-scan order token做next-token预测；本文使用AliTok tokenizer替换原有tokenizer，并引入1D RoPE处理prefix token、QK-Norm稳定训练，其余架构不变。\"}],\"core_cite\":[{\"title\":\"An Image is Worth 32 Tokens for Reconstruction and Generation\",\"role\":\"extends\",\"note\":\"AliTok的tokenizer架构基于TiTok的transformer-based 1D token设计，编码器使用ViT-B，损失函数设计也沿用其标准做法\"},{\"title\":\"Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation\",\"role\":\"extends\",\"note\":\"AR模型架构直接复用LlamaGen，包括RMSNorm预归一化、2D RoPE位置编码等标准设计\"},{\"title\":\"Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens\",\"role\":\"extends\",\"note\":\"tokenizer的整体设计基于TA-TiTok，包括编码器ViT-B和解码器ViT-L的配置\"},{\"title\":\"Online clustered codebook\",\"role\":\"uses\",\"note\":\"采用online feature clustering方法确保codebook利用率达100%\"},{\"title\":\"Open-magvit2: An open-source project toward democratizing auto-regressive visual generation\",\"role\":\"uses\",\"note\":\"对抗损失的GAN判别器直接采用Open-MagViT2的实现\"},{\"title\":\"Autoregressive Image Generation without Vector Quantization\",\"role\":\"contrasts\",\"note\":\"MAR-H作为主要baseline对比，AliTok-L在相近gFID下吞吐量提升33.7倍\"},{\"title\":\"Randomized Autoregressive Visual Generation\",\"role\":\"contrasts\",\"note\":\"RAR-XXL（1.5B）作为causal AR领域SOTA baseline，AliTok-L（318M）在gFID和IS上均超越它\"},{\"title\":\"Reconstruction vs. generation: Taming optimization dilemma in latent diffusion models\",\"role\":\"contrasts\",\"note\":\"LightningDiT作为扩散模型SOTA baseline，AliTok-XL在gFID 1.28 vs 1.35上超越且采样快10倍\"},{\"title\":\"Visual autoregressive modeling: Scalable image generation via next-scale prediction\",\"role\":\"contrasts\",\"note\":\"VAR-d30（2.0B）作为next-scale prediction范式的baseline参与对比\"},{\"title\":\"Neural discrete representation learning\",\"role\":\"uses\",\"note\":\"VQ-VAE提供向量量化的基础框架，AliTok的量化模块基于此\"},{\"title\":\"Taming transformers for high-resolution image synthesis\",\"role\":\"uses\",\"note\":\"VQ-GAN提供对抗训练提升视觉保真度的范式，AliTok重建损失中的对抗部分沿用此框架\"},{\"title\":\"Language Model Beats Diffusion--Tokenizer is Key to Visual Generation\",\"role\":\"contrasts\",\"note\":\"MAGVIT-v2作为masked generation方法的baseline参与ImageNet-256对比\"},{\"title\":\"Scalable diffusion models with transformers\",\"role\":\"mentions\",\"note\":\"DiT作为扩散模型基准方法在相关工作中提及\"},{\"title\":\"RandAR: Decoder-only Autoregressive Visual Generation in Random Orders\",\"role\":\"supports\",\"note\":\"支持论文动机：指出视觉序列双向依赖性使raster-scan AR模型难以达到优秀性能\"},{\"title\":\"Roformer: Enhanced transformer with rotary position embedding\",\"role\":\"uses\",\"note\":\"AR模型中使用RoPE（含2D RoPE和1D RoPE）进行位置编码\"}]}",
+  "cn_oneliner": "基于VQ-VAE引入因果解码器约束双向编码器，使AR模型token序列具有前向依赖性，gFID达1.28超越SOTA扩散模型",
+  "cn_abstract": "自回归图像生成中，传统图像tokenizer产生的token序列具有双向依赖性，与decoder-only AR模型的单向预测范式存在根本冲突。本文提出AliTok（Aligned Tokenizer），其核心设计是用因果解码器（causal decoder）约束双向编码器训练，迫使编码器产生具有前向依赖结构的token序列。此外引入prefix tokens解决首行重建质量差的问题，并采用两阶段tokenizer训练策略（第二阶段冻结编码器重训双向解码器）提升重建保真度。基于AliTok，标准decoder-only AR模型（662M参数）在ImageNet-256上达到gFID 1.28，首次以标准自回归模型超越SOTA扩散模型LightningDiT，采样速度快10倍。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱] 本文建立在VQ-VAE/VQ-GAN离散tokenizer体系上，编码器架构借鉴TiTok和TA-TiTok的transformer-based 1D token设计，AR模型架构直接复用LlamaGen（含RMSNorm、2D RoPE），量化方案采用Online Clustered Codebook，对抗损失来自Open-MagViT2。\n[贡献] 去掉包装后，核心新意是：训练tokenizer时将解码器替换为因果（causal）解码器，通过重建loss的反向传播迫使双向编码器学习具有因果依赖结构的表示；配合prefix token和两阶段训练平衡生成友好性与重建质量。\n[判断] 这个想法简洁且有充分的消融验证，解决了一个真实存在但此前被忽视的tokenizer-AR对齐问题，结果也达到新SOTA。贡献是真实的，但核心trick（用causal decoder约束encoder）相对直接，属于有效解法而非范式级突破。",
+  "why_read": "研究标准causal AR图像生成的人必读——它给出了一个被广泛忽视的tokenizer设计缺陷的清晰诊断和简洁修复方案，并用消融实验精确量化了每个组件的贡献。",
+  "method_variants": [
+    {
+      "base_method": "vq-vae",
+      "variant_tag": "vq-vae:causal-decoder-constrained",
+      "description": "原始VQ-VAE用双向decoder重建；本文在Stage 1将decoder替换为causal decoder，使其仅能看到因果上下文，从而迫使双向encoder输出具有前向依赖结构的token序列。"
+    },
+    {
+      "base_method": "titok",
+      "variant_tag": "titok:causal-alignment",
+      "description": "TiTok用双向transformer将2D图像patch编码为1D latent token序列；本文在其基础上引入causal decoder约束、prefix token和两阶段训练，使编码token序列对AR模型更易建模。"
+    },
+    {
+      "base_method": "llamagen",
+      "variant_tag": "llamagen:alitok-ar",
+      "description": "LlamaGen用标准causal transformer对raster-scan order token做next-token预测；本文使用AliTok tokenizer替换原有tokenizer，并引入1D RoPE处理prefix token、QK-Norm稳定训练，其余架构不变。"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "role": "extends",
+      "note": "AliTok的tokenizer架构基于TiTok的transformer-based 1D token设计，编码器使用ViT-B，损失函数设计也沿用其标准做法"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "role": "extends",
+      "note": "AR模型架构直接复用LlamaGen，包括RMSNorm预归一化、2D RoPE位置编码等标准设计"
+    },
+    {
+      "title": "Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens",
+      "role": "extends",
+      "note": "tokenizer的整体设计基于TA-TiTok，包括编码器ViT-B和解码器ViT-L的配置"
+    },
+    {
+      "title": "Online clustered codebook",
+      "role": "uses",
+      "note": "采用online feature clustering方法确保codebook利用率达100%"
+    },
+    {
+      "title": "Open-magvit2: An open-source project toward democratizing auto-regressive visual generation",
+      "role": "uses",
+      "note": "对抗损失的GAN判别器直接采用Open-MagViT2的实现"
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "role": "contrasts",
+      "note": "MAR-H作为主要baseline对比，AliTok-L在相近gFID下吞吐量提升33.7倍"
+    },
+    {
+      "title": "Randomized Autoregressive Visual Generation",
+      "role": "contrasts",
+      "note": "RAR-XXL（1.5B）作为causal AR领域SOTA baseline，AliTok-L（318M）在gFID和IS上均超越它"
+    },
+    {
+      "title": "Reconstruction vs. generation: Taming optimization dilemma in latent diffusion models",
+      "role": "contrasts",
+      "note": "LightningDiT作为扩散模型SOTA baseline，AliTok-XL在gFID 1.28 vs 1.35上超越且采样快10倍"
+    },
+    {
+      "title": "Visual autoregressive modeling: Scalable image generation via next-scale prediction",
+      "role": "contrasts",
+      "note": "VAR-d30（2.0B）作为next-scale prediction范式的baseline参与对比"
+    },
+    {
+      "title": "Neural discrete representation learning",
+      "role": "uses",
+      "note": "VQ-VAE提供向量量化的基础框架，AliTok的量化模块基于此"
+    },
+    {
+      "title": "Taming transformers for high-resolution image synthesis",
+      "role": "uses",
+      "note": "VQ-GAN提供对抗训练提升视觉保真度的范式，AliTok重建损失中的对抗部分沿用此框架"
+    },
+    {
+      "title": "Language Model Beats Diffusion--Tokenizer is Key to Visual Generation",
+      "role": "contrasts",
+      "note": "MAGVIT-v2作为masked generation方法的baseline参与ImageNet-256对比"
+    },
+    {
+      "title": "Scalable diffusion models with transformers",
+      "role": "mentions",
+      "note": "DiT作为扩散模型基准方法在相关工作中提及"
+    },
+    {
+      "title": "RandAR: Decoder-only Autoregressive Visual Generation in Random Orders",
+      "role": "supports",
+      "note": "支持论文动机：指出视觉序列双向依赖性使raster-scan AR模型难以达到优秀性能"
+    },
+    {
+      "title": "Roformer: Enhanced transformer with rotary position embedding",
+      "role": "uses",
+      "note": "AR模型中使用RoPE（含2D RoPE和1D RoPE）进行位置编码"
+    }
+  ]
+}

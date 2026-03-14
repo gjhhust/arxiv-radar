@@ -1,0 +1,148 @@
+你是一位 arxiv 论文分析专家。请对以下论文进行结构化分析，以 JSON 格式输出。
+
+**论文信息**
+- arxiv ID：2601.01535
+- 标题：Improving Flexible Image Tokenizers for Autoregressive Image Generation
+
+---
+
+**字段要求**
+
+cn_oneliner
+  一句话，严格格式：「基于[前驱方法/范式]，引入[核心改动]，实现[效果/指标]」
+  例1：「基于 Transformer 自注意力，引入局部窗口限制将复杂度从 O(n²) 降至 O(n)，实现长序列高效建模」
+  例2：「基于 DDPM 扩散过程，将噪声预测迁移至 VAE 潜空间，以 8× 压缩比实现高分辨率图像生成」
+
+cn_abstract
+  2-4 句完整中文摘要，保留核心数值结果，不截断
+  例：「本文提出 X，以解决 Y 问题。通过在 Z 上引入 W，模型在 COCO 上达到 FID=3.2，较基线下降 40%。
+  与 DALL-E 3 相比，训练成本降低 3×，推理速度提升 2×。」
+
+contribution_type
+  严格四选一：incremental / significant / story-heavy / foundational
+  incremental：在现有方法上微调/刷点，无范式级创新（最常见）
+  significant：引入新范式或新任务，对领域有明显推动（如 ViT 级别）
+  story-heavy：综述/技术报告/规模实验，贡献以广度和规模为主
+  foundational：奠基性工作，影响整个领域（极少）
+
+editorial_note
+  三段连续文字，80-150 字：
+  [段1：前驱方法的核心贡献与局限] → [段2：本文如何针对性解决] → [段3：编辑判断：创新程度、适用场景、潜在不足]
+  例：「VQGAN 通过向量量化将图像压缩为离散 token，但高压缩比下重建质量下降。本文引入扩散解码器
+  替代原始 CNN 解码器，在同等压缩比下显著提升重建细节。改动精准且有效，属于组件级创新；但
+  扩散解码器引入的推理开销是实际部署的主要障碍。」
+
+why_read
+  一句话：[目标读者群体] + [读后具体收获]
+  例：「研究图像生成质量-效率权衡的工程师，可借鉴其扩散解码器与量化器联合训练的技巧」
+
+method_variants
+  JSON 数组，每项包含：
+  - tag：格式 "base_method:variant_tag"，标识本文对该方法的具体变体
+  - note：一句话说明该变体与原方法的核心区别
+  例：[
+    {"tag": "attention:sliding-window", "note": "将全局自注意力限制在固定大小局部窗口内，复杂度从 O(n²) 降至 O(nW)"},
+    {"tag": "vq:ema-codebook",          "note": "用指数移动平均替代梯度更新稳定码本训练，降低 codebook collapse 风险"},
+    {"tag": "diffusion:v-prediction",   "note": "预测速度场 v 替代噪声 ε，提升训练稳定性和样本质量"}
+  ]
+  若无明显变体则返回空数组 []
+
+core_cite
+  ≥10 条，每条包含：
+  - title：论文标题（须来自文末参考列表，输出前逐条核查，列表中找不到则删除）
+  - arxiv_id：如有则填写，否则留空字符串
+  - role：五选一 extends | contrasts | uses | supports | mentions
+  - note：一句话说明引用原因
+
+  role 定义：
+  extends   — 本文直接在此工作基础上扩展
+  contrasts — 本文与此工作对比或批判
+  uses      — 本文直接使用其方法/代码/数据集
+  supports  — 作为背景支撑，引用以说明动机
+  mentions  — 简单提及，非核心
+
+idea
+  3 条研究想法，来源：本文局限/未来工作 + 未充分利用的引用方法 + 跨域类比
+  每条包含：
+  - title：研究方向标题（10-20 字）
+  - why：1-3 句，说明依据和可行性
+
+---
+
+**输出格式**
+仅输出纯 JSON，不含任何其他文字：
+{
+  "arxiv_id": "2601.01535",
+  "title": "Improving Flexible Image Tokenizers for Autoregressive Image Generation",
+  "cn_oneliner": "...",
+  "cn_abstract": "...",
+  "contribution_type": "...",
+  "editorial_note": "...",
+  "why_read": "...",
+  "method_variants": [
+    {"tag": "...", "note": "..."}
+  ],
+  "core_cite": [
+    {"title": "...", "arxiv_id": "...", "role": "...", "note": "..."}
+  ],
+  "idea": [
+    {"title": "...", "why": "..."}
+  ]
+}
+
+---
+
+**参考列表（core_cite 须来自其中，输出前逐条核查，列表中找不到则删除）：**
+- Adaptive Length Image Tokenization via Recurrent Allocation | arxiv:2411.02393
+- An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale | arxiv:2010.11929
+- An Image is Worth 32 Tokens for Reconstruction and Generation | arxiv:2406.07550
+- Autoregressive Image Generation without Vector Quantization | arxiv:2406.11838
+- Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation | arxiv:2406.06525
+- BLIP-2: Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models | arxiv:2301.12597
+- Chameleon: Mixed-Modal Early-Fusion Foundation Models | arxiv:2405.09818
+- DINOv2: Learning Robust Visual Features without Supervision | arxiv:2304.07193
+- DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction | arxiv:2505.21473
+- Efficient-VQGAN: Towards High-Resolution Image Generation with Efficient Vision Transformers | arxiv:2310.05400
+- ElasticTok: Adaptive Tokenization for Image and Video | arxiv:2410.08368
+- Emu3: Next-Token Prediction is All You Need | arxiv:2409.18869
+- Finite Scalar Quantization: VQ-VAE Made Simple | arxiv:2309.15505
+- FlexTok: Resampling Images into 1D Token Sequences of Flexible Length | arxiv:2502.13967
+- GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation | arxiv:2504.08736
+- High-Resolution Image Synthesis with Latent Diffusion Models | arxiv:2112.10752
+- Highly Compressed Tokenizer Can Generate Without Training | arxiv:2506.08257
+- Image and Video Tokenization with Binary Spherical Quantization | arxiv:2406.07548
+- Image-to-Image Translation with Conditional Adversarial Networks | arxiv:1611.07004
+- ImageFolder: Autoregressive Image Generation with Folded Tokens | arxiv:2410.01756
+- ImageNet Large Scale Visual Recognition Challenge | arxiv:1409.0575
+- Improved Precision and Recall Metric for Assessing Generative Models | arxiv:1904.06991
+- Improved Techniques for Training GANs | arxiv:1606.03498
+- Infinity∞: Scaling Bitwise AutoRegressive Modeling for High-Resolution Image Synthesis | arxiv:2412.04431
+- Janus-Pro: Unified Multimodal Understanding and Generation with Data and Model Scaling | arxiv:2501.17811
+- Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation | arxiv:2310.05737
+- Language Models are Few-Shot Learners | arxiv:2005.14165
+- Learning Ordered Representations with Nested Dropout | arxiv:1402.0915
+- MaskBit: Embedding-free Image Generation via Bit Tokens | arxiv:2409.16211
+- MaskGIT: Masked Generative Image Transformer | arxiv:2202.04200
+- Masked Autoencoders Are Effective Tokenizers for Diffusion Models | arxiv:2502.03444
+- Neural Discrete Representation Learning | arxiv:1711.00937
+- One-D-Piece: Image Tokenizer Meets Quality-Controllable Compression | arxiv:2501.10064
+- PaLM: Scaling Language Modeling with Pathways | arxiv:2204.02311
+- Perceptual Losses for Real-Time Style Transfer and Super-Resolution | arxiv:1603.08155
+- Reconstruction vs. Generation: Taming Optimization Dilemma in Latent Diffusion Models | arxiv:2501.01423
+- Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think | arxiv:2410.06940
+- Scalable Diffusion Models with Transformers | arxiv:2212.09748
+- SiT: Exploring Flow and Diffusion-based Generative Models with Scalable Interpolant Transformers | arxiv:2401.08740
+- SigLIP 2: Multilingual Vision-Language Encoders with Improved Semantic Understanding, Localization, and Dense Features | arxiv:2502.14786
+- SimpleAR: Pushing the Frontier of Autoregressive Visual Generation through Pretraining, SFT, and RL | arxiv:2504.11455
+- SoftVQ-VAE: Efficient 1-Dimensional Continuous Tokenizer | arxiv:2412.10958
+- Spectral Image Tokenizer | arxiv:2412.09607
+- SpectralAR: Spectral Autoregressive Visual Generation | arxiv:2506.10962
+- Taming Transformers for High-Resolution Image Synthesis | arxiv:2012.09841
+- The Llama 3 Herd of Models | arxiv:2407.21783
+- TokenFlow: Unified Image Tokenizer for Multimodal Understanding and Generation | arxiv:2412.03069
+- UniTok: A Unified Tokenizer for Visual Generation and Understanding | arxiv:2502.20321
+- VILA-U: a Unified Foundation Model Integrating Visual Understanding and Generation | arxiv:2409.04429
+- Vector-quantized Image Modeling with Improved VQGAN | arxiv:2110.04627
+- Vision Foundation Models as Effective Visual Tokenizers for Autoregressive Image Generation | arxiv:2507.08441
+- Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction | arxiv:2404.02905
+- Visual Lexicon: Rich Image Features in Language Space | arxiv:2412.06774

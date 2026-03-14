@@ -47,17 +47,47 @@ CREATE TABLE IF NOT EXISTS papers (
     title           TEXT NOT NULL,
     abstract        TEXT,
     authors         TEXT,                  -- JSON array of author names
+    author_ids      TEXT,                  -- JSON array of S2 author IDs
     date            TEXT,                  -- publication date YYYY-MM-DD
+    year            INTEGER,               -- publication year
     arxiv_url       TEXT,
+    arxiv_categories TEXT,                 -- JSON array of arxiv categories
+    primary_category TEXT,                 -- primary arxiv category
+    doi             TEXT,                  -- DOI
+    venue           TEXT,                  -- conference/journal (e.g. "CVPR 2025")
+    venue_short     TEXT,                  -- venue abbreviation (e.g. "CVPR")
     domain          TEXT,                  -- assigned domain name
     best_score      REAL DEFAULT 0,        -- best similarity score
     paper_type      TEXT DEFAULT '方法文',  -- 方法文/Benchmark/Survey
     labels          TEXT,                  -- JSON array of label strings
     cn_abstract     TEXT,                  -- Chinese abstract
     cn_oneliner     TEXT,                  -- One-line Chinese summary
+    tldr            TEXT,                  -- S2 TLDR (single-sentence summary)
     s2_citation_count   INTEGER DEFAULT 0,
     s2_reference_count  INTEGER DEFAULT 0,
+    s2_influential_citation_count INTEGER DEFAULT 0,
+    s2_fields_of_study  TEXT,              -- JSON array of research fields
+    s2_words        TEXT,                  -- JSON array of S2 keywords
+    is_open_access  INTEGER DEFAULT 0,     -- 1 if open access
+    open_access_pdf TEXT,                  -- PDF URL
+    keywords        TEXT,                  -- JSON array of keywords (LLM or algorithm)
+    tasks           TEXT,                  -- JSON array of task tags
+    methods         TEXT,                  -- JSON array of method tags
+    datasets        TEXT,                  -- JSON array of datasets
+    method_variants TEXT,                  -- JSON array of method variants
+    baselines_json  TEXT,                  -- JSON array of baseline papers
+    motivation_sources TEXT,               -- JSON array of motivation source papers
+    institutions    TEXT,                  -- JSON array of institutions
+    code_url        TEXT,                  -- code repository URL
+    github_stars    INTEGER DEFAULT 0,     -- GitHub stars count
     source          TEXT DEFAULT 'arxiv',   -- arxiv / s2_expansion / manual
+    status          TEXT DEFAULT 'pending', -- pending / analyzed / failed
+    analysis_status TEXT DEFAULT 'pending', -- pending / analyzing / completed / failed
+    analysis_date   TEXT,                  -- analysis completion time
+    analysis_model  TEXT,                  -- model used for analysis
+    analysis_session_id TEXT,              -- OpenClaw session ID for traceability
+    analysis_transcript TEXT,              -- transcript path for traceability
+    analysis_result_path TEXT,             -- result JSON path
     created_at      TEXT DEFAULT (datetime('now')),
     updated_at      TEXT DEFAULT (datetime('now'))
 );
@@ -122,10 +152,30 @@ class PaperDB:
         conn = self._connect()
         try:
             conn.executescript(SCHEMA_SQL)
+            self._ensure_analysis_columns(conn)
             conn.commit()
             logger.info(f"PaperDB initialized: {self.db_path}")
         finally:
             conn.close()
+
+    def _ensure_analysis_columns(self, conn: sqlite3.Connection) -> None:
+        """Apply additive schema migrations for analysis tracking columns."""
+        existing_columns = {
+            row["name"] for row in conn.execute("PRAGMA table_info(papers)").fetchall()
+        }
+        required_columns = {
+            "analysis_status": "TEXT DEFAULT 'pending'",
+            "analysis_date": "TEXT",
+            "analysis_model": "TEXT",
+            "analysis_session_id": "TEXT",
+            "analysis_transcript": "TEXT",
+            "analysis_result_path": "TEXT",
+        }
+        for column_name, column_def in required_columns.items():
+            if column_name in existing_columns:
+                continue
+            conn.execute(f"ALTER TABLE papers ADD COLUMN {column_name} {column_def}")
+            logger.info("Added papers.%s column", column_name)
 
     # ─────────────── Paper CRUD ───────────────
 
@@ -202,6 +252,62 @@ class PaperDB:
         conn = self._connect()
         try:
             row = conn.execute("SELECT * FROM papers WHERE id = ?", (paper_id,)).fetchone()
+            return dict(row) if row else None
+        finally:
+            conn.close()
+
+    def update_analysis_status(
+        self,
+        paper_id: str,
+        analysis_status: str,
+        analysis_date: str | None = None,
+        analysis_model: str | None = None,
+        analysis_session_id: str | None = None,
+        analysis_transcript: str | None = None,
+        analysis_result_path: str | None = None,
+    ) -> None:
+        """Update per-paper analysis metadata without touching unrelated fields."""
+        conn = self._connect()
+        try:
+            conn.execute(
+                """
+                UPDATE papers
+                SET analysis_status = ?,
+                    analysis_date = COALESCE(?, analysis_date),
+                    analysis_model = COALESCE(?, analysis_model),
+                    analysis_session_id = COALESCE(?, analysis_session_id),
+                    analysis_transcript = COALESCE(?, analysis_transcript),
+                    analysis_result_path = COALESCE(?, analysis_result_path),
+                    updated_at = datetime('now')
+                WHERE id = ?
+                """,
+                (
+                    analysis_status,
+                    analysis_date,
+                    analysis_model,
+                    analysis_session_id,
+                    analysis_transcript,
+                    analysis_result_path,
+                    paper_id,
+                ),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def get_analysis_status(self, paper_id: str) -> Optional[dict]:
+        """Fetch analysis metadata for one paper."""
+        conn = self._connect()
+        try:
+            row = conn.execute(
+                """
+                SELECT analysis_status, analysis_date, analysis_model,
+                       analysis_session_id, analysis_transcript, analysis_result_path
+                FROM papers
+                WHERE id = ?
+                """,
+                (paper_id,),
+            ).fetchone()
             return dict(row) if row else None
         finally:
             conn.close()

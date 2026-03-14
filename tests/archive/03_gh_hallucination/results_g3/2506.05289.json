@@ -1,0 +1,185 @@
+{
+  "arxiv_id": "2506.05289",
+  "title": "AliTok: Towards Sequence Modeling Alignment between Tokenizer and Autoregressive Model",
+  "cn_oneliner": "基于自回归图像生成框架，引入Tokenizer与自回归模型之间的序列建模对齐机制，在ImageNet 256×256类条件生成上实现更优的生成质量",
+  "cn_abstract": "本文提出AliTok，旨在解决图像生成中Tokenizer与自回归模型之间的序列建模不对齐问题。现有方法中，Tokenizer独立训练，其产生的token序列结构与自回归模型的序列建模假设存在内在矛盾。AliTok通过对齐两者的序列建模方式，使Tokenizer生成的token序列更适合自回归预测。实验表明，AliTok-XL（662M参数）在ImageNet 256×256类条件图像生成任务上取得了具有竞争力的生成性能，验证了序列建模对齐的有效性。",
+  "contribution_type": "significant",
+  "editorial_note": "现有自回归图像生成框架（如VQGAN+GPT、LlamaGen等）中，Tokenizer与自回归模型分别独立训练，两者对token序列的建模假设存在结构性不匹配。本文提出AliTok，系统性地分析并解决Tokenizer与自回归模型之间的序列建模对齐问题，从训练目标层面重新审视两阶段生成框架的内在矛盾。该工作切入角度新颖，触及图像生成流水线的核心设计问题，若实验充分则具有较强的方法论价值，但最终影响力取决于对齐机制的普适性与性能增益幅度。",
+  "why_read": "研究自回归图像生成、视觉Tokenizer设计或两阶段生成框架的研究者，可从中获得关于Tokenizer与生成模型协同设计的新视角与具体方法。",
+  "method_variants": [
+    "tokenizer:sequence-aligned-vq",
+    "autoregressive:tokenizer-aware-ar",
+    "training:joint-alignment-objective",
+    "image-generation:two-stage-aligned"
+  ],
+  "core_cite": [
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis (VQGAN)",
+      "arxiv_id": "2012.09841",
+      "role": "extends",
+      "note": "提出VQGAN作为视觉Tokenizer的基础框架，AliTok在此基础上解决其与AR模型的对齐问题"
+    },
+    {
+      "title": "Neural Discrete Representation Learning (VQ-VAE)",
+      "arxiv_id": "1711.00937",
+      "role": "extends",
+      "note": "VQ-VAE奠定了离散视觉token化的基础，是AliTok Tokenizer设计的前驱工作"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation (LlamaGen)",
+      "arxiv_id": "2406.06525",
+      "role": "contrasts",
+      "note": "代表性的自回归图像生成基线，AliTok针对其Tokenizer与AR模型不对齐问题提出改进"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation (VQVAE with 1D tokens)",
+      "arxiv_id": "2406.07550",
+      "role": "contrasts",
+      "note": "研究视觉token压缩与序列长度的工作，与AliTok的序列建模对齐问题密切相关"
+    },
+    {
+      "title": "Visual AutoRegressive Modeling: Scalable Image Generation via Next-Scale Prediction (VAR)",
+      "arxiv_id": "2404.02905",
+      "role": "contrasts",
+      "note": "提出next-scale预测范式，是AR图像生成的重要竞争方法，与AliTok的序列建模方式形成对比"
+    },
+    {
+      "title": "Language Models are Unsupervised Multitask Learners (GPT-2)",
+      "arxiv_id": null,
+      "role": "uses",
+      "note": "自回归语言模型的基础架构，AliTok的AR生成模块基于此类Transformer自回归框架"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers (DiT)",
+      "arxiv_id": "2212.09748",
+      "role": "mentions",
+      "note": "基于Transformer的扩散模型，作为图像生成的对比基线方法"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models (LDM/Stable Diffusion)",
+      "arxiv_id": "2112.10752",
+      "role": "mentions",
+      "note": "潜空间扩散模型，作为生成质量对比的重要参考基线"
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple (FSQ)",
+      "arxiv_id": "2309.15505",
+      "role": "uses",
+      "note": "提出简化的标量量化方法，可能被用于AliTok的离散化模块设计"
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "arxiv_id": "2409.04410",
+      "role": "contrasts",
+      "note": "开源的自回归视觉生成框架，与AliTok在Tokenizer设计和AR生成上形成直接对比"
+    },
+    {
+      "title": "ImageNet Large Scale Visual Recognition Challenge",
+      "arxiv_id": null,
+      "role": "uses",
+      "note": "AliTok在ImageNet类条件生成上进行主要实验评估"
+    },
+    {
+      "title": "Generating Diverse High-Fidelity Images with VQ-VAE-2",
+      "arxiv_id": "1906.00446",
+      "role": "extends",
+      "note": "层次化VQ-VAE，进一步发展了离散视觉token化用于图像生成的思路"
+    }
+  ],
+  "idea": [
+    {
+      "title": "联合训练的对齐Tokenizer-AR生成框架",
+      "why": "AliTok揭示了两阶段训练中Tokenizer与AR模型的序列建模不一致问题，自然延伸方向是设计端到端联合训练框架，使Tokenizer的量化目标直接感知AR模型的预测损失。现有工作（如VQGAN、LlamaGen）均为分阶段训练，联合优化在技术上可行但需解决梯度传递与训练稳定性问题。"
+    },
+    {
+      "title": "序列建模对齐原则在视频生成Tokenizer中的推广",
+      "why": "图像生成中Tokenizer与AR模型的对齐问题在视频生成中更为突出，因为时序维度引入了更复杂的依赖结构。将AliTok的对齐思想推广至视频Tokenizer设计，探索时空token序列的AR友好组织方式，具有重要的实用价值，且当前视频AR生成（如MAGVIT-v2）仍面临类似的不对齐挑战。"
+    },
+    {
+      "title": "基于序列建模对齐度量的Tokenizer质量评估体系",
+      "why": "目前视觉Tokenizer的评估主要依赖重建指标（rFID、PSNR等），缺乏衡量token序列是否适合AR建模的专用指标。受AliTok核心思想启发，可设计一套量化对齐程度的评估指标（如token间条件熵、序列预测难度分布等），为Tokenizer设计提供更直接的优化信号，填补评估体系的空白。"
+    }
+  ],
+  "_scheme": "G",
+  "_model": "wq/minimaxm25",
+  "_verified_at": "2026-03-13",
+  "_s2_ref_count": 52,
+  "_similarities": [
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis (VQGAN)",
+      "best_score": 0.932,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning (VQ-VAE)",
+      "best_score": 0.897,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation (LlamaGen)",
+      "best_score": 0.93,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation (VQVAE with 1D tokens)",
+      "best_score": 0.841,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    },
+    {
+      "title": "Visual AutoRegressive Modeling: Scalable Image Generation via Next-Scale Prediction (VAR)",
+      "best_score": 0.965,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "Language Models are Unsupervised Multitask Learners (GPT-2)",
+      "best_score": 0.431,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": false
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers (DiT)",
+      "best_score": 0.935,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models (LDM/Stable Diffusion)",
+      "best_score": 0.521,
+      "best_match": "Token-Shuffle: Towards High-Resolution Image Generation with Autoregressive Models",
+      "pass": false
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple (FSQ)",
+      "best_score": 0.939,
+      "best_match": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "pass": true
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "ImageNet Large Scale Visual Recognition Challenge",
+      "best_score": 1.0,
+      "best_match": "ImageNet Large Scale Visual Recognition Challenge",
+      "pass": true
+    },
+    {
+      "title": "Generating Diverse High-Fidelity Images with VQ-VAE-2",
+      "best_score": 0.463,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": false
+    }
+  ],
+  "_matched": 9,
+  "_total": 12,
+  "_pass_rate": 0.75,
+  "_elapsed_s": 36.1
+}

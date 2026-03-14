@@ -1,0 +1,107 @@
+{
+  "arxiv_id": "2601.01535",
+  "model": "claude46",
+  "timestamp": "2026-03-12T21:53:34.662035",
+  "latency_s": 69.43,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于GigaTok引入冗余token填充和层次语义正则化，解决nested dropout导致的尾部token信息欠利用问题，使AR生成质量随token数增加持续提升\",\"cn_abstract\":\"现有灵活图像tokenizer采用nested dropout训练，导致图像信息过度集中于早期token，使得下游AR生成质量随token数增加无法持续提升。本文提出ReTok，引入Redundant Token Padding（在序列尾部拼接冗余query token，迫使原始尾部token更频繁被激活）和Hierarchical Semantic Regularization（对早期token施加较强的DINOv2语义对齐约束，并向尾部token线性衰减以保留细节重建能力）。在ImageNet 256×256上，ReTok在所有灵活tokenizer中取得最优生成性能（gFID 2.27），并与固定长度tokenizer持平。\",\"contribution_type\":\"incremental\",\"editorial_note\":\"[前驱] 本文直接建立在GigaTok（1D固定长度tokenizer+语义正则化）和nested dropout（flexible tokenizer训练范式）之上，AR生成器使用LlamaGen，语义对齐来自DINOv2；FlexTok、One-D-Piece等flexible tokenizer是直接对比基线。\\n[贡献] 作者发现naive nested dropout使信息过度集中于早期token，提出两个训练技巧：（1）填充冗余token让原始尾部token变成\"早期token\"从而被更多激活；（2）对不同长度的truncated序列施加渐变强度的语义正则化。\\n[判断] 贡献清晰有效，但属于对已知问题的工程修补：padding trick本质是数据增强的变体，hierarchical regularization是已有表示对齐的平滑扩展。解决了实际痛点，实验充分，但缺乏深层理论洞见，属于有效但可预期的改进。\",\"why_read\":\"专门研究可变长度视觉tokenizer或AR图像生成的工程师，可从中获得两个即插即用的训练技巧（冗余填充+层次正则化）及其详细消融分析，帮助复现或超越当前flexible tokenizer的生成上界。\",\"method_variants\":[{\"base_method\":\"nested-dropout\",\"variant_tag\":\"nested-dropout:redundant-token-padding\",\"description\":\"原始nested dropout直接随机截断尾部token；本文在原始N个token后拼接M个冗余query token构成N+M序列，再做nested dropout，使原始尾部token的激活频率提升，训练完后丢弃冗余token只用原始N个token做下游生成。\"},{\"base_method\":\"gigatok\",\"variant_tag\":\"gigatok:hierarchical-semantic-regularization\",\"description\":\"GigaTok对所有长度的decoder中间特征施加固定权重λ的DINOv2余弦相似度正则；本文将λ设为关于保留序列长度k的线性递减函数，短序列施加强语义约束，长序列衰减至低权重以支持细节重建。\"},{\"base_method\":\"gigatok\",\"variant_tag\":\"gigatok:decoder-finetuning\",\"description\":\"训练完编码器和量化器后，冻结二者并以小常数λ微调decoder，缓解强语义约束对短token序列重建质量的负面影响。\"}],\"core_cite\":[{\"title\":\"Gigatok: Scaling visual tokenizers to 3 billion parameters for autoregressive image generation\",\"role\":\"extends\",\"note\":\"ReTok直接基于GigaTok架构初始化权重，继承其1D tokenizer设计和语义正则化训练目标，是本文方法的直接基座\"},{\"title\":\"Learning ordered representations with nested dropout\",\"role\":\"extends\",\"note\":\"flexible tokenizer训练范式的核心机制，本文redundant token padding正是对其的直接改造\"},{\"title\":\"Autoregressive model beats diffusion: Llama for scalable image generation\",\"role\":\"uses\",\"note\":\"本文所有AR生成实验均使用LlamaGen-B/L/XL作为下游生成器\"},{\"title\":\"FlexTok: Resampling Images into 1D Token Sequences of Flexible Length\",\"role\":\"contrasts\",\"note\":\"最主要的flexible tokenizer对比基线，揭示了其32 token时gFID最佳而更多token质量下降的问题\"},{\"title\":\"One-d-piece: Image tokenizer meets quality-controllable compression\",\"role\":\"contrasts\",\"note\":\"另一flexible tokenizer基线，实验中直接对比其在不同token长度下的AR生成gFID\"},{\"title\":\"DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction\",\"role\":\"contrasts\",\"note\":\"flexible tokenizer对比基线，采用层次重建策略，实验中与ReTok直接比较gFID\"},{\"title\":\"SpectralAR: Spectral Autoregressive Visual Generation\",\"role\":\"contrasts\",\"note\":\"flexible tokenizer对比基线，在主表中与ReTok比较生成性能\"},{\"title\":\"Dinov2: Learning robust visual features without supervision\",\"role\":\"uses\",\"note\":\"hierarchical semantic regularization中用于提取语义特征的预训练vision foundation model\"},{\"title\":\"An image is worth 32 tokens for reconstruction and generation\",\"role\":\"contrasts\",\"note\":\"固定长度1D tokenizer TiTok，作为fixed-length baseline在主表中对比\"},{\"title\":\"Taming transformers for high-resolution image synthesis\",\"role\":\"uses\",\"note\":\"VQGAN重建损失（pixel loss+perceptual loss+adversarial loss+codebook loss）被本文直接沿用\"},{\"title\":\"Representation alignment for generation: Training diffusion transformers is easier than you think\",\"role\":\"supports\",\"note\":\"表示对齐思想的来源，hierarchical semantic regularization在此基础上扩展\"},{\"title\":\"Vision foundation models as effective visual tokenizers for autoregressive image generation\",\"role\":\"contrasts\",\"note\":\"主表中另一1D固定长度tokenizer对比方法VFMTok\"},{\"title\":\"Imagenet large scale visual recognition challenge\",\"role\":\"uses\",\"note\":\"所有tokenizer和AR模型的训练与评估数据集\"},{\"title\":\"Gans trained by a two time-scale update rule converge to a local nash equilibrium\",\"role\":\"uses\",\"note\":\"FID评估指标的来源文献\"},{\"title\":\"Perceptual losses for real-time style transfer and super-resolution\",\"role\":\"uses\",\"note\":\"重建损失中perceptual loss的来源\"}]}",
+  "cn_oneliner": "基于GigaTok引入冗余token填充和层次语义正则化，解决nested dropout导致的尾部token信息欠利用问题，使AR生成质量随token数增加持续提升",
+  "cn_abstract": "现有灵活图像tokenizer采用nested dropout训练，导致图像信息过度集中于早期token，使得下游AR生成质量随token数增加无法持续提升。本文提出ReTok，引入Redundant Token Padding（在序列尾部拼接冗余query token，迫使原始尾部token更频繁被激活）和Hierarchical Semantic Regularization（对早期token施加较强的DINOv2语义对齐约束，并向尾部token线性衰减以保留细节重建能力）。在ImageNet 256×256上，ReTok在所有灵活tokenizer中取得最优生成性能（gFID 2.27），并与固定长度tokenizer持平。",
+  "contribution_type": "incremental",
+  "editorial_note": "[前驱] 本文直接建立在GigaTok（1D固定长度tokenizer+语义正则化）和nested dropout（flexible tokenizer训练范式）之上，AR生成器使用LlamaGen，语义对齐来自DINOv2；FlexTok、One-D-Piece等flexible tokenizer是直接对比基线。\n[贡献] 作者发现naive nested dropout使信息过度集中于早期token，提出两个训练技巧：（1）填充冗余token让原始尾部token变成早期token从而被更多激活；（2）对不同长度的truncated序列施加渐变强度的语义正则化。\n[判断] 贡献清晰有效，但属于对已知问题的工程修补：padding trick本质是数据增强的变体，hierarchical regularization是已有表示对齐的平滑扩展。解决了实际痛点，实验充分，但缺乏深层理论洞见，属于有效但可预期的改进。",
+  "why_read": "专门研究可变长度视觉tokenizer或AR图像生成的工程师，可从中获得两个即插即用的训练技巧（冗余填充+层次正则化）及其详细消融分析，帮助复现或超越当前flexible tokenizer的生成上界。",
+  "method_variants": [
+    {
+      "base_method": "nested-dropout",
+      "variant_tag": "nested-dropout:redundant-token-padding",
+      "description": "原始nested dropout直接随机截断尾部token；本文在原始N个token后拼接M个冗余query token构成N+M序列，再做nested dropout，使原始尾部token的激活频率提升，训练完后丢弃冗余token只用原始N个token做下游生成。"
+    },
+    {
+      "base_method": "gigatok",
+      "variant_tag": "gigatok:hierarchical-semantic-regularization",
+      "description": "GigaTok对所有长度的decoder中间特征施加固定权重λ的DINOv2余弦相似度正则；本文将λ设为关于保留序列长度k的线性递减函数，短序列施加强语义约束，长序列衰减至低权重以支持细节重建。"
+    },
+    {
+      "base_method": "gigatok",
+      "variant_tag": "gigatok:decoder-finetuning",
+      "description": "训练完编码器和量化器后，冻结二者并以小常数λ微调decoder，缓解强语义约束对短token序列重建质量的负面影响。"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Gigatok: Scaling visual tokenizers to 3 billion parameters for autoregressive image generation",
+      "role": "extends",
+      "note": "ReTok直接基于GigaTok架构初始化权重，继承其1D tokenizer设计和语义正则化训练目标，是本文方法的直接基座"
+    },
+    {
+      "title": "Learning ordered representations with nested dropout",
+      "role": "extends",
+      "note": "flexible tokenizer训练范式的核心机制，本文redundant token padding正是对其的直接改造"
+    },
+    {
+      "title": "Autoregressive model beats diffusion: Llama for scalable image generation",
+      "role": "uses",
+      "note": "本文所有AR生成实验均使用LlamaGen-B/L/XL作为下游生成器"
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "role": "contrasts",
+      "note": "最主要的flexible tokenizer对比基线，揭示了其32 token时gFID最佳而更多token质量下降的问题"
+    },
+    {
+      "title": "One-d-piece: Image tokenizer meets quality-controllable compression",
+      "role": "contrasts",
+      "note": "另一flexible tokenizer基线，实验中直接对比其在不同token长度下的AR生成gFID"
+    },
+    {
+      "title": "DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction",
+      "role": "contrasts",
+      "note": "flexible tokenizer对比基线，采用层次重建策略，实验中与ReTok直接比较gFID"
+    },
+    {
+      "title": "SpectralAR: Spectral Autoregressive Visual Generation",
+      "role": "contrasts",
+      "note": "flexible tokenizer对比基线，在主表中与ReTok比较生成性能"
+    },
+    {
+      "title": "Dinov2: Learning robust visual features without supervision",
+      "role": "uses",
+      "note": "hierarchical semantic regularization中用于提取语义特征的预训练vision foundation model"
+    },
+    {
+      "title": "An image is worth 32 tokens for reconstruction and generation",
+      "role": "contrasts",
+      "note": "固定长度1D tokenizer TiTok，作为fixed-length baseline在主表中对比"
+    },
+    {
+      "title": "Taming transformers for high-resolution image synthesis",
+      "role": "uses",
+      "note": "VQGAN重建损失（pixel loss+perceptual loss+adversarial loss+codebook loss）被本文直接沿用"
+    },
+    {
+      "title": "Representation alignment for generation: Training diffusion transformers is easier than you think",
+      "role": "supports",
+      "note": "表示对齐思想的来源，hierarchical semantic regularization在此基础上扩展"
+    },
+    {
+      "title": "Vision foundation models as effective visual tokenizers for autoregressive image generation",
+      "role": "contrasts",
+      "note": "主表中另一1D固定长度tokenizer对比方法VFMTok"
+    },
+    {
+      "title": "Imagenet large scale visual recognition challenge",
+      "role": "uses",
+      "note": "所有tokenizer和AR模型的训练与评估数据集"
+    },
+    {
+      "title": "Gans trained by a two time-scale update rule converge to a local nash equilibrium",
+      "role": "uses",
+      "note": "FID评估指标的来源文献"
+    },
+    {
+      "title": "Perceptual losses for real-time style transfer and super-resolution",
+      "role": "uses",
+      "note": "重建损失中perceptual loss的来源"
+    }
+  ]
+}

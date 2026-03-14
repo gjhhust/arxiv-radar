@@ -1,0 +1,82 @@
+{
+  "arxiv_id": "2601.01535",
+  "model": "minimaxm25",
+  "timestamp": "2026-03-12T23:51:45.319214",
+  "latency_s": 48.72,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于flexible tokenizer引入冗余填充和层级语义对齐，解决生成质量不随token数增加的瓶颈\",\"cn_abstract\":\"灵活图像tokenizer使用嵌套dropout实现可变长度序列，但信息过度集中于早期token，限制了下游自回归生成质量的提升。本文提出ReTok，通过redundant token padding增加尾token激活频率，缓解信息过度集中；同时引入hierarchical semantic regularization，将早期token的解码特征与DINOv2预训练视觉模型对齐，并随序列长度递减正则化强度，实现从粗粒度语义到细粒度细节的渐进重建。在ImageNet 256×256上验证，ReTok实现了优于现有灵活tokenizer的生成性能。\",\"contribution_type\":\"significant\",\"editorial_note\":\"[前驱]本文建立在GigaTok的1D tokenizer架构之上，采用了FlexTok/One-D-Piece的nested dropout训练策略，并继承了GigaTok中用DINOv2做representation alignment的思路。核心模块分别来自：tokenizer架构(GigaTok)、灵活长度训练(nested dropout from FlexTok)、语义正则化(DINOv2)。[贡献]作者真正做的事情是：提出redundant token padding（通过追加padding tokens让原始序列的尾token在nested dropout中被更多激活）和hierarchical semantic regularization（对不同位置的token施加递减的语义对齐约束），从而解决灵活tokenizer在AR生成中「token越多质量却不提升」的已知瓶颈。[判断]这个贡献有实质价值：作者清晰识别并解决了领域内公认的问题（FlexTok、One-D-Piece等都有这个瓶颈），提出的解法具体有效，不是简单的工程堆砌，在灵活tokenizer这个子方向上有推进作用。\",\"why_read\":\"如果你做自回归图像生成或image tokenizer研究，值得读这篇论文，因为它明确解决了灵活tokenizer的生成质量瓶颈问题，并提供了可复用的redundant padding和层级正则化技术。\",\"method_variants\":[{\"base_method\":\"gigatok\",\"variant_tag\":\"gigatok:redundant-token-padding\",\"description\":\"原gigatok采用固定长度token序列；本文在训练时追加padding tokens到序列尾部，使nested dropout能激活原始序列的尾token，缓解信息过度集中于早期token的问题\"},{\"base_method\":\"gigatok\",\"variant_tag\":\"gigatok:hierarchical-semantic-reg\",\"description\":\"原gigatok对所有token使用恒定的语义正则化强度；本文改为对不同长度k的保留序列使用递减的正则化权重λ(k)，早期token强调语义对齐，尾token允许细节重建\"},{\"base_method\":\"flextok\",\"variant_tag\":\"flextok:decoder-finetune\",\"description\":\"原flextok直接用训练好的decoder；本文在训练后对decoder进行微调，固定encoder和quantizer，降低语义约束以提升短token序列的重建质量\"}],\"core_cite\":[{\"title\":\"GigaTok: Scaling visual tokenizers to 3 billion parameters for autoregressive image generation\",\"role\":\"extends\",\"note\":\"直接继承GigaTok的1D tokenizer架构作为基础模型\"},{\"title\":\"FlexTok: Resampling Images into 1D Token Sequences of Flexible Length\",\"role\":\"uses\",\"note\":\"采用FlexTok的nested dropout训练策略解决可变长度问题\"},{\"title\":\"Dinov2: Learning robust visual features without supervision\",\"role\":\"uses\",\"note\":\"使用DINOv2作为语义正则化的目标模型提取特征\"},{\"title\":\"LlamaGen: Autoregressive model beats diffusion: Llama for scalable image generation\",\"role\":\"uses\",\"note\":\"使用LlamaGen作为下游AR生成模型进行评估\"},{\"title\":\"TiTok: An image is worth 32 tokens for reconstruction and generation\",\"role\":\"uses\",\"note\":\"参考其1D tokenizer的query token设计\"},{\"title\":\"DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction\",\"role\":\"contrasts\",\"note\":\"实验对比的灵活tokenizer baseline\"},{\"title\":\"One-d-piece: Image tokenizer meets quality-controllable compression\",\"role\":\"contrasts\",\"note\":\"实验对比的灵活tokenizer baseline\"},{\"title\":\"Representation alignment for generation: Training diffusion transformers is easier than you think\",\"role\":\"supports\",\"note\":\"引用支持representation alignment在生成模型中的有效性\"},{\"title\":\"Vector-quantized image modeling with improved vqgan\",\"role\":\"supports\",\"note\":\"引用支持VQGAN系列在tokenizer中的基础作用\"},{\"title\":\"Neural discrete representation learning\",\"role\":\"supports\",\"note\":\"引用支持VQVAE作为离散tokenizer的奠基工作\"}]}",
+  "cn_oneliner": "基于flexible tokenizer引入冗余填充和层级语义对齐，解决生成质量不随token数增加的瓶颈",
+  "cn_abstract": "灵活图像tokenizer使用嵌套dropout实现可变长度序列，但信息过度集中于早期token，限制了下游自回归生成质量的提升。本文提出ReTok，通过redundant token padding增加尾token激活频率，缓解信息过度集中；同时引入hierarchical semantic regularization，将早期token的解码特征与DINOv2预训练视觉模型对齐，并随序列长度递减正则化强度，实现从粗粒度语义到细粒度细节的渐进重建。在ImageNet 256×256上验证，ReTok实现了优于现有灵活tokenizer的生成性能。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱]本文建立在GigaTok的1D tokenizer架构之上，采用了FlexTok/One-D-Piece的nested dropout训练策略，并继承了GigaTok中用DINOv2做representation alignment的思路。核心模块分别来自：tokenizer架构(GigaTok)、灵活长度训练(nested dropout from FlexTok)、语义正则化(DINOv2)。[贡献]作者真正做的事情是：提出redundant token padding（通过追加padding tokens让原始序列的尾token在nested dropout中被更多激活）和hierarchical semantic regularization（对不同位置的token施加递减的语义对齐约束），从而解决灵活tokenizer在AR生成中「token越多质量却不提升」的已知瓶颈。[判断]这个贡献有实质价值：作者清晰识别并解决了领域内公认的问题（FlexTok、One-D-Piece等都有这个瓶颈），提出的解法具体有效，不是简单的工程堆砌，在灵活tokenizer这个子方向上有推进作用。",
+  "why_read": "如果你做自回归图像生成或image tokenizer研究，值得读这篇论文，因为它明确解决了灵活tokenizer的生成质量瓶颈问题，并提供了可复用的redundant padding和层级正则化技术。",
+  "method_variants": [
+    {
+      "base_method": "gigatok",
+      "variant_tag": "gigatok:redundant-token-padding",
+      "description": "原gigatok采用固定长度token序列；本文在训练时追加padding tokens到序列尾部，使nested dropout能激活原始序列的尾token，缓解信息过度集中于早期token的问题"
+    },
+    {
+      "base_method": "gigatok",
+      "variant_tag": "gigatok:hierarchical-semantic-reg",
+      "description": "原gigatok对所有token使用恒定的语义正则化强度；本文改为对不同长度k的保留序列使用递减的正则化权重λ(k)，早期token强调语义对齐，尾token允许细节重建"
+    },
+    {
+      "base_method": "flextok",
+      "variant_tag": "flextok:decoder-finetune",
+      "description": "原flextok直接用训练好的decoder；本文在训练后对decoder进行微调，固定encoder和quantizer，降低语义约束以提升短token序列的重建质量"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "GigaTok: Scaling visual tokenizers to 3 billion parameters for autoregressive image generation",
+      "role": "extends",
+      "note": "直接继承GigaTok的1D tokenizer架构作为基础模型"
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "role": "uses",
+      "note": "采用FlexTok的nested dropout训练策略解决可变长度问题"
+    },
+    {
+      "title": "Dinov2: Learning robust visual features without supervision",
+      "role": "uses",
+      "note": "使用DINOv2作为语义正则化的目标模型提取特征"
+    },
+    {
+      "title": "LlamaGen: Autoregressive model beats diffusion: Llama for scalable image generation",
+      "role": "uses",
+      "note": "使用LlamaGen作为下游AR生成模型进行评估"
+    },
+    {
+      "title": "TiTok: An image is worth 32 tokens for reconstruction and generation",
+      "role": "uses",
+      "note": "参考其1D tokenizer的query token设计"
+    },
+    {
+      "title": "DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction",
+      "role": "contrasts",
+      "note": "实验对比的灵活tokenizer baseline"
+    },
+    {
+      "title": "One-d-piece: Image tokenizer meets quality-controllable compression",
+      "role": "contrasts",
+      "note": "实验对比的灵活tokenizer baseline"
+    },
+    {
+      "title": "Representation alignment for generation: Training diffusion transformers is easier than you think",
+      "role": "supports",
+      "note": "引用支持representation alignment在生成模型中的有效性"
+    },
+    {
+      "title": "Vector-quantized image modeling with improved vqgan",
+      "role": "supports",
+      "note": "引用支持VQGAN系列在tokenizer中的基础作用"
+    },
+    {
+      "title": "Neural discrete representation learning",
+      "role": "supports",
+      "note": "引用支持VQVAE作为离散tokenizer的奠基工作"
+    }
+  ]
+}

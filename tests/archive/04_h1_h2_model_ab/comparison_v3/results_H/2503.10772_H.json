@@ -1,0 +1,201 @@
+{
+  "cn_oneliner": "基于流匹配生成范式，引入将图像编码为紧凑1D token表示的方案，实现3.3倍潜在空间压缩（从32×32×4降至77×16）并保持与SOTA相当的性能",
+  "cn_abstract": "传统跨模态生成方法将文本作为条件信号引导去噪过程，而FlowTok探索一种更简单的范式——通过流匹配直接在文本和图像模态之间演变。核心挑战在于将两种模态投影到共享潜在空间：文本高度语义化且编码为1D token，而图像具有空间冗余性且通常表示为2D latent embedding。FlowTok通过将图像编码为紧凑的1D token表示来解决这一问题，在256分辨率下将潜在空间大小减少3.3倍，无需复杂的条件机制或噪声调度。该框架同时支持文本到图像和图像到文本生成，在仅使用公开数据集的情况下达到SOTA性能，训练成本仅需26.1个8-A100 GPU天，推理速度比Show-o和CrossFlow快10倍以上。",
+  "contribution_type": "significant",
+  "editorial_note": "前驱方法（如CrossFlow）虽然简化了流水线，但仍依赖2D潜在表示和文本VAE带来的额外计算开销。FlowTok通过将图像编码为紧凑的1D token，直接在文本和图像之间建立流匹配管道，消除了对复杂条件机制和噪声调度的依赖。这一设计在保持竞争性能的同时显著降低了训练和推理成本，为高效跨模态生成提供了新思路。编辑认为该工作代表了一种有意义的范式演进，值得关注。",
+  "why_read": "面向对高效文本到图像生成感兴趣的研究者和工程师，可收获一种内存效率高、训练成本低（26.1 8-A100天 vs SD 2.1的1041.6天）、推理速度快的1D token流匹配方法",
+  "method_variants": [
+    {
+      "tag": "flow_matching:direct_text_source",
+      "note": "将文本直接作为流匹配的源分布而非噪声，消除了传统扩散模型中从噪声到图像的条件生成范式"
+    },
+    {
+      "tag": "vit:1d_token_ization",
+      "note": "将图像编码为紧凑1D token（77×16）而非传统2D latent（32×32×4），实现3.3倍压缩"
+    },
+    {
+      "tag": "clip:text_projector",
+      "note": "使用轻量级text projector将高维文本嵌入投影到低维潜在空间，并引入对齐损失保持语义信息"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Flow Matching for Generative Modeling",
+      "arxiv_id": "arxiv:2210.02747",
+      "role": "extends",
+      "note": "FlowTok基于流匹配框架，将文本作为源分布而非噪声进行直接流匹配"
+    },
+    {
+      "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "arxiv:2403.03206",
+      "role": "uses",
+      "note": "采用DiT块作为FlowTok的基本构建单元进行token交互建模"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "arxiv:2112.10752",
+      "role": "contrasts",
+      "note": "传统LDM使用文本作为条件引导，FlowTok则直接在不同模态间建立流"
+    },
+    {
+      "title": "Denoising Diffusion Probabilistic Models",
+      "arxiv_id": "arxiv:2006.11239",
+      "role": "contrasts",
+      "note": "DDPM依赖噪声到数据的去噪过程，FlowTok直接在文本和图像间演变"
+    },
+    {
+      "title": "SiT: Exploring Flow and Diffusion-based Generative Models with Scalable Interpolant Transformers",
+      "arxiv_id": "arxiv:2401.08740",
+      "role": "uses",
+      "note": "采用SiT中使用的标准流匹配训练目标预测速度场"
+    },
+    {
+      "title": "Learning Transferable Visual Models From Natural Language Supervision",
+      "arxiv_id": "arxiv:2103.00020",
+      "role": "uses",
+      "note": "使用CLIP文本编码器提取文本特征，并引入CLIP-style对比损失保持语义对齐"
+    },
+    {
+      "title": "Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens",
+      "arxiv_id": "arxiv:2501.07730",
+      "role": "extends",
+      "note": "基于TA-TiTok改进图像tokenizer，集成RoPE和SwiGLU FFN，并将token数设为77以匹配CLIP输出"
+    },
+    {
+      "title": "Show-o: One Single Transformer to Unify Multimodal Understanding and Generation",
+      "arxiv_id": "arxiv:2408.12528",
+      "role": "contrasts",
+      "note": "与Show-o相比，FlowTok推理速度提升10倍以上"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "arxiv:2406.06525",
+      "role": "mentions",
+      "note": "作为自回归vs扩散范式的对比参考"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "arxiv:2212.09748",
+      "role": "uses",
+      "note": "采用DiT架构作为FlowTok的骨干网络"
+    },
+    {
+      "title": "Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow",
+      "arxiv_id": "arxiv:2209.03003",
+      "role": "uses",
+      "note": "使用Rectified Flow进行流匹配训练"
+    },
+    {
+      "title": "Attention is All you Need",
+      "arxiv_id": "arxiv:1706.03762",
+      "role": "uses",
+      "note": "Transformer架构用于text projector和text decoder"
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "arxiv_id": "arxiv:2010.11929",
+      "role": "uses",
+      "note": "ViT架构用于图像tokenizer的encoder和decoder"
+    }
+  ],
+  "idea": [
+    {
+      "title": "统一1D潜在空间",
+      "why": "文本和图像本质上是不同维度的表示——文本是语义化的1D序列，图像是空间冗余的2D特征。传统方法需要复杂的2D tokenization和条件机制。FlowTok通过将图像编码为紧凑的1D token（77×16），与文本token（77×16）在同一空间中对齐，消除了维度不匹配问题，使直接流匹配成为可能。这一设计将latent大小从32×32×4压缩到77×16，实现3.3倍压缩。"
+    },
+    {
+      "title": "文本作为源分布",
+      "why": "传统扩散模型将噪声作为源分布，文本只是条件信号。FlowTok创新性地将文本本身作为流匹配的源分布，让文本token直接流变换到图像token。这不仅简化了管线（无需噪声调度、复杂条件机制），还自然地实现了双向生成（文本到图像和图像到文本）。实验表明，这种直接流匹配比CrossFlow的2D文本表示更高效，推理速度快20倍。"
+    },
+    {
+      "title": "语义保持的对齐损失",
+      "why": "将高维文本嵌入（768维）投影到低维潜在空间（16维）会丢失语义信息。FlowTok引入CLIP-style对比对齐损失，使用可学习MLP将原始CLIP文本嵌入投影到目标空间，计算对称对比损失保持语义一致性。消融实验表明，这种方式比简单的平均池化更有效，权重设为1.0时可在保持语义和高质量生成间取得平衡。"
+    }
+  ],
+  "_similarities": [
+    {
+      "title": "Flow Matching for Generative Modeling",
+      "best_score": 1.0,
+      "best_match": "Flow Matching for Generative Modeling",
+      "pass": true
+    },
+    {
+      "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Denoising Diffusion Probabilistic Models",
+      "best_score": 1.0,
+      "best_match": "Denoising Diffusion Probabilistic Models",
+      "pass": true
+    },
+    {
+      "title": "SiT: Exploring Flow and Diffusion-based Generative Models with Scalable Interpolant Transformers",
+      "best_score": 1.0,
+      "best_match": "SiT: Exploring Flow and Diffusion-based Generative Models with Scalable Interpolant Transformers",
+      "pass": true
+    },
+    {
+      "title": "Learning Transferable Visual Models From Natural Language Supervision",
+      "best_score": 1.0,
+      "best_match": "Learning Transferable Visual Models From Natural Language Supervision",
+      "pass": true
+    },
+    {
+      "title": "Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens",
+      "best_score": 1.0,
+      "best_match": "Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens",
+      "pass": true
+    },
+    {
+      "title": "Show-o: One Single Transformer to Unify Multimodal Understanding and Generation",
+      "best_score": 1.0,
+      "best_match": "Show-o: One Single Transformer to Unify Multimodal Understanding and Generation",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow",
+      "best_score": 1.0,
+      "best_match": "Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow",
+      "pass": true
+    },
+    {
+      "title": "Attention is All you Need",
+      "best_score": 1.0,
+      "best_match": "Attention is All you Need",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "pass": true
+    }
+  ],
+  "_matched": 13,
+  "_total": 13,
+  "_pass_rate": 1.0,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14",
+  "_ref_count": 84
+}

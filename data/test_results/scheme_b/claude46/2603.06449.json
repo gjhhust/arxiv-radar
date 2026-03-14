@@ -1,0 +1,84 @@
+{
+  "paper_id": "2603.06449",
+  "scheme": "B",
+  "model": "wq/claude46",
+  "latency_s": 44.408,
+  "success": true,
+  "output": {
+    "cn_oneliner": "CaTok：用MeanFlow解码器实现因果1D图像tokenization，支持单步快速生成与高保真多步采样",
+    "cn_abstract": "CaTok提出了一种1D因果图像tokenizer，通过将token与时间区间绑定并结合MeanFlow目标函数，学习具有因果性的1D视觉表示。该方法解决了现有视觉tokenizer缺乏因果性（无法对齐'next-token prediction'范式）以及扩散autoencoder中nested dropout导致不平衡的问题。CaTok同时支持单步快速生成和高保真多步采样，天然适配自回归语言模型的因果序列建模框架。",
+    "contribution_type": "significant",
+    "editorial_note": "将MeanFlow目标与因果1D tokenization结合是较具创意的设计，填补了AR视觉生成中因果tokenizer与高质量解码器之间的空白；若实验验证充分，对视觉AR模型社区有实际推动价值。MeanFlow引入视觉tokenization的跨域迁移值得关注，但需审视与TiTok等已有1D tokenizer的性能差距是否显著。",
+    "why_read": "如果你在研究自回归视觉生成或视觉tokenizer设计，CaTok提供了一个将因果序列建模与flow-based高质量解码统一的新框架，值得精读。",
+    "method_variants": [
+      {
+        "base_method": "titok",
+        "variant_tag": "titok:causal-rewrite",
+        "description": "在TiTok风格的1D token序列基础上引入因果约束，使token序列满足自回归next-token prediction的因果顺序要求。"
+      },
+      {
+        "base_method": "flow-matching",
+        "variant_tag": "flow-matching:meanflow-decoder",
+        "description": "将MeanFlow目标（基于时间区间的平均速度场）作为图像解码器的训练目标，替代标准扩散或VQVAE解码，实现单步与多步生成的统一。"
+      },
+      {
+        "base_method": "diffusion-autoencoder",
+        "variant_tag": "diffusion-autoencoder:causal-token-conditioning",
+        "description": "将扩散autoencoder的解码器条件从全token改为因果有序token，并用MeanFlow目标替代nested dropout机制以消除token间不平衡。"
+      }
+    ],
+    "key_refs": [
+      {
+        "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+        "stance": "extends",
+        "note": "CaTok直接在TiTok的1D token压缩思路上扩展，增加因果约束和MeanFlow解码器。"
+      },
+      {
+        "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+        "stance": "contrasts",
+        "note": "本文将MAGVIT-v2风格tokenizer作为对比基线，论证因果tokenizer在AR生成中的优势。"
+      },
+      {
+        "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+        "stance": "supports",
+        "note": "LlamaGen验证了将LLM next-token prediction范式用于视觉生成的可行性，为CaTok的动机提供支撑。"
+      },
+      {
+        "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+        "stance": "contrasts",
+        "note": "VAR的coarse-to-fine next-scale prediction是非标准因果顺序的代表，CaTok与其形成对比，强调真正的因果1D序列。"
+      },
+      {
+        "title": "Taming Transformers for High-Resolution Image Synthesis",
+        "stance": "uses",
+        "note": "本文沿用VQGAN的tokenization-then-autoregression框架作为基础实验设置。"
+      },
+      {
+        "title": "Autoregressive Image Generation using Residual Quantization",
+        "stance": "contrasts",
+        "note": "RQ-VAE的残差量化多码本方案是另一类序列化方式，与CaTok的因果1D方法形成对比。"
+      },
+      {
+        "title": "MaskGIT: Masked Generative Image Transformer",
+        "stance": "mentions",
+        "note": "MaskGIT作为非因果masked generation的代表方法被简要提及，用于说明现有方法缺乏因果性的问题。"
+      },
+      {
+        "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+        "stance": "contrasts",
+        "note": "Open-MAGVIT2作为强基线tokenizer，用于与CaTok在重建质量和生成效果上进行比较。"
+      },
+      {
+        "title": "Zero-Shot Text-to-Image Generation",
+        "stance": "mentions",
+        "note": "DALL-E作为早期视觉token化AR生成的代表工作被提及，提供历史背景。"
+      },
+      {
+        "title": "Sequential Modeling Enables Scalable Learning for Large Vision Models",
+        "stance": "supports",
+        "note": "LVM展示了序列化视觉建模的可扩展性，为CaTok的因果序列设计提供方向性支撑。"
+      }
+    ]
+  },
+  "parse_error": null
+}

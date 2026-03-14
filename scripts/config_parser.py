@@ -35,6 +35,15 @@ DEFAULTS: dict[str, Any] = {
     "noise_filter_strict": True,
 }
 
+DEFAULT_LLM_ANALYSE: dict[str, Any] = {
+    "enabled": True,
+    "default_model": "wq/minimaxm25",
+    "fallback_model": "wq/glm5",
+    "max_retries": 1,
+    "timeout_seconds": 300,
+    "prompt_template": "prompts/prompt_H3_template.txt",
+}
+
 DEFAULT_VIP_AUTHORS = [
     "Kaiming He", "Saining Xie", "Ross Girshick", "Piotr Dollar",
     "Jian Sun", "Yann LeCun", "Geoffrey Hinton", "Ilya Sutskever",
@@ -108,6 +117,9 @@ def parse_config(config_path: str | Path) -> dict[str, Any]:
     # Parse natural language research background
     config["research_background"] = _parse_section(text, "研究背景")
 
+    # Parse llm analyse block
+    config["llm_analyse"] = _parse_llm_analyse(text)
+
     # Expand ~ in paths
     if "report_path" in config:
         config["report_path"] = str(Path(config["report_path"]).expanduser())
@@ -122,6 +134,7 @@ def _default_config() -> dict[str, Any]:
     cfg["orgs"] = DEFAULT_ORGS.copy()
     cfg["domains"] = []
     cfg["research_background"] = ""
+    cfg["llm_analyse"] = DEFAULT_LLM_ANALYSE.copy()
     return cfg
 
 
@@ -278,6 +291,39 @@ def _parse_section(text: str, section_name: str) -> str:
     return m.group(1).strip() if m else ""
 
 
+def _parse_llm_analyse(text: str) -> dict[str, Any]:
+    """Parse yaml-like llm_analyse block from markdown config."""
+    cfg = DEFAULT_LLM_ANALYSE.copy()
+    match = re.search(
+        r"llm_analyse:\s*\n((?:[ \t]+[A-Za-z_][A-Za-z0-9_]*\s*:\s*.*\n?)*)",
+        text,
+        re.MULTILINE,
+    )
+    if not match:
+        return cfg
+
+    for raw_line in match.group(1).splitlines():
+        line = raw_line.strip()
+        if not line or ":" not in line:
+            continue
+        key, raw_value = line.split(":", 1)
+        key = key.strip()
+        raw_value = raw_value.strip().strip("`").strip("'").strip('"')
+        if key not in cfg:
+            continue
+        default_val = cfg[key]
+        try:
+            if isinstance(default_val, bool):
+                cfg[key] = raw_value.lower() in ("true", "1", "yes")
+            elif isinstance(default_val, int):
+                cfg[key] = int(raw_value)
+            else:
+                cfg[key] = raw_value
+        except (TypeError, ValueError):
+            logger.warning("Invalid llm_analyse config for %s: %s", key, raw_value)
+    return cfg
+
+
 # ─────────────────────────── CLI test ───────────────────────────
 
 if __name__ == "__main__":
@@ -302,3 +348,4 @@ if __name__ == "__main__":
         seed_len = len(d.get("seed_text", ""))
         print(f"  - {d['name']} | keywords: {d['keywords'][:3]} | seed_text: {seed_len} chars")
     print(f"\nResearch background: {config['research_background'][:200]}...")
+    print(f"\nLLM analyse: {json.dumps(config['llm_analyse'], ensure_ascii=False)}")

@@ -1,0 +1,193 @@
+{
+  "cn_oneliner": "基于VQGAN等传统图像tokenizer，引入冻结视觉基础模型作为编码器+区域自适应量化+语义重建目标，实现gFID 1.36，收敛加速3倍，CFG-free高保真合成",
+  "cn_abstract": "本工作提出了一种基于冻结视觉基础模型构建图像tokenizer的新方法。VFMTok使用冻结的预训练VFM（如DINOv2、CLIP、SigLIP2）作为编码器，引入区域自适应量化框架减少2D网格特征的冗余，并采用语义重建目标使tokenizer输出与基础模型表示对齐以保持语义保真度。在ImageNet 256×256上实现gFID 1.36，收敛速度提升3倍，并实现无需classifier-free guidance的高保真类别条件合成。",
+  "contribution_type": "significant",
+  "editorial_note": "这篇论文探索了视觉基础模型（VFM）在图像tokenization中的潜力，这是一个此前未被充分研究的领域。作者创新性地将冻结的预训练VFM作为tokenizer编码器，并提出区域自适应量化策略来处理2D网格特征中的冗余问题。实验结果显示该方法在图像重建质量和生成效果上都取得了显著提升，特别是gFID 1.36达到了新的state-of-the-art，且无需CFG即可实现高质量生成，这为自回归图像生成提供了新的思路。",
+  "why_read": "自回归图像生成和tokenizer研究方向的从业者，可以学习如何利用预训练视觉模型的语义特征来提升生成质量和效率",
+  "method_variants": [
+    {
+      "tag": "vqgan:dinov2",
+      "note": "使用DINOv2作为冻结编码器，语义表示能力强但重建质量略低于SigLIP2"
+    },
+    {
+      "tag": "vqgan:clip",
+      "note": "使用CLIP作为冻结编码器，重建质量不如vanilla VQGAN"
+    },
+    {
+      "tag": "vqgan:siglip2",
+      "note": "使用SigLIP2作为冻结编码器，重建质量与vanilla VQGAN相当但语义表示更好"
+    },
+    {
+      "tag": "vfmtok:region-adaptive",
+      "note": "区域自适应tokenization，使用可变形注意力进行不规则采样，256 tokens vs 576 tokens"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "VQGAN: Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2102.12092",
+      "role": "extends",
+      "note": "VFMTok使用VQGAN解码器进行图像重建，是基础tokenizer架构"
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "arxiv_id": "2304.07193",
+      "role": "uses",
+      "note": "作为冻结编码器提供语义特征，是VFMTok的核心组件"
+    },
+    {
+      "title": "CLIP: Learning Transferable Visual Models From Natural Language Supervision",
+      "arxiv_id": "2103.00020",
+      "role": "uses",
+      "note": "作为候选冻结编码器之一"
+    },
+    {
+      "title": "SigLIP2: Simultaneous Learning of Visual and Language Representations",
+      "arxiv_id": "2406.17744",
+      "role": "uses",
+      "note": "作为候选冻结编码器，表现优于CLIP"
+    },
+    {
+      "title": "LlamaGen: Autoregressive Tokenizers are Competitive with Diffusion ones",
+      "arxiv_id": "2402.01031",
+      "role": "contrasts",
+      "note": "VFMTok的AR模型基于Llama架构，性能超越LlamaGen-3B"
+    },
+    {
+      "title": "VAR: Autoregressive Image Generation with Vector Quantized Cache",
+      "arxiv_id": "2404.02905",
+      "role": "contrasts",
+      "note": "使用next-scale预测，VFMTok使用标准next-token预测"
+    },
+    {
+      "title": "MAR: Masked Autoregressive Generative Models",
+      "arxiv_id": "2402.17105",
+      "role": "contrasts",
+      "note": "使用BERT-style框架，VFMTok使用标准AR框架"
+    },
+    {
+      "title": "TiTok: Tokenizer is All You Need for Image Generation",
+      "arxiv_id": "2403.19631",
+      "role": "contrasts",
+      "note": "1D tokenizer，需要200 epoch两阶段训练，VFMTok仅需50 epoch"
+    },
+    {
+      "title": "Show-o: Single Transformer for Text-to-Image and Image-to-Image",
+      "arxiv_id": "2408.12528",
+      "role": "contrasts",
+      "note": "使用混合注意力机制，VFMTok保持标准AR结构"
+    },
+    {
+      "title": "REPA: Representation Alignment for Scalable Pretraining",
+      "arxiv_id": "2405.20916",
+      "role": "supports",
+      "note": "表明VFM的语义表示有助于生成模型训练"
+    },
+    {
+      "title": "DiT: Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "mentions",
+      "note": "Transformer-based diffusion模型，VFMTok在gFID上超越它"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2201.14323",
+      "role": "mentions",
+      "note": "Masked图像生成方法"
+    }
+  ],
+  "idea": [
+    {
+      "title": "冻结VFM作为Tokenizer编码器",
+      "why": "预训练的视觉基础模型包含丰富的语义特征，直接利用这些特征作为tokenizer的编码器可以省去大量的编码器训练，同时获得更好的语义表示"
+    },
+    {
+      "title": "区域自适应量化减少冗余",
+      "why": "自然图像在2D网格上存在特征冗余，通过可变形注意力进行不规则区域采样，可以显著减少token数量（256 vs 576）同时提升重建质量"
+    },
+    {
+      "title": "语义重建目标保持语义保真度",
+      "why": "除了像素级重建外，额外添加VFM特征重建目标，使tokenizer的输出与基础模型表示对齐，保持生成图像的语义一致性"
+    }
+  ],
+  "_similarities": [
+    {
+      "title": "VQGAN: Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 0.94,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "best_score": 1.0,
+      "best_match": "DINOv2: Learning Robust Visual Features without Supervision",
+      "pass": true
+    },
+    {
+      "title": "CLIP: Learning Transferable Visual Models From Natural Language Supervision",
+      "best_score": 0.958,
+      "best_match": "Learning Transferable Visual Models From Natural Language Supervision",
+      "pass": true
+    },
+    {
+      "title": "SigLIP2: Simultaneous Learning of Visual and Language Representations",
+      "best_score": 0.532,
+      "best_match": "Scaling Up Visual and Vision-Language Representation Learning With Noisy Text Supervision",
+      "pass": false
+    },
+    {
+      "title": "LlamaGen: Autoregressive Tokenizers are Competitive with Diffusion ones",
+      "best_score": 0.537,
+      "best_match": "ImageFolder: Autoregressive Image Generation with Folded Tokens",
+      "pass": false
+    },
+    {
+      "title": "VAR: Autoregressive Image Generation with Vector Quantized Cache",
+      "best_score": 0.846,
+      "best_match": "Autoregressive Image Generation without Vector Quantization",
+      "pass": true
+    },
+    {
+      "title": "MAR: Masked Autoregressive Generative Models",
+      "best_score": 0.644,
+      "best_match": "Randomized Autoregressive Visual Generation",
+      "pass": false
+    },
+    {
+      "title": "TiTok: Tokenizer is All You Need for Image Generation",
+      "best_score": 0.519,
+      "best_match": "TokenFlow: Unified Image Tokenizer for Multimodal Understanding and Generation",
+      "pass": false
+    },
+    {
+      "title": "Show-o: Single Transformer for Text-to-Image and Image-to-Image",
+      "best_score": 0.606,
+      "best_match": "Show-o: One Single Transformer to Unify Multimodal Understanding and Generation",
+      "pass": false
+    },
+    {
+      "title": "REPA: Representation Alignment for Scalable Pretraining",
+      "best_score": 0.532,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": false
+    },
+    {
+      "title": "DiT: Scalable Diffusion Models with Transformers",
+      "best_score": 0.945,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    }
+  ],
+  "_matched": 6,
+  "_total": 12,
+  "_pass_rate": 0.5,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14",
+  "_ref_count": 58
+}

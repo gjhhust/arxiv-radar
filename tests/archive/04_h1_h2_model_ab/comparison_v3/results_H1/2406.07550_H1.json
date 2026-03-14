@@ -1,0 +1,211 @@
+{
+  "arxiv_id": "2406.07550",
+  "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+  "cn_oneliner": "基于VQ-VAE tokenizer，引入32个token的紧凑表示和改进的codebook训练策略，实现了高质量图像重建和生成。",
+  "cn_abstract": "本文提出了一个基于VQ-VAE的图像tokenizer，仅使用32个token即可表示整张图像。通过改进codebook训练和引入更有效的量化策略，该方法在保持较小token数量的同时，实现了与使用更多token的方法相当或更好的重建质量。实验表明，32个token足以支持高质量的图像重建和多种生成任务。",
+  "contribution_type": "significant",
+  "editorial_note": "前驱方法通常需要大量的token（如256或更多）来表示图像，导致计算成本高、生成速度慢。本文通过深入分析token数量与重建质量的关系，证明32个精心设计的token已足够。编辑认为，这项工作为高效tokenizer设计提供了重要见解，对后续的图像生成模型有重要启发。",
+  "why_read": "对于从事图像生成、tokenizer设计或高效视觉表示研究的学者，通过这篇论文可以学习如何用最少的token数量实现高质量的图像表示，从而显著降低生成模型的计算开销。",
+  "method_variants": [
+    {
+      "base_method": "vq-vae",
+      "variant_tag": "vq-vae:32-tokens",
+      "description": "传统VQ-VAE使用大量token表示图像；本文将token数降至32个，通过改进codebook和训练策略仍保持高质量。"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "extends",
+      "note": "VQ-VAE的原始工作，本文继承其离散tokenizer框架并改进"
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "arxiv_id": "2110.04627",
+      "role": "uses",
+      "note": "使用改进的VQGAN作为tokenizer，本文借鉴其codebook训练技巧"
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "arxiv_id": "2010.11929",
+      "role": "uses",
+      "note": "ViT将图像划分为patch的思路启发本文的token化策略"
+    },
+    {
+      "title": "Autoregressive Image Generation using Residual Quantization",
+      "arxiv_id": "2203.01941",
+      "role": "uses",
+      "note": "RQ-VAE的残差量化技术可用于本文的多级token表示"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "uses",
+      "note": "MaskGIT的masked生成范式可基于本文的tokenizer实现"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "uses",
+      "note": "DiT的Transformer架构可与本文的tokenizer结合用于图像生成"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "uses",
+      "note": "Latent Diffusion Model的思路可应用于基于本文tokenizer的扩散模型"
+    },
+    {
+      "title": "MAGVIT: Masked Generative Video Transformer",
+      "arxiv_id": "2212.05199",
+      "role": "uses",
+      "note": "MAGVIT的视频tokenizer设计可借鉴本文的紧凑表示思想"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "supports",
+      "note": "证明Transformer在高质量图像生成中的有效性，支持本文方法"
+    },
+    {
+      "title": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "arxiv_id": "2301.00704",
+      "role": "uses",
+      "note": "Muse的masked生成transformer可与本文tokenizer结合"
+    },
+    {
+      "title": "Scaling Autoregressive Models for Content-Rich Text-to-Image Generation",
+      "arxiv_id": "2206.10789",
+      "role": "supports",
+      "note": "表明大规模AR模型在图像生成中的潜力，为本文tokenizer的应用提供背景"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "contrasts",
+      "note": "指出tokenizer质量对生成效果的关键影响，与本文目标一致但方法不同"
+    }
+  ],
+  "idea": [
+    {
+      "title": "探索更细粒度的codebook",
+      "why": "本文使用32个全局token，可能缺乏细粒度局部信息。可借鉴FSQ的标量量化思想，设计多级codebook在少量token下保留更多细节。"
+    },
+    {
+      "title": "结合masked生成范式",
+      "why": "当前方法主要面向重建和AR生成。MaskGIT和Muse等masked生成方法在效率上有优势，可探索将32-token表示与masked生成结合。"
+    },
+    {
+      "title": "扩展到视频tokenizer",
+      "why": "MAGVIT已证明视频tokenizer的可行性。借鉴本文的紧凑表示思想，可探索更高效的视频tokenizer设计，用更少token表示时空信息。"
+    }
+  ],
+  "_cite_sims": [
+    {
+      "title": "Neural Discrete Representation Learning",
+      "best_score": 1.0,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "best_score": 1.0,
+      "best_match": "Vector-quantized Image Modeling with Improved VQGAN",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Image Generation using Residual Quantization",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Image Generation using Residual Quantization",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "MAGVIT: Masked Generative Video Transformer",
+      "best_score": 1.0,
+      "best_match": "MAGVIT: Masked Generative Video Transformer",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "best_score": 1.0,
+      "best_match": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "pass": true
+    },
+    {
+      "title": "Scaling Autoregressive Models for Content-Rich Text-to-Image Generation",
+      "best_score": 1.0,
+      "best_match": "Scaling Autoregressive Models for Content-Rich Text-to-Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    }
+  ],
+  "_cite_matched": 12,
+  "_cite_total": 12,
+  "_cite_rate": 1.0,
+  "_ref_count": 67,
+  "_mv_count": 1,
+  "_mv_issues": [],
+  "_mv_ok": true,
+  "_idea_count": 3,
+  "_idea_analysis": [
+    {
+      "title": "探索更细粒度的codebook",
+      "why_len": 69,
+      "has_gap": true,
+      "restate": false
+    },
+    {
+      "title": "结合masked生成范式",
+      "why_len": 73,
+      "has_gap": false,
+      "restate": false
+    },
+    {
+      "title": "扩展到视频tokenizer",
+      "why_len": 73,
+      "has_gap": false,
+      "restate": false
+    }
+  ],
+  "_idea_restate": 0,
+  "_idea_gap": 1,
+  "_idea_quality": 0.333,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14"
+}

@@ -1,0 +1,82 @@
+{
+  "arxiv_id": "2503.10772",
+  "model": "minimaxm25",
+  "timestamp": "2026-03-12T23:46:53.739652",
+  "latency_s": 29.36,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于TA-TiTok引入1D图像tokenization，把text和image都编码为77×16的1D tokens，通过flow matching实现端到端的text-to-image和image-to-text生成\",\"cn_abstract\":\"FlowTok是一个极简框架，将text和image投影到共享的紧凑1D latent space (77×16)，通过flow matching实现模态间的直接转换。图像端基于TA-TiTok增强(RoPE+SwiGLU)实现1D tokenization；文本端使用lightweight projector+KL正则化+contrastive alignment loss保留语义。相比2D flow matching方法，latent size减少3.3x，训练资源大幅降低，推理速度提升10x以上。\",\"contribution_type\":\"incremental\",\"editorial_note\":\"[前驱] 论文建立在flow matching (lipmanflow)和TA-TiTok (kim2025democratizing)两个已有方法上，前者提供cross-modal flow的基础框架，后者提供1D图像tokenization的具体实现。 [贡献] 核心改进在于：(1)将text embedding也保持为1D而非像CrossFlow那样转成2D；(2)去掉复杂的cross-attention conditioning mechanism，用直接的token-to-token flow；(3)实现统一的77×16 1D latent space。 [判断] 这篇论文在效率提升上效果显著(3.3x压缩、10x+推理加速、8K batch单卡训练)，但核心思路是对CrossFlow的工程简化，改动属于「有效但可预期」的增量改进。\",\"why_read\":\"如果你是做multimodal generation或efficient image generation的研究者，值得一读。可以获得：如何在1D token space中统一text和image的工程思路，以及flow matching做cross-modal generation的实践细节。\",\"method_variants\":[{\"base_method\":\"titok\",\"variant_tag\":\"titok:1d-rope-swigl\",\"description\":\"原TA-TiTok做法是用learnable 1D positional embedding；本文改为集成RoPE和SwiGLU FFN，提升positional handling和reconstruction质量，同时将token数设为77以匹配CLIP text encoder输出长度。\"},{\"base_method\":\"flow matching\",\"variant_tag\":\"flowmatching:text-as-source\",\"description\":\"原flow matching通常用noise作为source distribution；本文改为直接用text embedding作为source distribution，target是image latent，实现text-to-image的直接flow。\"},{\"base_method\":\"dit\",\"variant_tag\":\"dit:unified-1d-flow\",\"description\":\"原DiT用于image generation需要conditioning mechanism(如cross-attention)；本文去掉complex conditioning，在统一1D latent space中直接做text到image的flow matching。\"}],\"core_cite\":[{\"title\":\"Flow Matching for Generative Modeling\",\"role\":\"extends\",\"note\":\"flow matching理论基础，本文直接使用作为生成框架的核心机制\"},{\"title\":\"Masked Generative Video Transformer\",\"role\":\"uses\",\"note\":\"使用其预训练的image tokenizer作为基础框架\"},{\"title\":\"Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens\",\"role\":\"extends\",\"note\":\"在TA-TiTok基础上改进，增强RoPE和SwiGLU作为image tokenizer\"},{\"title\":\"Learning transferable visual models from natural language supervision\",\"role\":\"uses\",\"note\":\"使用CLIP text encoder提取text embedding作为输入\"},{\"title\":\"Flowing from Words to Pixels: A Framework for Cross-Modality Evolution\",\"role\":\"contrasts\",\"note\":\"CrossFlow是本文最主要的baseline，同样用flow matching做text-as-source，但本文指出其将text转2D的不足\"},{\"title\":\"Scalable diffusion models with transformers\",\"role\":\"uses\",\"note\":\"使用DiT block作为flow matching的network architecture\"},{\"title\":\"High-resolution image synthesis with latent diffusion models\",\"role\":\"contrasts\",\"note\":\"SD是经典latent diffusion baseline，本文对比其推理速度和训练效率\"},{\"title\":\"PixArt-α\",\"role\":\"contrasts\",\"note\":\"高效text-to-image model，训练资源对比中提到\"},{\"title\":\"FLUX\",\"role\":\"mentions\",\"note\":\"提到作为state-of-the-art text-to-image generation的代表\"},{\"title\":\"Scaling rectified flow transformers for high-resolution image synthesis\",\"role\":\"supports\",\"note\":\"引用说明flow matching在text-to-image上的state-of-the-art效果\"}]}",
+  "cn_oneliner": "基于TA-TiTok引入1D图像tokenization，把text和image都编码为77×16的1D tokens，通过flow matching实现端到端的text-to-image和image-to-text生成",
+  "cn_abstract": "FlowTok是一个极简框架，将text和image投影到共享的紧凑1D latent space (77×16)，通过flow matching实现模态间的直接转换。图像端基于TA-TiTok增强(RoPE+SwiGLU)实现1D tokenization；文本端使用lightweight projector+KL正则化+contrastive alignment loss保留语义。相比2D flow matching方法，latent size减少3.3x，训练资源大幅降低，推理速度提升10x以上。",
+  "contribution_type": "incremental",
+  "editorial_note": "[前驱] 论文建立在flow matching (lipmanflow)和TA-TiTok (kim2025democratizing)两个已有方法上，前者提供cross-modal flow的基础框架，后者提供1D图像tokenization的具体实现。 [贡献] 核心改进在于：(1)将text embedding也保持为1D而非像CrossFlow那样转成2D；(2)去掉复杂的cross-attention conditioning mechanism，用直接的token-to-token flow；(3)实现统一的77×16 1D latent space。 [判断] 这篇论文在效率提升上效果显著(3.3x压缩、10x+推理加速、8K batch单卡训练)，但核心思路是对CrossFlow的工程简化，改动属于「有效但可预期」的增量改进。",
+  "why_read": "如果你是做multimodal generation或efficient image generation的研究者，值得一读。可以获得：如何在1D token space中统一text和image的工程思路，以及flow matching做cross-modal generation的实践细节。",
+  "method_variants": [
+    {
+      "base_method": "titok",
+      "variant_tag": "titok:1d-rope-swigl",
+      "description": "原TA-TiTok做法是用learnable 1D positional embedding；本文改为集成RoPE和SwiGLU FFN，提升positional handling和reconstruction质量，同时将token数设为77以匹配CLIP text encoder输出长度。"
+    },
+    {
+      "base_method": "flow matching",
+      "variant_tag": "flowmatching:text-as-source",
+      "description": "原flow matching通常用noise作为source distribution；本文改为直接用text embedding作为source distribution，target是image latent，实现text-to-image的直接flow。"
+    },
+    {
+      "base_method": "dit",
+      "variant_tag": "dit:unified-1d-flow",
+      "description": "原DiT用于image generation需要conditioning mechanism(如cross-attention)；本文去掉complex conditioning，在统一1D latent space中直接做text到image的flow matching。"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Flow Matching for Generative Modeling",
+      "role": "extends",
+      "note": "flow matching理论基础，本文直接使用作为生成框架的核心机制"
+    },
+    {
+      "title": "Masked Generative Video Transformer",
+      "role": "uses",
+      "note": "使用其预训练的image tokenizer作为基础框架"
+    },
+    {
+      "title": "Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens",
+      "role": "extends",
+      "note": "在TA-TiTok基础上改进，增强RoPE和SwiGLU作为image tokenizer"
+    },
+    {
+      "title": "Learning transferable visual models from natural language supervision",
+      "role": "uses",
+      "note": "使用CLIP text encoder提取text embedding作为输入"
+    },
+    {
+      "title": "Flowing from Words to Pixels: A Framework for Cross-Modality Evolution",
+      "role": "contrasts",
+      "note": "CrossFlow是本文最主要的baseline，同样用flow matching做text-as-source，但本文指出其将text转2D的不足"
+    },
+    {
+      "title": "Scalable diffusion models with transformers",
+      "role": "uses",
+      "note": "使用DiT block作为flow matching的network architecture"
+    },
+    {
+      "title": "High-resolution image synthesis with latent diffusion models",
+      "role": "contrasts",
+      "note": "SD是经典latent diffusion baseline，本文对比其推理速度和训练效率"
+    },
+    {
+      "title": "PixArt-α",
+      "role": "contrasts",
+      "note": "高效text-to-image model，训练资源对比中提到"
+    },
+    {
+      "title": "FLUX",
+      "role": "mentions",
+      "note": "提到作为state-of-the-art text-to-image generation的代表"
+    },
+    {
+      "title": "Scaling rectified flow transformers for high-resolution image synthesis",
+      "role": "supports",
+      "note": "引用说明flow matching在text-to-image上的state-of-the-art效果"
+    }
+  ]
+}

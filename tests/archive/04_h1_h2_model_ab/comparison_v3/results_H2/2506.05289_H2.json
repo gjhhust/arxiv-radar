@@ -1,0 +1,234 @@
+{
+  "arxiv_id": "2506.05289",
+  "title": "AliTok: Towards Sequence Modeling Alignment between Tokenizer and Autoregressive Model",
+  "cn_oneliner": "VQ-VAE tokenizer+双向编码器约束因果解码器+前向依赖token化→自回归图像生成gFID超越扩散",
+  "cn_abstract": "自回归图像生成旨在根据之前的token预测下一个token，但传统图像token化中固有的双向依赖性与自回归模型的单向性质存在根本错位。AliTok引入了一种对齐tokenizer，改变token序列的依赖结构，采用双向编码器约束的因果解码器设计，迫使编码器产生具有语义丰富性和前向依赖性的token序列。此外，通过引入前缀token并采用两阶段tokenizer训练过程增强重建性能，AliTok同时实现高保真度和可预测性。177M参数模型在ImageNet-256上实现gFID 1.44和IS 319.5，662M模型达gFID 1.28超越SOTA扩散方法（10x采样速度），318M模型在ImageNet-512上达gFID 1.39。",
+  "contribution_type": "incremental",
+  "editorial_note": "[前驱]建立在VAR（Visual Autoregressive Modeling）、VQ-VAE系列（VARQ、RQ-VAE）、DiT（Diffusion Transformer）等工作基础上，这些工作证明了tokenizer质量对图像生成的关键作用，以及自回归模型可与扩散模型竞争。[贡献]真正做了什么：提出AliTok对齐tokenizer，通过双向编码器+因果解码器结构强制产生前向依赖的token序列，解决传统tokenization双向依赖与AR单向建模的根本错位问题。同时引入前缀token和两阶段训练提升重建质量。[判断]实质价值：针对自回归图像生成的核心问题（token依赖结构错位）提供了直接解决方案，实验结果显示超越SOTA扩散模型且有10x加速。但核心改进（依赖结构改变）是增量贡献，非范式级创新。",
+  "why_read": "自回归图像生成研究者应读，可获得解决tokenizer与AR模型错位问题的思路及前向依赖tokenization的实现insight",
+  "method_variants": [
+    {
+      "variant_tag": "vq-vae:前向依赖对齐",
+      "description": "传统VQ-VAE的token序列具有双向依赖（每个token可访问所有位置），与AR模型单向建模不匹配→AliTok通过编码器-解码器约束强制token具有前向依赖性→使token可被自回归模型逐个预测，ImageNet-256达gFID 1.44"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "extends",
+      "note": "VAR提出多尺度自回归生成，AliTok继承其AR图像生成方向但改进tokenizer的依赖结构"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "extends",
+      "note": "证明了tokenizer质量对生成的关键作用，AliTok延续此思路改进tokenizer设计"
+    },
+    {
+      "title": "Autoregressive Image Generation using Residual Quantization",
+      "arxiv_id": "2203.01941",
+      "role": "extends",
+      "note": "RQ-VAE使用残差量化，AliTok的tokenizer设计参考了其离散表示方法"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "extends",
+      "note": "强调tokenizer是视觉生成的关键，AliTok直接针对此问题提出解决方案"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "uses",
+      "note": "VQGAN使用CNN+Transformer进行图像合成，AliTok使用类似技术栈"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "contrasts",
+      "note": "DiT是扩散模型代表，AliTok的662M模型在gFID和采样速度上超越之"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "supports",
+      "note": "LlamaGen证明AR模型可与扩散模型竞争，AliTok进一步在此基础上超越SOTA扩散"
+    },
+    {
+      "title": "Emu3: Next-Token Prediction is All You Need",
+      "arxiv_id": "2409.18869",
+      "role": "uses",
+      "note": "Emu3使用next-token预测框架，AliTok也采用类似的自回归框架"
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "arxiv_id": "2409.04410",
+      "role": "uses",
+      "note": "MAGVIT2是主流visual tokenizer，AliTok与其有相似技术路线"
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "arxiv_id": "2502.13967",
+      "role": "uses",
+      "note": "FlexTok研究token序列的灵活性，AliTok也关注token序列结构优化"
+    },
+    {
+      "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "arxiv_id": "2504.08736",
+      "role": "uses",
+      "note": "GigaTok探索大规模tokenizer，AliTok验证了tokenizer设计对AR生成的重要性"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "mentions",
+      "note": "VAE/VQ-VAE的经典工作，为离散tokenization奠定基础"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "mentions",
+      "note": "MaskGIT使用masked生成，展示了token-level生成的可能性"
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "arxiv_id": "2406.11838",
+      "role": "mentions",
+      "note": "无VQ的AR生成探索，AliTok仍使用离散tokenization但改进其结构"
+    }
+  ],
+  "idea": [
+    {
+      "title": "编码器-解码器约束产生前向依赖token",
+      "why": "传统tokenizer的token具有双向依赖，但AR模型只能单向建模。AliTok创新性地使用因果解码器约束编码器，强制产生可逐个预测的前向依赖token。这是新假设：之前工作主要关注量化方法（FSQ、RQ）或tokenizer规模，忽略了依赖结构的对齐。本文通过结构设计直接解决此问题。本文为何没做：可能之前工作未意识到这是AR生成的核心瓶颈，或认为重建质量足够即可。不平凡性：该方法在不损失重建质量的前提下解决了AR生成的结构错位问题。"
+    },
+    {
+      "title": "两阶段训练和前缀token提升重建质量",
+      "why": "引入前缀token可为tokenizer提供额外的位置信息，两阶段训练（先重建后AR适配）可平衡重建和生成性能。这是借鉴NLP领域的常见技术（prefix language modeling），迁移到视觉tokenizer领域。本文为何没做：单阶段训练可能无法同时保证重建和生成质量，需要额外技巧。不平凡性：将NLP中成熟技术应用到视觉领域并验证有效性。"
+    },
+    {
+      "title": "tokenizer依赖结构是AR生成的关键瓶颈",
+      "why": "本文揭示了tokenizer的依赖结构对AR生成的重大影响，之前工作更多关注tokenizer的重建质量或压缩率。本文为何没做：可能之前认为重建质量足够即可，AR建模是后续Transformer的事。不平凡性：该发现为后续AR tokenizer设计提供了新方向：不仅要关注重建质量，还要关注token的可预测性。"
+    }
+  ],
+  "_cite_sims": [
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "best_score": 1.0,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Image Generation using Residual Quantization",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Image Generation using Residual Quantization",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Emu3: Next-Token Prediction is All You Need",
+      "best_score": 1.0,
+      "best_match": "Emu3: Next-Token Prediction is All You Need",
+      "pass": true
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "best_score": 1.0,
+      "best_match": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "pass": true
+    },
+    {
+      "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "best_score": 1.0,
+      "best_match": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "best_score": 1.0,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Image Generation without Vector Quantization",
+      "pass": true
+    }
+  ],
+  "_cite_matched": 14,
+  "_cite_total": 14,
+  "_cite_rate": 1.0,
+  "_ref_count": 52,
+  "_mv_count": 1,
+  "_mv_issues": [],
+  "_mv_ok": true,
+  "_idea_count": 3,
+  "_idea_analysis": [
+    {
+      "title": "编码器-解码器约束产生前向依赖token",
+      "why_len": 221,
+      "has_gap": true,
+      "restate": false
+    },
+    {
+      "title": "两阶段训练和前缀token提升重建质量",
+      "why_len": 177,
+      "has_gap": false,
+      "restate": false
+    },
+    {
+      "title": "tokenizer依赖结构是AR生成的关键瓶颈",
+      "why_len": 157,
+      "has_gap": false,
+      "restate": false
+    }
+  ],
+  "_idea_restate": 0,
+  "_idea_gap": 1,
+  "_idea_quality": 0.333,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14"
+}

@@ -1,0 +1,173 @@
+{
+  "cn_oneliner": "基于VQ-VAE tokenizer与自回归模型分离训练的范式，引入序列建模对齐机制使tokenizer产生更适合自回归预测的token，实现视觉生成质量的提升",
+  "cn_abstract": "本文提出AliTok，旨在解决视觉tokenizer与自回归生成模型之间的训练目标不一致问题。现有方法中tokenizer优化重建质量而忽略生成效果，导致自回归模型难以准确预测token。本文提出在tokenizer训练中引入自回归模型的预测损失，实现两者的联合优化。在ImageNet 256×256条件生成任务上，AliTok达到2.18的FID分数，优于VAR等基线方法。",
+  "contribution_type": "significant",
+  "editorial_note": "本文核心贡献在于揭示了视觉生成中tokenizer与自回归模型的目标不一致问题，并提出序列建模对齐方法解决这一困境。通过在tokenizer训练阶段引入自回归模型的监督信号，使离散token具备更好的可预测性，从而提升整体生成质量。这一发现为视觉tokenizer设计提供了新范式。",
+  "why_read": "视觉生成研究者通过本文可理解tokenizer与模型对齐的重要性，掌握联合优化方法",
+  "method_variants": [
+    {
+      "tag": "VQ-VAE:RQ",
+      "note": "残差量化通过多层次码本捕获更精细的图像特征"
+    },
+    {
+      "tag": "AR:Next-Scale",
+      "note": "VAR的next-scale自回归框架是本文的生成基础"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "extends",
+      "note": "VQ-VAE奠定离散tokenizer理论基础"
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "extends",
+      "note": "VAR的next-scale自回归框架是本文的生成基础"
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "arxiv_id": "2406.11838",
+      "role": "uses",
+      "note": "采用连续token的无VQ自回归生成方法"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "supports",
+      "note": "证明自回归模型在视觉生成中的有效性"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "supports",
+      "note": "强调tokenizer质量对视觉生成的关键作用"
+    },
+    {
+      "title": "Emu3: Next-Token Prediction is All You Need",
+      "arxiv_id": "2409.18869",
+      "role": "uses",
+      "note": "统一的多模态next-token预测框架"
+    },
+    {
+      "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "arxiv_id": "2504.08736",
+      "role": "supports",
+      "note": "大规模visual tokenizer的缩放定律研究"
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "arxiv_id": "2309.15505",
+      "role": "uses",
+      "note": "FSQ简化向量量化方法"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "mentions",
+      "note": "masked生成图像transformer"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "contrasts",
+      "note": "DiT与自回归模型的对比"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "supports",
+      "note": "token数量与重建生成质量的关系"
+    }
+  ],
+  "idea": [
+    {
+      "title": "序列建模对齐",
+      "why": "通过在tokenizer训练中引入自回归预测损失，使离散token的分布与模型预测目标对齐，解决两者训练目标不一致的核心问题"
+    },
+    {
+      "title": "联合优化框架",
+      "why": "将tokenizer和自回归模型的优化目标统一，同时考虑重建质量和生成质量，避免tokenizer过度优化重建而忽略可生成性"
+    },
+    {
+      "title": "token分布适配",
+      "why": "调整tokenizer输出分布使其更符合自回归模型的建模习惯，降低模型预测难度从而提升生成质量"
+    }
+  ],
+  "_similarities": [
+    {
+      "title": "Neural Discrete Representation Learning",
+      "best_score": 1.0,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "best_score": 1.0,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Image Generation without Vector Quantization",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Emu3: Next-Token Prediction is All You Need",
+      "best_score": 1.0,
+      "best_match": "Emu3: Next-Token Prediction is All You Need",
+      "pass": true
+    },
+    {
+      "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "best_score": 1.0,
+      "best_match": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "best_score": 1.0,
+      "best_match": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    }
+  ],
+  "_matched": 11,
+  "_total": 11,
+  "_pass_rate": 1.0,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14",
+  "_ref_count": 52
+}

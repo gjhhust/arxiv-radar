@@ -1,0 +1,82 @@
+{
+  "arxiv_id": "2406.07550",
+  "model": "minimaxm25",
+  "timestamp": "2026-03-12T23:45:06.029386",
+  "latency_s": 46.33,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于ViT引入1D tokenization，用32个tokens表示256x256图像，实现8-64倍压缩且生成质量超越DiT\",\"cn_abstract\":\"TiTok是一种基于Transformer的1D图像分词器，将传统2D latent grid转换为1D序列表示。通过将256x256x3图像压缩至仅32个离散tokens，相比传统2D方法实现8-64倍压缩率。采用ViT encoder-decoder架构结合向量量化，并通过两阶段训练策略（proxy codes预热+decoder fine-tuning）提升性能。在ImageNet 256x256上达到1.97 gFID，比MaskGIT提升4.21；在512x512上超越DiT-XL/2且生成速度快410倍。\",\"contribution_type\":\"significant\",\"editorial_note\":\"[前驱]本工作建立在VQ-VAE系列（VQGAN、MaskGIT-VQGAN）使用2D latent grid的基础上，同时借鉴了ViT在图像理解任务（如DETR、Perceiver Resampler）中的1D序列建模能力，以及MaskGIT的非自回归生成框架。[贡献]核心创新在于将图像patch与少量latent tokens拼接后通过ViT encoder，利用1D序列突破2D网格限制，实现极紧凑的图像表示（32 tokens），同时保持高质量重建和生成。两阶段训练（proxy codes+decoder fine-tuning）是关键技巧。[判断]这是真正解决了问题：1D tokenization显著不同于2D方法，实验结果明确显示压缩率提升8-64倍且质量更优，是有明确价值的创新。\",\"why_read\":\"如果你是做图像生成或高效表示的研究者，特别是关注tokenization、masked生成模型、追求压缩率与质量平衡的工作，这篇论文提供了全新思路：用1D序列代替2D grid可将256x256图像压缩到32 tokens且生成质量超越DiT。\",\"method_variants\":[{\"base_method\":\"vqgan\",\"variant_tag\":\"vqgan:1d-latent-sequence\",\"description\":\"原vqgan做法是将图像编码为2D latent grid（如16x16=256 tokens）；本文改为将图像patch与少量latent tokens拼接后通过ViT encoder输出1D序列，实现仅32 tokens的紧凑表示，突破2D网格限制以利用图像冗余性。\"},{\"base_method\":\"maskgit\",\"variant_tag\":\"maskgit:compact-1d-tokens\",\"description\":\"原maskgit使用2D VQGAN tokenizer（256-1024 tokens）进行图像生成；本文替换为TiTok的1D tokenizer（仅32-128 tokens），显著减少生成步骤并提升速度（最高410x），同时保持竞争力或更优的FID。\"}],\"core_cite\":[{\"title\":\"Taming transformers for high-resolution image synthesis\",\"role\":\"extends\",\"note\":\"VQGAN的经典架构，TiTok继承其encoder-decoder+vector quantizer设计，但将2D latent改为1D序列\"},{\"title\":\"Maskgit: Masked generative image transformer\",\"role\":\"uses\",\"note\":\"采用MaskGIT作为生成框架，TiTok作为其tokenizer替换；论文使用MaskGIT-VQGAN生成proxy codes进行两阶段训练\"},{\"title\":\"Scalable diffusion models with transformers\",\"role\":\"contrasts\",\"note\":\"DiT是ImageNet生成的主流diffusion baseline，TiTok在256和512分辨率上与之对比并取得更优gFID\"},{\"title\":\"High-resolution image synthesis with latent diffusion models\",\"role\":\"contrasts\",\"note\":\"LDM-4是latent diffusion代表方法，TiTok在256分辨率上以254倍速度取得更优gFID（2.77 vs 3.60）\"},{\"title\":\"Generative pretraining from pixels\",\"role\":\"supports\",\"note\":\"引用支持image tokenization在生成模型中的重要性论述\"},{\"title\":\"Beit: Bert pre-training of image transformers\",\"role\":\"supports\",\"note\":\"引用支持masked token reconstruction训练策略\"},{\"title\":\"An image is worth 16x16: Transformers for image recognition at scale\",\"role\":\"supports\",\"note\":\"ViT是TiTok的encoder-decoder基础架构\"},{\"title\":\"Masked autoencoders are scalable vision learners\",\"role\":\"supports\",\"note\":\"引用支持masked token重建的训练目标\"},{\"title\":\"Neural discrete representation learning\",\"role\":\"supports\",\"note\":\"VQ-VAE的经典工作，引用支持vector quantizer设计\"},{\"title\":\"End-to-end object detection with transformers\",\"role\":\"supports\",\"note\":\"DETR等工作表明1D query可以有效编码图像信息，支持1D tokenization的动机\"},{\"title\":\"Flamingo: a visual language model for few-shot learning\",\"role\":\"supports\",\"note\":\"Perceiver Resampler等工作表明1D序列可捕获图像语义信息，支持1D tokenization的动机\"}]}",
+  "cn_oneliner": "基于ViT引入1D tokenization，用32个tokens表示256x256图像，实现8-64倍压缩且生成质量超越DiT",
+  "cn_abstract": "TiTok是一种基于Transformer的1D图像分词器，将传统2D latent grid转换为1D序列表示。通过将256x256x3图像压缩至仅32个离散tokens，相比传统2D方法实现8-64倍压缩率。采用ViT encoder-decoder架构结合向量量化，并通过两阶段训练策略（proxy codes预热+decoder fine-tuning）提升性能。在ImageNet 256x256上达到1.97 gFID，比MaskGIT提升4.21；在512x512上超越DiT-XL/2且生成速度快410倍。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱]本工作建立在VQ-VAE系列（VQGAN、MaskGIT-VQGAN）使用2D latent grid的基础上，同时借鉴了ViT在图像理解任务（如DETR、Perceiver Resampler）中的1D序列建模能力，以及MaskGIT的非自回归生成框架。[贡献]核心创新在于将图像patch与少量latent tokens拼接后通过ViT encoder，利用1D序列突破2D网格限制，实现极紧凑的图像表示（32 tokens），同时保持高质量重建和生成。两阶段训练（proxy codes+decoder fine-tuning）是关键技巧。[判断]这是真正解决了问题：1D tokenization显著不同于2D方法，实验结果明确显示压缩率提升8-64倍且质量更优，是有明确价值的创新。",
+  "why_read": "如果你是做图像生成或高效表示的研究者，特别是关注tokenization、masked生成模型、追求压缩率与质量平衡的工作，这篇论文提供了全新思路：用1D序列代替2D grid可将256x256图像压缩到32 tokens且生成质量超越DiT。",
+  "method_variants": [
+    {
+      "base_method": "vqgan",
+      "variant_tag": "vqgan:1d-latent-sequence",
+      "description": "原vqgan做法是将图像编码为2D latent grid（如16x16=256 tokens）；本文改为将图像patch与少量latent tokens拼接后通过ViT encoder输出1D序列，实现仅32 tokens的紧凑表示，突破2D网格限制以利用图像冗余性。"
+    },
+    {
+      "base_method": "maskgit",
+      "variant_tag": "maskgit:compact-1d-tokens",
+      "description": "原maskgit使用2D VQGAN tokenizer（256-1024 tokens）进行图像生成；本文替换为TiTok的1D tokenizer（仅32-128 tokens），显著减少生成步骤并提升速度（最高410x），同时保持竞争力或更优的FID。"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Taming transformers for high-resolution image synthesis",
+      "role": "extends",
+      "note": "VQGAN的经典架构，TiTok继承其encoder-decoder+vector quantizer设计，但将2D latent改为1D序列"
+    },
+    {
+      "title": "Maskgit: Masked generative image transformer",
+      "role": "uses",
+      "note": "采用MaskGIT作为生成框架，TiTok作为其tokenizer替换；论文使用MaskGIT-VQGAN生成proxy codes进行两阶段训练"
+    },
+    {
+      "title": "Scalable diffusion models with transformers",
+      "role": "contrasts",
+      "note": "DiT是ImageNet生成的主流diffusion baseline，TiTok在256和512分辨率上与之对比并取得更优gFID"
+    },
+    {
+      "title": "High-resolution image synthesis with latent diffusion models",
+      "role": "contrasts",
+      "note": "LDM-4是latent diffusion代表方法，TiTok在256分辨率上以254倍速度取得更优gFID（2.77 vs 3.60）"
+    },
+    {
+      "title": "Generative pretraining from pixels",
+      "role": "supports",
+      "note": "引用支持image tokenization在生成模型中的重要性论述"
+    },
+    {
+      "title": "Beit: Bert pre-training of image transformers",
+      "role": "supports",
+      "note": "引用支持masked token reconstruction训练策略"
+    },
+    {
+      "title": "An image is worth 16x16: Transformers for image recognition at scale",
+      "role": "supports",
+      "note": "ViT是TiTok的encoder-decoder基础架构"
+    },
+    {
+      "title": "Masked autoencoders are scalable vision learners",
+      "role": "supports",
+      "note": "引用支持masked token重建的训练目标"
+    },
+    {
+      "title": "Neural discrete representation learning",
+      "role": "supports",
+      "note": "VQ-VAE的经典工作，引用支持vector quantizer设计"
+    },
+    {
+      "title": "End-to-end object detection with transformers",
+      "role": "supports",
+      "note": "DETR等工作表明1D query可以有效编码图像信息，支持1D tokenization的动机"
+    },
+    {
+      "title": "Flamingo: a visual language model for few-shot learning",
+      "role": "supports",
+      "note": "Perceiver Resampler等工作表明1D序列可捕获图像语义信息，支持1D tokenization的动机"
+    }
+  ]
+}

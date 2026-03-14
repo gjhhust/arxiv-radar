@@ -1,0 +1,142 @@
+{
+  "arxiv_id": "2506.05289",
+  "model": "gpt52",
+  "timestamp": "2026-03-12T21:42:37.427564",
+  "latency_s": 152.1,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于TA-TiTok引入“因果decoder约束双向encoder+prefix+两阶段解码器重训”实现token前向依赖并让decoder-only AR在ImageNet上超越diffusion\",\"cn_abstract\":\"论文指出常规image tokenizer为追求重建会诱导token间的bidirectional dependency，使得raster-scan的decoder-only autoregressive model学习到的p(x_i|x_<i)变成对未来x_>i的高熵边缘化，从而训练困难、生成受限。为此提出AliTok：用bidirectional encoder获取全局语义，但在tokenizer训练时用causal decoder按raster-scan限制可见性，迫使encoder把重建所需信息“组织”进前缀到当前位置的causal history，得到同时semantic-rich且forward-dependent的token序列。为缓解首行缺上下文导致的重建劣化，引入16个prefix tokens并用仅回传到prefix的auxiliary loss做context priming；再用two-stage训练在冻结encoder+codebook后重训一个bidirectional decoder提升细节一致性。基于该tokenizer，标准LlamaGen式decoder-only模型在ImageNet-256达到gFID 1.28（662M，w/ cfg）且采样较SOTA diffusion快10×，并在ImageNet-512以318M达到gFID 1.39。\",\"contribution_type\":\"significant\",\"editorial_note\":\"[前驱] 工作建立在VQ-VAE/VQ-GAN式离散tokenizer与TiTok/TA-TiTok的ViT-tokenizer框架上，生成模型沿用LlamaGen的decoder-only Transformer，并借鉴Open-MagViT2的GAN损失、online clustered codebook与cfg评测范式。\\n[贡献] 核心新意是把“对齐”放在tokenizer端：训练时用causal decoder约束双向encoder，强迫token序列形成前向依赖；再用prefix tokens补首行上下文，并用两阶段训练在不破坏可预测性的前提下把重建质量补回来。\\n[判断] 这是对AR视觉生成里“tokenizer决定可学性”的一次实质推进：机制简单但抓住关键瓶颈，能让标准decoder-only AR首次在主流指标上压过强diffusion；理论不算深，但方法可复用性强、影响面大。\",\"why_read\":\"想做decoder-only AR图像生成/多模态统一的人值得读：它给出一套可直接落地的“让token变得可预测”的tokenizer训练约束与工程细节（prefix+two-stage），比改生成模型更通用。\",\"method_variants\":[{\"base_method\":\"ta-titok\",\"variant_tag\":\"ta-titok:causal-decoder-constraint\",\"description\":\"TA-TiTok用ViT式encoder/decoder做patch到1D token的重建；本文把decoder改为raster-scan causal attention来约束训练，从而逼迫encoder输出具前向依赖、利于decoder-only AR建模的token序列。\"},{\"base_method\":\"titok\",\"variant_tag\":\"titok:prefix-tokens-first-row\",\"description\":\"TiTok类tokenizer在序列开头缺上下文时重建易崩；本文为首行引入16个prefix tokens并配合仅优化prefix的辅助损失，提供初始上下文先验。\"},{\"base_method\":\"vq-vae\",\"variant_tag\":\"vq-vae:two-stage-decoder-retrain\",\"description\":\"VQ-VAE通常端到端同时学encoder/decoder/codebook；本文先用causal decoder学“生成友好”的encoder+codebook，再冻结它们重训一个bidirectional decoder以提升重建细节一致性。\"},{\"base_method\":\"llamagen\",\"variant_tag\":\"llamagen:rope-split-prefix-1d-2d+qk-norm\",\"description\":\"LlamaGen用2D RoPE与RMSNorm的decoder-only AR；本文因加入prefix tokens而对prefix用1D RoPE、其余token用2D RoPE，并加入Chameleon式QK-Norm稳定训练，用于验证tokenizer带来的收益。\"},{\"base_method\":\"open-magvit2\",\"variant_tag\":\"open-magvit2:gan-loss-in-tokenizer\",\"description\":\"Open-MagViT2提供tokenizer训练中的GAN判别器/对抗损失；本文在AliTok第一阶段重建损失中直接采用其GAN配置以提升视觉保真。\"}],\"core_cite\":[{\"title\":\"Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens\",\"role\":\"extends\",\"note\":\"AliTok的tokenizer设计基于TA-TiTok，实验设置中明确说明encoder/decoder骨干与整体设计来源于该工作。\"},{\"title\":\"Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation\",\"role\":\"uses\",\"note\":\"生成模型架构主要沿用LlamaGen（decoder-only、RMSNorm、2D RoPE），本文仅做prefix相关RoPE与QK-Norm的小改动。\"},{\"title\":\"An Image is Worth 32 Tokens for Reconstruction and Generation\",\"role\":\"uses\",\"note\":\"AliTok第一阶段重建损失组合（MSE+perceptual等）遵循TiTok的标准做法，并使用其ViT-B等配置作为tokenizer骨干参考。\"},{\"title\":\"Open-magvit2: An open-source project toward democratizing auto-regressive visual generation\",\"role\":\"uses\",\"note\":\"AliTok第一阶段的adversarial loss采用Open-MagViT2的GAN实现以提升重建/感知质量。\"},{\"title\":\"Online clustered codebook\",\"role\":\"uses\",\"note\":\"用于quantization loss/在线聚类以保证codebook 100%利用率，是tokenizer训练的关键实现组件。\"},{\"title\":\"LightningDiT: Reconstruction vs. generation: Taming optimization dilemma in latent diffusion models\",\"role\":\"contrasts\",\"note\":\"ImageNet-256主表中最强diffusion baseline（w/ cfg gFID 1.35），本文AliTok-XL以1.28超越并强调10×采样加速。\"},{\"title\":\"Representation alignment for generation: Training diffusion transformers is easier than you think\",\"role\":\"contrasts\",\"note\":\"作为diffusion对比方法REPA（w/ cfg gFID 1.42），用于证明AliTok在同数据集上优于强扩散基线。\"},{\"title\":\"SiT\",\"role\":\"contrasts\",\"note\":\"作为diffusion transformer基线（SiT-XL），用于横向对比gFID/IS。\"},{\"title\":\"Visual autoregressive modeling: Scalable image generation via next-scale prediction\",\"role\":\"contrasts\",\"note\":\"作为VAR范式基线（VAR-d24/d30），对比“改生成范式/模型”路线与本文“改tokenizer”路线的效果与速度。\"},{\"title\":\"MaskGIT: Masked generative image transformer\",\"role\":\"contrasts\",\"note\":\"作为masked generative transformer代表基线，体现非因果并行生成路线的性能区间。\"},{\"title\":\"Language Model Beats Diffusion--Tokenizer is Key to Visual Generation\",\"role\":\"contrasts\",\"note\":\"作为MAGVIT-v2基线（masked/AR相关），与本文同样强调tokenizer重要性但本文进一步做“因果对齐”约束。\"},{\"title\":\"Autoregressive Image Generation without Vector Quantization\",\"role\":\"contrasts\",\"note\":\"作为MAR系列基线（MAR-B/L/H），对比另一类非严格因果/并行生成训练目标的AR方法与本文decoder-only AR的差异。\"},{\"title\":\"Randomized Autoregressive Visual Generation\",\"role\":\"contrasts\",\"note\":\"作为RAR系列基线（含RAR-XXL），对比随机顺序/全向概率增强的因果AR改造路线；本文显示在更标准的raster因果AR下也能更强。\"},{\"title\":\"Chameleon: Mixed-modal early-fusion foundation models\",\"role\":\"uses\",\"note\":\"用于QK-Norm引用与实现动机，稳定大规模多模态/AR训练；本文在attention中引入该操作。\"},{\"title\":\"Roformer: Enhanced transformer with rotary position embedding\",\"role\":\"uses\",\"note\":\"用于RoPE位置编码引用；本文在prefix与patch token上分别采用1D/2D RoPE。\"},{\"title\":\"Root mean square layer normalization\",\"role\":\"uses\",\"note\":\"生成模型采用RMSNorm作为pre-norm配置，继承Llama系实现。\"},{\"title\":\"Classifier-free diffusion guidance\",\"role\":\"uses\",\"note\":\"实验中使用cfg并在表格中报告w/ cfg指标，训练时随机drop class条件以支持cfg。\"},{\"title\":\"Gans trained by a two time-scale update rule converge to a local nash equilibrium\",\"role\":\"uses\",\"note\":\"FID指标引用来源，用于rFID/gFID评测。\"},{\"title\":\"Improved techniques for training gans\",\"role\":\"uses\",\"note\":\"IS指标引用来源，用于ImageNet生成评测。\"},{\"title\":\"Imagenet large scale visual recognition challenge\",\"role\":\"uses\",\"note\":\"训练与rFID评测使用ImageNet-1K数据集与其标准划分/协议。\"}]}",
+  "cn_oneliner": "基于TA-TiTok引入“因果decoder约束双向encoder+prefix+两阶段解码器重训”实现token前向依赖并让decoder-only AR在ImageNet上超越diffusion",
+  "cn_abstract": "论文指出常规image tokenizer为追求重建会诱导token间的bidirectional dependency，使得raster-scan的decoder-only autoregressive model学习到的p(x_i|x_<i)变成对未来x_>i的高熵边缘化，从而训练困难、生成受限。为此提出AliTok：用bidirectional encoder获取全局语义，但在tokenizer训练时用causal decoder按raster-scan限制可见性，迫使encoder把重建所需信息“组织”进前缀到当前位置的causal history，得到同时semantic-rich且forward-dependent的token序列。为缓解首行缺上下文导致的重建劣化，引入16个prefix tokens并用仅回传到prefix的auxiliary loss做context priming；再用two-stage训练在冻结encoder+codebook后重训一个bidirectional decoder提升细节一致性。基于该tokenizer，标准LlamaGen式decoder-only模型在ImageNet-256达到gFID 1.28（662M，w/ cfg）且采样较SOTA diffusion快10×，并在ImageNet-512以318M达到gFID 1.39。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱] 工作建立在VQ-VAE/VQ-GAN式离散tokenizer与TiTok/TA-TiTok的ViT-tokenizer框架上，生成模型沿用LlamaGen的decoder-only Transformer，并借鉴Open-MagViT2的GAN损失、online clustered codebook与cfg评测范式。\n[贡献] 核心新意是把“对齐”放在tokenizer端：训练时用causal decoder约束双向encoder，强迫token序列形成前向依赖；再用prefix tokens补首行上下文，并用两阶段训练在不破坏可预测性的前提下把重建质量补回来。\n[判断] 这是对AR视觉生成里“tokenizer决定可学性”的一次实质推进：机制简单但抓住关键瓶颈，能让标准decoder-only AR首次在主流指标上压过强diffusion；理论不算深，但方法可复用性强、影响面大。",
+  "why_read": "想做decoder-only AR图像生成/多模态统一的人值得读：它给出一套可直接落地的“让token变得可预测”的tokenizer训练约束与工程细节（prefix+two-stage），比改生成模型更通用。",
+  "method_variants": [
+    {
+      "base_method": "ta-titok",
+      "variant_tag": "ta-titok:causal-decoder-constraint",
+      "description": "TA-TiTok用ViT式encoder/decoder做patch到1D token的重建；本文把decoder改为raster-scan causal attention来约束训练，从而逼迫encoder输出具前向依赖、利于decoder-only AR建模的token序列。"
+    },
+    {
+      "base_method": "titok",
+      "variant_tag": "titok:prefix-tokens-first-row",
+      "description": "TiTok类tokenizer在序列开头缺上下文时重建易崩；本文为首行引入16个prefix tokens并配合仅优化prefix的辅助损失，提供初始上下文先验。"
+    },
+    {
+      "base_method": "vq-vae",
+      "variant_tag": "vq-vae:two-stage-decoder-retrain",
+      "description": "VQ-VAE通常端到端同时学encoder/decoder/codebook；本文先用causal decoder学“生成友好”的encoder+codebook，再冻结它们重训一个bidirectional decoder以提升重建细节一致性。"
+    },
+    {
+      "base_method": "llamagen",
+      "variant_tag": "llamagen:rope-split-prefix-1d-2d+qk-norm",
+      "description": "LlamaGen用2D RoPE与RMSNorm的decoder-only AR；本文因加入prefix tokens而对prefix用1D RoPE、其余token用2D RoPE，并加入Chameleon式QK-Norm稳定训练，用于验证tokenizer带来的收益。"
+    },
+    {
+      "base_method": "open-magvit2",
+      "variant_tag": "open-magvit2:gan-loss-in-tokenizer",
+      "description": "Open-MagViT2提供tokenizer训练中的GAN判别器/对抗损失；本文在AliTok第一阶段重建损失中直接采用其GAN配置以提升视觉保真。"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens",
+      "role": "extends",
+      "note": "AliTok的tokenizer设计基于TA-TiTok，实验设置中明确说明encoder/decoder骨干与整体设计来源于该工作。"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "role": "uses",
+      "note": "生成模型架构主要沿用LlamaGen（decoder-only、RMSNorm、2D RoPE），本文仅做prefix相关RoPE与QK-Norm的小改动。"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "role": "uses",
+      "note": "AliTok第一阶段重建损失组合（MSE+perceptual等）遵循TiTok的标准做法，并使用其ViT-B等配置作为tokenizer骨干参考。"
+    },
+    {
+      "title": "Open-magvit2: An open-source project toward democratizing auto-regressive visual generation",
+      "role": "uses",
+      "note": "AliTok第一阶段的adversarial loss采用Open-MagViT2的GAN实现以提升重建/感知质量。"
+    },
+    {
+      "title": "Online clustered codebook",
+      "role": "uses",
+      "note": "用于quantization loss/在线聚类以保证codebook 100%利用率，是tokenizer训练的关键实现组件。"
+    },
+    {
+      "title": "LightningDiT: Reconstruction vs. generation: Taming optimization dilemma in latent diffusion models",
+      "role": "contrasts",
+      "note": "ImageNet-256主表中最强diffusion baseline（w/ cfg gFID 1.35），本文AliTok-XL以1.28超越并强调10×采样加速。"
+    },
+    {
+      "title": "Representation alignment for generation: Training diffusion transformers is easier than you think",
+      "role": "contrasts",
+      "note": "作为diffusion对比方法REPA（w/ cfg gFID 1.42），用于证明AliTok在同数据集上优于强扩散基线。"
+    },
+    {
+      "title": "SiT",
+      "role": "contrasts",
+      "note": "作为diffusion transformer基线（SiT-XL），用于横向对比gFID/IS。"
+    },
+    {
+      "title": "Visual autoregressive modeling: Scalable image generation via next-scale prediction",
+      "role": "contrasts",
+      "note": "作为VAR范式基线（VAR-d24/d30），对比“改生成范式/模型”路线与本文“改tokenizer”路线的效果与速度。"
+    },
+    {
+      "title": "MaskGIT: Masked generative image transformer",
+      "role": "contrasts",
+      "note": "作为masked generative transformer代表基线，体现非因果并行生成路线的性能区间。"
+    },
+    {
+      "title": "Language Model Beats Diffusion--Tokenizer is Key to Visual Generation",
+      "role": "contrasts",
+      "note": "作为MAGVIT-v2基线（masked/AR相关），与本文同样强调tokenizer重要性但本文进一步做“因果对齐”约束。"
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "role": "contrasts",
+      "note": "作为MAR系列基线（MAR-B/L/H），对比另一类非严格因果/并行生成训练目标的AR方法与本文decoder-only AR的差异。"
+    },
+    {
+      "title": "Randomized Autoregressive Visual Generation",
+      "role": "contrasts",
+      "note": "作为RAR系列基线（含RAR-XXL），对比随机顺序/全向概率增强的因果AR改造路线；本文显示在更标准的raster因果AR下也能更强。"
+    },
+    {
+      "title": "Chameleon: Mixed-modal early-fusion foundation models",
+      "role": "uses",
+      "note": "用于QK-Norm引用与实现动机，稳定大规模多模态/AR训练；本文在attention中引入该操作。"
+    },
+    {
+      "title": "Roformer: Enhanced transformer with rotary position embedding",
+      "role": "uses",
+      "note": "用于RoPE位置编码引用；本文在prefix与patch token上分别采用1D/2D RoPE。"
+    },
+    {
+      "title": "Root mean square layer normalization",
+      "role": "uses",
+      "note": "生成模型采用RMSNorm作为pre-norm配置，继承Llama系实现。"
+    },
+    {
+      "title": "Classifier-free diffusion guidance",
+      "role": "uses",
+      "note": "实验中使用cfg并在表格中报告w/ cfg指标，训练时随机drop class条件以支持cfg。"
+    },
+    {
+      "title": "Gans trained by a two time-scale update rule converge to a local nash equilibrium",
+      "role": "uses",
+      "note": "FID指标引用来源，用于rFID/gFID评测。"
+    },
+    {
+      "title": "Improved techniques for training gans",
+      "role": "uses",
+      "note": "IS指标引用来源，用于ImageNet生成评测。"
+    },
+    {
+      "title": "Imagenet large scale visual recognition challenge",
+      "role": "uses",
+      "note": "训练与rFID评测使用ImageNet-1K数据集与其标准划分/协议。"
+    }
+  ]
+}

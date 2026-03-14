@@ -1,0 +1,210 @@
+{
+  "arxiv_id": "2511.20565",
+  "title": "DINO-Tok: Adapting DINO for Visual Tokenizers",
+  "cn_oneliner": "基于预训练DINO视觉模型，引入双分支层次特征融合与全局PCA重加权向量量化机制，实现语义对齐与高保真度的视觉潜空间表示",
+  "cn_abstract": "本文提出DINO-Tok，一种基于预训练DINO模型的视觉分词器，旨在解决现有视觉分词器在高维潜空间中难以同时保持语义表示与重建保真度的问题。通过整合保留细粒度细节的浅层特征与编码全局语义的深层特征，DINO-Tok构建信息完备的潜空间，有效衔接预训练表示与视觉生成任务。针对高维空间中向量量化（VQ）存在的关键信息丢失和码本崩溃问题，文中提出全局PCA重加权机制以稳定VQ过程并保留各维度关键信息。在ImageNet 256×256基准上，DINO-Tok在自编码重建中达到28.54 PSNR，在VQ建模中达到23.98 PSNR，显著优于此前分词器，性能可与十亿级数据训练模型（如Hunyuan和Wan）相媲美。",
+  "contribution_type": "incremental",
+  "editorial_note": "DINO等预训练视觉基础模型已在表示学习领域取得显著成果，但如何将其有效适配至视觉生成的潜空间分词任务仍存在挑战，现有方法（如VA-VAE、VFM-Tok）通过蒸馏引入语义但牺牲重建质量。本文核心贡献在于将DINO浅层与深层特征融合构建双分支编码器，并提出PCA重加权方案缓解高维VQ的码本崩溃问题，在ImageNet重建指标上取得SOTA。整体思路清晰，工程设计扎实，但架构层面创新偏工程调优，各模块（双分支融合、PCA重加权）均属已有技术的合理组合，理论新颖性有限，适合视觉生成和分词器工程实践的参考读物。",
+  "why_read": "做视觉生成或潜空间分词器设计的研究者，可借鉴其将预训练DINO特征适配VQ-VAE的双分支架构设计及PCA重加权稳定向量量化的实用方案",
+  "method_variants": [
+    "encoder:dual-branch-shallow-deep-dino",
+    "quantization:global-pca-reweighting-vq",
+    "tokenizer:dino-frozen-encoder",
+    "baseline:distillation-based-vfm-tok",
+    "baseline:direct-dino-decoder"
+  ],
+  "core_cite": [
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale (ViT)",
+      "arxiv_id": "2010.11929",
+      "role": "uses",
+      "note": "DINO-Tok的编码器基础架构，DINO基于ViT构建，是本文预训练骨干网络的基础"
+    },
+    {
+      "title": "Emerging Properties in Self-Supervised Vision Transformers (DINO)",
+      "arxiv_id": "2104.14294",
+      "role": "extends",
+      "note": "本文核心前驱方法，DINO-Tok直接适配DINO预训练模型作为视觉分词器编码器"
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "arxiv_id": "2304.07193",
+      "role": "uses",
+      "note": "DINO-Tok实际使用DINOv2作为预训练编码器，提供更强的语义层次特征"
+    },
+    {
+      "title": "Neural Discrete Representation Learning (VQ-VAE)",
+      "arxiv_id": "1711.00937",
+      "role": "extends",
+      "note": "向量量化视觉分词的基础方法，本文在此框架上提出PCA重加权机制"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis (VQGAN)",
+      "arxiv_id": "2012.09841",
+      "role": "contrasts",
+      "note": "经典VQ-based视觉生成方法，作为本文对比基线之一"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models (LDM/Stable Diffusion)",
+      "arxiv_id": "2112.10752",
+      "role": "supports",
+      "note": "潜在扩散模型框架，展示视觉分词器对下游生成模型的重要性"
+    },
+    {
+      "title": "VA-VAE: Visual Alignment VAE for Efficient High-Resolution Image Synthesis",
+      "arxiv_id": "2501.09519",
+      "role": "contrasts",
+      "note": "通过蒸馏VFM特征增强VAE语义的方法，是本文主要对比基线之一"
+    },
+    {
+      "title": "VFM-Tok: Visual Foundation Models as Effective Tokenizers for Video Generation",
+      "arxiv_id": "2506.01822",
+      "role": "contrasts",
+      "note": "利用视觉基础模型特征蒸馏进行分词的方法，与本文形成直接对比"
+    },
+    {
+      "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis (Stable Diffusion 3)",
+      "arxiv_id": "2403.03206",
+      "role": "supports",
+      "note": "展示高质量视觉分词器对大规模生成模型的重要性"
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "arxiv_id": "2409.04210",
+      "role": "contrasts",
+      "note": "自回归视觉生成中的VQ分词器方法，作为对比基线"
+    },
+    {
+      "title": "Wan: Open and Advanced Large-Scale Video Generative Models",
+      "arxiv_id": "2503.20314",
+      "role": "contrasts",
+      "note": "十亿级数据训练的视频生成模型，文中将DINO-Tok性能与其进行对比"
+    },
+    {
+      "title": "HunyuanVideo: A Systematic Framework For Large Video Generative Models",
+      "arxiv_id": "2412.03603",
+      "role": "contrasts",
+      "note": "大规模视频生成模型，文中将DINO-Tok重建性能与其分词器对比"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation (LlamaGen)",
+      "arxiv_id": "2406.06525",
+      "role": "uses",
+      "note": "自回归图像生成框架，用于验证DINO-Tok作为分词器支持下游生成任务的能力"
+    },
+    {
+      "title": "ImageNet Large Scale Visual Recognition Challenge",
+      "arxiv_id": "1409.0575",
+      "role": "uses",
+      "note": "主要评测基准，所有重建和生成实验均在ImageNet 256×256上进行"
+    }
+  ],
+  "idea": [
+    {
+      "title": "自适应频率感知PCA重加权用于视频潜空间量化",
+      "why": "DINO-Tok的PCA重加权在图像静态场景效果显著，但视频中时序运动信息与语义信息的频率分布差异更大，直接迁移可能不足。可探索将时序傅里叶分析与PCA结合，针对不同运动频率分量自适应调整VQ维度权重，从而在视频分词器中同时保留运动细节和语义内容，这与作者所在Horizon Robotics的视频生成研究方向高度契合。"
+    },
+    {
+      "title": "多模态预训练模型（CLIP/SigLIP）作为视觉分词器编码器的系统性研究",
+      "why": "本文仅探索了DINO作为编码器，但CLIP、SigLIP等具有语言对齐语义的视觉模型在文本条件生成场景可能更具优势。系统性对比不同预训练模型（DINO、CLIP、SigLIP、SAM等）的层次特征在分词任务中的重建-语义权衡，并设计统一的适配框架，可为社区提供重要的选择依据，且实验设计上与DINO-Tok框架天然兼容。"
+    },
+    {
+      "title": "基于潜空间语义结构的条件生成引导：利用DINO-Tok语义对齐潜空间加速扩散采样",
+      "why": "DINO-Tok构建了语义结构化的潜空间（PCA可视化显示不同语义区域清晰分离），这种结构可用于设计语义感知的扩散噪声调度或引导机制。具体地，可利用潜空间的语义聚类结构设计分层去噪策略（先恢复全局语义，再细化局部纹理），有望在减少采样步数的同时保持语义一致性，将DINO-Tok的语义优势延伸至生成质量提升。"
+    }
+  ],
+  "_scheme": "G",
+  "_model": "wq/minimaxm25",
+  "_verified_at": "2026-03-14",
+  "_s2_ref_count": 57,
+  "_similarities": [
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale (ViT)",
+      "best_score": 0.567,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": false
+    },
+    {
+      "title": "Emerging Properties in Self-Supervised Vision Transformers (DINO)",
+      "best_score": 0.456,
+      "best_match": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+      "pass": false
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "best_score": 1.0,
+      "best_match": "DINOv2: Learning Robust Visual Features without Supervision",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning (VQ-VAE)",
+      "best_score": 0.897,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis (VQGAN)",
+      "best_score": 0.932,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models (LDM/Stable Diffusion)",
+      "best_score": 0.839,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "VA-VAE: Visual Alignment VAE for Efficient High-Resolution Image Synthesis",
+      "best_score": 0.651,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": false
+    },
+    {
+      "title": "VFM-Tok: Visual Foundation Models as Effective Tokenizers for Video Generation",
+      "best_score": 0.757,
+      "best_match": "Vision Foundation Models as Effective Visual Tokenizers for Autoregressive Image Generation",
+      "pass": false
+    },
+    {
+      "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis (Stable Diffusion 3)",
+      "best_score": 0.871,
+      "best_match": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Wan: Open and Advanced Large-Scale Video Generative Models",
+      "best_score": 0.562,
+      "best_match": "HunyuanVideo: A Systematic Framework For Large Video Generative Models",
+      "pass": false
+    },
+    {
+      "title": "HunyuanVideo: A Systematic Framework For Large Video Generative Models",
+      "best_score": 1.0,
+      "best_match": "HunyuanVideo: A Systematic Framework For Large Video Generative Models",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation (LlamaGen)",
+      "best_score": 0.93,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "ImageNet Large Scale Visual Recognition Challenge",
+      "best_score": 0.557,
+      "best_match": "Masked Autoencoders Are Scalable Vision Learners",
+      "pass": false
+    }
+  ],
+  "_matched": 8,
+  "_total": 14,
+  "_pass_rate": 0.571,
+  "_elapsed_s": 46.4
+}

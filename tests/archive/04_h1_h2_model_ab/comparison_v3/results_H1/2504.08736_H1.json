@@ -1,0 +1,243 @@
+{
+  "arxiv_id": "2504.08736",
+  "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+  "cn_oneliner": "基于VQ-VAE视觉tokenizer，引入语义正则化（对齐DINOv2特征）+三大扩展策略（1D tokenizer、非对称扩展、entropy loss），解决重构-生成困境，在30亿参数规模下同时提升重建、AR生成和表示学习质量",
+  "cn_abstract": "在自回归（AR）图像生成中，视觉tokenizer将图像压缩为紧凑的离散潜在token，使下游AR模型能够通过next-token预测进行视觉生成。虽然扩展视觉tokenizer可以提升图像重建质量，但往往会降低下游生成质量——这一挑战在现有文献中尚未得到充分解决。为此，本文提出GigaTok，首次实现扩展视觉tokenizer时同时提升重建、生成和表示学习。本文识别出潜在空间复杂度不断增长是重构与生成困境的关键因素。为解决这一问题，本文提出语义正则化，将tokenizer特征与预训练视觉编码器的语义一致特征对齐。这种约束防止扩展过程中潜在空间过于复杂，在重建和下游自回归生成两方面都实现了一致的改进。通过扩展至30亿参数，GigaTok在重建、下游AR生成和下游AR表示质量方面均达到了最先进水平。",
+  "contribution_type": "significant",
+  "editorial_tokenizer": "[前驱局限] 之前扩展视觉tokenizer的工作面临「重构-生成困境」：增大tokenizer规模虽然提升了重建质量（rFID下降），但却导致下游AR生成质量下降（gFID上升）。这是因为更大的tokenizer产生更复杂的潜在token分布，使AR模型更难学习token依赖关系。 [本文解决] 本文提出语义正则化（semantic regularization），将tokenizer的decoder特征与预训练DINOv2的语义特征对齐，约束潜在空间复杂度；同时探索了三大扩展策略：1D tokenizers（非对称2D）、优先扩展decoder、使用entropy loss稳定十亿级tokenizer训练。 [编辑判断] GigaTok是首个扩展到30亿参数的视觉tokenizer，在ImageNet 256×256上实现rFID=0.79、gFID=1.98（搭配1.4B AR模型）、线性探测精度74.0%，同时在重建、生成、表示学习三个维度达到SOTA。该工作为大规模AR视觉生成提供了重要的tokenizer扩展范式。",
+  "why_read": "本论文适合从事自回归视觉生成、多模态LLM、视觉tokenizer研究的研究者和工程师。通过本文可了解：(1) tokenizer扩展时「重构-生成困境」的根源及其解决方法；(2) 语义正则化的具体实现和效果；(3) 1D tokenizers vs 2D tokenizers的可扩展性对比；(4) 如何训练十亿级参数的tokenizer。论文实验详实，消融实验充分，对理解tokenizer设计具有重要参考价值。",
+  "method_variants": [
+    {
+      "base_method": "vq-vae",
+      "variant_tag": "vq-vae:semantic-regularization",
+      "description": "vq-vae原本通过重建损失训练tokenizer，将图像映射到离散codebook；本文在vq-vae基础上增加语义正则化损失，对齐DINOv2特征，防止潜在空间复杂度随模型增大而爆炸，解决重构-生成困境"
+    },
+    {
+      "base_method": "vqgan",
+      "variant_tag": "vqgan:1d-tokenizer",
+      "description": "vqgan原本使用2D ViT结构处理图像token；本文采用1D tokenizers（Q-Former结构），移除2D归纳偏置，展示更好的可扩展性和下游生成质量"
+    },
+    {
+      "base_method": "vit-vqgan",
+      "variant_tag": "vit-vqgan:asymmetric-scaling",
+      "description": "vit-vqgan使用对称的encoder-decoder结构；本文采用非对称扩展策略，优先扩展decoder而非encoder，因为decoder承担更困难的图像重建任务"
+    },
+    {
+      "base_method": "vq-vae",
+      "variant_tag": "vq-vae:entropy-loss",
+      "description": "传统vq-vae训练小规模模型时无entropy loss；本文对30亿级tokenizer引入entropy loss，鼓励高codebook使用率，解决大模型训练不收敛问题"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "uses",
+      "note": "VQGAN是本文tokenizer的baseline架构，本文在其基础上进行改进"
+    },
+    {
+      "title": "LlamaGen: Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "uses",
+      "note": "使用LlamaGen作为下游AR生成模型进行评估"
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "contrasts",
+      "note": "VAR使用next-scale prediction而非next-token prediction，本文在实验中对标VAR结果"
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "arxiv_id": "2110.04627",
+      "role": "extends",
+      "note": "ViT-VQGAN是tokenizer的transformer架构参考"
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "arxiv_id": "2304.07193",
+      "role": "uses",
+      "note": "使用DINOv2作为语义正则化的特征对齐目标"
+    },
+    {
+      "title": "Emerging Properties in Self-Supervised Vision Transformers",
+      "arxiv_id": "2104.14294",
+      "role": "uses",
+      "note": "DINOv2的基础方法，用于提取语义特征"
+    },
+    {
+      "title": "Autoregressive Image Generation using Residual Quantization",
+      "arxiv_id": "2203.01941",
+      "role": "uses",
+      "note": "RQ-VAE用于对比实验"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "uses",
+      "note": "MaskGIT用于对比tokenizer的生成质量"
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "arxiv_id": "2409.04410",
+      "role": "uses",
+      "note": "Open-MAGVIT2是tokenizer的对比方法"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "uses",
+      "note": "ImageFolder使用多尺度残差量化作为tokenizer"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "contrasts",
+      "note": "DiT是扩散模型代表，与AR生成进行对比"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "contrasts",
+      "note": "LDM是连续tokenizer的代表，与离散tokenizer对比"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "supports",
+      "note": "强调tokenizer对AR生成的关键作用"
+    },
+    {
+      "title": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "arxiv_id": "2410.06940",
+      "role": "uses",
+      "note": "REPA的表示对齐策略启发了本文的语义正则化思路"
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "arxiv_id": "2406.11838",
+      "role": "mentions",
+      "note": "无VQ的AR生成方法"
+    }
+  ],
+  "idea": [
+    {
+      "title": "AR模型学习token依赖困难",
+      "why": "大tokenizer产生的潜在token分布更复杂，使AR模型更难学习token间的依赖关系。GigaTok通过语义正则化约束潜在空间复杂度，但AR模型本身的建模能力仍是瓶颈。可探索更高效的注意力机制或引入强化学习优化token预测策略，以进一步降低AR模型的学习难度。"
+    },
+    {
+      "title": "生成范式可多样化",
+      "why": "当前主流AR生成采用next-token prediction，但VAR的next-scale prediction、MaskGIT的masked generation等范式在某些场景下表现更好。可探索将语义正则化tokenizer与其他生成范式（如non-autoregressive、incremental decoding）结合，可能进一步提升生成效率和质量。"
+    },
+    {
+      "title": "推理速度与生成质量的权衡",
+      "why": "AR模型需要多轮迭代预测token，推理速度慢是固有劣势。可探索非自回归方法或增量式token预测策略，在保持tokenizer优势的同时加速生成过程。此外，tokenizer解码仅占推理时间约10%，说明AR模型是瓶颈，优化AR模型推理效率具有实际价值。"
+    }
+  ],
+  "_cite_sims": [
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "LlamaGen: Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 0.936,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "best_score": 1.0,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "best_score": 1.0,
+      "best_match": "Vector-quantized Image Modeling with Improved VQGAN",
+      "pass": true
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "best_score": 1.0,
+      "best_match": "DINOv2: Learning Robust Visual Features without Supervision",
+      "pass": true
+    },
+    {
+      "title": "Emerging Properties in Self-Supervised Vision Transformers",
+      "best_score": 1.0,
+      "best_match": "Emerging Properties in Self-Supervised Vision Transformers",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Image Generation using Residual Quantization",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Image Generation using Residual Quantization",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "best_score": 1.0,
+      "best_match": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Image Generation without Vector Quantization",
+      "pass": true
+    }
+  ],
+  "_cite_matched": 15,
+  "_cite_total": 15,
+  "_cite_rate": 1.0,
+  "_ref_count": 67,
+  "_mv_count": 4,
+  "_mv_ok": true,
+  "_mv_issues": [],
+  "_idea_count": 3,
+  "_idea_analysis": [],
+  "_idea_restate": 0,
+  "_idea_gap": 0,
+  "_idea_quality": 0.0,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14"
+}

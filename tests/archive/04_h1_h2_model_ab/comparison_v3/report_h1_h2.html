@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="UTF-8">
+<title>H1 vs H2 Comparison — arxiv-radar</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0f172a; color: #e2e8f0; font-family: system-ui,sans-serif; padding: 24px; }
+  h1 { font-size: 20px; margin-bottom: 8px; color: #f8fafc; }
+  .meta { color: #64748b; font-size: 12px; margin-bottom: 20px; }
+  .summary { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .card { background: #1e293b; border-radius: 8px; padding: 16px; min-width: 180px; }
+  .card h3 { font-size: 12px; color: #64748b; text-transform: uppercase; margin-bottom: 8px; }
+  .card .val { font-size: 24px; font-weight: bold; }
+  .card .sub { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+  .green { color: #22c55e; } .amber { color: #f59e0b; } .red { color: #ef4444; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  tr:nth-child(4n+1) td { background: #0f172a; }
+  tr:nth-child(4n+3) td { background: #111827; }
+  td { padding: 8px; vertical-align: top; }
+  td:first-child { width: 160px; }
+  td:nth-child(2), td:nth-child(3) { width: calc(50% - 80px); }
+  em { color: #475569; }
+  small { color: #94a3b8; }
+</style>
+</head><body>
+<h1>H1 vs H2 Prompt Comparison</h1>
+<div class="meta">Generated: 2026-03-14 03:30 | 11 papers × 2 schemes = 22 sessions | Cite threshold: 0.8</div>
+
+<div class="summary">
+  <div class="card">
+    <h3>Cite Accuracy</h3>
+    <div class="val green">93.0%</div>
+    <div class="sub">H1 (清单型) avg</div>
+    <div class="val amber" style="margin-top:8px">89.0%</div>
+    <div class="sub">H2 (判断型) avg</div>
+  </div>
+  <div class="card">
+    <h3>method_variants OK</h3>
+    <div class="val green">100.0%</div>
+    <div class="sub">H1: no size/placeholder issues</div>
+    <div class="val green" style="margin-top:8px">100.0%</div>
+    <div class="sub">H2: no size/placeholder issues</div>
+  </div>
+  <div class="card">
+    <h3>Idea: gap mentions</h3>
+    <div class="val amber">1.09</div>
+    <div class="sub">H1 avg / 3 ideas</div>
+    <div class="val amber" style="margin-top:8px">1.64</div>
+    <div class="sub">H2 avg / 3 ideas</div>
+  </div>
+  <div class="card">
+    <h3>Idea: restate count</h3>
+    <div class="val green">0.0</div>
+    <div class="sub">H1 avg (lower=better)</div>
+    <div class="val green" style="margin-top:8px">0.0</div>
+    <div class="sub">H2 avg (lower=better)</div>
+  </div>
+</div>
+
+<table>
+<thead>
+  <tr style="background:#1e293b">
+    <th style="padding:8px;text-align:left">Metrics</th>
+    <th style="padding:8px;text-align:left;color:#60a5fa">H1 (清单型)</th>
+    <th style="padding:8px;text-align:left;color:#86efac">H2 (判断型)</th>
+  </tr>
+</thead>
+<tbody>
+
+<tr>
+  <td colspan="3" style="background:#1e293b;color:#94a3b8;font-size:11px;padding:6px 8px">
+    <b style="color:#e2e8f0">2406.07550</b> — An Image is Worth 32 Tokens for Reconstruction and Generation
+  </td>
+</tr>
+<tr>
+  <td style="vertical-align:top;padding:8px;width:100px">
+    <b style="color:#60a5fa">Cite</b><br>H1: <span style="color:#22c55e;font-weight:bold">12/12 (100%)</span><br>H2: <span style="color:#22c55e;font-weight:bold">11/11 (100%)</span>
+    <br><br><b style="color:#a78bfa">MV</b><br>H1: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span><br>H2: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span>
+    <br><br><b style="color:#34d399">Idea</b><br>H1: <span style="color:#f59e0b;font-weight:bold">gap:1 / restate:0</span><br>H2: <span style="color:#22c55e;font-weight:bold">gap:3 / restate:0</span>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#7dd3fc;margin-bottom:4px">H1 method_variants</div>
+    <div style="font-size:12px"><b>vq-vae:32-tokens</b><br><small>传统VQ-VAE使用大量token表示图像；本文将token数降至32个，通过改进codebook和训练策略仍保持高质量。</small></div>
+    <div style="font-size:11px;color:#7dd3fc;margin:8px 0 4px">H1 idea</div>
+    <div style="font-size:12px"><b>[A] 探索更细粒度的codebook</b><br><small>本文使用32个全局token，可能缺乏细粒度局部信息。可借鉴FSQ的标量量化思想，设计多级codebook在少量token下保留更多细节。</small><br><br><b>[B] 结合masked生成范式</b><br><small>当前方法主要面向重建和AR生成。MaskGIT和Muse等masked生成方法在效率上有优势，可探索将32-token表示与masked生成结合。</small><br><br><b>[C] 扩展到视频tokenizer</b><br><small>MAGVIT已证明视频tokenizer的可行性。借鉴本文的紧凑表示思想，可探索更高效的视频tokenizer设计，用更少token表示时空信息。</small></div>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#86efac;margin-bottom:4px">H2 method_variants</div>
+    <div style="font-size:12px"><b>vq-vae:1d-tokenization</b><br><small>传统VQ-VAE使用2D latent grids（如16×16=256 token），存在图像空间冗余；TiTok将图像展平为1D序列，用Transformer编码器学习紧凑的32个离散token，消除2D结构假设，利用率更高</small></div>
+    <div style="font-size:11px;color:#86efac;margin:8px 0 4px">H2 idea</div>
+    <div style="font-size:12px"><b>[A] 扩展1D tokenization到视频生成</b><br><small>TiTok的1D表示天然适合视频这种时序数据，可将视频帧视为连续token序列。Gap：本文只验证了图像重建和生成，未探索视频；本文未做是因为视频需要额外时序建模和更大token容量；成功会不平凡，因为视频tokenization比图像更具挑战但潜力更大。</small><br><br><b>[B] 将32 token作为VLM视觉编码器</b><br><small>32个token的极简表示非常适合作为多模态大模型的视觉输入，可大幅降低Attention计算成本。Gap：本文聚焦图像重建和生成质量，未讨论作为视觉编码器的可行性；本文未做是因为需要额外训练视觉-语言对齐；成功会不平凡，因为当前VLM多使用大量visual tokens，压缩到32个可显著提升效率。</small><br><br><b>[C] 探索可变长度tokenization</b><br><small>可根据图像复杂度动态调整token数量，简单图像用更少token，复杂图像用更多token。Gap：本文使用固定32 token，未探索自适应长度；本文未做是因为需要设计复杂度度量指标和可变长度训练策略；成功会不平凡，可在保持质量的同时进一步提升平均效率。</small></div>
+  </td>
+</tr>
+
+<tr>
+  <td colspan="3" style="background:#1e293b;color:#94a3b8;font-size:11px;padding:6px 8px">
+    <b style="color:#e2e8f0">2501.07730</b> — Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One
+  </td>
+</tr>
+<tr>
+  <td style="vertical-align:top;padding:8px;width:100px">
+    <b style="color:#60a5fa">Cite</b><br>H1: <span style="color:#22c55e;font-weight:bold">13/13 (100%)</span><br>H2: <span style="color:#22c55e;font-weight:bold">14/14 (100%)</span>
+    <br><br><b style="color:#a78bfa">MV</b><br>H1: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span><br>H2: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span>
+    <br><br><b style="color:#34d399">Idea</b><br>H1: <span style="color:#f59e0b;font-weight:bold">gap:0 / restate:0</span><br>H2: <span style="color:#f59e0b;font-weight:bold">gap:0 / restate:0</span>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#7dd3fc;margin-bottom:4px">H1 method_variants</div>
+    <div style="font-size:12px"><b>magvit:text-aware+1d+single-stage</b><br><small>MAGVIT原本做二维视频tokenization和两阶段蒸馏；本文将其改为一维图像tokenization并去掉蒸馏阶段，引入文本感知机制来解决文本-图像对齐问题</small><br><br><b>maskgit:text-aware-decoding</b><br><small>MaskGIT原本在固定tokenize后的图像上做掩码生成；本文将tokenize过程改为文本感知的TA-TiTok，使生成过程更好地利用文本信息</small><br><br><b>muse:compact-1d-tokens</b><br><small>Muse使用较长的1D token序列；本文通过TA-TiTok将token压缩到128（离散）或32（连续）个，大幅提升推理速度</small></div>
+    <div style="font-size:11px;color:#7dd3fc;margin:8px 0 4px">H1 idea</div>
+    <div style="font-size:12px"><b>[A] 文本感知位置编码改进</b><br><small>当前TA-TiTok在解码阶段融入文本信息，但文本和图像token的位置编码是分离的。可探索联合位置编码让模型更好地学习文本-图像对齐关系，提升细粒度文本渲染能力。这是本文已做文本感知解码但未深入探索的方向。</small><br><br><b>[B] 更大规模开放数据筛选策略</b><br><small>MaskGen使用LAION-Aesthetics等开放数据，但数据筛选策略（如美学分数、文本质量过滤）仍有优化空间。可研究不同数据筛选策略对模型性能的影响，找出更高效的数据利用方法。参考DataComp和LAION的筛选方法，可在此基础上提出改进。</small><br><br><b>[C] 多模态联合训练的迁移学习</b><br><small>TA-TiTok的文本感知设计适合扩展到视频生成或多模态联合训练。可探索将图像tokenizer的文本感知机制迁移到视频tokenizer，实现更高效的文本到视频生成。参考Chameleon的早期融合思路和MAGVIT的视频tokenization方法。</small></div>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#86efac;margin-bottom:4px">H2 method_variants</div>
+    <div style="font-size:12px"><b>titok:text-aware</b><br><small>原TiTok仅在编码阶段处理图像，缺乏文本语义对齐能力→在解码阶段通过拼接CLIP文本嵌入与tokenized图像表示，使重建图像更好地保留与文本相关的细节→在文生图任务中实现更好的文本-图像对齐</small><br><br><b>titok:one-stage</b><br><small>原TiTok使用复杂的两阶段蒸馏训练流程，难以扩展到大规模数据集→简化为一阶段端到端训练，直接在目标数据集上训练tokenizer→显著提升可扩展性，支持大规模text-image数据训练</small><br><br><b>titok:continuous</b><br><small>原TiTok仅支持离散VQ token，存在quantization loss→扩展支持连续VAE表示，使用KL散度作为重建损失→消除量化损失，提升重建质量</small></div>
+    <div style="font-size:11px;color:#86efac;margin:8px 0 4px">H2 idea</div>
+    <div style="font-size:12px"><b>[A] 连续token的masked生成</b><br><small>本文仅在离散token上展示了完整的T2I pipeline，对于连续token使用diffusion loss的masked生成没有充分探索其与纯diffusion模型的性能差距。需要验证：连续token的masked生成是否能在保持采样速度优势的前提下，达到与纯diffusion相当的生成质量？如果成功，将为混合架构提供新思路。成功会不平凡，因为这意味着masked范式可以统一离散和连续表示的</small><br><br><b>[B] 文本信息的更早融合</b><br><small>本文选择在de-tokenization阶段引入文本信息，这是一个相对晚的阶段。一个潜在的改进方向是在encoder阶段就融入文本特征，这可能带来更强的文本-图像对齐。需要验证：encoder阶段的文本融合是否能进一步提升性能？本文没做是因为会增加训练复杂度，但探索encoder-decoder双阶段文本融合可能有更好效果。</small><br><br><b>[C] 更大规模开放数据缩放</b><br><small>本文强调使用开放数据集训练，但使用的仍是过滤后的子集（DataComp、LAION等）。一个关键问题是：更大规模的开放数据是否能让模型达到私有数据模型的水平？需要验证：数据规模与模型性能的 scaling law。邻域可以借鉴LLM scaling的成熟经验，应用于多模态生成模型。</small></div>
+  </td>
+</tr>
+
+<tr>
+  <td colspan="3" style="background:#1e293b;color:#94a3b8;font-size:11px;padding:6px 8px">
+    <b style="color:#e2e8f0">2503.08685</b> — &quot;Principal Components&quot; Enable A New Language of Images
+  </td>
+</tr>
+<tr>
+  <td style="vertical-align:top;padding:8px;width:100px">
+    <b style="color:#60a5fa">Cite</b><br>H1: <span style="color:#22c55e;font-weight:bold">12/12 (100%)</span><br>H2: <span style="color:#22c55e;font-weight:bold">14/14 (100%)</span>
+    <br><br><b style="color:#a78bfa">MV</b><br>H1: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span><br>H2: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span>
+    <br><br><b style="color:#34d399">Idea</b><br>H1: <span style="color:#22c55e;font-weight:bold">gap:3 / restate:0</span><br>H2: <span style="color:#22c55e;font-weight:bold">gap:3 / restate:0</span>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#7dd3fc;margin-bottom:4px">H1 method_variants</div>
+    <div style="font-size:12px"><b>vq-vae:pca-like-structure</b><br><small>vq-vae原本通过向量量化学习离散latent codes；本文改为使用Nested CFG引导的因果ViT encoder生成有序token序列，每个token具有PCA-like递减解释方差特性，实现结构化latent space而非</small><br><br><b>cfg:nested-cfg</b><br><small>cfg原本在推理时对条件和无条件预测进行插值；本文改为nested CFG，在训练时对后续token逐步替换为null condition，强制前序token学习最关键信息，形成粗到细的层次结构</small><br><br><b>dit:diffusion-decoder</b><br><small>dit原本用于diffusion model的去噪网络；本文将其作为decoder，从结构化token重建图像，利用diffusion天然的低频到高频自回归特性解耦semantic-spectrum耦合</small></div>
+    <div style="font-size:11px;color:#7dd3fc;margin:8px 0 4px">H1 idea</div>
+    <div style="font-size:12px"><b>[A] 探索非线性PCA结构</b><br><small>当前PCA-like结构基于线性假设，可能无法充分捕捉图像的复杂非线性结构。可以借鉴自编码器的非线性激活函数或流模型，将PCA扩展为非线性主成分分析，从而更灵活地建模视觉数据的高维流形结构。Gap：线性PCA在复杂图像表示上存在表达力不足的问题。</small><br><br><b>[B] 融合bit-level tokenization</b><br><small>MaskBit等方法使用bit-level表示实现无embedding的图像生成。将bit token与本文的PCA-like token结合，可探索是否能在保持层次结构的同时进一步压缩表示，或在bit级别实现语义-频谱解耦。Gap：当前token仍是连续特征的离散化，bit级表示可能提供更紧凑的基础。</small><br><br><b>[C] 借鉴MRL的动态维度思想</b><br><small>Matryoshka Representation Learning(MRL)允许在同一表示中灵活调整特征维度。与本文的递减方差token结构结合，可以设计自适应的token数量策略：根据重建质量需求动态选择token数量，实现计算资源与效果的自适应平衡。Gap：当前方法需要预设固定token数量，缺乏动态调整机制。</small></div>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#86efac;margin-bottom:4px">H2 method_variants</div>
+    <div style="font-size:12px"><b>vq-vae:结构化约束</b><br><small>传统VQ-VAE等方法仅优化重建质量，潜在空间无结构约束。本文引入PCA-like结构，确保每个token贡献非重叠递减方差信息，实现更优的token efficiency和可解释性。</small><br><br><b>diffusion-decoder:语义解耦</b><br><small>现有方法常出现语义-光谱纠缠。本文使用diffusion decoder作为解码器，解决semantic-spectrum coupling效应，使高层语义和低层细节在token中有效分离。</small></div>
+    <div style="font-size:11px;color:#86efac;margin:8px 0 4px">H2 idea</div>
+    <div style="font-size:12px"><b>[A] 本文局限：tokenization结构与生成质量权衡</b><br><small>本文强调PCA结构带来的token efficiency，但未深入分析结构约束对生成多样性和细节的影响。Gap：PCA的线性假设可能限制表达复杂纹理的能力。检验：需比较有无结构约束的FID/IS等生成指标差异。</small><br><br><b>[B] 邻域借鉴：NLP领域有序tokenization</b><br><small>NLP中已有类似Nested Dropout和MRL的有序表示工作，可借鉴其训练技巧。Gap：视觉token的有序性比文本更难定义（视觉特征无明确语义层级）。检验：可尝试将MRL的nested structure与本文PCA约束结合。</small><br><br><b>[C] 引用挖掘：更通用的结构化tokenization</b><br><small>本文将PCA引入tokenization是很好的跨领域创新。Gap：其他数学工具（如SVD、ICA、NMF）是否也能嵌入？检验：可探索ICA的非高斯性约束或NMF的非负性约束是否带来额外收益。</small></div>
+  </td>
+</tr>
+
+<tr>
+  <td colspan="3" style="background:#1e293b;color:#94a3b8;font-size:11px;padding:6px 8px">
+    <b style="color:#e2e8f0">2503.10772</b> — FlowTok: Flowing Seamlessly Across Text and Image Tokens
+  </td>
+</tr>
+<tr>
+  <td style="vertical-align:top;padding:8px;width:100px">
+    <b style="color:#60a5fa">Cite</b><br>H1: <span style="color:#f59e0b;font-weight:bold">8/11 (72%)</span><br>H2: <span style="color:#ef4444;font-weight:bold">6/12 (50%)</span>
+    <br><br><b style="color:#a78bfa">MV</b><br>H1: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span><br>H2: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span>
+    <br><br><b style="color:#34d399">Idea</b><br>H1: <span style="color:#f59e0b;font-weight:bold">gap:0 / restate:0</span><br>H2: <span style="color:#f59e0b;font-weight:bold">gap:0 / restate:0</span>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#7dd3fc;margin-bottom:4px">H1 method_variants</div>
+    <div style="font-size:12px"><b>flow-matching:cross-modal-token</b><br><small>flow-matching原本在噪声和目标图像之间进行转换；本文将其改为在文本token和图像token之间直接流转换，以实现文本到图像和图像到文本的双向生成</small><br><br><b>ta-titok:rope-swiglu</b><br><small>TA-TiTok原本使用可学习1D位置编码和标准MLP；本文引入RoPE增强位置信息和SwiGLU FFN替代MLP，并将token数设为77以对齐CLIP文本encoder输出</small></div>
+    <div style="font-size:11px;color:#7dd3fc;margin:8px 0 4px">H1 idea</div>
+    <div style="font-size:12px"><b>[A] 动态token长度适配</b><br><small>FlowTok使用固定的77个token，无法适应不同分辨率或复杂度的图像。可借鉴FlexTok的灵活长度思想，设计分辨率自适应的token数量，在保持语义完整性的同时优化计算效率。</small><br><br><b>[B] 优化流轨迹</b><br><small>FlowTok采用线性插值构建潜在轨迹，未考虑轨迹曲率优化。SiT等工作表明使用高阶插值可提升生成质量。可探索引入曲率正则或多项式轨迹，提升少步采样下的生成效果。</small><br><br><b>[C] 扩展更多模态</b><br><small>FlowTok目前仅支持文本和图像两种模态。Chameleon和Emu3已展示音频、视频等多模态统一的可能性。可将1D token统一空间扩展到音频/视频编码，实现更广泛的跨模态生成。</small></div>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#86efac;margin-bottom:4px">H2 method_variants</div>
+    <div style="font-size:12px"><b>flow-matching:continuous-tokens</b><br><small>传统离散tokenization方法（如VQGAN）存在信息损失和计算开销问题；FlowTok将图像和文本统一表示为1D连续token序列，通过Rectified Flow进行流匹配建模，实现了跨模态无缝生成，在保持生成质量的同时消除了离散</small><br><br><b>flow-matching:text-aware-conditioning</b><br><small>传统flow matching主要针对单一模态条件生成；FlowTok引入text-aware flow matching目标，通过文本条件引导图像生成过程，实现了真正的跨模态条件生成。</small></div>
+    <div style="font-size:11px;color:#86efac;margin:8px 0 4px">H2 idea</div>
+    <div style="font-size:12px"><b>[A] flow matching能否真正统一离散和连续tokenization</b><br><small>本文使用连续token避免了VQ的信息损失，但离散token在压缩和建模上可能有独特优势。一个有趣的问题是是否能设计混合方案同时利用两者优势。</small><br><br><b>[B] 跨模态token的语义对齐问题</b><br><small>文本和图像token的语义空间可能存在差异，本文虽使用共享tokenizer但未深入探讨如何确保跨模态语义对齐。这可能影响条件生成的质量。</small><br><br><b>[C] 借鉴LLM的scaling law到多模态flow matching</b><br><small>Llama等LLM已证明scaling的有效性，FlowTok的统一框架理论上可以借鉴LLM的训练策略（课程学习、预训练-微调分离）来提升多模态生成效果。</small></div>
+  </td>
+</tr>
+
+<tr>
+  <td colspan="3" style="background:#1e293b;color:#94a3b8;font-size:11px;padding:6px 8px">
+    <b style="color:#e2e8f0">2504.08736</b> — GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Im
+  </td>
+</tr>
+<tr>
+  <td style="vertical-align:top;padding:8px;width:100px">
+    <b style="color:#60a5fa">Cite</b><br>H1: <span style="color:#22c55e;font-weight:bold">15/15 (100%)</span><br>H2: <span style="color:#22c55e;font-weight:bold">10/11 (90%)</span>
+    <br><br><b style="color:#a78bfa">MV</b><br>H1: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span><br>H2: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span>
+    <br><br><b style="color:#34d399">Idea</b><br>H1: <span style="color:#f59e0b;font-weight:bold">gap:0 / restate:0</span><br>H2: <span style="color:#f59e0b;font-weight:bold">gap:1 / restate:0</span>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#7dd3fc;margin-bottom:4px">H1 method_variants</div>
+    <div style="font-size:12px"><b>vq-vae:semantic-regularization</b><br><small>vq-vae原本通过重建损失训练tokenizer，将图像映射到离散codebook；本文在vq-vae基础上增加语义正则化损失，对齐DINOv2特征，防止潜在空间复杂度随模型增大而爆炸，解决重构-生成困境</small><br><br><b>vqgan:1d-tokenizer</b><br><small>vqgan原本使用2D ViT结构处理图像token；本文采用1D tokenizers（Q-Former结构），移除2D归纳偏置，展示更好的可扩展性和下游生成质量</small><br><br><b>vit-vqgan:asymmetric-scaling</b><br><small>vit-vqgan使用对称的encoder-decoder结构；本文采用非对称扩展策略，优先扩展decoder而非encoder，因为decoder承担更困难的图像重建任务</small><br><br><b>vq-vae:entropy-loss</b><br><small>传统vq-vae训练小规模模型时无entropy loss；本文对30亿级tokenizer引入entropy loss，鼓励高codebook使用率，解决大模型训练不收敛问题</small></div>
+    <div style="font-size:11px;color:#7dd3fc;margin:8px 0 4px">H1 idea</div>
+    <div style="font-size:12px"><b>[A] AR模型学习token依赖困难</b><br><small>大tokenizer产生的潜在token分布更复杂，使AR模型更难学习token间的依赖关系。GigaTok通过语义正则化约束潜在空间复杂度，但AR模型本身的建模能力仍是瓶颈。可探索更高效的注意力机制或引入强化学习优化token预测策略，以进一步降低AR模型的学习难度。</small><br><br><b>[B] 生成范式可多样化</b><br><small>当前主流AR生成采用next-token prediction，但VAR的next-scale prediction、MaskGIT的masked generation等范式在某些场景下表现更好。可探索将语义正则化tokenizer与其他生成范式（如non-autoregressive、incremental decoding）结合，可能进一步提升生成效率和质量。</small><br><br><b>[C] 推理速度与生成质量的权衡</b><br><small>AR模型需要多轮迭代预测token，推理速度慢是固有劣势。可探索非自回归方法或增量式token预测策略，在保持tokenizer优势的同时加速生成过程。此外，tokenizer解码仅占推理时间约10%，说明AR模型是瓶颈，优化AR模型推理效率具有实际价值。</small></div>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#86efac;margin-bottom:4px">H2 method_variants</div>
+    <div style="font-size:12px"><b>vq-vae:semantic-regularization</b><br><small>原局限：扩展tokenizer时潜在空间复杂性增加导致重建质量提升但生成质量下降→核心insight：通过语义正则化将tokenizer特征与预训练视觉编码器(DINOv2)对齐，约束潜在空间复杂度→效果：30亿参数下同时提升重建、生成和表</small><br><br><b>vq-vae:1d-tokenizer</b><br><small>原局限：2D token排列在扩展时面临注意力计算和位置编码挑战→核心insight：使用1D tokenizer将图像视为序列，处理更高效→效果：更好地支持十亿级参数扩展</small><br><br><b>vq-vae:decoder-scaling-priority</b><br><small>原局限：同时扩展encoder和decoder但资源分配不合理→核心insight：优先扩展decoder，decoder容量对生成质量影响更大→效果：更高效地利用扩展参数提升生成质量</small></div>
+    <div style="font-size:11px;color:#86efac;margin:8px 0 4px">H2 idea</div>
+    <div style="font-size:12px"><b>[A] 本文局限：仅用DINOv2作为监督</b><br><small>当前语义正则化仅依赖DINOv2的特征对齐，未探索其他预训练编码器(如CLIP、MAE)的效果。不同编码器提取的语义特征可能更适合特定下游任务。未来可研究多编码器融合或任务自适应的编码器选择。</small><br><br><b>[B] 引用挖掘：VAR的多尺度tokenization</b><br><small>VAR(2404.02905)提出next-scale预测的多尺度tokenization，可进一步融入GigaTok框架。当前1D序列化可能丢失多尺度结构信息。两者结合可能实现更好的重建-生成平衡。</small><br><br><b>[C] 邻域借鉴：扩散模型的表示对齐</b><br><small> Representation Alignment for Generation(2410.06940)提出Diffusion Transformer的表示对齐，可借鉴其对比学习方法。GigaTok的语义正则化是特征级别的对齐，未来可引入对比学习进一步提升表示质量。</small></div>
+  </td>
+</tr>
+
+<tr>
+  <td colspan="3" style="background:#1e293b;color:#94a3b8;font-size:11px;padding:6px 8px">
+    <b style="color:#e2e8f0">2505.21473</b> — DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Pr
+  </td>
+</tr>
+<tr>
+  <td style="vertical-align:top;padding:8px;width:100px">
+    <b style="color:#60a5fa">Cite</b><br>H1: <span style="color:#22c55e;font-weight:bold">14/14 (100%)</span><br>H2: <span style="color:#22c55e;font-weight:bold">12/12 (100%)</span>
+    <br><br><b style="color:#a78bfa">MV</b><br>H1: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span><br>H2: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span>
+    <br><br><b style="color:#34d399">Idea</b><br>H1: <span style="color:#f59e0b;font-weight:bold">gap:1 / restate:0</span><br>H2: <span style="color:#f59e0b;font-weight:bold">gap:0 / restate:0</span>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#7dd3fc;margin-bottom:4px">H1 method_variants</div>
+    <div style="font-size:12px"><b>var:next-detail-prediction</b><br><small>VAR原本采用next-scale预测生成多尺度2D tokens；本文改为1D粗到细tokenizer，利用逐步降质图像训练建立resolution-aware token序列，实现next-detail预测，将token数从680减少到</small><br><br><b>flextok:self-correction</b><br><small>FlexTok使用tail-drop策略建立粗到细顺序，但缺乏自校正能力导致性能随token数增加而下降；本文引入自校正训练策略，通过在量化过程中注入随机扰动并训练后续tokens修正误差</small><br><br><b>tiktok:parallel-inference</b><br><small>TiTok采用masked prediction进行生成，不支持高效的并行推理；本文结合分组并行预测和自校正机制，实现约8倍的推理加速</small></div>
+    <div style="font-size:11px;color:#7dd3fc;margin:8px 0 4px">H1 idea</div>
+    <div style="font-size:12px"><b>[A] 改进VAR的tokenization效率</b><br><small>VAR需要680个2D多尺度tokens，计算和内存开销大。当前1D tokenizer虽压缩效率高，但缺乏明确的粗到细顺序，导致自回归建模效果不佳。可以探索更高效的token压缩同时保持语义顺序的方法。</small><br><br><b>[B] 自校正机制泛化研究</b><br><small>本文的自校正训练通过在量化阶段注入噪声来模拟采样误差，但该方法依赖于特定的token分组策略。可以研究更通用的自校正机制，将其应用于其他自回归生成模型如语言模型，提升生成质量。</small><br><br><b>[C] 动态分辨率生成的统一框架</b><br><small>本文支持动态分辨率但仍需预设最大分辨率和token数。参考diffusion model的无条件生成思想，可以探索更灵活的生成框架，允许模型自主决定生成所需的token数量和分辨率。</small></div>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#86efac;margin-bottom:4px">H2 method_variants</div>
+    <div style="font-size:12px"><b>var:next-detail-prediction</b><br><small>VAR使用next-scale prediction按从低到高分辨率顺序生成多尺度2D token map，DetailFlow改为1D next-detail prediction序列，从全局结构到细节逐步生成，通过resolution-</small><br><br><b>var:parallel-inference</b><br><small>传统自回归模型逐token顺序生成，存在teacher-forcing导致的累积采样误差，DetailFlow提出带self-correction的并行推理机制，实现约8x加速同时减少累积误差</small></div>
+    <div style="font-size:11px;color:#86efac;margin:8px 0 4px">H2 idea</div>
+    <div style="font-size:12px"><b>[A] 探究完全移除向量量化层以实现端到端AR生成</b><br><small>当前方法仍依赖VQ tokenizer，存在信息损失和训练目标不一致的问题。软化VQ或使用连续token可能进一步提升生成质量。本文为何没做：需要更大的模型容量和更复杂的训练技巧，可能是下一步工作</small><br><br><b>[B] 将next-detail prediction扩展到video生成</b><br><small>该方法在图像上展示了粗到细生成的优势，video的时间维度可以自然地与detail维度结合，实现高效video生成</small><br><br><b>[C] 借鉴diffusion的classifier-free guidance到AR框架</b><br><small>CFguidance在diffusion中显著提升质量和多样性，AR模型也可引入类似机制。Self-correction已经是一个好的开始，但可以进一步探索无分类器引导</small></div>
+  </td>
+</tr>
+
+<tr>
+  <td colspan="3" style="background:#1e293b;color:#94a3b8;font-size:11px;padding:6px 8px">
+    <b style="color:#e2e8f0">2505.12053</b> — VFRTok: Variable Frame Rates Video Tokenizer with Duration-Proportional Informat
+  </td>
+</tr>
+<tr>
+  <td style="vertical-align:top;padding:8px;width:100px">
+    <b style="color:#60a5fa">Cite</b><br>H1: <span style="color:#22c55e;font-weight:bold">12/12 (100%)</span><br>H2: <span style="color:#22c55e;font-weight:bold">12/12 (100%)</span>
+    <br><br><b style="color:#a78bfa">MV</b><br>H1: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span><br>H2: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span>
+    <br><br><b style="color:#34d399">Idea</b><br>H1: <span style="color:#f59e0b;font-weight:bold">gap:1 / restate:0</span><br>H2: <span style="color:#22c55e;font-weight:bold">gap:3 / restate:0</span>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#7dd3fc;margin-bottom:4px">H1 method_variants</div>
+    <div style="font-size:12px"><b>vq-vae:时长比例信息假设</b><br><small>传统VQ-VAE视频tokenizer假设信息量与帧数成正比，提供固定时间压缩率；本文改为假设信息量与时长成正比，支持可变帧率编码，解决计算成本随帧率线性增长的问题</small><br><br><b>rope:partial-rope</b><br><small>标准RoFormer旋转位置编码同时建模位置和内容信息；本文提出Partial RoPE解耦两者，将相关patches分组为统一tokens，增强内容感知能力</small><br><br><b>dit:非对称帧率训练</b><br><small>标准DiT架构的encoder和decoder使用相同帧率处理；本文改为encoder和decoder使用不同帧率训练，实现非对称编解码，支持可变帧率推理</small></div>
+    <div style="font-size:11px;color:#7dd3fc;margin:8px 0 4px">H1 idea</div>
+    <div style="font-size:12px"><b>[A] 自适应token分配策略</b><br><small>当前方法按固定比例压缩视频，对于不同复杂度场景可能导致信息冗余或不足。未来可探索根据视频内容复杂度动态分配token数量的方法，在保持质量的同时进一步压缩简单视频的token使用。</small><br><br><b>[B] 跨模态tokenizer统一框架</b><br><small>当前视频tokenizer多为专用设计，与图像tokenizer框架不同。借鉴OmniTokenizer的联合tokenization思路，可探索图像-视频-音频统一的tokenizer框架，减少多模态生成中的跨模态对齐问题。</small><br><br><b>[C] 参考LARP的自回归生成prior</b><br><small>LARP提出使用学习到的自回归生成先验进行tokenization，可以更好地捕获生成式先验。当前VFRTok主要关注重建质量，未来可考虑引入更强的生成式先验以提升生成分辨率。</small></div>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#86efac;margin-bottom:4px">H2 method_variants</div>
+    <div style="font-size:12px"><b>dit:partial_rope</b><br><small>传统完整RoPE同时编码位置和内容→Partial RoPE解耦位置与内容建模，将相关patch分组为统一token→增强内容感知能力，提升视频生成质量</small><br><br><b>vq-vae:variable_frame_rate</b><br><small>传统固定帧率编码导致token数与帧率线性相关→非对称帧率训练实现编解码器可变帧率→基于时长-信息比例假设动态分配token，仅1/8 tokens达SOTA</small></div>
+    <div style="font-size:11px;color:#86efac;margin:8px 0 4px">H2 idea</div>
+    <div style="font-size:12px"><b>[A] 当前按视频级别估计信息密度，可探索帧级或片段级动态分配</b><br><small>新假设：更细粒度的信息密度估计可进一步提升token效率。本文为何没做：帧级动态分配训练复杂度高。不平凡：需要设计有效的训练策略和梯度掩码机制。</small><br><br><b>[B] Partial RoPE解耦思想可迁移至图像tokenizer和3D场景重建</b><br><small>新假设：位置-内容解耦对长序列建模普遍有益。本文为何没做：聚焦视频场景。未充分探索：已有工作将图像tokenizer扩展到3D，未利用Partial RoPE优势。</small><br><br><b>[C] 结合强化学习根据生成质量反馈动态调整token预算</b><br><small>新假设：端到端优化token分配而非人工设计假设。本文为何没做：增加训练复杂度。不平凡：需要设计有效的reward signal和训练稳定化方法。</small></div>
+  </td>
+</tr>
+
+<tr>
+  <td colspan="3" style="background:#1e293b;color:#94a3b8;font-size:11px;padding:6px 8px">
+    <b style="color:#e2e8f0">2506.05289</b> — AliTok: Towards Sequence Modeling Alignment between Tokenizer and Autoregressive
+  </td>
+</tr>
+<tr>
+  <td style="vertical-align:top;padding:8px;width:100px">
+    <b style="color:#60a5fa">Cite</b><br>H1: <span style="color:#22c55e;font-weight:bold">12/12 (100%)</span><br>H2: <span style="color:#22c55e;font-weight:bold">14/14 (100%)</span>
+    <br><br><b style="color:#a78bfa">MV</b><br>H1: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span><br>H2: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span>
+    <br><br><b style="color:#34d399">Idea</b><br>H1: <span style="color:#f59e0b;font-weight:bold">gap:1 / restate:0</span><br>H2: <span style="color:#f59e0b;font-weight:bold">gap:1 / restate:0</span>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#7dd3fc;margin-bottom:4px">H1 method_variants</div>
+    <div style="font-size:12px"><b>vq-vae:双向编码器+因果解码器</b><br><small>vq-vae原本使用双向编码器压缩图像；本文改为双向编码器+因果解码器架构，因果解码器作为强隐式正则器，迫使编码器产生具有前向依赖的token表示</small><br><br><b>vit:前缀tokens</b><br><small>ViT原本处理全部patch tokens；本文为第一行引入K=16个前缀tokens，配套辅助损失提供第一行的上下文先验，解决因果约束下首行重建质量差的问题</small><br><br><b>tokenizer:两阶段训练</b><br><small>传统tokenizer单阶段训练；本文采用两阶段策略：第一阶段训练因果解码器约束的编码器，第二阶段冻结编码器并重训双向解码器，平衡生成友好性与重建质量</small></div>
+    <div style="font-size:11px;color:#7dd3fc;margin:8px 0 4px">H1 idea</div>
+    <div style="font-size:12px"><b>[A] tokenizer结构与生成范式对齐</b><br><small>当前工作聚焦于修改生成模型架构(MAR/VAR)来适应数据，本文证明可从tokenizer端解决问题。未来可探索更彻底的前向依赖结构，如完全禁止token之间的非因果信息交互。</small><br><br><b>[B] 语义压缩与前向依赖的平衡</b><br><small>AliTok通过因果解码器实现了生成友好性，但代价是重建质量下降(GigaTok rFID 0.81 vs AliTok rFID 0.86)。可探索更高效的编码策略，在保持前向依赖的同时提升语义压缩效率。</small><br><br><b>[C] 自回归建模目标的重新思考</b><br><small>传统tokenizer优化重建质量，但忽略了后续AR生成任务的需求。可引入基于生成任务的弱监督信号，直接优化tokenizer的生成友好性，而非仅依赖重建的隐式约束。</small></div>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#86efac;margin-bottom:4px">H2 method_variants</div>
+    <div style="font-size:12px"><b>vq-vae:前向依赖对齐</b><br><small>传统VQ-VAE的token序列具有双向依赖（每个token可访问所有位置），与AR模型单向建模不匹配→AliTok通过编码器-解码器约束强制token具有前向依赖性→使token可被自回归模型逐个预测，ImageNet-256达gFID </small></div>
+    <div style="font-size:11px;color:#86efac;margin:8px 0 4px">H2 idea</div>
+    <div style="font-size:12px"><b>[A] 编码器-解码器约束产生前向依赖token</b><br><small>传统tokenizer的token具有双向依赖，但AR模型只能单向建模。AliTok创新性地使用因果解码器约束编码器，强制产生可逐个预测的前向依赖token。这是新假设：之前工作主要关注量化方法（FSQ、RQ）或tokenizer规模，忽略了依赖结构的对齐。本文通过结构设计直接解决此问题。本文为何没做：可能之前工作未意识到这是AR生成的核心瓶颈，或认为重建质量足够即可。不平凡性：该方法在不损失重建</small><br><br><b>[B] 两阶段训练和前缀token提升重建质量</b><br><small>引入前缀token可为tokenizer提供额外的位置信息，两阶段训练（先重建后AR适配）可平衡重建和生成性能。这是借鉴NLP领域的常见技术（prefix language modeling），迁移到视觉tokenizer领域。本文为何没做：单阶段训练可能无法同时保证重建和生成质量，需要额外技巧。不平凡性：将NLP中成熟技术应用到视觉领域并验证有效性。</small><br><br><b>[C] tokenizer依赖结构是AR生成的关键瓶颈</b><br><small>本文揭示了tokenizer的依赖结构对AR生成的重大影响，之前工作更多关注tokenizer的重建质量或压缩率。本文为何没做：可能之前认为重建质量足够即可，AR建模是后续Transformer的事。不平凡性：该发现为后续AR tokenizer设计提供了新方向：不仅要关注重建质量，还要关注token的可预测性。</small></div>
+  </td>
+</tr>
+
+<tr>
+  <td colspan="3" style="background:#1e293b;color:#94a3b8;font-size:11px;padding:6px 8px">
+    <b style="color:#e2e8f0">2507.08441</b> — Vision Foundation Models as Effective Visual Tokenizers for Autoregressive Image
+  </td>
+</tr>
+<tr>
+  <td style="vertical-align:top;padding:8px;width:100px">
+    <b style="color:#60a5fa">Cite</b><br>H1: <span style="color:#22c55e;font-weight:bold">15/15 (100%)</span><br>H2: <span style="color:#22c55e;font-weight:bold">13/13 (100%)</span>
+    <br><br><b style="color:#a78bfa">MV</b><br>H1: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span><br>H2: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span>
+    <br><br><b style="color:#34d399">Idea</b><br>H1: <span style="color:#22c55e;font-weight:bold">gap:2 / restate:0</span><br>H2: <span style="color:#22c55e;font-weight:bold">gap:3 / restate:0</span>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#7dd3fc;margin-bottom:4px">H1 method_variants</div>
+    <div style="font-size:12px"><b>vq-vae:frozen-vfm-encoder</b><br><small>传统vq-vae使用可训练编码器；本文将其替换为冻结的视觉基础模型(DINOv2)作为编码器，直接利用其丰富的语义特征</small><br><br><b>vq-vae:region-adaptive-quantization</b><br><small>传统vq-vae使用规则2D网格特征；本文通过可学习锚点查询和可变形注意力自适应采样语义连贯的不规则区域，减少冗余</small><br><br><b>vq-vae:semantic-reconstruction</b><br><small>传统vq-vae仅优化像素重建；本文引入特征重建目标，计算量化后特征与冻结VFM特征之间的余弦相似度损失，保持语义保真度</small></div>
+    <div style="font-size:11px;color:#7dd3fc;margin:8px 0 4px">H1 idea</div>
+    <div style="font-size:12px"><b>[A] VFM分词器的泛化性局限</b><br><small>本文VFMTok仅在ImageNet 256×256上验证，缺乏对多样化场景和高分辨率图像的泛化能力探索。当前VFM分辨率固定为336×336，对于更高分辨率(如512×512或1024×1024)的图像生成任务，是否需要额外的处理策略尚不明确。未来的工作可以探索VFM分词器在更多样化数据集(COCO、LAION等)和更高分辨率上的适用性。</small><br><br><b>[B] 结合更强AR生成范式</b><br><small>LlamaGen和VAR等方法证明了不同AR生成范式的有效性。当前实验已展示VFMTok与RAR集成的优秀效果(gFID 1.36)，但未探索与VAR的next-scale预测或LlamaGen标准next-token预测的更系统对比。未来可以深入研究不同AR生成范式与VFMTok分词器的匹配特性，找出最优组合。</small><br><br><b>[C] 借鉴扩散模型训练策略</b><br><small>扩散模型(如DiT、MaskDiT)在高分辨率和复杂场景生成上表现优异，其训练稳定性和采样策略值得借鉴。VFMTok的语义重建目标与扩散模型中特征对齐的思想相通。未来可探索将扩散模型的噪声调度策略、classifier guidance替代方案(如cfg-free采样)与VFM分词器结合，进一步提升生成质量和效率。</small></div>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#86efac;margin-bottom:4px">H2 method_variants</div>
+    <div style="font-size:12px"><b>dinov2:冻结编码器</b><br><small>直接使用冻结的DINOv2特征作为tokenizer编码器。局限：不同VFM训练目标影响重建质量，DINOv2因masked prediction目标表现均衡。效果：实现与vanilla VQGAN相当的重建质量，但语义表示更强。</small><br><br><b>siglip2:冻结编码器</b><br><small>使用最新的SigLIP2（语言监督）作为编码器。局限：需要选择合适的VFM初始化。核心insight：语言监督的VFM能提供更丰富的语义特征。效果：重建和生成质量最优，线性探测结果最佳。</small><br><br><b>vq-vae:区域自适应量化</b><br><small>传统2D网格特征存在冗余，区域自适应量化通过可变形注意力在语义一致区域采样。局限：规则网格无法利用图像区域结构。核心insight：自然图像由不规则区域组成，相似模式可压缩。效果：token数从576降至256，性能反而提升。</small><br><br><b>vq-vae:语义重建目标</b><br><small>传统VQGAN仅优化像素重建，忽略语义保真度。局限：重建的图像缺乏高层语义。核心insight：添加VFM特征重建损失可保留语义信息。效果：线性探测准确率显著提升，生成质量改善。</small></div>
+    <div style="font-size:11px;color:#86efac;margin:8px 0 4px">H2 idea</div>
+    <div style="font-size:12px"><b>[A] VFM编码器直接用作tokenizer的可行性验证</b><br><small>本文局限：仅尝试少数几种VFM（Dinov2/CLIP/SigLIP2），未系统比较不同规模、结构的VFM。当前工作：已有研究将VFM特征作为辅助（codebook初始化、分支增强），但未直接作为编码器。新假设：更大规模的VFM（如DINOv2-large）可能带来进一步提升。这不是平凡的扩展——不同VFM的特征分布差异可能显著影响量化效果。</small><br><br><b>[B] 区域自适应量化的自适应程度</b><br><small>本文局限：区域划分基于可变形注意力，固定数量token（256）。当前工作：FlexTok探索了灵活长度的1D token序列。新假设：是否可以动态决定token数量，根据图像复杂度自适应？这是一个有价值的探索方向——当前方案仍需预设token数量，未完全释放压缩潜力。</small><br><br><b>[C] 语义重建目标与像素重建的平衡</b><br><small>本文局限：语义重建目标权重固定，未系统消融。当前工作：REPA等将VFM特征用于扩散模型引导。新假设：不同语义重建权重是否会影响生成的多样性vs保真度权衡？这并非显而易见——需要大量实验验证，且可能取决于下游AR模型容量。</small></div>
+  </td>
+</tr>
+
+<tr>
+  <td colspan="3" style="background:#1e293b;color:#94a3b8;font-size:11px;padding:6px 8px">
+    <b style="color:#e2e8f0">2511.20565</b> — DINO-Tok: Adapting DINO for Visual Tokenizers
+  </td>
+</tr>
+<tr>
+  <td style="vertical-align:top;padding:8px;width:100px">
+    <b style="color:#60a5fa">Cite</b><br>H1: <span style="color:#22c55e;font-weight:bold">12/12 (100%)</span><br>H2: <span style="color:#22c55e;font-weight:bold">12/12 (100%)</span>
+    <br><br><b style="color:#a78bfa">MV</b><br>H1: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span><br>H2: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span>
+    <br><br><b style="color:#34d399">Idea</b><br>H1: <span style="color:#22c55e;font-weight:bold">gap:3 / restate:0</span><br>H2: <span style="color:#22c55e;font-weight:bold">gap:2 / restate:0</span>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#7dd3fc;margin-bottom:4px">H1 method_variants</div>
+    <div style="font-size:12px"><b>dinov2:hierarchical-fusion</b><br><small>DINOv2原本提取层次化视觉特征用于分类任务；本文将其浅层特征（细粒度细节）与深层特征（全局语义）融合到统一潜在空间，用于视觉tokenization</small><br><br><b>dinov2:pca-reweighting</b><br><small>DINOv2原本直接输出特征；本文提出全局PCA重加权机制，根据主成分方差重新调整特征维度权重，解决高维VQ中信息丢失和codebook collapse问题</small><br><br><b>fsq:high-dimensional-vq</b><br><small>FSQ原本在低维潜在空间做量化；本文将其思想扩展到高维空间，利用PCA重加权稳定高维VQ过程</small></div>
+    <div style="font-size:11px;color:#7dd3fc;margin:8px 0 4px">H1 idea</div>
+    <div style="font-size:12px"><b>[A] 多尺度特征动态融合</b><br><small>本文固定了浅层/深层特征融合比例，但不同图像可能需要不同融合策略。gap：当前方法无法自适应调整特征权重，导致某些图像细节或语义信息丢失。可以引入可学习的注意力机制或图像内容感知的动态融合模块，根据输入图像特征自动调整浅层与深层特征的融合比例。</small><br><br><b>[B] 引入CLIP视觉编码器</b><br><small>DINOv2是自监督特征，缺乏文本对齐能力。gap：当前tokenizer仅关注视觉重建，无法直接用于多模态生成任务。可以探索将CLIP视觉编码器（arxiv:2103.00020）的语义信息与DINOv2的细节表示融合，构建同时具备细粒度重建和文本对齐能力的tokenizer。</small><br><br><b>[C] 层级VQ与代码本复用</b><br><small>本文使用单一VQ模块，未充分利用DINOv2的层级结构。gap：浅层特征Codebook和深层特征Codebook独立训练，信息无法跨层级共享。可以设计层级VQ机制，让不同层级的codebook共享部分码字或引入跨层级注意力，实现更高效的tokenization。</small></div>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#86efac;margin-bottom:4px">H2 method_variants</div>
+    <div style="font-size:12px"><b>dino:双分支特征融合</b><br><small>改动前：直接使用DINO深层特征FL作为encoder输出会导致颜色偏移、细节丢失，因高层语义特征缺乏高频纹理信息。核心insight：DINO浅层特征F1保留细粒度图像细节（如纹理、颜色），深层特征FL编码抽象语义，两者信息互补。效果：将</small><br><br><b>dino:pca重加权vq</b><br><small>改动前：在高维DINO特征空间（768维）做 vanilla VQ时，L2距离差异随维度增加而收缩，导致最近邻查找失效、语义替换、codebook collapse。核心insight：PCA分析显示DINO特征通道存在明显的语义-噪声不平</small></div>
+    <div style="font-size:11px;color:#86efac;margin:8px 0 4px">H2 idea</div>
+    <div style="font-size:12px"><b>[A] 融合浅层与深层特征是解决「语义-细节」权衡的有效范式</b><br><small>本文观察到DINO不同层次特征的信息分布差异：深层特征（FL）以语义为主但缺乏纹理，浅层特征（F1）保留细节但语义抽象不足。这一发现不仅适用于DINO，可能推广到其他预训练模型如MAE、CLIP等多层次特征的有效利用。验证难度在于需要选择合适的特征层配对和投影维度，本文通过实验确定了F1→64维的最优配置。但本文未探索更多层次（如F2、F3）的组合，也未系统比较不同预训练模型（ViT-B vs V</small><br><br><b>[B] 高维特征空间的PCA结构可被显式利用来稳定VQ训练</b><br><small>本文的核心洞见来自对DINO特征的PCA分析：特征值的long-tail分布使得top维度编码语义、bottom维度几乎为噪声。这一结构在其他高维视觉特征中可能同样存在（如CLIP、MAE重建特征）。本文通过全局PCA重加权将这一先验知识注入VQ训练，有效缓解了距离集中问题。但这是一个经验性发现，缺乏理论保证——为何ImageNet上学到的PCA权重能泛化到其他domain？本文的zero-sho</small><br><br><b>[C] 预训练视觉模型可直接adapt为tokenizer而无需从零训练</b><br><small>本文证明了冻结的DINO encoder配合适当decoder即可达到SOTA tokenizer性能，这挑战了「tokenizer必须从零训练」的直觉。这一发现的重要意义在于：可以使用更强、更大规模的预训练视觉模型作为tokenizer的semantic backbone。但本文也指出仅用decoder无法达到满意效果（ ablation显示放大decoder收效甚微），必须结合浅层特征。这为未</small></div>
+  </td>
+</tr>
+
+<tr>
+  <td colspan="3" style="background:#1e293b;color:#94a3b8;font-size:11px;padding:6px 8px">
+    <b style="color:#e2e8f0">2601.01535</b> — Improving Flexible Image Tokenizers for Autoregressive Image Generation
+  </td>
+</tr>
+<tr>
+  <td style="vertical-align:top;padding:8px;width:100px">
+    <b style="color:#60a5fa">Cite</b><br>H1: <span style="color:#ef4444;font-weight:bold">5/10 (50%)</span><br>H2: <span style="color:#ef4444;font-weight:bold">5/13 (38%)</span>
+    <br><br><b style="color:#a78bfa">MV</b><br>H1: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span><br>H2: <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:11px">OK</span>
+    <br><br><b style="color:#34d399">Idea</b><br>H1: <span style="color:#f59e0b;font-weight:bold">gap:0 / restate:0</span><br>H2: <span style="color:#22c55e;font-weight:bold">gap:2 / restate:0</span>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#7dd3fc;margin-bottom:4px">H1 method_variants</div>
+    <div style="font-size:12px"><b>var:flexible_tokenization</b><br><small>VAR(Visual Autoregressive Modeling) 原本使用固定长度token序列；本文改为可变长度token序列训练，通过嵌套dropout实现尾部token截断，但发现信息过度集中问题</small><br><br><b>ar-transformer:tokenizer_improvement</b><br><small>标准AR Transformer直接使用tokenizer输出的固定token；本文改进tokenizer训练过程，引入冗余token填充和层次语义正则化以优化token的语义分布</small></div>
+    <div style="font-size:11px;color:#7dd3fc;margin:8px 0 4px">H1 idea</div>
+    <div style="font-size:12px"><b>[A] 尾部token信息利用不足</b><br><small>当前变长tokenizer训练中，尾部token被频繁截断，导致其学习到的信息有限。如何设计更有效的训练策略让所有token都学习到有意义的表示是一个开放问题。</small><br><br><b>[B] token语义层级与生成质量关联</b><br><small>本文发现早期token携带高层语义、后期token携带细节信息。是否可以进一步强化这种语义分层特性，使AR生成时能更智能地分配计算资源？</small><br><br><b>[C] 视频生成的时序tokenizer扩展</b><br><small>本文工作聚焦图像tokenizer，其变长token设计理念可扩展到视频时序建模。如何将冗余token填充和层次正则化应用于视频帧间的token生成是一个值得探索的方向。</small></div>
+  </td>
+  <td style="vertical-align:top;padding:8px;border-left:1px solid #334155">
+    <div style="font-size:11px;color:#86efac;margin-bottom:4px">H2 method_variants</div>
+    <div style="font-size:12px"><b>ar-transformer:chunk-denoising</b><br><small>传统video diffusion逐帧全局去噪，噪声在时间维度均匀分布 → 核心insight是将视频划分为固定长度的chunks，每个chunk独立进行去噪且噪声随时间单调递增 → 效果是实现了因果时间建模和支持流式生成，显著降低推理延迟</small><br><br><b>ar-transformer:world-model</b><br><small>传统video generation侧重生成质量而非世界建模能力 → 核心insight是明确将视频生成任务建模为world model，预测未来帧的因果演变 → 效果是能够生成更长、更连贯的时序视频序列</small></div>
+    <div style="font-size:11px;color:#86efac;margin:8px 0 4px">H2 idea</div>
+    <div style="font-size:12px"><b>[A] Chunk-level噪声调度可推广到其他时序生成任务</b><br><small>MAGI-1证明per-chunk单调递增噪声能有效实现因果建模，这一机制可迁移到音频生成、时序预测等其他需要时序连贯性的领域。但本文未探索其在非视频模态的应用可能性。</small><br><br><b>[B] World model vs 生成模型的本质权衡</b><br><small>MAGI-1强调world model的因果推理能力，但参考列表中的Wan、HunyuanVideo等更侧重生成质量。当前缺乏系统对比world model范式与纯生成范式在相同数据、规模下的性能差距，这是后续研究的重要方向。</small><br><br><b>[C] 流式生成的实际部署挑战</b><br><small>虽然MAGI-1声称支持流式生成，但论文未深入讨论实际部署中的计算资源分配、内存管理、chunk边界处理等工程问题。这些是决定该技术能否在真实场景落地的关键因素。</small></div>
+  </td>
+</tr>
+</tbody>
+</table>
+</body></html>

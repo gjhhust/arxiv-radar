@@ -1,0 +1,54 @@
+{
+  "paper_id": "2603.06577",
+  "scheme": "B",
+  "model": "wq/claude46",
+  "latency_s": 16.8,
+  "success": true,
+  "output": {
+    "cn_oneliner": "首个基于masked discrete diffusion的全模态（文本/语音/图像）统一理解与生成模型",
+    "cn_abstract": "Omni-Diffusion是首个完全基于mask-based discrete diffusion models构建的any-to-any多模态语言模型，统一了文本、语音和图像的理解与生成任务。该工作摒弃了主流MLLM普遍采用的autoregressive架构，探索discrete diffusion作为多模态系统backbone的可行性与优势。通过unified框架设计，模型在多模态理解与生成任务上实现端到端训练，展示了discrete diffusion在omni-modal场景下的巨大潜力。",
+    "contribution_type": "significant",
+    "editorial_note": "将masked discrete diffusion从单一模态（文本或图像）扩展至跨文本、语音、图像的全模态统一系统，架构层面具有实质性创新；若实验验证充分，有望推动MLLM从autoregressive范式向diffusion范式转型的研究热潮。",
+    "why_read": "如果你关注MLLM架构创新或discrete diffusion的应用边界，这篇论文提供了第一个完整的非自回归全模态统一框架，值得精读以了解其设计权衡与性能表现。",
+    "method_variants": [
+      {
+        "base_method": "masked discrete diffusion",
+        "variant_tag": "masked-discrete-diffusion:omni-modal-unification",
+        "description": "将mask-based discrete diffusion从单模态生成扩展为同时支持文本、语音、图像理解与生成的统一backbone架构"
+      },
+      {
+        "base_method": "multimodal large language model",
+        "variant_tag": "mllm:diffusion-backbone-replacement",
+        "description": "以masked discrete diffusion模型替代传统autoregressive transformer作为MLLM的核心骨干网络"
+      }
+    ],
+    "key_refs": [
+      {
+        "title": "Show-o: One Single Transformer to Unify Multimodal Understanding and Generation",
+        "stance": "contrasts",
+        "note": "Show-o是混合AR+离散扩散的统一transformer，本文将其作为对比baseline，强调Omni-Diffusion完全基于discrete diffusion而非混合架构的差异"
+      },
+      {
+        "title": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+        "stance": "extends",
+        "note": "Muse验证了masked generative transformer在文本到图像生成的有效性，本文在此基础上将masked diffusion思路扩展至全模态统一理解与生成"
+      },
+      {
+        "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+        "stance": "uses",
+        "note": "本文借鉴其视觉tokenizer设计理念，采用离散视觉token表示作为图像模态的统一编码基础"
+      },
+      {
+        "title": "NExT-GPT: Any-to-Any Multimodal LLM",
+        "stance": "contrasts",
+        "note": "NExT-GPT是基于autoregressive LLM的any-to-any系统，本文将其作为对比参照，凸显discrete diffusion backbone相较AR架构的架构层面差异"
+      },
+      {
+        "title": "LAION-5B: An open large-scale dataset for training next generation image-text models",
+        "stance": "uses",
+        "note": "本文使用LAION-5B大规模图文数据集进行多模态训练"
+      }
+    ]
+  },
+  "parse_error": null
+}

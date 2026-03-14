@@ -1,0 +1,193 @@
+{
+  "cn_oneliner": "基于嵌套dropout的灵活图像tokenizer，引入冗余Token填充和分层语义正则化，实现缓解信息过度集中于早期token的问题，提升AR生成质量",
+  "cn_abstract": "灵活图像tokenizer通过嵌套dropout实现可变长度token序列表示，但现有方法将图像信息过度集中于早期token，导致尾部token利用不足，AR生成质量随token数量增加无法提升。为解决这一问题，本文提出ReTok方法，引入冗余token填充使尾部token在训练时更频繁激活，同时采用分层语义正则化将早期token特征与预训练视觉基础模型DINOv2对齐，并向尾部递减正则化强度以保留细粒度重建能力。在ImageNet 256×256上的广泛实验表明，ReTok在灵活tokenizer中达到最优生成性能，且与先进固定长度tokenizer相当。",
+  "contribution_type": "significant",
+  "editorial_note": "本文首次系统性地揭示了灵活tokenizer中尾部token利用不足的生成瓶颈问题。通过冗余token填充和分层语义正则化两项创新技术，ReTok有效解决了信息过度集中于早期token的核心难题。实验结果显示该方法在ImageNet上取得了显著的性能提升，为灵活tokenizer在自回归图像生成领域的应用奠定了坚实基础。",
+  "why_read": "从事自回归图像生成、视觉tokenizer研究的研究者和工程师，将获得解决灵活tokenizer尾部token利用不足问题的具体思路和方法",
+  "method_variants": [
+    {
+      "tag": "base:naive nested dropout",
+      "note": "简单嵌套dropout，直接截断尾部token，信息自然集中于早期token"
+    },
+    {
+      "tag": "base:flexok",
+      "note": "从{1,2,4,8,...,N}采样保留token数，实现粗到细重建，但32 tokens后质量下降"
+    },
+    {
+      "tag": "base:one-d-piece",
+      "note": "类似FlexTok的采样策略，专注图像重建但缺乏AR生成分析"
+    },
+    {
+      "tag": "base:detailflow",
+      "note": "从{8,16,24,...,N}等间隔采样，早期token重建低频/低分辨率图像"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2102.05879",
+      "role": "uses",
+      "note": "VQGAN是本文tokenizer重建损失的基础，包含对抗损失和感知损失"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2403.13706",
+      "role": "uses",
+      "note": "LlamaGen作为下游AR模型进行图像生成评估"
+    },
+    {
+      "title": "TiTok: A Unified Tokenizer for Visual Generation and Understanding",
+      "arxiv_id": "2406.15285",
+      "role": "extends",
+      "note": "1D离散tokenizer的基线架构，ReTok在此基础上改进"
+    },
+    {
+      "title": "GigaTok: Scaling Visual Tokenizers for Autoregressive Generation",
+      "arxiv_id": "2501.16957",
+      "role": "extends",
+      "note": "固定长度1D tokenizer的SOTA，ReTok初始化权重来源于此"
+    },
+    {
+      "title": "FlexTok: Towards Flexible Tokenization for Visual Generation",
+      "arxiv_id": "2501.02695",
+      "role": "extends",
+      "note": "首个将嵌套dropout应用于灵活tokenization的工作"
+    },
+    {
+      "title": "One-D-Piece: Tokenizing Images with Sequential Length",
+      "arxiv_id": "2504.17660",
+      "role": "extends",
+      "note": "采用类似嵌套dropout策略，但仅评估重建未评估AR生成"
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "arxiv_id": "2304.07193",
+      "role": "uses",
+      "note": "提供分层语义正则化所需的视觉基础模型特征"
+    },
+    {
+      "title": "Learning Diverse Stochastic Text-to-Image Diffusion Models",
+      "arxiv_id": "2210.17296",
+      "role": "uses",
+      "note": "嵌套dropout的原始工作，用于灵活tokenizer训练"
+    },
+    {
+      "title": "Vector Quantized Image Modeling with Improved VQGAN",
+      "arxiv_id": "2110.04627",
+      "role": "uses",
+      "note": "改进的VQ tokenizer，为后续1D tokenizer奠定基础"
+    },
+    {
+      "title": "MaskGit: Masked Image Token Generation for Diffusion Models",
+      "arxiv_id": "2204.12749",
+      "role": "uses",
+      "note": "MaskGIT作为tokenizer的参考方法"
+    },
+    {
+      "title": "Chameleon: Mixed-Modal Early-Fusion Foundation Models",
+      "arxiv_id": "2405.09818",
+      "role": "mentions",
+      "note": "统一多模态框架，AR模型的潜在扩展方向"
+    },
+    {
+      "title": "Janus: Decoupling Vision and Language for Unified Multimodal Understanding",
+      "arxiv_id": "2501.05437",
+      "role": "mentions",
+      "note": "统一多模态框架的另一种方法"
+    }
+  ],
+  "idea": [
+    {
+      "title": "冗余Token填充激活尾部",
+      "why": "通过在序列尾部添加额外的padding token，使原始尾部token在嵌套dropout时被保留的概率增加，从而促进信息在序列中更均衡地分布"
+    },
+    {
+      "title": "分层语义正则化",
+      "why": "对早期token施加更强的语义对齐约束（与DINOv2特征），向尾部递减，使早期token学习语义表示，尾部token专注于细节重建"
+    },
+    {
+      "title": "解码器微调优化",
+      "why": "冻结编码器和量化器后微调解码器，可进一步提升短token序列（32/64）的重建质量，弥补早期token语义约束带来的细节损失"
+    }
+  ],
+  "_similarities": [
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "TiTok: A Unified Tokenizer for Visual Generation and Understanding",
+      "best_score": 0.977,
+      "best_match": "UniTok: A Unified Tokenizer for Visual Generation and Understanding",
+      "pass": true
+    },
+    {
+      "title": "GigaTok: Scaling Visual Tokenizers for Autoregressive Generation",
+      "best_score": 0.81,
+      "best_match": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "pass": true
+    },
+    {
+      "title": "FlexTok: Towards Flexible Tokenization for Visual Generation",
+      "best_score": 0.583,
+      "best_match": "UniTok: A Unified Tokenizer for Visual Generation and Understanding",
+      "pass": false
+    },
+    {
+      "title": "One-D-Piece: Tokenizing Images with Sequential Length",
+      "best_score": 0.557,
+      "best_match": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "pass": false
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "best_score": 1.0,
+      "best_match": "DINOv2: Learning Robust Visual Features without Supervision",
+      "pass": true
+    },
+    {
+      "title": "Learning Diverse Stochastic Text-to-Image Diffusion Models",
+      "best_score": 0.458,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": false
+    },
+    {
+      "title": "Vector Quantized Image Modeling with Improved VQGAN",
+      "best_score": 1.0,
+      "best_match": "Vector-quantized Image Modeling with Improved VQGAN",
+      "pass": true
+    },
+    {
+      "title": "MaskGit: Masked Image Token Generation for Diffusion Models",
+      "best_score": 0.613,
+      "best_match": "Masked Autoencoders Are Effective Tokenizers for Diffusion Models",
+      "pass": false
+    },
+    {
+      "title": "Chameleon: Mixed-Modal Early-Fusion Foundation Models",
+      "best_score": 1.0,
+      "best_match": "Chameleon: Mixed-Modal Early-Fusion Foundation Models",
+      "pass": true
+    },
+    {
+      "title": "Janus: Decoupling Vision and Language for Unified Multimodal Understanding",
+      "best_score": 0.521,
+      "best_match": "SigLIP 2: Multilingual Vision-Language Encoders with Improved Semantic Understanding, Localization, and Dense Features",
+      "pass": false
+    }
+  ],
+  "_matched": 7,
+  "_total": 12,
+  "_pass_rate": 0.583,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14",
+  "_ref_count": 53
+}

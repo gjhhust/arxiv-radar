@@ -1,0 +1,192 @@
+{
+  "arxiv_id": "2601.01535",
+  "title": "Improving Flexible Image Tokenizers for Autoregressive Image Generation",
+  "cn_oneliner": "基于柔性tokenizer的嵌套dropout，引入冗余token填充和层次语义正则化，解决信息过度集中于早期token的问题，实现更高效的自回归图像生成",
+  "cn_abstract": "柔性图像tokenizer旨在使用有序的1D变长token序列表示图像。该方法通常通过嵌套dropout实现，训练时随机截断部分尾部token，仅使用前面的序列重建图像。然而，这种尾部截断策略导致图像信息过度集中于早期token，随着token长度增加，下游自回归图像生成效果受限。为解决这一问题，本文提出ReToK——一种带有冗余token填充和层次语义正则化的灵活tokenizer，通过激活尾部token更频繁来缓解信息过度集中，并利用预训练视觉基础模型对齐解码特征。实验表明，该方法在ImageNet 256×256上取得了优于现有灵活和固定长度tokenizer的生成性能。",
+  "contribution_type": "incremental",
+  "editorial_note": "前驱局限：现有柔性图像tokenizer采用嵌套dropout进行变长token训练，尾部截断策略导致图像信息严重集中于早期token，随着生成token数量增加，后续token难以携带有效信息，下游自回归生成效果受限。本文解决：提出ReToK方法，引入冗余token填充机制增加尾部token训练频率，同时设计层次语义正则化使早期token特征与视觉基础模型对齐，逐步降低正则化强度以保留细节重建能力。编辑判断：该工作聚焦于tokenizer训练策略的改进，属于incremental贡献，在灵活tokenizer设计方面有针对性创新，但未提出全新的生成范式。",
+  "why_read": "生成模型研究者、图像tokenizer设计者将获得关于如何改进变长tokenizer训练的具体思路，特别是冗余token填充和层次语义正则化的设计理念，有助于解决自回归生成中信息分布不均的问题。",
+  "method_variants": [
+    {
+      "base_method": "var",
+      "variant_tag": "var:flexible_tokenization",
+      "description": "VAR(Visual Autoregressive Modeling) 原本使用固定长度token序列；本文改为可变长度token序列训练，通过嵌套dropout实现尾部token截断，但发现信息过度集中问题"
+    },
+    {
+      "base_method": "ar-transformer",
+      "variant_tag": "ar-transformer:tokenizer_improvement",
+      "description": "标准AR Transformer直接使用tokenizer输出的固定token；本文改进tokenizer训练过程，引入冗余token填充和层次语义正则化以优化token的语义分布"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "arxiv_id": "2406.11838",
+      "role": "extends",
+      "note": "AR图像生成的无VQ方法启发了本文对tokenizer的改进方向"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "extends",
+      "note": "强调tokenizer对视觉生成的关键作用，本文正是针对tokenizer进行改进"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "uses",
+      "note": "DiT架构，为本文tokenizer解码器设计提供参考"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "uses",
+      "note": "Latent diffusion原理，本文在latent空间进行tokenizer设计"
+    },
+    {
+      "title": "Denoising Diffusion Probabilistic Models",
+      "arxiv_id": "2006.11239",
+      "role": "mentions",
+      "note": "DDPM作为扩散模型基础工作被提及"
+    },
+    {
+      "title": "Flow Matching for Generative Modeling",
+      "arxiv_id": "2210.02747",
+      "role": "mentions",
+      "note": "Flow matching作为生成范式被对比"
+    },
+    {
+      "title": "OmniTokenizer: A Joint Image-Video Tokenizer for Visual Generation",
+      "arxiv_id": "2406.09399",
+      "role": "contrasts",
+      "note": "对比：OmniTokenizer是固定长度tokenizer，本文专门研究变长灵活tokenizer的改进"
+    },
+    {
+      "title": "LARP: Tokenizing Videos with a Learned Autoregressive Generative Prior",
+      "arxiv_id": "2410.21264",
+      "role": "uses",
+      "note": "LARP的tokenizer设计思想被本文参考用于图像tokenizer改进"
+    },
+    {
+      "title": "Reconstruction vs. Generation: Taming Optimization Dilemma in Latent Diffusion Models",
+      "arxiv_id": "2501.01423",
+      "role": "supports",
+      "note": "支持本文对reconstruction与generation平衡的探讨"
+    },
+    {
+      "title": "Deep Unsupervised Learning using Nonequilibrium Thermodynamics",
+      "arxiv_id": "1503.03585",
+      "role": "mentions",
+      "note": "扩散模型理论基础被提及"
+    }
+  ],
+  "idea": [
+    {
+      "title": "尾部token信息利用不足",
+      "why": "当前变长tokenizer训练中，尾部token被频繁截断，导致其学习到的信息有限。如何设计更有效的训练策略让所有token都学习到有意义的表示是一个开放问题。"
+    },
+    {
+      "title": "token语义层级与生成质量关联",
+      "why": "本文发现早期token携带高层语义、后期token携带细节信息。是否可以进一步强化这种语义分层特性，使AR生成时能更智能地分配计算资源？"
+    },
+    {
+      "title": "视频生成的时序tokenizer扩展",
+      "why": "本文工作聚焦图像tokenizer，其变长token设计理念可扩展到视频时序建模。如何将冗余token填充和层次正则化应用于视频帧间的token生成是一个值得探索的方向。"
+    }
+  ],
+  "_cite_sims": [
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Image Generation without Vector Quantization",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Denoising Diffusion Probabilistic Models",
+      "best_score": 0.452,
+      "best_match": "Chameleon: Mixed-Modal Early-Fusion Foundation Models",
+      "pass": false
+    },
+    {
+      "title": "Flow Matching for Generative Modeling",
+      "best_score": 0.495,
+      "best_match": "Improved Precision and Recall Metric for Assessing Generative Models",
+      "pass": false
+    },
+    {
+      "title": "OmniTokenizer: A Joint Image-Video Tokenizer for Visual Generation",
+      "best_score": 0.677,
+      "best_match": "UniTok: A Unified Tokenizer for Visual Generation and Understanding",
+      "pass": false
+    },
+    {
+      "title": "LARP: Tokenizing Videos with a Learned Autoregressive Generative Prior",
+      "best_score": 0.537,
+      "best_match": "SpectralAR: Spectral Autoregressive Visual Generation",
+      "pass": false
+    },
+    {
+      "title": "Reconstruction vs. Generation: Taming Optimization Dilemma in Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "Reconstruction vs. Generation: Taming Optimization Dilemma in Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Deep Unsupervised Learning using Nonequilibrium Thermodynamics",
+      "best_score": 0.417,
+      "best_match": "Chameleon: Mixed-Modal Early-Fusion Foundation Models",
+      "pass": false
+    }
+  ],
+  "_cite_matched": 5,
+  "_cite_total": 10,
+  "_cite_rate": 0.5,
+  "_ref_count": 53,
+  "_mv_count": 2,
+  "_mv_issues": [],
+  "_mv_ok": true,
+  "_idea_count": 3,
+  "_idea_analysis": [
+    {
+      "title": "尾部token信息利用不足",
+      "why_len": 80,
+      "has_gap": false,
+      "restate": false
+    },
+    {
+      "title": "token语义层级与生成质量关联",
+      "why_len": 68,
+      "has_gap": false,
+      "restate": false
+    },
+    {
+      "title": "视频生成的时序tokenizer扩展",
+      "why_len": 85,
+      "has_gap": false,
+      "restate": false
+    }
+  ],
+  "_idea_restate": 0,
+  "_idea_gap": 0,
+  "_idea_quality": 0.0,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14"
+}

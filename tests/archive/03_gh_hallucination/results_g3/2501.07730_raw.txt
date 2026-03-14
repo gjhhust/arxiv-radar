@@ -1,0 +1,107 @@
+```json
+{
+  "arxiv_id": "2501.07730",
+  "title": "Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens",
+  "cn_oneliner": "基于TiTok一维图像tokenizer，引入文本感知的紧凑1D token表示与MaskGen掩码生成框架，实现高效高质量的文本到图像生成",
+  "cn_abstract": "本文提出TA-TiTok（Text-Aware TiTok），一种紧凑的文本感知一维图像tokenizer，以及配套的MaskGen掩码生成模型，旨在降低高质量文本到图像生成的计算门槛。通过将文本条件引入tokenizer训练过程，TA-TiTok能以极少量的1D token（如32或64个）精确重建图像，大幅压缩序列长度。MaskGen基于此token表示进行掩码生成式训练，在GenEval等标准基准上取得与主流扩散模型相当的生成质量，同时推理速度提升数倍，实现了文本到图像生成的"民主化"（低资源可训练）。",
+  "contribution_type": "significant",
+  "editorial_note": "TiTok等一维图像tokenizer已证明紧凑离散表示可有效支撑类别条件图像生成，但文本条件下的紧凑tokenization尚未被系统探索。本文将文本信息融入tokenizer设计，构建TA-TiTok，并配合MaskGen实现完整的文本到图像生成管线，在极低token数下保持竞争力，显著降低训练与推理成本。方法新颖且具实用价值，不仅是工程优化，tokenizer设计层面的文本感知机制具有独立创新性，对资源受限场景的生成研究有较强参考意义。",
+  "why_read": "研究高效文本到图像生成或图像tokenization的研究者，可借鉴其文本感知紧凑1D token设计思路以大幅降低生成模型训练与推理成本。",
+  "method_variants": [
+    "tokenizer:text-aware-1D-VQ",
+    "tokenizer:text-aware-1D-VAE",
+    "generation:masked-generative-transformer",
+    "token_length:32-tokens",
+    "token_length:64-tokens",
+    "token_length:128-tokens"
+  ],
+  "core_cite": [
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "extends",
+      "note": "TiTok是本文TA-TiTok的直接前驱，提出一维图像tokenizer思想，本文在此基础上引入文本感知机制"
+    },
+    {
+      "title": "Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "extends",
+      "note": "MaskGIT提出掩码生成式图像Transformer框架，本文MaskGen直接继承并扩展至文本条件生成"
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "arxiv_id": "2110.04627",
+      "role": "uses",
+      "note": "改进的VQGAN作为离散tokenizer基线，本文VQ版本tokenizer设计参考此工作"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "contrasts",
+      "note": "LDM/Stable Diffusion作为主要对比基线，本文目标是在更低计算代价下达到可比生成质量"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "contrasts",
+      "note": "DiT代表扩散Transformer生成范式，作为性能与效率的对比参考"
+    },
+    {
+      "title": "DALL-E: Zero-Shot Text-to-Image Generation",
+      "arxiv_id": "2102.12092",
+      "role": "supports",
+      "note": "早期文本到图像离散token生成的奠基工作，为本文离散tokenizer路线提供历史支撑"
+    },
+    {
+      "title": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "arxiv_id": "2301.00704",
+      "role": "contrasts",
+      "note": "Muse将掩码生成扩展至文本条件图像生成，是本文最直接的方法对比对象之一"
+    },
+    {
+      "title": "CLIP: Learning Transferable Visual Models From Natural Language Supervision",
+      "arxiv_id": "2103.00020",
+      "role": "uses",
+      "note": "CLIP文本编码器被用于文本感知tokenizer中提取文本特征进行条件注入"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "uses",
+      "note": "VQGAN提供离散图像tokenization的基础框架，本文tokenizer训练流程部分沿用其设计"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "contrasts",
+      "note": "LlamaGen代表自回归图像生成路线，作为效率与质量的对比参考"
+    },
+    {
+      "title": "GenEval: An Object-Focused Framework for Evaluating Text-to-Image Alignment",
+      "arxiv_id": "2310.11513",
+      "role": "uses",
+      "note": "GenEval作为文本到图像对齐质量的主要评测基准"
+    },
+    {
+      "title": "T5: Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer",
+      "arxiv_id": "1910.10683",
+      "role": "uses",
+      "note": "T5文本编码器用于生成模型的文本条件提取"
+    }
+  ],
+  "idea": [
+    {
+      "title": "跨模态感知的层级式紧凑Tokenizer设计",
+      "why": "TA-TiTok仅用全局文本特征指导tokenization，尚未充分利用细粒度文本-视觉对应关系。可探索在tokenizer中引入跨注意力层级对齐机制，使不同1D token专注于不同文本语义区域，从而在更少token下保留更多语义细节，进一步压缩序列长度至16甚至更少。"
+    },
+    {
+      "title": "基于紧凑1D Token的视频生成高效框架",
+      "why": "TA-TiTok将图像压缩至极少量1D token，这一思路天然适合时序建模：视频帧间冗余远高于图像内部，若将文本感知1D tokenizer扩展至时序维度，可显著压缩视频的token总量，使掩码生成式视频模型在普通GPU上可训练，具备较强的可行性和实际价值。"
+    },
+    {
+      "title": "紧凑Token表示下的组合式文本到图像编辑",
+      "why": "现有图像编辑方法依赖空间对齐的2D特征图，而TA-TiTok的1D token与空间位置解耦，为基于token替换/插值的语义编辑提供新范式。可研究如何在1D token空间中定位并修改特定语义属性（如颜色、纹理、物体），结合MaskGen的掩码机制实现局部可控编辑，拓展紧凑表示在下游任务的应用。"
+    }
+  ]
+}
+```

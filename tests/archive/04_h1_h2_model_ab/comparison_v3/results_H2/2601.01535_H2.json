@@ -1,0 +1,226 @@
+{
+  "arxiv_id": "2601.01535",
+  "title": "MAGI-1: Autoregressive Video Generation at Scale",
+  "cn_oneliner": "基于AR变换器的world model，通过per-chunk单调递增噪声实现因果时间建模和流式生成了",
+  "cn_abstract": "MAGI-1是一个世界模型，通过自回归预测视频块（固定长度的连续帧段）来生成视频。模型训练对每块噪声进行去噪，噪声随时间单调增加，这使得MAGI-1能够实现因果时间建模并自然支持流式生成。它在Image-to-Video (I2V)任务上取得了强劲的性能表现。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱] MAGI-1建立在视频生成的DiT架构（Wan、CogVideoX、HunyuanVideo等）和自回归图像生成（AR tokenization）的基础之上。[贡献] 提出了world model范式的视频生成方法，创新性地使用per-chunk单调递增噪声机制，实现了因果时间建模和流式生成能力，解决了传统视频生成模型难以处理长时间依赖和实时生成的问题。[判断] 这是视频生成领域的重要进展，特别是在流式生成和world model方向有显著创新，方法论上属于significant贡献，但核心思路仍基于已有的AR和diffusion框架，非foundational突破。",
+  "why_read": "从事视频生成、world model或流式视频合成研究的人员应该阅读，可了解如何通过chunk-level去噪实现因果时间建模和实时视频生成的技术细节。",
+  "method_variants": [
+    {
+      "variant_tag": "ar-transformer:chunk-denoising",
+      "description": "传统video diffusion逐帧全局去噪，噪声在时间维度均匀分布 → 核心insight是将视频划分为固定长度的chunks，每个chunk独立进行去噪且噪声随时间单调递增 → 效果是实现了因果时间建模和支持流式生成，显著降低推理延迟"
+    },
+    {
+      "variant_tag": "ar-transformer:world-model",
+      "description": "传统video generation侧重生成质量而非世界建模能力 → 核心insight是明确将视频生成任务建模为world model，预测未来帧的因果演变 → 效果是能够生成更长、更连贯的时序视频序列"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Wan: Open and Advanced Large-Scale Video Generative Models",
+      "arxiv_id": "2503.20314",
+      "role": "uses",
+      "note": "作为视频生成baseline和方法对比，MAGI-1需要在相同benchmark上验证其world model方法的有效性"
+    },
+    {
+      "title": "HunyuanVideo: A Systematic Framework For Large Video Generative Models",
+      "arxiv_id": "2412.03603",
+      "role": "uses",
+      "note": "大规模视频生成框架的参考，MAGI-1借鉴了其系统化设计思路进行改进"
+    },
+    {
+      "title": "CogVideoX: Text-to-Video Diffusion Models with An Expert Transformer",
+      "arxiv_id": "2408.06072",
+      "role": "uses",
+      "note": "使用DiT架构进行视频生成的先驱工作，MAGI-1的方法与其形成竞争关系"
+    },
+    {
+      "title": "Open-Sora Plan: Open-Source Large Video Generation Model",
+      "arxiv_id": "2412.00131",
+      "role": "uses",
+      "note": "开源视频生成方案，MAGI-1可能参考其开放设计理念进行比较研究"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "extends",
+      "note": "DiT架构是视频生成的主流backbone，MAGI-1在此基础上引入chunk-level噪声调度创新"
+    },
+    {
+      "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2403.03206",
+      "role": "uses",
+      "note": "Rectified flow和high-res synthesis技术被MAGI-1用于提升生成质量和分辨率"
+    },
+    {
+      "title": "LARP: Tokenizing Videos with a Learned Autoregressive Generative Prior",
+      "arxiv_id": "2410.21264",
+      "role": "extends",
+      "note": "AR video tokenization的直接前驱，MAGI-1继承了其token化思路并改进chunk级建模"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "uses",
+      "note": "Tokenizer是visual generation的关键这一洞察指导了MAGI-1的tokenization策略设计"
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "arxiv_id": "2406.11838",
+      "role": "extends",
+      "note": "无VQ的AR图像生成立场为MAGI-1的AR video generation提供了方法论参考"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "uses",
+      "note": "LDM将计算密集的diffusion过程转移到latent space，MAGI-1可能采用类似策略优化效率"
+    },
+    {
+      "title": "OmniTokenizer: A Joint Image-Video Tokenizer for Visual Generation",
+      "arxiv_id": "2406.09399",
+      "role": "uses",
+      "note": "联合图像-视频tokenizer为MAGI-1的video chunk tokenization提供技术支撑"
+    },
+    {
+      "title": "Deep Unsupervised Learning using Nonequilibrium Thermodynamics",
+      "arxiv_id": "1503.03585",
+      "role": "mentions",
+      "note": "diffusion model的理论基础，MAGI-1的去噪机制源于此理论框架"
+    },
+    {
+      "title": "Denoising Diffusion Probabilistic Models",
+      "arxiv_id": "2006.11239",
+      "role": "mentions",
+      "note": "DDPM是现代diffusion model的标准实现，MAGI-1的chunk去噪借鉴了其训练范式"
+    }
+  ],
+  "idea": [
+    {
+      "title": "Chunk-level噪声调度可推广到其他时序生成任务",
+      "why": "MAGI-1证明per-chunk单调递增噪声能有效实现因果建模，这一机制可迁移到音频生成、时序预测等其他需要时序连贯性的领域。但本文未探索其在非视频模态的应用可能性。"
+    },
+    {
+      "title": "World model vs 生成模型的本质权衡",
+      "why": "MAGI-1强调world model的因果推理能力，但参考列表中的Wan、HunyuanVideo等更侧重生成质量。当前缺乏系统对比world model范式与纯生成范式在相同数据、规模下的性能差距，这是后续研究的重要方向。"
+    },
+    {
+      "title": "流式生成的实际部署挑战",
+      "why": "虽然MAGI-1声称支持流式生成，但论文未深入讨论实际部署中的计算资源分配、内存管理、chunk边界处理等工程问题。这些是决定该技术能否在真实场景落地的关键因素。"
+    }
+  ],
+  "_cite_sims": [
+    {
+      "title": "Wan: Open and Advanced Large-Scale Video Generative Models",
+      "best_score": 0.524,
+      "best_match": "Improved Precision and Recall Metric for Assessing Generative Models",
+      "pass": false
+    },
+    {
+      "title": "HunyuanVideo: A Systematic Framework For Large Video Generative Models",
+      "best_score": 0.493,
+      "best_match": "Improved Precision and Recall Metric for Assessing Generative Models",
+      "pass": false
+    },
+    {
+      "title": "CogVideoX: Text-to-Video Diffusion Models with An Expert Transformer",
+      "best_score": 0.649,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": false
+    },
+    {
+      "title": "Open-Sora Plan: Open-Source Large Video Generation Model",
+      "best_score": 0.468,
+      "best_match": "MaskBit: Embedding-free Image Generation via Bit Tokens",
+      "pass": false
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+      "best_score": 0.841,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "LARP: Tokenizing Videos with a Learned Autoregressive Generative Prior",
+      "best_score": 0.537,
+      "best_match": "SpectralAR: Spectral Autoregressive Visual Generation",
+      "pass": false
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Image Generation without Vector Quantization",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "OmniTokenizer: A Joint Image-Video Tokenizer for Visual Generation",
+      "best_score": 0.677,
+      "best_match": "UniTok: A Unified Tokenizer for Visual Generation and Understanding",
+      "pass": false
+    },
+    {
+      "title": "Deep Unsupervised Learning using Nonequilibrium Thermodynamics",
+      "best_score": 0.417,
+      "best_match": "Chameleon: Mixed-Modal Early-Fusion Foundation Models",
+      "pass": false
+    },
+    {
+      "title": "Denoising Diffusion Probabilistic Models",
+      "best_score": 0.452,
+      "best_match": "Chameleon: Mixed-Modal Early-Fusion Foundation Models",
+      "pass": false
+    }
+  ],
+  "_cite_matched": 5,
+  "_cite_total": 13,
+  "_cite_rate": 0.385,
+  "_ref_count": 53,
+  "_mv_count": 2,
+  "_mv_issues": [],
+  "_mv_ok": true,
+  "_idea_count": 3,
+  "_idea_analysis": [
+    {
+      "title": "Chunk-level噪声调度可推广到其他时序生成任务",
+      "why_len": 84,
+      "has_gap": true,
+      "restate": false
+    },
+    {
+      "title": "World model vs 生成模型的本质权衡",
+      "why_len": 113,
+      "has_gap": true,
+      "restate": false
+    },
+    {
+      "title": "流式生成的实际部署挑战",
+      "why_len": 81,
+      "has_gap": false,
+      "restate": false
+    }
+  ],
+  "_idea_restate": 0,
+  "_idea_gap": 2,
+  "_idea_quality": 0.667,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14"
+}

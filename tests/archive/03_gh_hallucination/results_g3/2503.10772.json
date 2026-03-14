@@ -1,0 +1,198 @@
+{
+  "arxiv_id": "2503.10772",
+  "title": "FlowTok: Flowing Seamlessly Across Text and Image Tokens",
+  "cn_oneliner": "基于 Flow Matching 与紧凑1D图像tokenizer，引入统一潜空间直接在文本与图像token间做流匹配，实现无需复杂条件机制的高效双向跨模态生成",
+  "cn_abstract": "本文提出 FlowTok，一种通过 flow matching 直接在文本与图像模态间演化的极简跨模态生成框架。核心创新在于将图像编码为紧凑的1D token表示（TA-TiTok），使文本与图像共享统一的1D潜空间，相比先前方法将潜空间规模缩小3.3倍（256分辨率），从而消除复杂条件机制与噪声调度设计。FlowTok 天然支持文本到图像与图像到文本的双向生成，具有显著更低的显存占用、更快的采样速度和更少的训练资源需求，同时在主流基准上取得与最先进模型相当的性能。",
+  "contribution_type": "significant",
+  "editorial_note": "现有条件生成方法（如 LDM/DiT）将文本作为条件信号通过交叉注意力引导去噪过程，模态间存在结构性不对称。本文的核心贡献是通过 TA-TiTok 将图像压缩为紧凑1D token序列，使文本与图像在同一1D潜空间内可直接做 flow matching，并统一了 T2I 与 I2T 两个方向。该设计在架构上具有清晰的简洁性，且通过压缩潜空间带来实质性效率收益；框架新颖，但部分依赖 TiTok 等已有组件，整体创新层次介于工程优化与范式转变之间，偏向 significant。",
+  "why_read": "研究跨模态生成或高效图像生成的学者，可借鉴其将图像压缩为1D token后直接用 flow matching 替代条件扩散的极简设计思路",
+  "method_variants": [
+    "tokenizer:TA-TiTok-1D-compact",
+    "flow_matching:text-to-image-direct",
+    "flow_matching:image-to-text-direct",
+    "latent_space:unified-1D-shared",
+    "architecture:conditioner-free"
+  ],
+  "core_cite": [
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "extends",
+      "note": "TiTok，FlowTok的图像1D tokenizer基础，TA-TiTok在其上引入文本对齐"
+    },
+    {
+      "title": "Flow Matching for Generative Modeling",
+      "arxiv_id": "2210.02747",
+      "role": "uses",
+      "note": "FlowTok的核心生成范式，用flow matching替代扩散过程"
+    },
+    {
+      "title": "Scalable Flow Matching for Text-to-Image Generation (Flux)",
+      "arxiv_id": "2403.03206",
+      "role": "contrasts",
+      "note": "代表性大规模T2I flow matching模型，FlowTok与其对比效率和性能"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "contrasts",
+      "note": "LDM/Stable Diffusion，代表条件扩散范式，FlowTok主要对比对象"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers (DiT)",
+      "arxiv_id": "2212.09748",
+      "role": "contrasts",
+      "note": "DiT，基于Transformer的扩散模型，FlowTok架构对比基线"
+    },
+    {
+      "title": "Denoising Diffusion Probabilistic Models",
+      "arxiv_id": "2006.11239",
+      "role": "contrasts",
+      "note": "DDPM，扩散模型基础范式，FlowTok旨在简化其复杂噪声调度"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation (LlamaGen)",
+      "arxiv_id": "2406.06525",
+      "role": "contrasts",
+      "note": "自回归图像生成代表，FlowTok对比其生成质量与效率"
+    },
+    {
+      "title": "Transfusion: Predict the Next Token and Diffuse Images with One Multi-Modal Model",
+      "arxiv_id": "2408.11039",
+      "role": "contrasts",
+      "note": "多模态统一生成框架，与FlowTok在统一文本图像生成目标上相关"
+    },
+    {
+      "title": "Multimodal Understanding and Generation via the MLLM (Show-o)",
+      "arxiv_id": "2408.12528",
+      "role": "contrasts",
+      "note": "统一理解与生成的多模态LLM，FlowTok在双向生成任务上与之对比"
+    },
+    {
+      "title": "BLIP-2: Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models",
+      "arxiv_id": "2301.12597",
+      "role": "mentions",
+      "note": "图文预训练代表，为文本对齐图像表示提供背景"
+    },
+    {
+      "title": "Classifier-Free Diffusion Guidance",
+      "arxiv_id": "2207.12598",
+      "role": "contrasts",
+      "note": "CFG，FlowTok简化后无需复杂条件引导机制的参照"
+    },
+    {
+      "title": "Vector Quantized Image Generation (VQ-VAE / VQ-GAN)",
+      "arxiv_id": "2012.09841",
+      "role": "supports",
+      "note": "离散图像tokenizer背景工作，为1D图像token压缩提供技术基础"
+    },
+    {
+      "title": "Imagen: Photorealistic Text-to-Image Diffusion Models with Deep Language Understanding",
+      "arxiv_id": "2205.11487",
+      "role": "contrasts",
+      "note": "大规模T2I扩散模型，代表条件信号引导生成的主流范式"
+    }
+  ],
+  "idea": [
+    {
+      "title": "层次化1D视觉Token用于高分辨率Flow Matching生成",
+      "why": "FlowTok在256分辨率下表现良好，但高分辨率（512/1024）下1D token压缩比的效率优势是否保持仍不明确。可探索层次化或多尺度1D tokenizer，在保持紧凑表示的同时支持高分辨率生成，结合渐进式flow matching路径，有望突破当前分辨率瓶颈。"
+    },
+    {
+      "title": "统一1D潜空间扩展至视频-文本双向Flow Matching",
+      "why": "FlowTok将文本与图像统一为1D token并做flow matching，自然的扩展方向是将视频帧序列也编码为紧凑1D表示，在同一框架下实现文本-图像-视频的多向生成。视频的时序冗余使得1D压缩潜力更大，团队在TiTok上的经验提供了可行的tokenizer基础。"
+    },
+    {
+      "title": "基于Flow Matching的多模态感知对齐tokenizer联合训练",
+      "why": "TA-TiTok通过文本对齐约束使图像1D token语义化，但当前对齐方式较为简单。可探索在flow matching训练过程中反向优化tokenizer，使潜空间结构直接由生成任务塑形，形成感知对齐的联合训练框架，可能进一步提升生成质量与跨模态一致性。"
+    }
+  ],
+  "_scheme": "G",
+  "_model": "wq/minimaxm25",
+  "_verified_at": "2026-03-13",
+  "_s2_ref_count": 84,
+  "_similarities": [
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    },
+    {
+      "title": "Flow Matching for Generative Modeling",
+      "best_score": 1.0,
+      "best_match": "Flow Matching for Generative Modeling",
+      "pass": true
+    },
+    {
+      "title": "Scalable Flow Matching for Text-to-Image Generation (Flux)",
+      "best_score": 0.589,
+      "best_match": "Flow Matching for Generative Modeling",
+      "pass": false
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers (DiT)",
+      "best_score": 0.935,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "Denoising Diffusion Probabilistic Models",
+      "best_score": 1.0,
+      "best_match": "Denoising Diffusion Probabilistic Models",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation (LlamaGen)",
+      "best_score": 0.93,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Transfusion: Predict the Next Token and Diffuse Images with One Multi-Modal Model",
+      "best_score": 0.493,
+      "best_match": "DataComp: In search of the next generation of multimodal datasets",
+      "pass": false
+    },
+    {
+      "title": "Multimodal Understanding and Generation via the MLLM (Show-o)",
+      "best_score": 0.557,
+      "best_match": "Show-o: One Single Transformer to Unify Multimodal Understanding and Generation",
+      "pass": false
+    },
+    {
+      "title": "BLIP-2: Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models",
+      "best_score": 0.641,
+      "best_match": "BLIP: Bootstrapping Language-Image Pre-training for Unified Vision-Language Understanding and Generation",
+      "pass": false
+    },
+    {
+      "title": "Classifier-Free Diffusion Guidance",
+      "best_score": 1.0,
+      "best_match": "Classifier-Free Diffusion Guidance",
+      "pass": true
+    },
+    {
+      "title": "Vector Quantized Image Generation (VQ-VAE / VQ-GAN)",
+      "best_score": 0.522,
+      "best_match": "Hierarchical Text-Conditional Image Generation with CLIP Latents",
+      "pass": false
+    },
+    {
+      "title": "Imagen: Photorealistic Text-to-Image Diffusion Models with Deep Language Understanding",
+      "best_score": 0.951,
+      "best_match": "Photorealistic Text-to-Image Diffusion Models with Deep Language Understanding",
+      "pass": true
+    }
+  ],
+  "_matched": 8,
+  "_total": 13,
+  "_pass_rate": 0.615,
+  "_elapsed_s": 38.6
+}

@@ -1,0 +1,221 @@
+{
+  "arxiv_id": "2511.20565",
+  "title": "DINO-Tok: Adapting DINO for Visual Tokenizers",
+  "cn_oneliner": "基于DINOv2预训练视觉模型，引入层次化特征融合与全局PCA重加权机制，实现28.54 PSNR自编码与23.98 PSNR VQ建模，显著优于之前tokenizers",
+  "cn_abstract": "本文提出DINO-Tok，一种基于DINO的视觉tokenizer，将层次化表示统一到信息完整的潜在空间。通过整合浅层特征（保留细粒度细节）和深层特征（编码全局语义），有效桥接预训练表示与视觉生成。针对高维空间VQ中信息丢失和codebook collapse的问题，提出全局PCA重加权机制稳定量化过程。在ImageNet 256×256上，DINO-Tok达到28.54 PSNR自编码和23.98 PSNR VQ建模性能，显著优于之前方法，可比肩十亿级数据训练的模型（如Hunyuan和Wan）。",
+  "contribution_type": "significant",
+  "editorial_note": "前驱tokenizer多从零开始训练，难以在高维潜在空间中平衡语义表示与重建质量。本文将DINOv2的层次化特征（浅层保留细节、深层编码语义）融合到统一潜在空间，并针对VQ中信息丢失和codebook collapse问题提出PCA重加权机制。实验表明该方法在ImageNet 256×256上达到28.54/23.98 PSNR，优于之前方法并可比肩十亿级模型。编辑判断：本文展示了预训练视觉模型用于tokenization的可行性和优越性，是视觉生成领域的重要进展。",
+  "why_read": "视觉生成研究者与工程师。具体收获：(1)理解高维潜在空间中VQ的关键挑战及PCA重加权解法；(2)学习如何融合预训练模型的浅层/深层特征提升tokenizer质量；(3)了解将DINO等自监督表示迁移到生成任务的最佳实践。",
+  "method_variants": [
+    {
+      "base_method": "dinov2",
+      "variant_tag": "dinov2:hierarchical-fusion",
+      "description": "DINOv2原本提取层次化视觉特征用于分类任务；本文将其浅层特征（细粒度细节）与深层特征（全局语义）融合到统一潜在空间，用于视觉tokenization"
+    },
+    {
+      "base_method": "dinov2",
+      "variant_tag": "dinov2:pca-reweighting",
+      "description": "DINOv2原本直接输出特征；本文提出全局PCA重加权机制，根据主成分方差重新调整特征维度权重，解决高维VQ中信息丢失和codebook collapse问题"
+    },
+    {
+      "base_method": "fsq",
+      "variant_tag": "fsq:high-dimensional-vq",
+      "description": "FSQ原本在低维潜在空间做量化；本文将其思想扩展到高维空间，利用PCA重加权稳定高维VQ过程"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "arxiv_id": "2304.07193",
+      "role": "extends",
+      "note": "本文核心base_method，使用DINOv2的层次化特征作为tokenizer的骨干网络"
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "arxiv_id": "2309.15505",
+      "role": "extends",
+      "note": "FSQ是本文VQ方法的基础，本文针对高维空间扩展了FSQ并引入PCA重加权"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "extends",
+      "note": "强调tokenizer质量对视觉生成的关键作用，本文目标与方法参考此工作"
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "uses",
+      "note": "VAR的tokenizer设计参考，用于对比实验"
+    },
+    {
+      "title": "Emu3: Next-Token Prediction is All You Need",
+      "arxiv_id": "2409.18869",
+      "role": "uses",
+      "note": "Emu3的统一tokenizer思路参考"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "uses",
+      "note": "MaskGIT的VQ tokenization方法参考"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "uses",
+      "note": "Token数量与重建质量权衡的参考"
+    },
+    {
+      "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "arxiv_id": "2504.08736",
+      "role": "contrasts",
+      "note": "大规模tokenizer与本文方法对比，展示小规模模型也能达到优异效果"
+    },
+    {
+      "title": "UniTok: A Unified Tokenizer for Visual Generation and Understanding",
+      "arxiv_id": "2502.20321",
+      "role": "contrasts",
+      "note": "统一tokenizer思路与本文方法对比"
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "arxiv_id": "2409.04410",
+      "role": "uses",
+      "note": "MAGVIT2的VQ方法参考"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "supports",
+      "note": "LDM的latent space设计思路"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "supports",
+      "note": "DiT的Transformer架构参考"
+    }
+  ],
+  "idea": [
+    {
+      "title": "多尺度特征动态融合",
+      "why": "本文固定了浅层/深层特征融合比例，但不同图像可能需要不同融合策略。gap：当前方法无法自适应调整特征权重，导致某些图像细节或语义信息丢失。可以引入可学习的注意力机制或图像内容感知的动态融合模块，根据输入图像特征自动调整浅层与深层特征的融合比例。"
+    },
+    {
+      "title": "引入CLIP视觉编码器",
+      "why": "DINOv2是自监督特征，缺乏文本对齐能力。gap：当前tokenizer仅关注视觉重建，无法直接用于多模态生成任务。可以探索将CLIP视觉编码器（arxiv:2103.00020）的语义信息与DINOv2的细节表示融合，构建同时具备细粒度重建和文本对齐能力的tokenizer。"
+    },
+    {
+      "title": "层级VQ与代码本复用",
+      "why": "本文使用单一VQ模块，未充分利用DINOv2的层级结构。gap：浅层特征Codebook和深层特征Codebook独立训练，信息无法跨层级共享。可以设计层级VQ机制，让不同层级的codebook共享部分码字或引入跨层级注意力，实现更高效的tokenization。"
+    }
+  ],
+  "_cite_sims": [
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "best_score": 1.0,
+      "best_match": "DINOv2: Learning Robust Visual Features without Supervision",
+      "pass": true
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "best_score": 1.0,
+      "best_match": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "best_score": 1.0,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "Emu3: Next-Token Prediction is All You Need",
+      "best_score": 1.0,
+      "best_match": "Emu3: Next-Token Prediction is All You Need",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    },
+    {
+      "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "best_score": 1.0,
+      "best_match": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "pass": true
+    },
+    {
+      "title": "UniTok: A Unified Tokenizer for Visual Generation and Understanding",
+      "best_score": 1.0,
+      "best_match": "UniTok: A Unified Tokenizer for Visual Generation and Understanding",
+      "pass": true
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    }
+  ],
+  "_cite_matched": 12,
+  "_cite_total": 12,
+  "_cite_rate": 1.0,
+  "_ref_count": 57,
+  "_mv_count": 3,
+  "_mv_issues": [],
+  "_mv_ok": true,
+  "_idea_count": 3,
+  "_idea_analysis": [
+    {
+      "title": "多尺度特征动态融合",
+      "why_len": 122,
+      "has_gap": true,
+      "restate": false
+    },
+    {
+      "title": "引入CLIP视觉编码器",
+      "why_len": 140,
+      "has_gap": true,
+      "restate": false
+    },
+    {
+      "title": "层级VQ与代码本复用",
+      "why_len": 132,
+      "has_gap": true,
+      "restate": false
+    }
+  ],
+  "_idea_restate": 0,
+  "_idea_gap": 3,
+  "_idea_quality": 1.0,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14"
+}

@@ -1,0 +1,199 @@
+{
+  "arxiv_id": "2504.08736",
+  "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+  "cn_oneliner": "基于离散视觉分词器（VQVAE类方法），引入语义正则化约束潜空间复杂度并系统探索十亿级参数扩展规律，首次同步提升图像重建、自回归生成与表征学习质量",
+  "cn_abstract": "自回归图像生成依赖视觉分词器将图像压缩为离散潜在Token，但现有工作发现扩大分词器规模会改善重建质量却损害下游生成质量。本文提出GigaTok，通过语义正则化（将分词器特征与预训练视觉编码器对齐）抑制潜空间复杂度过度增长，从根本上缓解这一重建与生成的两难困境。在此基础上，文章系统梳理了扩展分词器的三项关键实践：采用1D分词器提升可扩展性、优先扩展解码器、以及引入熵损失稳定十亿参数级训练。最终GigaTok扩展至30亿参数，在图像重建、下游AR生成及AR表征质量三项指标上均达到当前最优水平。",
+  "contribution_type": "significant",
+  "editorial_note": "VQVAE/VQGAN等离散视觉分词器是自回归图像生成的基础组件，但扩大其规模带来的重建-生成性能背离问题此前未被系统研究。本文识别潜空间复杂度为根本矛盾，提出语义正则化这一核心方法创新，并配套系统性扩展规律探索（1D结构、解码器优先、熵损失），将分词器推至30亿参数级别。既有清晰的问题定义与方法动机，又有充分的消融与规模化验证，属于该方向重要的系统性推进工作。",
+  "why_read": "研究自回归图像生成或视觉分词器的工程师与学者，可从中获得十亿级分词器的扩展规律与语义正则化的设计思路",
+  "method_variants": [
+    "tokenizer:1D-discrete",
+    "tokenizer:2D-discrete",
+    "regularization:semantic-alignment",
+    "scaling:decoder-priority",
+    "training:entropy-loss",
+    "architecture:encoder-decoder-asymmetric"
+  ],
+  "core_cite": [
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis (VQGAN)",
+      "arxiv_id": "2012.09841",
+      "role": "extends",
+      "note": "GigaTok直接在VQGAN框架基础上扩展，语义正则化改造其码本训练目标"
+    },
+    {
+      "title": "Neural Discrete Representation Learning (VQ-VAE)",
+      "arxiv_id": "1711.00937",
+      "role": "extends",
+      "note": "离散视觉分词器的奠基工作，GigaTok继承其向量量化机制"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation (LlamaGen)",
+      "arxiv_id": "2406.06525",
+      "role": "uses",
+      "note": "作为下游AR生成模型评估GigaTok分词器质量的主要基线框架"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation (TiTok)",
+      "arxiv_id": "2406.07550",
+      "role": "contrasts",
+      "note": "1D分词器的重要先驱，GigaTok在此基础上探索更大规模扩展"
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "arxiv_id": "2409.04410",
+      "role": "contrasts",
+      "note": "作为离散分词器的竞争基线，用于对比重建与生成性能"
+    },
+    {
+      "title": "Scaling the Codebook Size of VQGAN to 100,000 with a Utilization Rate of 99% (BSQ)",
+      "arxiv_id": "2406.11837",
+      "role": "contrasts",
+      "note": "大码本VQGAN变体，与GigaTok在重建FID指标上进行对比"
+    },
+    {
+      "title": "ImageNet Large Scale Visual Recognition Challenge",
+      "arxiv_id": "1409.0575",
+      "role": "uses",
+      "note": "所有实验的标准评测基准数据集"
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners (MAE)",
+      "arxiv_id": "2111.06377",
+      "role": "uses",
+      "note": "作为语义正则化的特征来源候选之一，提供语义一致的视觉特征"
+    },
+    {
+      "title": "Dinov2: Learning Robust Visual Features without Supervision",
+      "arxiv_id": "2304.07193",
+      "role": "uses",
+      "note": "作为语义正则化的主要预训练视觉编码器，提供语义对齐监督信号"
+    },
+    {
+      "title": "Scaling Laws for Neural Language Models",
+      "arxiv_id": "2001.08361",
+      "role": "supports",
+      "note": "为GigaTok的扩展规律分析提供方法论参考框架"
+    },
+    {
+      "title": "Language Model Beats Diffusion: Tokenizer is Key to Visual Generation (MAGVIT-v2)",
+      "arxiv_id": "2310.05737",
+      "role": "contrasts",
+      "note": "提出lookup-free量化与大码本，是离散分词器性能的重要参考基线"
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN (ViT-VQGAN)",
+      "arxiv_id": "2110.04627",
+      "role": "contrasts",
+      "note": "基于ViT的分词器扩展工作，与GigaTok的架构扩展策略形成对比"
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple (FSQ)",
+      "arxiv_id": "2309.15505",
+      "role": "contrasts",
+      "note": "简化量化方案，作为替代量化方法与GigaTok进行比较"
+    }
+  ],
+  "idea": [
+    {
+      "title": "语义正则化在连续潜空间扩散模型分词器（VAE）扩展中的迁移",
+      "why": "GigaTok的语义正则化有效缓解了离散分词器扩展时的潜空间复杂度爆炸问题，扩散模型同样依赖VAE分词器且存在类似扩展困境。将该思路迁移至连续VAE并验证其在扩散生成中的效果，可扩大方法适用范围，且所需改动较小（替换量化层为KL正则）。"
+    },
+    {
+      "title": "分词器潜空间复杂度的可量化指标设计与扩展预测律",
+      "why": "本文以定性方式指出潜空间复杂度是重建-生成背离的根因，但缺乏定量度量工具。设计复杂度代理指标（如码本利用率梯度、特征熵的规模依赖曲线），并建立类似语言模型扩展律的预测模型，可为未来分词器架构搜索与资源分配提供理论依据。"
+    },
+    {
+      "title": "解码器优先扩展策略在统一多模态生成分词器中的验证",
+      "why": "GigaTok发现解码器优先扩展对图像分词器更有效，但当前分词器正向视频、音频等多模态方向扩展。探究该规律在时序数据分词器（如视频VQVAE）中是否成立，以及编解码器最优比例是否随模态变化，可为多模态统一生成系统的分词器设计提供系统性指导。"
+    }
+  ],
+  "_scheme": "G",
+  "_model": "wq/minimaxm25",
+  "_verified_at": "2026-03-13",
+  "_s2_ref_count": 67,
+  "_similarities": [
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis (VQGAN)",
+      "best_score": 0.932,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning (VQ-VAE)",
+      "best_score": 0.897,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation (LlamaGen)",
+      "best_score": 0.93,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation (TiTok)",
+      "best_score": 0.938,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Scaling the Codebook Size of VQGAN to 100,000 with a Utilization Rate of 99% (BSQ)",
+      "best_score": 0.962,
+      "best_match": "Scaling the Codebook Size of VQGAN to 100,000 with a Utilization Rate of 99%",
+      "pass": true
+    },
+    {
+      "title": "ImageNet Large Scale Visual Recognition Challenge",
+      "best_score": 1.0,
+      "best_match": "ImageNet Large Scale Visual Recognition Challenge",
+      "pass": true
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners (MAE)",
+      "best_score": 0.941,
+      "best_match": "Masked Autoencoders Are Scalable Vision Learners",
+      "pass": true
+    },
+    {
+      "title": "Dinov2: Learning Robust Visual Features without Supervision",
+      "best_score": 1.0,
+      "best_match": "DINOv2: Learning Robust Visual Features without Supervision",
+      "pass": true
+    },
+    {
+      "title": "Scaling Laws for Neural Language Models",
+      "best_score": 0.545,
+      "best_match": "Planting a SEED of Vision in Large Language Model",
+      "pass": false
+    },
+    {
+      "title": "Language Model Beats Diffusion: Tokenizer is Key to Visual Generation (MAGVIT-v2)",
+      "best_score": 0.908,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN (ViT-VQGAN)",
+      "best_score": 0.895,
+      "best_match": "Vector-quantized Image Modeling with Improved VQGAN",
+      "pass": true
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple (FSQ)",
+      "best_score": 0.44,
+      "best_match": "Restructuring Vector Quantization with the Rotation Trick",
+      "pass": false
+    }
+  ],
+  "_matched": 11,
+  "_total": 13,
+  "_pass_rate": 0.846,
+  "_elapsed_s": 41.0
+}

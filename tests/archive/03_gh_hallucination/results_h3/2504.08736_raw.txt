@@ -1,0 +1,137 @@
+```json
+{
+  "arxiv_id": "2504.08736",
+  "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+  "cn_oneliner": "基于 VQGAN 视觉分词器，引入语义正则化与解码器优先扩展等扩展策略，首次将视觉分词器扩展至 30 亿参数并同时提升重建质量、下游自回归生成质量与表示学习能力",
+  "cn_abstract": "自回归图像生成中，视觉分词器的扩展通常改善重建质量但损害下游生成质量，形成"重建 vs 生成"困境。本文提出 GigaTok，通过引入语义正则化——将分词器特征对齐至预训练视觉编码器的语义一致特征——抑制扩展过程中潜空间复杂度的过度增长，从而同时改善重建与生成。在此基础上，作者系统探索三项扩展实践：采用 1D 分词器提升可扩展性、优先扩展解码器、以及使用熵损失稳定十亿级分词器训练。最终将分词器扩展至 30 亿参数，在重建、下游自回归生成及表示质量上均达到当前最优。",
+  "contribution_type": "significant",
+  "editorial_note": "VQGAN 系列工作确立了离散视觉分词器在自回归图像生成中的核心地位，但扩大分词器规模时重建与生成质量相互制约的问题始终未被系统解决。本文识别出潜空间复杂度是该困境的根本原因，提出以预训练视觉编码器特征作为语义锚点的正则化方法，并配套提出 1D 结构、解码器优先、熵损失三项扩展工程实践，将分词器推至 3B 参数量级。方法动机清晰、实验体系完整，属于在视觉分词器这一关键基础组件上有实质推进的工作，影响面覆盖自回归生成、多模态理解等多个下游方向。",
+  "why_read": "研究自回归视觉生成或视觉分词器设计的研究者，可从中获得扩展分词器时同时保障重建与生成质量的具体方法论与工程实践",
+  "method_variants": [
+    "tokenizer:semantic-regularization",
+    "tokenizer:1D-sequence",
+    "tokenizer:decoder-priority-scaling",
+    "tokenizer:entropy-loss-stabilization",
+    "quantization:vector-quantization",
+    "architecture:encoder-decoder-asymmetric"
+  ],
+  "core_cite": [
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "extends",
+      "note": "VQGAN 是 GigaTok 的直接前驱，提供了基于判别器与感知损失训练离散视觉分词器的基础框架"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "extends",
+      "note": "VQ-VAE 奠定向量量化离散表示学习的理论基础，是所有 VQ 分词器的根本来源"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "contrasts",
+      "note": "MAGVIT-v2 展示了高质量分词器对自回归生成的关键作用，本文在此基础上进一步探讨扩展困境"
+    },
+    {
+      "title": "Learnings from Scaling Visual Tokenizers for Reconstruction and Generation",
+      "arxiv_id": "2501.09755",
+      "role": "contrasts",
+      "note": "最直接的对比工作，同样研究视觉分词器扩展，但未解决重建与生成的权衡问题，本文以此为出发点"
+    },
+    {
+      "title": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "arxiv_id": "2410.06940",
+      "role": "supports",
+      "note": "REPA 在扩散模型中引入表示对齐思想，启发本文将语义正则化引入视觉分词器训练"
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "arxiv_id": "2304.07193",
+      "role": "uses",
+      "note": "DINOv2 作为语义正则化的预训练视觉编码器，提供语义一致的特征锚点"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "extends",
+      "note": "TiTok 提出 1D 视觉分词器设计，GigaTok 采用 1D 结构并验证其更优的可扩展性"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "uses",
+      "note": "LlamaGen 作为下游自回归生成模型，用于评估不同分词器对生成质量的影响"
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "contrasts",
+      "note": "VAR 提出下一尺度预测范式，作为自回归生成的重要基线方法进行比较"
+    },
+    {
+      "title": "Reconstruction vs. Generation: Taming Optimization Dilemma in Latent Diffusion Models",
+      "arxiv_id": "2501.01423",
+      "role": "supports",
+      "note": "在潜扩散模型中同样观察到重建与生成的优化困境，与本文问题动机高度呼应"
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "arxiv_id": "2409.04410",
+      "role": "contrasts",
+      "note": "开源复现 MAGVIT-v2 的重要工作，作为本文分词器性能对比的基线之一"
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "arxiv_id": "2110.04627",
+      "role": "extends",
+      "note": "ViT-VQGAN 在 VQGAN 基础上引入 ViT 架构，是 GigaTok 扩展架构设计的重要参考"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "contrasts",
+      "note": "LDM/Stable Diffusion 代表连续潜空间生成路线，与本文的离散分词器路线形成对比"
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "arxiv_id": "2111.06377",
+      "role": "supports",
+      "note": "MAE 的扩展性研究为本文探讨视觉编码器/解码器的扩展规律提供参考依据"
+    },
+    {
+      "title": "Exploring Representation-Aligned Latent Space for Better Generation",
+      "arxiv_id": "2502.00359",
+      "role": "supports",
+      "note": "同期工作，探索表示对齐潜空间对生成质量的促进作用，与本文语义正则化思路相互印证"
+    },
+    {
+      "title": "Scaling the Codebook Size of VQGAN to 100,000 with a Utilization Rate of 99%",
+      "arxiv_id": "2406.11837",
+      "role": "contrasts",
+      "note": "从码本规模角度扩展 VQGAN，与本文从模型参数量角度扩展形成互补视角"
+    },
+    {
+      "title": "Restructuring Vector Quantization with the Rotation Trick",
+      "arxiv_id": "2410.06424",
+      "role": "uses",
+      "note": "Rotation Trick 改善 VQ 训练稳定性，GigaTok 采用该技术以稳定大规模分词器训练"
+    }
+  ],
+  "idea": [
+    {
+      "title": "语义正则化强度的自适应调度：面向视频分词器的扩展",
+      "why": "GigaTok 的语义正则化在图像分词器扩展中表现有效，但视频领域时序动态内容与静态语义先验之间存在更大张力。可研究将语义正则化强度设计为随训练进程和内容复杂度自适应调整的机制，同时探索适用于视频帧间一致性约束的时序语义编码器（如 VideoMAE 或 InternVideo），验证该思路能否在视频分词器扩展中复现同样的重建-生成协同提升。"
+    },
+    {
+      "title": "分词器-生成器联合扩展律：面向自回归图像生成的计算最优配比研究",
+      "why": "本文独立研究了分词器的扩展规律，但分词器规模与下游自回归生成模型规模之间的最优配比尚不明确。借鉴 LLM 领域的 Chinchilla 扩展律方法，可在固定总计算预算下系统测量不同分词器-生成器参数配比对最终生成质量的影响，建立视觉生成领域的计算最优扩展律，为实际资源分配提供理论依据。"
+    },
+    {
+      "title": "统一理解与生成的大规模离散分词器：语义正则化与判别性目标的协同设计",
+      "why": "当前多模态统一模型（如 Janus、TokenFlow）中用于理解和生成的分词器往往分离或存在质量瓶颈。GigaTok 的语义正则化天然引入了来自判别性编码器的监督信号，可进一步探索在 3B 级分词器训练中同时加入对比学习目标（如 CLIP/SigLIP 对齐）和生成重建目标，使单一大规模分词器同时具备强判别表示和高保真重建能力，推动理解-生成统一架构的质量上限。"
+    }
+  ]
+}
+```

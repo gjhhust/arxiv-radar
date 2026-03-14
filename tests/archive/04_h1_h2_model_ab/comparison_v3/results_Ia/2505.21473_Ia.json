@@ -1,0 +1,176 @@
+{
+  "cn_oneliner": "基于VAR/FlexVAR的1D自回归图像生成，引入next-detail预测策略和分辨率感知token序列，实现仅用128个tokens达到2.96 gFID，推理速度提升约2倍",
+  "cn_abstract": "DetailFlow提出了一种新颖的粗到细1D自回归图像生成方法，通过next-detail预测策略建模图像。该方法学习分辨率感知的token序列，使用逐步退化图像进行监督，使生成过程从全局结构开始逐步细化细节。在ImageNet 256×256基准测试中，DetailFlow使用128个tokens达到2.96 gFID，优于VAR（3.3 FID）和FlexVAR（3.05 FID，两者均需680个tokens）。此外，通过自校正的并行推理机制，生成速度提升约8倍，推理速度接近VAR的2倍。",
+  "contribution_type": "significant",
+  "editorial_note": "本文的核心贡献在于将粗到细生成范式与1D token序列相结合，显著减少了token数量（从680降至128）的同时提升了生成质量。next-detail预测策略是一个创新点，使得AR模型能够更自然地逐步细化图像细节。2.96 gFID的结果证明了该方法的有效性，8x加速的并行推理机制也大幅提升了实际可用性。该工作为自回归图像生成提供了一种新的思路，值得关注。",
+  "why_read": "生成模型研究者和工程师可学习如何通过粗到细策略和并行推理优化自回归图像生成，在保持高质量的同时显著提升效率",
+  "method_variants": [],
+  "core_cite": [
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "extends",
+      "note": "VAR是本文最直接的前驱，采用next-scale预测，本文提出的next-detail预测是其改进方向"
+    },
+    {
+      "title": "FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction",
+      "arxiv_id": "2502.20313",
+      "role": "extends",
+      "note": "FlexVAR同样改进VAR，本文与其对比达到更优指标（2.96 vs 3.05 FID）且使用更少tokens"
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "arxiv_id": "2406.11838",
+      "role": "uses",
+      "note": "无VQ的AR图像生成方法，本文方法也属于AR家族，可参考其无VQ思路"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "uses",
+      "note": "证明AR模型可与扩散模型竞争，本文工作延续了这一方向"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "contrasts",
+      "note": "DiT是扩散模型基线，本文AR方法与其形成对比，展示AR路线的竞争力"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "contrasts",
+      "note": "LDM是经典扩散方法，本文AR方法在ImageNet 256×256上与其比较"
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "arxiv_id": "2110.04627",
+      "role": "uses",
+      "note": "VQGAN是tokenizer基线，本文使用类似token化思路但采用1D序列形式"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "uses",
+      "note": "MaskGIT的masked生成策略可与本文的逐步细化思想对照参考"
+    },
+    {
+      "title": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "arxiv_id": "2301.00704",
+      "role": "uses",
+      "note": "Muse同样基于transformer的masked生成，与本文方法有一定相似性"
+    },
+    {
+      "title": "Emu3: Next-Token Prediction is All You Need",
+      "arxiv_id": "2409.18869",
+      "role": "uses",
+      "note": "Emu3统一多模态生成，本文借鉴其next-token预测思路用于图像"
+    },
+    {
+      "title": "ImageFolder: Autoregressive Image Generation with Folded Tokens",
+      "arxiv_id": "2410.01756",
+      "role": "uses",
+      "note": "另一种AR图像生成方法，与本文的1D token策略可作对比"
+    },
+    {
+      "title": "Parallelized Autoregressive Visual Generation",
+      "arxiv_id": "2412.15119",
+      "role": "uses",
+      "note": "并行化AR生成，与本文的并行推理机制有相似优化目标"
+    }
+  ],
+  "idea": [
+    {
+      "title": "next-detail预测策略",
+      "why": "区别于VAR的next-scale预测，next-detail预测更细粒度地建模细节生成过程，使AR模型能逐步从粗到细生成图像"
+    },
+    {
+      "title": "分辨率感知token序列",
+      "why": "通过学习分辨率感知的token序列，模型可以更好地处理不同尺度的图像结构，提升生成质量"
+    },
+    {
+      "title": "自校正并行推理",
+      "why": "引入自校正机制的并行推理可在保持生成质量的同时大幅提升推理速度（8x加速），解决AR模型推理慢的痛点"
+    }
+  ],
+  "_similarities": [
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "best_score": 1.0,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction",
+      "best_score": 1.0,
+      "best_match": "FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Image Generation without Vector Quantization",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "best_score": 1.0,
+      "best_match": "Vector-quantized Image Modeling with Improved VQGAN",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "best_score": 1.0,
+      "best_match": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "pass": true
+    },
+    {
+      "title": "Emu3: Next-Token Prediction is All You Need",
+      "best_score": 1.0,
+      "best_match": "Emu3: Next-Token Prediction is All You Need",
+      "pass": true
+    },
+    {
+      "title": "ImageFolder: Autoregressive Image Generation with Folded Tokens",
+      "best_score": 1.0,
+      "best_match": "ImageFolder: Autoregressive Image Generation with Folded Tokens",
+      "pass": true
+    },
+    {
+      "title": "Parallelized Autoregressive Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Parallelized Autoregressive Visual Generation",
+      "pass": true
+    }
+  ],
+  "_matched": 12,
+  "_total": 12,
+  "_pass_rate": 1.0,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14",
+  "_ref_count": 43
+}

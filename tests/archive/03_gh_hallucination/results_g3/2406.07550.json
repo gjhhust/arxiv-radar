@@ -1,0 +1,186 @@
+{
+  "arxiv_id": "2406.07550",
+  "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+  "cn_oneliner": "基于 VQ-VAE 2D tokenizer，引入 1D token 表示与 ViT 编解码架构，将 256×256 图像压缩至仅 32 个离散 token，实现高效图像重建与生成",
+  "cn_abstract": "本文提出 TiTok（Transformer-based 1-Dimensional Tokenizer），一种紧凑的 1D 图像 tokenizer，利用图像区域冗余将 256×256 图像表示为仅 32 个离散 token，远少于传统 2D tokenizer 所需的数百个 token。TiTok 采用 ViT 架构，通过可学习的 1D latent token 与图像 patch token 在编码器中交互提取紧凑表示，并在解码器中将 1D token 映射回像素空间。在 ImageNet 基准上，TiTok-S-128 以 128 个 token 实现 1.71 的 rFID 重建质量；用于生成任务时，TiTok 结合 MaskGIT 框架，以 32 个 token 达到 2.77 的 gFID（256×256），同时生成吞吐量较基线提升超 10 倍。该方法在 512×512 分辨率生成中同样表现出色，展现了 1D tokenization 在图像生成效率和质量上的优势。",
+  "contribution_type": "significant",
+  "editorial_note": "传统视觉 tokenizer（如 VQGAN）采用 2D 网格 token 表示图像，token 数量受空间分辨率约束，导致下游生成模型序列长度大、效率低。本文核心贡献是将图像 token 从 2D 网格解耦为 1D 紧凑序列，通过 ViT 编解码器与可学习 latent token 交互实现极致压缩（32 token），并在重建和生成任务上同时取得强竞争力。该工作在 tokenizer 设计范式上有实质性创新，突破了 2D token 的结构性限制，且实验充分、效率提升显著，是图像 tokenization 方向的重要进展。",
+  "why_read": "研究离散视觉 tokenizer 或高效图像生成的研究者，可从中学习如何将 2D 空间 token 解耦为 1D 紧凑表示以大幅提升生成效率",
+  "method_variants": [
+    "tokenizer:1d-latent-vit",
+    "quantization:vq-1d",
+    "generation:maskgit-with-1d-tokens",
+    "architecture:encoder-decoder-vit-with-latent-tokens",
+    "training:two-stage-proxy-then-finetune"
+  ],
+  "core_cite": [
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis (VQGAN)",
+      "arxiv_id": "2012.09841",
+      "role": "extends",
+      "note": "TiTok 的核心对比基线，传统 2D VQ tokenizer，本文将其扩展为 1D 表示"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "uses",
+      "note": "TiTok 在生成阶段采用 MaskGIT 框架，利用 1D token 的紧凑性加速生成"
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale (ViT)",
+      "arxiv_id": "2010.11929",
+      "role": "uses",
+      "note": "TiTok 编解码器均基于 ViT 架构构建"
+    },
+    {
+      "title": "Neural Discrete Representation Learning (VQ-VAE)",
+      "arxiv_id": "1711.00937",
+      "role": "extends",
+      "note": "VQ-VAE 是离散 tokenizer 的基础方法，TiTok 沿用其向量量化思路"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation (ViT-VQGAN / MAGVIT-v2)",
+      "arxiv_id": "2310.05737",
+      "role": "contrasts",
+      "note": "MAGVIT-v2 通过改进 codebook 提升 2D tokenizer 质量，TiTok 从维度压缩角度提供互补方案"
+    },
+    {
+      "title": "Autoregressive Image Generation using Residual Quantization (RQ-VAE)",
+      "arxiv_id": "2203.01941",
+      "role": "contrasts",
+      "note": "RQ-VAE 通过残差量化提升 token 质量，与 TiTok 的 1D 压缩路线形成对比"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers (DiT)",
+      "arxiv_id": "2212.09748",
+      "role": "contrasts",
+      "note": "DiT 在连续 latent 空间做扩散生成，TiTok 在离散 token 空间做掩码生成，两者互为对比"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models (LDM/Stable Diffusion)",
+      "arxiv_id": "2112.10752",
+      "role": "contrasts",
+      "note": "LDM 使用连续 VAE latent，TiTok 使用离散 1D token，对比生成范式差异"
+    },
+    {
+      "title": "MAGVIT: Masked Generative Video Transformer",
+      "arxiv_id": "2212.05199",
+      "role": "contrasts",
+      "note": "MAGVIT 采用 3D VQ tokenizer 处理视频，与 TiTok 的 1D 设计形成维度对比"
+    },
+    {
+      "title": "Perceiver: General Perception with Iterative Attention",
+      "arxiv_id": "2103.03206",
+      "role": "supports",
+      "note": "TiTok 的 latent token 与输入交叉注意力机制受 Perceiver 启发"
+    },
+    {
+      "title": "Improved VQGAN with MaskGIT (LlamaGen / Open-MAGVIT2)",
+      "arxiv_id": "2404.02905",
+      "role": "contrasts",
+      "note": "近期改进 2D tokenizer 的工作，与 TiTok 在 token 数量效率上形成对比"
+    },
+    {
+      "title": "Vector Quantized Diffusion Model for Text-to-Image Synthesis (VQ-Diffusion)",
+      "arxiv_id": "2111.14822",
+      "role": "mentions",
+      "note": "在离散 token 上做扩散的相关工作"
+    }
+  ],
+  "idea": [
+    {
+      "title": "1D Tokenizer 用于视频生成的时空压缩",
+      "why": "TiTok 已证明 1D token 能有效压缩单帧空间冗余。视频存在更大的时空冗余，将 1D tokenizer 扩展至视频可实现极端压缩比（如每帧 8-16 token），大幅降低视频生成模型的序列长度和计算成本。可基于 TiTok 编码器加入时序交叉注意力实现。"
+    },
+    {
+      "title": "自适应 Token 数量分配机制",
+      "why": "TiTok 对所有图像使用固定 token 数量，但不同图像复杂度差异很大（简单背景 vs 复杂场景）。可设计动态 token 分配策略，让编码器根据图像内容自适应选择 token 数量，简单图像用更少 token，在保持重建质量的同时进一步提升生成效率。这与 early-exit 和动态计算领域的方法可结合。"
+    },
+    {
+      "title": "1D Token 表示用于多模态统一模型",
+      "why": "TiTok 的 1D token 天然与文本 token 序列格式一致，非常适合嵌入统一的自回归多模态模型（如 Chameleon/Gemini 类架构）。32 个图像 token 的极短序列可显著降低多模态模型中视觉 token 占比，缓解图文混合训练中的 token 预算瓶颈。可直接将 TiTok codebook 接入 LLM 词表进行联合训练。"
+    }
+  ],
+  "_scheme": "G",
+  "_model": "wq/minimaxm25",
+  "_verified_at": "2026-03-13",
+  "_s2_ref_count": 67,
+  "_similarities": [
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis (VQGAN)",
+      "best_score": 0.932,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale (ViT)",
+      "best_score": 0.961,
+      "best_match": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning (VQ-VAE)",
+      "best_score": 0.897,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation (ViT-VQGAN / MAGVIT-v2)",
+      "best_score": 0.855,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Image Generation using Residual Quantization (RQ-VAE)",
+      "best_score": 0.929,
+      "best_match": "Autoregressive Image Generation using Residual Quantization",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers (DiT)",
+      "best_score": 0.935,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models (LDM/Stable Diffusion)",
+      "best_score": 0.839,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "MAGVIT: Masked Generative Video Transformer",
+      "best_score": 1.0,
+      "best_match": "MAGVIT: Masked Generative Video Transformer",
+      "pass": true
+    },
+    {
+      "title": "Perceiver: General Perception with Iterative Attention",
+      "best_score": 0.531,
+      "best_match": "Autoregressive Image Generation using Residual Quantization",
+      "pass": false
+    },
+    {
+      "title": "Improved VQGAN with MaskGIT (LlamaGen / Open-MAGVIT2)",
+      "best_score": 0.466,
+      "best_match": "Improved Masked Image Generation with Token-Critic",
+      "pass": false
+    },
+    {
+      "title": "Vector Quantized Diffusion Model for Text-to-Image Synthesis (VQ-Diffusion)",
+      "best_score": 0.6,
+      "best_match": "Diffusion Models Beat GANs on Image Synthesis",
+      "pass": false
+    }
+  ],
+  "_matched": 9,
+  "_total": 12,
+  "_pass_rate": 0.75,
+  "_elapsed_s": 45.8
+}

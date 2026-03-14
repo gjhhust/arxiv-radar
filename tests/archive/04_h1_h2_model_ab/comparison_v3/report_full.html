@@ -1,0 +1,2744 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Model A/B Test Full Report</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 20px; background: #fafafa; line-height: 1.6; }
+        h1 { color: #333; border-bottom: 3px solid #007bff; padding-bottom: 15px; }
+        h2 { color: #444; margin-top: 40px; border-left: 4px solid #007bff; padding-left: 15px; }
+        h3 { color: #555; }
+        .paper-section { background: white; padding: 25px; border-radius: 10px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .field-section { margin: 20px 0; }
+        .field-title { font-weight: bold; color: #333; font-size: 1.1em; margin-bottom: 10px; padding: 8px 12px; background: #f0f0f0; border-radius: 4px; }
+        .setting-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .setting-box { padding: 15px; border-radius: 8px; border: 1px solid #ddd; font-size: 0.9em; }
+        .setting-box.h1 { background: #e3f2fd; border-color: #90caf9; }
+        .setting-box.h2 { background: #f3e5f5; border-color: #ce93d8; }
+        .setting-box.best { border: 3px solid #4caf50; background: #e8f5e9; }
+        .setting-label { font-weight: bold; color: #666; margin-bottom: 8px; }
+        .content { color: #333; white-space: pre-wrap; word-break: break-word; }
+        .variant-item, .cite-item, .idea-item { margin: 8px 0; padding: 8px; background: rgba(255,255,255,0.7); border-radius: 4px; }
+        .tag { display: inline-block; background: #e0e0e0; padding: 2px 8px; border-radius: 3px; font-size: 0.85em; margin-right: 5px; }
+        .role-extends { background: #c8e6c9; color: #2e7d32; }
+        .role-contrasts { background: #ffccbc; color: #bf360c; }
+        .role-uses { background: #b3e5fc; color: #01579b; }
+        .role-supports { background: #fff9c4; color: #f57f17; }
+        .role-mentions { background: #f5f5f5; color: #616161; }
+        .analysis-section { background: #fff3e0; padding: 25px; border-radius: 10px; margin-top: 30px; }
+        .analysis-section h2 { border-left-color: #ff9800; }
+        table.summary-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        table.summary-table th, table.summary-table td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        table.summary-table th { background: #f5f5f5; }
+        .best-cell { background: #e8f5e9; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Model A/B Test Full Report</h1>
+    <p>生成时间: 2026-03-14 | 测试论文: 5篇 | 设置: 4种</p>
+    <p><strong>模板说明：</strong>H1=清单型(3-field method_variants), H2=判断型(solid检验)</p>
+    <p><strong>模型说明：</strong>M25=minimaxm25(~2min), M21=minimaxm21(~1.5min)</p>
+    
+    <hr style="margin: 30px 0; border: none; border-top: 2px solid #eee;">
+
+    <div class="paper-section">
+        <h2>📄 TiTok: 1D Tokenization</h2>
+        <p><code>2406.07550</code></p>
+
+        <div class="field-section">
+            <div class="field-title">📝 cn_oneliner（一句话概括）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M25 (4/5)</div>
+                    <div class="content">基于VQGAN的2D latent grid，引入1D序列tokenization，将256×256×3图像压缩为32个离散token，以8×-64×压缩比实现高效高画质图像重建与生成</div>
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (4/5)</div>
+                    <div class="content">基于 VQGAN 的 2D 图像标记化，引入 1D 序列标记化方法，将 256×256 图像压缩至仅 32 个离散 token，实现 ImageNet 256×256 gFID=1.97（vs MaskGIT 4.21 提升），512×512 推理速度比 DiT-XL/2 快 410 倍</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (4/5)</div>
+                    <div class="content">基于VQGAN 2D tokenization，引入1D序列tokenization，打破网格约束，实现32 tokens表示256x256图像，生成速度提升74-410倍</div>
+                </div>
+
+                <div class="setting-box h2 best">
+                    <div class="setting-label">H2_M21 (5/5) ⭐</div>
+                    <div class="content">基于VQ-VAE框架，引入1D序列tokenization替代2D latent grid，将256×256图像压缩至32个token，实现410倍加速生成</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">📖 cn_abstract（中文摘要）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (5/5) ⭐</div>
+                    <div class="content">本文提出TiTok（Transformer-based 1-Dimensional Tokenizer），一种将图像tokenize为1D离散序列的紧凑图像tokenizer。不同于传统VQGAN使用2D latent grid，TiTok利用图像内在冗余性，将256×256×3图像压缩为仅32个离散token（此前方法需要256或1024个token）。在ImageNet 256×256基准上，TiTok达到1.97 gFID，较MaskGIT基线提升4.21。在512×512分辨率下，TiTok不仅超越DiT-XL/2（gFID 2.74 vs 3.04），还将token数减少64×，生成...</div>
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (4/5)</div>
+                    <div class="content">本文提出 TiTok（Transformer-based 1-Dimensional Tokenizer），一种将图像标记化为 1D 潜在序列的创新方法。现有方法如 VQGAN 使用 2D 潜在网格，难以处理图像中相邻区域的固有冗余。TiTok 将 256×256×3 图像压缩至仅 32 个离散 token，远少于此前方法的 256 或 1024 个。在 ImageNet 256×256 上，TiTok 达到 1.97 gFID，较 MaskGIT 基线显著提升 4.21。在更高分辨率上优势更明显：512×512 任务上不仅超越 DiT-XL/2（gFID 2.74 vs 3.04），且 to...</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (5/5)</div>
+                    <div class="content">TiTok是一种新型的Transformer-based 1D图像tokenizer，将图像从传统的2D latent grids转换为1D latent sequences。该方法突破了2D tokenization中固有的网格约束，能够更灵活紧凑地表示图像特征。实验表明，TiTok可将256×256图像压缩至仅32个离散token，在ImageNet 256×256上达到1.97 gFID，超越MaskGIT 4.21点。在512×512分辨率下，TiTok不仅超越DiT-XL/2（gFID 2.74 vs 3.04），还将token数量减少64倍，实现410倍加速。最佳变体达到gFID ...</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (5/5)</div>
+                    <div class="content">本文提出TiTok（Transformer-based 1-Dimensional Tokenizer），将图像tokenize为1D离散序列而非传统2D latent grid。TiTok将256×256×3图像压缩至仅32个离散token（相比之前方法的256或1024个显著减少），在ImageNet 256×256上使用MaskGIT框架达到1.97 gFID，比MaskGIT baseline高出4.21。在512×512分辨率下，TiTok不仅超越DiT-XL/2（gFID 2.74 vs 3.04），还减少64× token数量，实现410×加速生成。最佳变体TiTok-B-128...</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">✍️ editorial_note（编辑评论）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M25 (4/5)</div>
+                    <div class="content">VQGAN等方法通过向量量化将图像映射为2D网格latent representation，保持与图像patch的一一对应关系，但这限制了tokenizer利用图像冗余信息的能力。本文提出打破2D结构约束，使用1D序列表示图像，实现极高的压缩比（32 tokens vs 256/1024）。创新点明确且有效，在ImageNet生成任务上取得SOTA结果，同时带来显著的训练推理加速。改进属于范式级创新；但过度压缩（如32 token）在某些需要精细细节的任务中可能受限，且大模型尺寸是实现紧凑表示的必要条件，增加了部署成本。</div>
+                </div>
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M21 (5/5) ⭐</div>
+                    <div class="content">VQGAN 等方法通过向量量化将图像压缩为离散 token，但采用 2D 网格结构存在空间冗余难以高效处理。本文创新性地引入 1D 序列标记化，打破传统 2D 网格限制，将图像压缩效率提升一个数量级。该工作属于范式级创新，为紧凑图像表征学习开辟了新路径；但 1D tokenization 丢失了显式空间位置信息，在需要精细空间结构的任务（如图像编辑、局部修改）可能是潜在局限。</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (4/5)</div>
+                    <div class="content">[前驱] 本文建立在VQGAN系列（Vector-quantized Image Modeling with Improved VQGAN）和MaskGIT（Masked Generative Image Transformer）的2D tokenization基础上，同时吸收了DiT（Diffusion Transformer）的生成框架。核心模块Transformer encoder/decoder来自标准ViT架构。
+
+[贡献] 作者真正做的事情很简单：将图像tokenization从2D网格强制展开为1D序列，利用更少的token（32个）表示整张图像，打破了2D卷积的局部性假设。
+
+[判断] 这个贡献的实质价值在于：解决了图像tokenization中token数量与表示能力的trade-off难题，提供了一个可复用的1D tokenization新框架。效果显著（超越MaskGIT和DiT），方法创新（1D tokenization），是真正有价值的工作。</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (4/5)</div>
+                    <div class="content">[前驱] 本文建立在VQ-VAE/VQGAN系列工作基础上，核心模块来自：ViT encoder/decoder（Vision Transformer）、Vector Quantization向量量化、MaskGIT双向Transformer生成框架。两阶段训练中proxy codes借鉴了知识蒸馏思想。
+
+[贡献] 作者真正做的事情：1）提出1D tokenization替代2D latent grid，打破token与patch的固定位置映射约束；2）设计适合1D表示的ViT架构，通过mask token机制实现图像重建；3）提出两阶段训练（proxy codes warm-up + decoder fine-tuning）解决1D VQ训练不稳定问题。
+
+[判断] 核心贡献在于重新思考图像tokenization的空间假设——之前方法假设2D网格是必须的，而TiTok证明1D序列在极压缩情况下仍能保持重建质量。这是一个有效但不显然的insight：在限制token数量时，1D表示反而学到更多语义信息。实验数据扎实，但主要改进在token压缩率而非重建质量本身，属于significant。</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">🎯 why_read（目标读者）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1">
+                    <div class="setting-label">H1_M25</div>
+                    <div class="content">研究图像生成高效化的工程师，可借鉴其1D tokenization设计及两阶段训练策略，在保证生成质量的同时大幅降低计算开销</div>
+                </div>
+
+                <div class="setting-box h1">
+                    <div class="setting-label">H1_M21</div>
+                    <div class="content">从事图像生成、扩散模型、高效视觉表征学习的研究者和工程师，可借鉴其 1D 标记化设计思路以实现生成速度-质量权衡优化</div>
+                </div>
+
+                <div class="setting-box h2">
+                    <div class="setting-label">H2_M25</div>
+                    <div class="content">如果你在研究图像生成或tokenization，这个工作提供了全新的视角：1D表示不仅可行，还能用极少token达到SOTA。直接可复用的代码和清晰的可视化使其成为改进图像tokenization的绝佳起点。</div>
+                </div>
+
+                <div class="setting-box h2">
+                    <div class="setting-label">H2_M21</div>
+                    <div class="content">如果你在研究图像生成、tokenization、或高效视觉表示，这篇论文值得一读——它展示了1D序列表示在极压缩场景下的潜力（32 token），并提供了详实的scaling law分析，帮助判断tokenizer size与latent size的权衡取舍。</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">🔧 method_variants（方法变体）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (5/5) - 3项 ⭐</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">vqgan:1d-tokenization</span>
+                        <span class="tag">vqgan</span>
+                        <br>VQGAN使用2D grid latent representation，每个token对应固定图像patch；本文改为1D序列表示，解耦latent size与图像分辨率限制
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vit:masked-decoder</span>
+                        <span class="tag">vit</span>
+                        <br>标准ViT直接重建像素；本文decoder采用masked token策略，将quantized latent与mask tokens拼接后重建
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vq-vae:proxy-training</span>
+                        <span class="tag">vq-vae</span>
+                        <br>VQ-VAE直接回归RGB并使用复杂loss训练；本文提出两阶段训练：先用MaskGIT-VQGAN的proxy codes训练1D VQ，再fine-tune decoder
+                    </div>
+
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (5/5) - 2项</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">vq-vae:1d-tokenization</span>
+                        <span class="tag">vq-vae</span>
+                        <br>VQ-VAE 系列（包括 VQGAN）使用 2D 潜在网格进行图像标记化；本文改为 1D 序列标记化，将 256×256 图像压缩至 32 token，大幅提升压缩效率
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">maskgit:1d-backbone</span>
+                        <span class="tag">maskgit</span>
+                        <br>MaskGIT 使用 2D 标记化作为生成框架；本文将其迁移至 1D 标记化架构，在相同框架下实现显著性能提升
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (3/5) - 2项</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">vq-gan:1d-tokenization</span>
+                        <span class="tag">?</span>
+                        <br>VQGAN使用2D latent grid（有固定下采样因子），面临相邻区域冗余问题；TiTok创新性地将图像展开为1D序列，打破网格约束，256x256图像仅用32个token即可表示，信息密度大幅提升
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">maskgit:1d-sequential</span>
+                        <span class="tag">?</span>
+                        <br>MaskGIT在2D token grid上进行masked generation；TiTok将其扩展到1D序列，利用更短的token序列实现更高效的并行解码，生成速度提升数个量级
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (2/5) - 3项</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">vq-vae:1d-tokenization</span>
+                        <span class="tag">?</span>
+                        <br>传统VQ-VAE使用2D latent grid（与图像patch有一一对应），本文改为1D序列表示，解耦latent size与图像分辨率约束，允许更灵活的token数量选择（如32/64/128），突破2D方法256/1024 tokens的限制
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vq-vae:proxy-codes-warmup</span>
+                        <span class="tag">?</span>
+                        <br>VQ-VAE训练不稳定且依赖复杂loss调参，本文提出两阶段训练：第一阶段使用预训练VQGAN的离散码作为proxy codes进行warm-up，绕过GAN训练困难；第二阶段fine-tune decoder到pixel space，显著提升训练稳定性和重建质量
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vit:masked-decoder</span>
+                        <span class="tag">?</span>
+                        <br>ViT decoder接收quantized latent tokens与mask tokens的拼接（而非仅latent tokens），参考MAE思想让decoder从masked sequence重建图像，实现更灵活的token到pixel映射，1D latent可重建任意图像区域
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">📚 core_cite（核心引用）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (5/5) - 10条 ⭐</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Taming Transformers for High-Resolution ...</strong>
+                        <br><small>VQGAN是本文最直接的前驱工作，本文在其基础上将2D latent改为1D序列</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>MaskGIT: Masked Generative Image Transfo...</strong>
+                        <br><small>使用MaskGIT作为生成框架，并将MaskGIT-VQGAN的proxy codes用于两阶段训练</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>Scalable Diffusion Models with Transform...</strong>
+                        <br><small>DiT是本文在ImageNet上的主要对比基线，TiTok在更少token下实现更优gFID</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>High-Resolution Image Synthesis with Lat...</strong>
+                        <br><small>LDM是另一主要对比的diffusion方法，TiTok实现100×+速度提升</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>Diffusion Models Beat GANs on Image Synt...</strong>
+                        <br><small>ADM是文中用于评估的diffusion基线</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Masked Autoencoders Are Scalable Vision ...</strong>
+                        <br><small>采用MAE的masked token策略用于decoder重建图像</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>An Image is Worth 16x16 Words: Transform...</strong>
+                        <br><small>使用ViT作为encoder和decoder的骨干网络</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Attention is All you Need</strong>
+                        <br><small>Transformer架构是本文方法的基础</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 2 条</div>
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (5/5) - 10条</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Taming Transformers for High-Resolution ...</strong>
+                        <br><small>VQGAN 的原始工作，本文在其基础上将 2D 标记化扩展为 1D 序列标记化</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>MaskGIT: Masked Generative Image Transfo...</strong>
+                        <br><small>本文的主要对比基线，TiTok 在相同生成框架下将 gFID 从 6.18 降至 1.97</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>Scalable Diffusion Models with Transform...</strong>
+                        <br><small>DiT 工作，本文在 ImageNet 512×512 上以 2.74 gFID 超越 DiT-XL/2 的 3.04</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Vector-quantized Image Modeling with Imp...</strong>
+                        <br><small>使用改进的 VQGAN tokenizer 作为对比基线的组成部分</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Autoregressive Image Generation using Re...</strong>
+                        <br><small>RQ-VAE 的残差量化方法，为本文的离散 token 表征提供背景支撑</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Masked Diffusion Transformer is a Strong...</strong>
+                        <br><small>MDT 工作证明了 Transformer 在图像生成中的有效性，为本文设计提供依据</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Diffusion Models Beat GANs on Image Synt...</strong>
+                        <br><small> ADM 扩散模型工作，本文对比中涉及扩散方法</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Muse: Text-To-Image Generation via Maske...</strong>
+                        <br><small>Masked 生成式 Transformer 在文本到图像生成的应用，为本文方法提供对比</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 2 条</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (5/5) - 10条</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>MaskGIT: Masked Generative Image Transfo...</strong>
+                        <br><small>TiTok直接使用MaskGIT的生成框架（Masked Generative Transformer），但将2D to...</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Vector-quantized Image Modeling with Imp...</strong>
+                        <br><small>VQGAN是2D图像tokenization的经典工作，TiTok继承了其离散tokenization思路，但将2D l...</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>Scalable Diffusion Models with Transform...</strong>
+                        <br><small>DiT是扩散模型领域的SOTA，TiTok在ImageNet 512x512上与之对比（gFID 2.74 vs 3.0...</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Finite Scalar Quantization: VQ-VAE Made ...</strong>
+                        <br><small>FSQ提出用有限整数标量替代向量量化，是tokenization的改进方向之一，TiTok采用类似简化思路但应用于1D表...</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>An Image is Worth 16x16 Words: Transform...</strong>
+                        <br><small>ViT将图像视为patch序列，为TiTok的1D tokenization提供理论基础：将图像视为token序列而非2...</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Autoregressive Image Generation using Re...</strong>
+                        <br><small>RQ-VAE探索了图像的多尺度tokenization，TiTok可视为其在1D空间的简化实现</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Masked Autoencoders Are Scalable Vision ...</strong>
+                        <br><small>MAE的masked pretraining范式启发了MaskGIT类方法，TiTok沿用此范式进行1D token g...</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Language Model Beats Diffusion -- Tokeni...</strong>
+                        <br><small>强调tokenizer是自回归图像生成的关键，TiTok通过1D tokenizer进一步验证了这一观点</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 2 条</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (5/5) - 10条</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Taming Transformers for High-Resolution ...</strong>
+                        <br><small>TiTok继承VQ-VAE框架，将Transformer引入image tokenizer，是本文核心方法基础</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>MaskGIT: Masked Generative Image Transfo...</strong>
+                        <br><small>使用MaskGIT作为生成框架，将VQGAN tokenizer替换为TiTok进行图像生成</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>An Image is Worth 16x16 Words: Transform...</strong>
+                        <br><small>采用ViT作为encoder和decoder架构，参考其patch embedding和Transformer设计</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>Scalable Diffusion Models with Transform...</strong>
+                        <br><small>DiT是本文主要对比的diffusion模型，TiTok在512分辨率上gFID 2.74 vs DiT-XL/2的3....</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Finite Scalar Quantization: VQ-VAE Made ...</strong>
+                        <br><small>FSQ是本文提及的替代量化方法，可进一步提升TiTok性能（本文focus在1D tokenization）</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>MAGVIT: Masked Generative Video Transfor...</strong>
+                        <br><small>视频生成tokenizer工作，验证VQ在多模态生成中的有效性，本文借鉴其思路扩展到图像</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Vector-quantized Image Modeling with Imp...</strong>
+                        <br><small>ViT-VQGAN改进VQGAN的Transformer设计，本文采用类似encoder-decoder架构</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Masked Autoencoders Are Scalable Vision ...</strong>
+                        <br><small>MAE的masked training思想和mask token设计被本文decoder采用，用于1D到image的重建</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 2 条</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">💡 idea（研究方向）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (5/5) - 3条 ⭐</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 探索更极端的压缩比（8-16 tokens）</strong>
+                        <br><small>本文已证明32 tokens足以重建图像，但作者指出当token数降至16时语义信息更加丰富（线性探测准确率提升）。可探索8-16 tokens的超紧凑表示是否...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 将1D tokenization扩展到视频生成</strong>
+                        <br><small>本文方法已在图像tokenization上验证有效性。MAGVIT等工作已证明VQ tokenization可迁移到视频领域。1D表示在视频时序建模上可能更具优...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 结合VQGAN改进的量化方法</strong>
+                        <br><small>本文使用基础VQ模块，但提到MAGVIT-v2和FSQ等改进的量化方法可能进一步提升TiTok性能。可将lookup-free quantization或res...</small>
+                    </div>
+
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (5/5) - 3条</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 1D token 的空间建模增强</strong>
+                        <br><small>本文采用 1D 序列标记化虽大幅提升压缩率，但可能丢失了 2D 网格的显式空间位置信息。可探索在 1D token 中引入位置编码增强或轻量级空间注意力机制，以...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 多尺度 1D tokenization</strong>
+                        <br><small>当前方案固定使用 32 token，可借鉴 MAE/Masked Diffusion Transformer 的多尺度思想，设计可适应不同复杂度图像的动态 to...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 跨模态 1D 表征迁移</strong>
+                        <br><small>本文验证了 1D tokenization 在图像生成任务的有效性。该思想可迁移至视频生成（将视频帧序列标记化为更紧凑的 1D token）、3D 重建等邻域。...</small>
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (5/5) - 3条</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 将DINO特征对齐引入1D tokenization</strong>
+                        <br><small>DINOv2的patch-level特征包含丰富语义信息，当前TiTok仅用重建损失训练tokenizer。如引入DINO特征对齐损失，可使1D token具备...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 探索1D tokenization在视频生成中的应用</strong>
+                        <br><small>TiTok验证了1D tokenization在图像上的有效性，但视频生成面临时序一致性挑战。可将图像tokenizer扩展为时空联合1D序列，同时建模帧内和帧...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 将1D tokenizer与LLM结合实现 multimodal generation</strong>
+                        <br><small>当前图像tokenization独立于语言模型，TiTok的紧凑1D表示（32 tokens）天然适合与LLM交互。可探索将1D image token直接作为...</small>
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (5/5) - 3条</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 1D tokenizer与diffusion结合</strong>
+                        <br><small>当前TiTok使用MaskGIT（masked prediction）生成，但1D序列更适合diffusion过程建模。gap：1D latent的序列特性与d...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 引入FSQ替代VQ提升codebook利用率</strong>
+                        <br><small>本文使用传统VQ（codebook size 4096），存在codebook collapse和利用率低问题。gap：FSQ通过有限整数标量量化，理论利用率接...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 将1D tokenization扩展到视频生成</strong>
+                        <br><small>本文仅验证图像tokenization，但视频存在更强的时间和空间冗余。gap：视频tokenization常用3D或2+1D方式，能否用1D序列同时建模时空？...</small>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="paper-section">
+        <h2>📄 Semanticist: PCA-like Tokens</h2>
+        <p><code>2503.08685</code></p>
+
+        <div class="field-section">
+            <div class="field-title">📝 cn_oneliner（一句话概括）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M25 (4/5)</div>
+                    <div class="content">基于VQ-VAE/ViT tokenizer范式，引入Nested CFG实现PCA-like结构约束，使token具有因果序和递减解释方差，用Diffusion DiT decoder解耦语义-频谱耦合，实现SOTA重建并使自回归生成可用更少token</div>
+                </div>
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M21 (5/5) ⭐</div>
+                    <div class="content">基于VQ-VAE类tokenizer，引入PCA-like结构化潜在空间和扩散解码器，实现数学保证递减方差的图像tokenization</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (5/5)</div>
+                    <div class="content">基于PCA原理引入嵌套CFG实现因果token排序，结合扩散解码器解耦语义-频谱信息，实现高效可解释的图像tokenization。</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (5/5)</div>
+                    <div class="content">基于 Nested CFG 引入 PCA 层级结构，实现 1D 因果 token 排序，使早期 token 捕获主要语义信息，降低语义-频谱耦合</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">📖 cn_abstract（中文摘要）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (4/5) ⭐</div>
+                    <div class="content">现有视觉tokenizer主要优化重建保真度，但忽视了潜在空间的结构属性——这是可解释性和下游任务的关键因素。本文提出Semanticist方法，生成一维因果token序列，其中每个连续token贡献非重叠信息，数学上保证递减的解释方差，类似于主成分分析。这种结构约束确保tokenizer首先提取最显著的视觉特征，每个后续token添加递减但互补的信息。此外，本文识别并解决了semantic-spectrum coupling效应，通过Diffusion DiT decoder消除token中高级语义内容和低级频谱细节的不期望纠缠。实验表明该方法在ImageNet上达到tokenizer领域S...</div>
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (4/5)</div>
+                    <div class="content">本文提出一种新的视觉tokenization框架，将可证明的PCA-like结构嵌入潜在token空间。现有视觉tokenizer主要优化重建保真度，但忽视潜在空间的结构特性——这对可解释性和下游任务至关重要。本文方法生成图像的1D因果token序列，每个连续token贡献非重叠信息，具有数学保证的递减解释方差，类似于主成分分析。本文还识别并解决了语义谱耦合效应，通过扩散解码器消除高级语义内容和低级光谱细节的纠缠。实验表明，该方法达到SOTA重建性能，具有更好的可解释性以对齐人类视觉系统。此外，在自回归模型上使用更少token即可达到当前SOTA方法的性能。</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (4/5)</div>
+                    <div class="content">本文提出Semanticist，一种将可证明PCA类结构嵌入潜在token空间的新型视觉tokenization框架。现有视觉tokenizer主要优化重建保真度，但往往忽视潜在空间的结构属性——这正是可解释性和下游任务的关键因素。本方法生成图像的1D因果token序列，其中每个连续token贡献非重叠信息，具有数学上保证的递减解释方差，类似于主成分分析。这种结构约束确保tokenizer首先提取最显著的视觉特征，每个后续token添加递减但互补的信息。此外，本文识别并解决了语义-频谱耦合问题——该问题导致token中高层语义内容与低层频谱细节的不希望纠缠——通过利用扩散解码器来解决。实验表明...</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (4/5)</div>
+                    <div class="content">本文提出 Semanticist，一种新型视觉 tokenization 框架，将可证明的类 PCA 结构嵌入潜在空间。现有视觉 tokenizer 主要优化重建质量，往往忽略潜在空间的结构属性。本文方法生成 1D 因果 token 序列，每个 token 提供非重叠信息，具有数学上保证的递减解释方差，类似于主成分分析。此外，通过 diffusion decoder 解决语义-频谱耦合问题。实验表明该方法达到 SOTA 重建性能，且与人类视觉系统的可解释性更好。基于本文 token 序列训练的自回归模型用更少 token 达到与当前 SOTA 方法相当的性能。</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">✍️ editorial_note（编辑评论）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M25 (4/5)</div>
+                    <div class="content">[前驱局限] 现有视觉tokenizer(VQ-VAE, VQGAN, TiTok等)虽能实现良好重建，但latent space缺乏结构化属性：token顺序任意、信息冗余，且存在semantic-spectrum耦合导致压缩效率低。[本文解决] 引入Nested Classifier-Free Guidance实现PCA-like层次结构，用Diffusion DiT decoder自然实现频谱自回归以解耦语义与频谱。数学上证明了因果序保证递减的解释方差。[编辑判断] ICCV 2025接收。创新性强：将传统PCA思想与深度学习tokenizer结合，数学形式优雅；实验显示重建FID最优且AR生成可用更少token；但diffusion decoder推理速度较慢，实用价值需进一步验证。</div>
+                </div>
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M21 (5/5) ⭐</div>
+                    <div class="content">VQ-VAE系列方法通过向量量化实现图像离散token化，是当前视觉生成的主流backbone，但潜在空间缺乏结构性约束和可解释性保证。本文创新性地将经典PCA理论引入视觉tokenization，数学上保证token的信息非重叠性和递减方差，首次为token序列引入了可解释的顺序结构。扩散解码器的引入解决了语义-光谱 entanglement 问题，是组件层面的有效改进。理论贡献显著，但PCA结构是否在所有视觉任务中都优于传统unstructured tokenizer仍需更多下游任务验证。</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (4/5)</div>
+                    <div class="content">[前驱] 本工作建立在多个已有工作基础上。Causal ViT Encoder源自ViT（arxiv:2010.11929），Nested CFG源自Classifier-Free Guidance（arxiv:2207.12598），Diffusion DiT Decoder源自DiT（arxiv:2212.09748）。[贡献] 去掉包装之后，作者真正做的事情是：引入PCA-like的方差衰减结构到visual tokenizer中，用nested CFG实现因果token排序，用扩散解码器解耦语义和频谱信息。[判断] 这个贡献的实质价值是真正解决了问题——通过结构化tokenization同时提升了重建质量、可解释性和压缩效率，是对visual tokenization领域有深度的重要贡献。</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (4/5)</div>
+                    <div class="content">[前驱] 本文建立在 VQ-VAE、DiT、Scalar Diffusion Models 等已有工作的基础上。核心模块包括：借鉴 VQ 系列方法的离散 token 表示、DiT 的 transformer 架构、CFG 的 classifier-free guidance 思想，以及 diffusion decoder 的频域重建特性。[贡献] 作者真正做的是：引入 Nested CFG 策略强制实现类 PCA 的层级结构，使 token 按重要性排序；同时用 diffusion decoder 天然遵循频域自回归的特性解决语义-频谱耦合问题。[判断] 这个贡献具有真正的方法创新：首次在视觉 tokenizer 中引入可证明的 PCA 结构，并给出了理论证明；语义-频谱解耦也是之前未系统解决的问题。</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">🎯 why_read（目标读者）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1">
+                    <div class="setting-label">H1_M25</div>
+                    <div class="content">从事图像生成、视觉tokenizer研究的研究者和工程师。通过本文可深入理解：(1)如何通过结构化约束提升latent space的可解释性和表示质量；(2)Nested CFG如何实现PCA-like层次化tokenization；(3)Diffusion decoder如何解耦语义-频谱耦合。对于设计更高效的视觉生成模型和压缩方案有重要参考价值。</div>
+                </div>
+
+                <div class="setting-box h1">
+                    <div class="setting-label">H1_M21</div>
+                    <div class="content">研究图像tokenization和自回归生成的学者，可深入理解如何构建结构化、可解释的潜在空间，以及语义谱耦合问题的解决思路</div>
+                </div>
+
+                <div class="setting-box h2">
+                    <div class="setting-label">H2_M25</div>
+                    <div class="content">适合研究视觉tokenization、图像生成和自回归模型的研究人员。你将了解如何通过引入PCA-like结构使tokenizer产生更具可解释性的层级表示，以及如何通过扩散解码器解决语义-频谱耦合问题。</div>
+                </div>
+
+                <div class="setting-box h2">
+                    <div class="setting-label">H2_M21</div>
+                    <div class="content">如果你做视觉 tokenization、图像生成或表征学习相关研究，这篇论文提供了新的视角：如何用类 PCA 结构使 token 层级化、可解释化，并解决频域语义耦合问题。</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">🔧 method_variants（方法变体）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (5/5) - 3项 ⭐</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">vq-vae:pca-like-structure</span>
+                        <span class="tag">vq-vae</span>
+                        <br>vq-vae原本通过向量量化学习离散latent codes；本文改为使用Nested CFG引导的因果ViT encoder生成有序token序列，每个token具有PCA-like递减解释方差特性，实现结构化latent space而非随机离散表示
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">cfg:nested-cfg</span>
+                        <span class="tag">cfg</span>
+                        <br>cfg原本在推理时对条件和无条件预测进行插值；本文改为nested CFG，在训练时对后续token逐步替换为null condition，强制前序token学习最关键信息，形成粗到细的层次结构
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">dit:diffusion-decoder</span>
+                        <span class="tag">dit</span>
+                        <br>dit原本用于diffusion model的去噪网络；本文将其作为decoder，从结构化token重建图像，利用diffusion天然的低频到高频自回归特性解耦semantic-spectrum耦合
+                    </div>
+
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (5/5) - 3项</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">vq-vae:pca-structure</span>
+                        <span class="tag">vq-vae</span>
+                        <br>VQ-VAE的潜在空间是unstructured离散token；本文引入PCA-like结构，强制每个token贡献非重叠且递减的解释方差
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vqgan:diffusion-decoder</span>
+                        <span class="tag">vqgan</span>
+                        <br>传统VQGAN使用CNN解码器；本文用扩散解码器替代，解决语义谱耦合效应
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">mae:explained-variance-target</span>
+                        <span class="tag">mae</span>
+                        <br>MAE以像素/潜空间重建为目标；本文以解释方差为目标设计tokenization结构
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (2/5) - 3项</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">vit:causal-1d-tokenization</span>
+                        <span class="tag">?</span>
+                        <br>传统ViT生成2D token grid，本文改为1D因果序列，使token重要性呈层级结构，早期token捕获语义信息。
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">cfg:nested-cfg</span>
+                        <span class="tag">?</span>
+                        <br>传统CFG使用单一null condition，Nested CFG对后续token渐进替换为null condition，强制早期token捕获关键信息，实现PCA-like结构。
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">diffusion-decoder:dit-spectral-decoupling</span>
+                        <span class="tag">?</span>
+                        <br>传统deterministic decoder，DiT decoder自然实现spectral autoregressive（从低频到高频重建），防止语义-频谱耦合，确保token编码高层语义而非低频 artifacts。
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (2/5) - 3项</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">vit:1d-causal-tokenization</span>
+                        <span class="tag">?</span>
+                        <br>传统 ViT tokenizer 输出 2D token 网格，任意顺序无优先级；本文改为 1D 因果序列，强制按重要性排序，后续 token 只能关注前面的 token，实现类似 PCA 的层级信息提取
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">cfg:nested-cfg</span>
+                        <span class="tag">?</span>
+                        <br>标准 CFG 在生成时统一应用；Nested CFG 在训练时逐步将后面的 token 替换为空条件，强制前面 token 必须捕获关键信息，形成从粗到细的信息层级
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">diffusion-decoder:spectral-ar</span>
+                        <span class="tag">?</span>
+                        <br>传统确定性 decoder 直接回归像素，导致语义与频谱细节耦合；Diffusion decoder 按频域自回归（低频到高频）重建，自然解耦语义和频谱信息
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">📚 core_cite（核心引用）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (5/5) - 12条 ⭐</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Neural Discrete Representation Learning</strong>
+                        <br><small>作为VQ-VAE的开创性工作，本文继承其离散tokenization思想但放弃向量量化改为因果有序token实现PCA-...</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Taming Transformers for High-Resolution ...</strong>
+                        <br><small>VQGAN将Transformer引入图像生成，本文继承其tokenizer架构但用Diffusion decoder替...</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Scalable Diffusion Models with Transform...</strong>
+                        <br><small>DiT是Diffusion Transformer的代表作，本文将其adapt为token decoder利用其低频到高...</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>MaskGIT: Masked Generative Image Transfo...</strong>
+                        <br><small>MaskGIT使用masked生成范式，其token策略与本文的因果有序token有相似目标但实现方式不同</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Visual Autoregressive Modeling: Scalable...</strong>
+                        <br><small>VAR使用next-scale自回归生成，本文表明在其token上训练的AR模型可用更少token达到可比效果，构成竞争...</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>Language Model Beats Diffusion -- Tokeni...</strong>
+                        <br><small>本文与之对比说明tokenizer质量对AR生成的重要性，本文的结构化tokenizer可减少token数量同时保持质量</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>An Image is Worth 32 Tokens for Reconstr...</strong>
+                        <br><small>TiTok将图像tokenize为32个token，本文实验表明在相同token数量下Semanticist重建质量更优...</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Classifier-Free Diffusion Guidance</strong>
+                        <br><small>CFG是diffusion guidance的经典方法，本文创造性地将Nested CFG用于实现token的层次化结构...</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 4 条</div>
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (5/5) - 12条</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Neural Discrete Representation Learning</strong>
+                        <br><small>VQ-VAE是离散tokenization的开创性工作，本文在其基础上引入PCA-like结构化约束</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Vector-quantized Image Modeling with Imp...</strong>
+                        <br><small>本文使用改进的VQGAN作为tokenizer基础架构</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Denoising Diffusion Probabilistic Models</strong>
+                        <br><small>本文使用DDPM作为扩散解码器的理论基础</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>High-Resolution Image Synthesis with Lat...</strong>
+                        <br><small>LDM的潜在空间思想被本文借鉴用于设计tokenizer</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Masked Autoencoders Are Scalable Vision ...</strong>
+                        <br><small>MAE的预训练思想支持了本文对表征学习的研究动机</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Scalable Diffusion Models with Transform...</strong>
+                        <br><small>DiT证明了Transformer架构在扩散模型上的有效性，本文也采用了类似架构思路</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Visual Autoregressive Modeling: Scalable...</strong>
+                        <br><small>VAR是本文对比的自回归生成方法之一</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>Language Model Beats Diffusion -- Tokeni...</strong>
+                        <br><small>本文与LlamaGen等方法对比，强调tokenizer设计的重要性</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 4 条</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (5/5) - 14条</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>An Image is Worth 16x16 Words: Transform...</strong>
+                        <br><small>Causal ViT Encoder的基础架构</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Classifier-Free Diffusion Guidance</strong>
+                        <br><small>Nested CFG的直接理论基础</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Scalable Diffusion Models with Transform...</strong>
+                        <br><small>DiT Decoder的骨干网络</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>Language Model Beats Diffusion -- Tokeni...</strong>
+                        <br><small>本文声称在更少token下达到 comparable performance</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Visual Autoregressive Modeling: Scalable...</strong>
+                        <br><small>自回归生成模型的基础</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Neural Discrete Representation Learning</strong>
+                        <br><small>VQ-VAE 的基础工作</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Vector-quantized Image Modeling with Imp...</strong>
+                        <br><small>VQGAN 的改进工作</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Masked Autoencoders Are Scalable Vision ...</strong>
+                        <br><small>MAE 自监督学习范式</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 6 条</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (5/5) - 12条</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Neural Discrete Representation Learning</strong>
+                        <br><small>VQ-VAE 的离散 token 表示是本文 tokenization 的基础</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Taming Transformers for High-Resolution ...</strong>
+                        <br><small>VQGAN 将 VQ 与 transformer 结合，本文借鉴其 tokenizer 架构</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Scalable Diffusion Models with Transform...</strong>
+                        <br><small>采用 DiT 作为 diffusion decoder 的核心架构</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Classifier-Free Diffusion Guidance</strong>
+                        <br><small>Nested CFG 建立在 CFG 思想之上，但做了创新性改造</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Denoising Diffusion Probabilistic Models</strong>
+                        <br><small>DDPM 为 diffusion decoder 提供理论基础</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>An Image is Worth 32 Tokens for Reconstr...</strong>
+                        <br><small>本文与其对比展示更少 token 达到更好效果</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>Visual Autoregressive Modeling: Scalable...</strong>
+                        <br><small>VAR 的 next-scale prediction 与本文的 coarse-to-fine 对比</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Language Model Beats Diffusion -- Tokeni...</strong>
+                        <br><small> tokenizer 质量对生成质量的关键作用是本文动机之一</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 4 条</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">💡 idea（研究方向）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (5/5) - 3条 ⭐</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 探索非线性PCA结构</strong>
+                        <br><small>当前PCA-like结构基于线性假设，可能无法充分捕捉图像的复杂非线性结构。可以借鉴自编码器的非线性激活函数或流模型，将PCA扩展为非线性主成分分析，从而更灵活...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 融合bit-level tokenization</strong>
+                        <br><small>MaskBit等方法使用bit-level表示实现无embedding的图像生成。将bit token与本文的PCA-like token结合，可探索是否能在保...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 借鉴MRL的动态维度思想</strong>
+                        <br><small>Matryoshka Representation Learning(MRL)允许在同一表示中灵活调整特征维度。与本文的递减方差token结构结合，可以设计自适...</small>
+                    </div>
+
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (5/5) - 3条</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 扩展到视频tokenization</strong>
+                        <br><small>本文仅验证了图像tokenization，但视频的时空结构可能更适合PCA-like分解。未来可研究如何在时间维度上扩展递减方差结构，实现视频的高效压缩和生成。...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 探索多模态条件下的PCA token</strong>
+                        <br><small>当前方法聚焦于无条件的图像tokenization。在条件生成（如text-to-image）中，可以研究condition信息如何与PCA结构化token交互...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 动态token数量策略</strong>
+                        <br><small>PCA的递减方差特性意味着前面token捕获主要信息，后面token贡献较少。可以借鉴adaptive tokenization方法（如FiT、TiTok），根...</small>
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (5/5) - 3条</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 自适应token长度tokenization</strong>
+                        <br><small>当前方法使用固定数量的token，但不同图像复杂度不同。自适应tokenization可以根据图像内容动态决定token数量，进一步提升压缩效率。本文没做是因为...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 结合DINOv2特征进行语义对齐</strong>
+                        <br><small>DINOv2学习的特征具有丰富的语义信息，可以用来增强token的语义一致性。当前tokenizer主要优化重建质量，语义对齐可以作为额外的训练目标。本文没做是...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 扩展到视频tokenization</strong>
+                        <br><small>视频相比图像增加了时序维度，需要保持帧间一致性。可以借鉴本文的PCA-like结构，为视频设计时序因果tokenization，使早期token捕获关键动作信息...</small>
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (5/5) - 3条</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 探索 Flow-Matching 替代 Diffusion Decoder</strong>
+                        <br><small>本文 limitation 指出 diffusion decoder 推理速度较慢。Flow-matching 作为新兴的生成范式，可能在保持频域自回归特性的同...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 引入 DINOv2 对齐损失增强语义表征</strong>
+                        <br><small>DINOv2 表征具有强语义信息。本文的 PCA 层级结构主要保证信息递减，可引入 DINOv2 对齐损失进一步增强早期 token 的语义捕获能力。本文未做是...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 借鉴 Matryoshka 表征实现自适应 token 长度</strong>
+                        <br><small>MRL 通过嵌套表征实现灵活的特征维度选择。本文 limitation 提到动态 token 长度可进一步优化。可将 MRL 的思想引入 token 层面，让不...</small>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="paper-section">
+        <h2>📄 GigaTok: 3B Tokenizer</h2>
+        <p><code>2504.08736</code></p>
+
+        <div class="field-section">
+            <div class="field-title">📝 cn_oneliner（一句话概括）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M25 (4/5)</div>
+                    <div class="content">基于 VQGAN 视觉 tokenizer，引入语义正则化（与 DINOv2 预训练特征对齐）解决重建-生成困境，实现 30 亿参数规模化下同时提升图像重建与自回归生成质量</div>
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (3/5)</div>
+                    <div class="content">基于 VQGAN tokenizer，引入语义正则化约束潜在空间复杂度，解决 tokenizer 放大时重建质量提升但生成质量下降的矛盾，成功训练 30 亿参数 tokenizer</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (4/5)</div>
+                    <div class="content">基于语义正则化，引入DINOv2特征对齐，解决大模型tokenizer的重建-生成权衡问题</div>
+                </div>
+
+                <div class="setting-box h2 best">
+                    <div class="setting-label">H2_M21 (5/5) ⭐</div>
+                    <div class="content">基于VQ-VAE，引入DINOv2语义正则约束latent空间复杂度，解决大模型tokenizer重建-生成权衡难题，实现两者同步提升</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">📖 cn_abstract（中文摘要）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (5/5) ⭐</div>
+                    <div class="content">本文提出 GigaTok，首次实现同时提升图像重建、下游 AR 生成和表示学习质量的视觉 tokenizer 规模化方法。研究者发现随着 tokenizer 规模增大，潜在空间复杂度增加，导致下游 AR 模型更难学习 token 分布。本文提出语义正则化方法，将 tokenizer 解码器特征与预训练 DINOv2 特征对齐，约束潜在空间复杂度。在此基础上探索三大扩展策略：使用 1D tokenizer 提升可扩展性、优先扩展 decoder、使用熵损失稳定十亿级模型训练。GigaTok 扩展到 30 亿参数后，在 ImageNet 256×256 分辨率上实现 SOTA 重建质量（rFID=...</div>
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (5/5)</div>
+                    <div class="content">本文提出 GigaTok，首个在 tokenizer 放大时同时提升图像重建、下游自回归生成和表征学习的方法。研究发现，tokenizer 规模增大导致潜在空间复杂度增加，是重建与生成矛盾的根本原因。为此，文章引入语义正则化，将 tokenizer 特征与预训练视觉编码器（DINOv2）特征对齐，约束潜在空间复杂度。结合 1D tokenizers、非对称编解码器缩放和熵损失等关键实践，GigaTok 在 ImageNet 256×256 上达到 SOTA：重建 rFID=0.79，下游 1.4B AR 模型生成 gFID=1.98，线性探测准确率 74.0%。</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (5/5)</div>
+                    <div class="content">在自回归图像生成中，视觉tokenizer将图像压缩为离散的latent tokens，使下游自回归模型可通过next-token预测进行图像生成。论文发现scaling visual tokenizers会提升重建质量但降低下游生成质量（重建vs生成困境）。本文提出语义正则化（semantic regularization），将tokenizer特征与预训练的DINOv2视觉编码器特征对齐，约束latent space复杂度。同时探索三个scaling实践：使用1D tokenizer以提升可扩展性、优先扩展decoder、以及使用entropy loss稳定训练。3B参数的GigaTok在...</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (5/5)</div>
+                    <div class="content">GigaTok是首个同时提升图像重建、下游自回归生成和表示学习质量的视觉tokenizer缩放方法。本文发现随着tokenizer规模增大，latent空间复杂度增加，导致下游AR模型难以学习token分布，产生重建-生成权衡困境。为解决此问题，提出语义正则化方法，将tokenizer特征与预训练DINOv2特征对齐，约束latent空间复杂度。结合1D tokenizers、非对称编解码器缩放和entropy loss三大实践，成功将tokenizer缩放至30亿参数，在ImageNet上实现重建、生成和表示质量的SOTA。</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">✍️ editorial_note（编辑评论）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (5/5) ⭐</div>
+                    <div class="content">VQGAN 等早期视觉 tokenizer 通过向量量化实现图像到离散 token 的压缩，但如何在规模化时兼顾重建质量和下游生成质量是开放问题。本文首次系统性解决该问题：提出 AR Probing 评估方法揭示困境根源（潜在空间复杂度），并通过语义正则化引入 DINOv2 知识进行约束。方法创新性强且实证效果显著，是 tokenization 领域的重要进展；但语义正则化依赖额外预训练模型、DINOv2 与 tokenizer 规模匹配等问题可能限制其通用性。</div>
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (5/5)</div>
+                    <div class="content">VQGAN 等工作证明了离散 token 化在图像生成中的有效性，但如何有效放大 tokenizer 规模长期未被系统研究。本文首次系统性地识别出 tokenizer 放大的核心矛盾——潜在空间复杂度随参数增加而膨胀，并提出语义正则化这一精准解决方案。方法创新性强且有效，属于范式级创新；但语义正则化引入的 DINOv2 特征提取带来额外计算开销，且当前仅在 ImageNet 类别条件生成上验证，文本条件或视频生成等更广泛应用场景有待探索。</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (4/5)</div>
+                    <div class="content">[前驱] 本文建立在VQGAN tokenizer和LLaMA-Gen（AR图像生成）的工作基础上，核心模块包括：1）DINOv2作为冻结的语义特征提取器；2）Q-Former作为1D tokenizer的Transformer模块；3）混合CNN-Transformer架构。 [贡献] 作者发现scaling tokenizers会导致latent space复杂度上升，使AR模型难以学习。提出用预训练视觉编码器（DINOv2）的特征做语义正则化，约束tokenizer学习语义一致的表征。 [判断] 这是一个有效的解决方案：首次系统性解决tokenizer scaling的reconstruction-generation dilemma，提供可复用的技术框架，但核心insight（用语义特征约束latent space）相对直接，不是范式级创新。</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (4/5)</div>
+                    <div class="content">[前驱] 本文建立在VQGAN（Vector Quantized GAN）离散tokenization方法和DINOv2自监督视觉特征基础上，采用LlamaGen作为下游AR生成模型。核心模块语义正则化源自REPA工作的表示对齐思想。
+
+[贡献] 作者真正做的事情：（1）发现tokenizer缩放时重建-生成权衡的根因是latent空间复杂度增加；（2）提出语义正则化，用DINOv2特征约束tokenizer的latent空间；（3）探索出三个关键缩放实践：1D tokenizer比2D更好、非对称缩放（解码器>编码器）、entropy loss稳定十亿级训练。
+
+[判断] 这个贡献有实质价值：首次系统性地解决了离散tokenizer缩放中的重建-生成权衡难题，30亿参数tokenizer达到SOTA。更重要的是提供了可复用的方法（语义正则化+缩放策略），后续工作可以直接在此基础上扩展。</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">🎯 why_read（目标读者）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1">
+                    <div class="setting-label">H1_M25</div>
+                    <div class="content">研究自回归图像生成和视觉 tokenization 的工程师，可从中学习如何规模化视觉 tokenizer 并同时保证下游生成质量的系统性方法</div>
+                </div>
+
+                <div class="setting-box h1">
+                    <div class="setting-label">H1_M21</div>
+                    <div class="content">研究自回归图像生成和视觉 tokenizer 的工程师，可深入理解语义正则化如何解决重建-生成矛盾，并借鉴 1D tokenizers 和非对称缩放等实践来设计更高效的视觉生成模型</div>
+                </div>
+
+                <div class="setting-box h2">
+                    <div class="setting-label">H2_M25</div>
+                    <div class="content">如果你在做AR图像生成或tokenizer相关研究本文值得一读——它首次系统性揭示并解决了tokenizer scaling中reconstruction vs generation的矛盾，并提供了3B参数scaling的实践指南。</div>
+                </div>
+
+                <div class="setting-box h2">
+                    <div class="setting-label">H2_M21</div>
+                    <div class="content">如果你做自回归图像生成或视觉tokenization，这篇论文值得仔细读——它不仅提出了有效的解决方案，更重要的是提供了对重建-生成权衡的深刻洞察，以及可复用的缩放实践指南。</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">🔧 method_variants（方法变体）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (5/5) - 4项 ⭐</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">vqgan:semantic-regularization</span>
+                        <span class="tag">vqgan</span>
+                        <br>VQGAN 原本仅用重建损失训练 tokenizer；本文添加 DINOv2 语义正则化，使 tokenizer 特征与预训练视觉编码器对齐，解决规模化时潜在空间过于复杂的问题
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vit-vqgan:1d-tokenizer</span>
+                        <span class="tag">vit-vqgan</span>
+                        <br>ViT-VQGAN 等使用 2D token 结构；本文改为 1D tokenizers with Q-Former，移除 2D 归纳偏置，实现更好规模化效果
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vq-vae:asymmetric-scaling</span>
+                        <span class="tag">vq-vae</span>
+                        <br>传统 VQ-VAE 对称扩展 encoder 和 decoder；本文采用非对称扩展，优先扩展 decoder（decoder > encoder），更高效分配参数
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vq-vae:entropy-loss</span>
+                        <span class="tag">vq-vae</span>
+                        <br>标准 VQ-VAE 训练不稳定，尤其在十亿级参数时；本文引入熵损失（entropy loss）稳定 codebook 利用率和训练收敛
+                    </div>
+
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (5/5) - 3项</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">vqgan:semantic-regularization</span>
+                        <span class="tag">vqgan</span>
+                        <br>VQGAN 仅用重建目标训练 tokenizer；本文引入 DINOv2 语义正则化约束潜在空间复杂度，解决放大时的重建-生成矛盾
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vit:1d-tokenizer</span>
+                        <span class="tag">vit</span>
+                        <br>ViT 采用 2D 空间结构；本文将其改造为 Q-Former 实现的 1D tokenizer，移除 2D 归纳偏置以提升可扩展性
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">magvit:entropy-loss</span>
+                        <span class="tag">magvit</span>
+                        <br>MAGVIT 用 LFQ 增强 codebook 利用率；本文将熵损失应用于 VQ tokenizer，解决十亿级参数训练时的收敛困难
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (1/5) - 4项</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">vq-vae:semantic-regularization</span>
+                        <span class="tag">?</span>
+                        <br>大模型tokenizer的latent space复杂度随参数增加而上升，导致AR模型难以学习；使用DINOv2冻结特征作为语义正则化目标，对齐tokenizer特征与语义一致的特征，降低latent space复杂度，兼顾重建和生成质量
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">tokenizer:1d-qformer</span>
+                        <span class="tag">?</span>
+                        <br>2D ViT tokenizer在scaling时效率较低；采用Q-Former将图像特征转换为1D token序列，1D结构更易于扩展且与语言模型兼容
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">tokenizer:asymmetric-scaling</span>
+                        <span class="tag">?</span>
+                        <br>对称scaling encoder和decoder对生成提升有限；优先扩展decoder（生成侧），在相同参数量下获得更好的下游生成效果
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">tokenizer:entropy-loss</span>
+                        <span class="tag">?</span>
+                        <br>十亿级tokenizer训练不稳定，codebook利用率低；引入entropy loss鼓励高codebook使用率，稳定训练并提升tokenizer质量
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (1/5) - 5项</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">vq-vae:semantic-regularization</span>
+                        <span class="tag">?</span>
+                        <br>大模型tokenizer的latent空间复杂度增加导致下游AR模型难以学习；引入DINOv2预训练特征的语义正则化，对齐tokenizer解码器特征与语义特征，约束latent空间复杂度，解决重建-生成权衡
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vqgan:hybrid-cnn-transformer</span>
+                        <span class="tag">?</span>
+                        <br>纯CNN或纯ViT架构在tokenizer缩放上有局限；设计混合CNN-Transformer架构，CNN负责局部细节提取，Transformer(Q-Former/ViT)负责全局建模，提升可扩展性
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vqgan:1d-tokenizer</span>
+                        <span class="tag">?</span>
+                        <br>2D tokenizers保留二维结构导致归纳偏差限制缩放；采用1D tokenizers移除二维归纳偏差，实验显示1D在重建和表示质量上优于2D，且缩放趋势更陡峭
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vqgan:asymmetric-scaling</span>
+                        <span class="tag">?</span>
+                        <br>对称编解码器缩放效率低；非对称缩放策略，解码器参数始终大于编码器，实验表明解码器缩放对下游生成质量提升贡献更大
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vqgan:entropy-loss</span>
+                        <span class="tag">?</span>
+                        <br>十亿级tokenizer训练时收敛困难、codebook利用率低；引入entropy loss（鼓励codebook均匀使用+减少量化不确定性），稳定训练并提高codebook利用率到高位
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">📚 core_cite（核心引用）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (5/5) - 13条 ⭐</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Taming Transformers for High-Resolution ...</strong>
+                        <br><small>基于 VQGAN 的离散 token 生成框架，本文 GigaTok 是其 tokenizer 规模化扩展</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Visual Autoregressive Modeling: Scalable...</strong>
+                        <br><small>使用 VAR 的自回归生成范式作为下游生成模型</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>DINOv2: Learning Robust Visual Features ...</strong>
+                        <br><small>使用 DINOv2 作为语义正则化的特征对齐目标</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Language Model Beats Diffusion -- Tokeni...</strong>
+                        <br><small>引用以说明 tokenizer 对 AR 视觉生成的重要性</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Vector-quantized Image Modeling with Imp...</strong>
+                        <br><small>改进的 VQGAN 方法，是本文 tokenizer 架构的基础</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>ViT-VQGAN: Vector-Quantized Image Modeli...</strong>
+                        <br><small>本文与之对比，说明其最佳生成模型训练在较小 tokenizer 版本上</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Autoregressive Image Generation without ...</strong>
+                        <br><small>引用作为 AR 视觉生成的背景知识</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Autoregressive Model Beats Diffusion: Ll...</strong>
+                        <br><small>使用 Llama 风格的 AR 模型架构</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 5 条</div>
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (4/5) - 10条</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Taming Transformers for High-Resolution ...</strong>
+                        <br><small>VQGAN 是离散 token 化图像生成的基础工作，GigaTok 在其基础上引入语义正则化解决 tokenizer ...</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Autoregressive Model Beats Diffusion: Ll...</strong>
+                        <br><small>使用 LlamaGen 作为下游 AR 生成模型进行实验验证</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>DINOv2: Learning Robust Visual Features ...</strong>
+                        <br><small>使用 DINOv2 作为语义正则化的特征提取器</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Language Model Beats Diffusion -- Tokeni...</strong>
+                        <br><small>证明了 tokenizer 是视觉生成的关键，为本文的 tokenizer 缩放研究提供背景</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>An Image is Worth 16x16 Words: Transform...</strong>
+                        <br><small>ViT 是本文 tokenizer 架构中 Transformer 组件的基础</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>MaskGIT: Masked Generative Image Transfo...</strong>
+                        <br><small>作为 mask 生成式图像变换器的代表工作，提供背景对比</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Vector-quantized Image Modeling with Imp...</strong>
+                        <br><small>ViT-VQGAN 探索了 Transformer 在 VQGAN 中的应用</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Neural Discrete Representation Learning</strong>
+                        <br><small>VQ-VAE 是离散表示学习的奠基工作</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 2 条</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (5/5) - 12条</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Language Model Beats Diffusion -- Tokeni...</strong>
+                        <br><small>AR图像生成的开创性工作，证明tokenizer质量决定AR生成效果，是本文的问题出发点</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Vector-quantized Image Modeling with Imp...</strong>
+                        <br><small>VQGAN的改进工作，提出更高效的codebook策略，是VQ tokenizer的经典baseline</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>DINOv2: Learning Robust Visual Features ...</strong>
+                        <br><small>提供冻结的语义特征提取器，是本文语义正则化的核心依赖</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Visual Autoregressive Modeling: Scalable...</strong>
+                        <br><small>VAR的next-scale预测范式，本文下游AR生成模型的对比baseline</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Autoregressive Image Generation using Re...</strong>
+                        <br><small>RQ（残差量化）方法，本文1D tokenizer设计参考的技术路线</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>An Image is Worth 32 Tokens for Reconstr...</strong>
+                        <br><small>证明token数量对重建和生成质量的影响，支持本文tokenizer设计的动机</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Masked Autoencoders Are Scalable Vision ...</strong>
+                        <br><small>MAE的Transformer encoder架构，是本文tokenizer encoder设计的参考</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Taming Transformers for High-Resolution ...</strong>
+                        <br><small>早期VQGAN+Transformer工作，说明tokenizer在生成系统中的基础地位</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 4 条</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (5/5) - 12条</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Taming Transformers for High-Resolution ...</strong>
+                        <br><small>VQGAN是离散图像tokenization的开创性工作，本文在其基础上扩展到30亿参数规模</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>DINOv2: Learning Robust Visual Features ...</strong>
+                        <br><small>使用DINOv2作为语义正则化的特征源，冻结的DINOv2-B提取语义特征来约束tokenizer</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Language Model Beats Diffusion -- Tokeni...</strong>
+                        <br><small>LlamaGen作为下游AR生成模型，是本文两阶段AR生成框架的核心组件</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Autoregressive Model Beats Diffusion: Ll...</strong>
+                        <br><small>使用LlamaGen架构作为下游生成器，验证tokenizer对AR生成的影响</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Vector-quantized Image Modeling with Imp...</strong>
+                        <br><small>ViT-VQGAN将Transformer引入tokenizer，为本文的混合架构提供基础</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Representation Alignment for Generation:...</strong>
+                        <br><small>REPA工作展示表示对齐对生成模型的提升效果，本文将类似思想应用于tokenizer训练</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Reconstruction vs. Generation: Taming Op...</strong>
+                        <br><small>VA-VAE工作探索了VAE的重建-生成Pareto前沿，为本文问题提供背景</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>An Image is Worth 32 Tokens for Reconstr...</strong>
+                        <br><small>VAR工作使用不同tokenization策略（next-scale prediction），本文与其对比证明简单nex...</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 4 条</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">💡 idea（研究方向）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (5/5) - 3条 ⭐</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 扩展到视频 tokenization</strong>
+                        <br><small>本文仅聚焦图像 tokenizer 规模化，视频 tokenizer 面临更高维度的时空复杂性问题。语义正则化方法可借鉴 DINOv2 视频版本或 VideoM...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 动态语义正则化强度</strong>
+                        <br><small>当前使用固定权重 λ=0.5 的语义正则化。可探索动态调整策略：在训练初期降低权重侧重重建，后期增加权重引导语义一致性；或根据下游 AR 探测损失自适应调整，实...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 多模态大模型联合训练</strong>
+                        <br><small>本文 tokenization 与下游 AR 模型分阶段训练。可探索联合训练方案：冻结核心 DINOv2 特征，作为 tokenization 和 AR 生成的...</small>
+                    </div>
+
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (5/5) - 3条</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 扩展到文本条件图像生成</strong>
+                        <br><small>本文仅在 ImageNet 类别条件生成上验证，未探索文本描述条件生成。可将语义正则化与 CLIP 文本编码器结合，使 tokenizer 学会文本-图像对齐的...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 借鉴 VAR 的多尺度预测</strong>
+                        <br><small>VAR 采用 next-scale prediction 而非 next-token prediction，在某些场景下效果更好。可探索将语义正则化应用于 VA...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 解决训练时长缩放的矛盾</strong>
+                        <br><small>本文发现延长 tokenizer 训练时间同样会导致重建-生成矛盾（见附录E）。可探索数据缩放或动态正则化强度来缓解此问题，这是未来重要研究方向。</small>
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (5/5) - 3条</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 将语义正则化扩展到视频tokenizer</strong>
+                        <br><small>本文方法仅在图像tokenizer上验证，视频生成需要时序一致性。DINOv2的语义对齐若与光流约束结合，可能解决视频tokenizer的帧间一致性问题。本文在...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 用diffusion特征替代DINOv2作为语义监督</strong>
+                        <br><small>DINOv2是纯视觉对比学习特征，而DiT的中间层特征包含更丰富的生成先验。用DiT特征做语义正则化可能让tokenizer学到的表征更适合下游diffusio...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 探索语义正则化在codebook学习中的应用</strong>
+                        <br><small>当前语义正则化作用于feature level，codebook的离散表征学习仍依赖重建损失。可在codebook层面引入对比损失，让codebook inde...</small>
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (5/5) - 3条</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 将DINOv2对齐扩展到视频tokenizer</strong>
+                        <br><small>DINOv2对齐在图像tokenizer上有效解决了latent空间复杂性问题。视频tokenizer面临更强的时序一致性挑战，帧间token的依赖关系更复杂。...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 探索不同语义编码器作为正则化源</strong>
+                        <br><small>本文只用DINOv2-B作为语义编码器，但实验表明不同编码器效果不同。可以探索：使用更大规模的DINOv2（如-L或-Giant版本）、或结合CLIP/SigL...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 将语义正则化应用于连续tokenizer</strong>
+                        <br><small>本文聚焦离散tokenizer（VQ），但连续tokenizer（如VAE、diffusion latent）是否也存在重建-生成权衡？可以探索：将语义正则化思...</small>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="paper-section">
+        <h2>📄 AliTok: Aligned Tokenizer</h2>
+        <p><code>2506.05289</code></p>
+
+        <div class="field-section">
+            <div class="field-title">📝 cn_oneliner（一句话概括）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M25 (4/5)</div>
+                    <div class="content">基于传统图像Tokenizer的双向依赖问题，引入因果解码器约束的双向编码器架构，实现Token序列的前向依赖结构，使标准自回归模型在ImageNet-256上达到gFID=1.28，超越SOTA扩散模型10倍采样速度</div>
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (4/5)</div>
+                    <div class="content">基于传统VQ-VAE tokenizer的双向依赖问题，引入因果解码器约束的双向编码器架构，使token序列具有前向依赖性，实现标准自回归模型超越SOTA diffusion</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (4/5)</div>
+                    <div class="content">基于双向编码器+因果约束，引入前向依赖tokenization结构，解决自回归模型与tokenizer不对齐难题，图像重建达SOTA</div>
+                </div>
+
+                <div class="setting-box h2 best">
+                    <div class="setting-label">H2_M21 (5/5) ⭐</div>
+                    <div class="content">基于双向encoder引入因果decoder约束，改变token依赖结构，实现自回归模型单向对齐，ImageNet-256达gFID 1.44</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">📖 cn_abstract（中文摘要）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M25 (4/5)</div>
+                    <div class="content">自回归图像生成旨在基于前面的token预测下一个token，但传统图像tokenization固有的双向依赖与自回归模型的单向性质存在根本性冲突。本文提出AliTok，一种新型对齐Tokenizer，通过双向编码器配合因果解码器的设计，迫使编码器产生兼具语义丰富性和前向依赖性的token序列。通过引入前缀token并采用两阶段Tokenizer训练过程增强重建性能，AliTok同时实现高保真度和可预测性。基于AliTok，仅177M参数的标准解码器自回归模型在ImageNet-256上达到gFID=1.44和IS=319.5。扩展到662M参数，模型达到gFID=1.28，超越SOTA扩散方法...</div>
+                </div>
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M21 (5/5) ⭐</div>
+                    <div class="content">本文提出AliTok解决传统图像tokenizer与自回归模型之间的根本性对齐问题。传统tokenizer追求高重建质量，隐式鼓励全局协作编码，导致token具有双向依赖性，与自回归模型的单向预测范式存在根本冲突。AliTok通过双向编码器配合因果解码器架构，迫使编码器产生具有前向依赖性的语义丰富token序列，并引入前缀token和两阶段训练进一步提升重建质量。在ImageNet-256上，662M参数的模型达到gFID 1.28，超越SOTA diffusion方法LightningDiT且采样速度快10倍；318M参数模型在ImageNet-512上达到gFID 1.39。</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (5/5)</div>
+                    <div class="content">自回归图像生成旨在基于前面的token预测下一个token，然而传统图像tokenization固有的双向依赖与自回归模型的单向性质存在根本性不对齐。本文提出AliTok，一种新型对齐tokenizer，通过双向编码器受因果解码器约束的设计，迫使编码器产生兼具语义丰富性和前向依赖性的token序列。结合prefix tokens和两阶段训练，AliTok同时实现高保真和高可预测性。实验表明，177M参数模型在ImageNet-256上达到gFID 1.44和IS 319.5，662M参数模型达到gFID 1.28，超越SOTA扩散方法且采样速度快10倍。</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (5/5)</div>
+                    <div class="content">本文提出AliTok tokenizer，解决传统图像tokenizer与自回归模型之间的本质冲突。核心方法是让双向encoder在因果decoder约束下训练，迫使token序列具备前向依赖性，同时保留语义丰富度。此外引入prefix token和两阶段训练策略：第一阶段训练生成友好的encoder，第二阶段冻结encoder并重训双向decoder提升重建质量。实验表明，标准decoder-only AR模型配合AliTok可在ImageNet-256上达到gFID 1.44（177M参数），662M参数达到gFID 1.28，超越SOTA扩散模型且采样速度快10倍。</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">✍️ editorial_note（编辑评论）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M25 (4/5)</div>
+                    <div class="content">传统图像Tokenizer为追求最大重建质量，隐式激励所有token全局协作编码，导致token表示依赖于非因果上下文特别是后续token，这与自回归模型的单向预测范式存在根本冲突。本文提出用因果解码器约束双向编码器，迫使编码器在表示中抑制非因果依赖，将重建所需的上下文信息组织在每个token的因果历史中。这一解耦思路精准有效，属于范式级创新——它不修改AR模型来适应数据特性，而是重塑数据本身来配合经典AR范式。局限在于两阶段训练增加了复杂度，且前缀token设计针对图像首行重建问题，通用性有待验证。</div>
+                </div>
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M21 (5/5) ⭐</div>
+                    <div class="content">传统tokenizer为追求高重建质量，隐式鼓励全局协作编码使token表示依赖非因果上下文，与自回归模型单向预测范式存在根本冲突。本文引入因果解码器约束双向编码器，通过架构创新迫使编码器产生前向依赖性token，实现生成质量与效率的统一。这是首个标准自回归模型超越SOTA diffusion的工作，具有重要的范式意义；但因果约束对复杂语义场景的泛化能力、以及与更大规模模型结合的潜力仍需进一步验证。</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (5/5)</div>
+                    <div class="content">[前驱]本文基于VQ-VAE离散表示学习和Language Model Beats Diffusion关于tokenizer关键的洞察，借鉴FSQ量化方法和VAR自回归生成范式。
+[贡献]核心创新：双向编码器受因果解码器约束，强制产生前向依赖token序列，解决自回归模型单向性与图像token双向依赖的结构性矛盾。
+[判断]该贡献解决了自回归图像生成的基础难题，662M模型gFID 1.28超越SOTA扩散且快10倍，是真正有价值的突破。</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (4/5)</div>
+                    <div class="content">[前驱] 本文建立在VQ-VAE系列工作（Neural Discrete Representation Learning, VQ-GAN）基础上，tokenizer设计参考了TiTok的1D序列方案，AR生成模型基于LlamaGen架构。核心模块双向encoder+因果decoder的组合是创新点。
+[贡献] 作者真正做的事情是：提出用因果decoder作为正则化器，强制双向encoder产生具有前向依赖结构的token序列，使标准AR模型能高效学习。
+[判断] 这个贡献解决了AR图像生成领域的核心难题——tokenizer与模型范式不匹配。方法简洁有效，实验数据扎实（超越扩散模型），是真正有价值的进展，非增量改进也非堆砌叙事。</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">🎯 why_read（目标读者）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1">
+                    <div class="setting-label">H1_M25</div>
+                    <div class="content">研究自回归图像生成的工程师，可借鉴其Tokenizer与AR模型对齐的核心思路，以及因果解码器作为隐式正则器的设计技巧</div>
+                </div>
+
+                <div class="setting-box h1">
+                    <div class="setting-label">H1_M21</div>
+                    <div class="content">图像生成和多模态研究者可学习tokenizer设计的新思路，理解如何通过因果解码器约束实现tokenizer与自回归模型的对齐，从而在标准AR架构下超越diffusion模型</div>
+                </div>
+
+                <div class="setting-box h2">
+                    <div class="setting-label">H2_M25</div>
+                    <div class="content">如果你在做自回归图像生成或多模态tokenization研究，这篇论文提供了解决tokenizer与自回归模型结构不对齐的具体方案，其因果约束设计思路和两阶段训练策略值得借鉴。</div>
+                </div>
+
+                <div class="setting-box h2">
+                    <div class="setting-label">H2_M21</div>
+                    <div class="content">如果你做自回归图像生成或多模态统一框架，这篇论文提供了关键insight：与其修改AR模型适应数据，不如改造数据（tokenizer）适应模型范式。</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">🔧 method_variants（方法变体）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (5/5) - 4项 ⭐</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">vq-vae:causal-decoder</span>
+                        <span class="tag">vq-vae</span>
+                        <br>VQ-VAE使用双向解码器进行重建，导致编码token依赖双向上下文；本文改为因果解码器约束编码器，迫使token仅依赖前向上下文以适配AR生成
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">titok:causal-constraint</span>
+                        <span class="tag">titok</span>
+                        <br>TiTok将2D图像patch编码为1D序列但保持双向依赖；本文在此基础上引入因果解码器约束，使token序列具有前向依赖结构
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vq-gan:two-stage-decoder</span>
+                        <span class="tag">vq-gan</span>
+                        <br>VQ-GAN使用单一双向解码器；本文采用两阶段训练：第一阶段用因果decoder训练生成友好的encoder，第二阶段冻结encoder并重新训练高保真双向decoder
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">LlamaGen:prefix-tokens</span>
+                        <span class="tag">LlamaGen</span>
+                        <br>LlamaGen直接使用标准decoder-only AR模型生成图像token；本文为解决因果约束下首行重建质量差的问题，引入16个前缀token提供上下文先验
+                    </div>
+
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (5/5) - 3项</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">vq-vae:causal-decoder</span>
+                        <span class="tag">vq-vae</span>
+                        <br>VQ-VAE传统使用双向解码器追求高重建质量；本文改为因果解码器约束，迫使编码器产生具有前向依赖性的token，解决与AR模型的范式冲突
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vq-vae:two-stage</span>
+                        <span class="tag">vq-vae</span>
+                        <br>VQ-VAE通常单阶段端到端训练；本文采用两阶段训练，第一阶段优化生成友好性编码器，第二阶段冻结编码器后训练高保真双向解码器
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vit:prefix-token</span>
+                        <span class="tag">vit</span>
+                        <br>标准ViT tokenizer处理图像patch时无特殊设计；本文引入16个前缀token并配合辅助损失，专门解决因果解码器导致的首行重建质量下降问题
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (2/5) - 3项</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">tokenizer:causal-constraint</span>
+                        <span class="tag">?</span>
+                        <br>传统tokenizer产生双向依赖的token与自回归模型单向预测不匹配；通过因果解码器约束双向编码器，强制产生前向依赖的token序列，解决结构性不对齐
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">tokenizer:prefix-tokens</span>
+                        <span class="tag">?</span>
+                        <br>标准tokenizer缺乏显式的条件机制；引入prefix tokens作为全局条件，提升token序列的可预测性和条件生成能力
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">tokenizer:two-stage-training</span>
+                        <span class="tag">?</span>
+                        <br>单阶段训练难以同时优化重建和生成质量；采用两阶段训练策略，先优化重建再优化生成性能，平衡保真度和可预测性
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (2/5) - 3项</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">vq-vae:causal-decoder</span>
+                        <span class="tag">?</span>
+                        <br>传统VQ-VAE使用双向decoder重建图像，导致token具有双向依赖；AliTok用因果decoder约束重建过程，迫使encoder产生前向依赖的token序列，解决AR模型学习困难问题
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vit:prefix-tokens</span>
+                        <span class="tag">?</span>
+                        <br>因果decoder导致第一行像素缺乏前文上下文而重建模糊；引入16个prefix token并用auxiliary loss监督，使AR模型能统一预测整张图像
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">tokenizer:two-stage</span>
+                        <span class="tag">?</span>
+                        <br>第一阶段用因果decoder训练AR-friendly encoder，第二阶段冻结encoder并重训双向decoder提升重建质量，平衡生成友好性与重建质量
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">📚 core_cite（核心引用）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (5/5) - 15条 ⭐</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Neural Discrete Representation Learning</strong>
+                        <br><small>VQ-VAE是离散tokenization的奠基工作，本文直接采用其向量量化机制进行token离散化</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Language Model Beats Diffusion -- Tokeni...</strong>
+                        <br><small>明确指出tokenizer是自回归图像生成的关键组件，本文正是针对tokenizer进行创新以对齐AR模型</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Autoregressive Model Beats Diffusion: Ll...</strong>
+                        <br><small>LlamaGen展示了标准decoder-only AR模型生成图像的能力，本文使用其架构作为生成模型</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Open-MAGVIT2: An Open-Source Project Tow...</strong>
+                        <br><small>采用Open-MAGViT2的GAN对抗损失进行tokenizer训练</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>Visual Autoregressive Modeling: Scalable...</strong>
+                        <br><small>VAR使用next-scale预测和双向注意力，本文选择保持经典AR范式而修改tokenizer结构</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>Scalable Diffusion Models with Transform...</strong>
+                        <br><small>DiT是扩散模型本文的主要竞争对手，论文声称在更小参数下达到更优性能</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>MaskGIT: Masked Generative Image Transfo...</strong>
+                        <br><small>MaskGIT使用双向注意力进行masked生成，本文选择单向AR生成范式</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Taming Transformers for High-Resolution ...</strong>
+                        <br><small>VQ-GAN将GAN引入tokenizer显著提升视觉质量，本文继承这一思路</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 7 条</div>
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (5/5) - 10条</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Language Model Beats Diffusion -- Tokeni...</strong>
+                        <br><small>使用LlamaGen作为基线自回归模型架构，验证AliTok tokenizer的有效性</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>Visual Autoregressive Modeling: Scalable...</strong>
+                        <br><small>VAR采用多尺度预测解决双向依赖问题，本文方法与其对比展示因果tokenizer的优势</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>Autoregressive Image Generation without ...</strong>
+                        <br><small>MAR使用掩码自回归和双向注意力，本文与其对比展示标准AR的潜力</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>Scalable Diffusion Models with Transform...</strong>
+                        <br><small>DiT作为SOTA diffusion基线，本文在相同参数规模下超越之</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Neural Discrete Representation Learning</strong>
+                        <br><small>VQ-VAE是离散tokenization的奠基工作，本文在其基础上引入因果解码器约束</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Taming Transformers for High-Resolution ...</strong>
+                        <br><small>VQ-GAN引入对抗损失提升重建质量，本文继承并改进</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Open-MAGVIT2: An Open-Source Project Tow...</strong>
+                        <br><small>使用Open-MAGViT2的GAN架构作为对抗损失实现</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>MaskGIT: Masked Generative Image Transfo...</strong>
+                        <br><small>MaskGIT采用掩码生成策略，本文方法与其对比展示标准AR的优势</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 2 条</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (5/5) - 11条</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Language Model Beats Diffusion -- Tokeni...</strong>
+                        <br><small>本文在其发现tokenizer是自回归图像生成关键的核心洞察基础上，直接针对tokenizer与模型的对齐问题进行扩展</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Neural Discrete Representation Learning</strong>
+                        <br><small>VQ-VAE的离散表示学习是本文tokenizer的基础框架，本文在此基础上引入了因果约束机制</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Finite Scalar Quantization: VQ-VAE Made ...</strong>
+                        <br><small>使用FSQ的有限标量量化方法来处理tokenizer的离散化，提升量化效率和稳定性</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>Visual Autoregressive Modeling: Scalable...</strong>
+                        <br><small>与VAR的自回归生成范式进行对比，展示不同tokenization策略对生成效果的影响</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>Autoregressive Image Generation without ...</strong>
+                        <br><small>对比无需VQ的自回归方法，说明本文采用tokenization方案的优势</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>An Image is Worth 32 Tokens for Reconstr...</strong>
+                        <br><small>支持tokenizer设计对重建和生成都重要的观点，为本文的token数量设计提供参考</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Show-o: One Single Transformer to Unify ...</strong>
+                        <br><small>作为多模态统一生成的背景支撑，说明统一tokenization的重要性</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Emu3: Next-Token Prediction is All You N...</strong>
+                        <br><small>支持next-token预测作为多模态生成统一范式的观点</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 3 条</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (5/5) - 12条</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Language Model Beats Diffusion -- Tokeni...</strong>
+                        <br><small>本文直接回应该工作的核心观点：tokenizer是AR图像生成的关键。AliTok通过改进tokenizer设计来提升A...</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Autoregressive Image Generation without ...</strong>
+                        <br><small>MAR模型使用continuous token，本文采用类似的codebook设计（online clustering）...</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>Visual Autoregressive Modeling: Scalable...</strong>
+                        <br><small>VAR采用next-scale预测解决双向依赖问题；本文选择从tokenizer角度解决问题，保留标准next-toke...</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Taming Transformers for High-Resolution ...</strong>
+                        <br><small>VQ-GAN的adversarial loss被本文用于tokenizer训练。</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Neural Discrete Representation Learning</strong>
+                        <br><small>VQ-VAE的基础工作，为本文的tokenizer设计提供理论依据。</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Autoregressive Image Generation using Re...</strong>
+                        <br><small>RQ-VAE展示了残差量化在AR生成中的应用，是本文tokenizer设计的参考。</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>LlamaGen: Autoregressive Model Beats Dif...</strong>
+                        <br><small>本文直接采用LlamaGen的AR模型架构，只做少量修改（prefix token处理）。</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>MaskGIT: Masked Generative Image Transfo...</strong>
+                        <br><small>MaskGIT用masked attention解决双向依赖；本文选择保持标准AR架构，改进tokenizer。</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 4 条</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">💡 idea（研究方向）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (5/5) - 3条 ⭐</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 将因果解码器思想扩展到多模态生成</strong>
+                        <br><small>本文仅验证了图像生成的Tokenizer-AR对齐效果。理论上，音频、视频等多模态tokenization同样存在双向依赖问题。将因果解码器约束应用于视频tok...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 探索更细粒度的前缀token设计</strong>
+                        <br><small>本文使用固定16个前缀token解决首行重建问题，但图像顶部区域（天空、屋顶等）通常语义信息较少。未来可探索动态数量的前缀token或分层前缀（对不同区域使用不...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 将因果约束思想迁移到continuous token</strong>
+                        <br><small>本文使用离散VQ tokenizer。近期工作（如Fluid、SiT）探索continuous token的AR生成，同样面临双向依赖问题。可将因果解码器思想应...</small>
+                    </div>
+
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (5/5) - 3条</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 高分辨率分层生成</strong>
+                        <br><small>本文在256→512分辨率扩展时使用简单插值，未采用分层机制。可借鉴VAR的分层预测方法，在高分辨率下实现更高效的生成。第一阶段生成分辨率较低的token，第二...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 文本到图像条件生成</strong>
+                        <br><small>本文仅验证了类别条件的图像生成，未探索文本描述作为条件的生成能力。可结合多模态大模型(如LLaVA)的文本编码器，将文本特征融入tokenizer或AR模型的条...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 视频生成时序建模</strong>
+                        <br><small>本文的因果tokenizer设计针对图像空间维度，未考虑时序维度。可将因果约束扩展到时空三维，将帧内因果约束与帧间自回归结合，解决视频生成中时空依赖的建模问题，...</small>
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (5/5) - 3条</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 探索动态prefix token机制</strong>
+                        <br><small>当前使用固定数量的prefix tokens来提升可预测性，但固定设计可能限制条件灵活性。可以探索可学习的动态prefix机制，根据输入图像内容自适应的调整pr...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 将因果约束推广到多模态tokenizer</strong>
+                        <br><small>本文的因果约束机制成功解决了tokenizer与自回归模型的对齐问题，但目前只验证了图像模态。该方法可以推广到视频、音频等多模态tokenization，确保时...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 结合DINO特征对齐提升语义一致性</strong>
+                        <br><small>参考列表中的DINO (2104.14294) 展示了自监督视觉Transformer的语义特征学习能力。当前tokenizer主要优化重建指标，缺乏语义层面的...</small>
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (5/5) - 3条</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 将DINOv2特征对齐引入AliTok encoder训练</strong>
+                        <br><small>本文encoder仅通过重建损失学习，缺乏语义监督。DINOv2的patch-level特征能提供局部纹理一致性。若在第一阶段训练中加入DINOv2特征对齐损失...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 探索tokenizer对多模态生成的联合影响</strong>
+                        <br><small>本文专注图像生成，但tokenizer设计同样适用于图像理解任务（如VQA）。可研究AliTok是否能在多模态理解任务上同时提升AR模型的性能，实现真正的多模态...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 将因果decoder思想迁移到视频tokenizer</strong>
+                        <br><small>视频生成同样面临时序依赖问题。借鉴AliTok的因果约束思想，设计时序因果的video tokenizer，使标准AR模型能更好处理时序预测。可参考MAR的视频...</small>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="paper-section">
+        <h2>📄 DINO-Tok: DINO for Tokenizers</h2>
+        <p><code>2511.20565</code></p>
+
+        <div class="field-section">
+            <div class="field-title">📝 cn_oneliner（一句话概括）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M25 (4/5)</div>
+                    <div class="content">基于 DINO 预训练模型，引入浅层+深层特征双分支融合与 PCA 重加权 VQ 机制，解决高维潜在空间中语义-纹理冲突与量化不稳定问题，实现 ImageNet 256×256 重建 PSNR 28.54（AE）/ 23.98（VQ）的最优性能</div>
+                </div>
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M21 (5/5) ⭐</div>
+                    <div class="content">基于预训练 DINO 模型，引入浅层-深层特征融合和 PCA 重加权量化机制，实现高维语义 latent 空间的高保真重建</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (5/5)</div>
+                    <div class="content">基于DINO预训练模型，引入浅层深层特征融合和PCA重加权，实现高语义对齐的视觉tokenizer</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (5/5)</div>
+                    <div class="content">基于DINO预训练模型，引入浅层-深层特征双分支与PCA重加权，实现高保真语义对齐的视觉tokenization</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">📖 cn_abstract（中文摘要）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (5/5) ⭐</div>
+                    <div class="content">本文提出 DINO-Tok，一种基于 DINO 的视觉 tokenizer，将层次化表示统一到信息完整的潜在空间中。现有的视觉 tokenizer 通常从零开始训练，难以平衡语义表示和重建保真度。DINO-Tok 通过整合保留细粒度细节的浅层特征和编码全局语义的深层特征，有效桥接预训练表征和视觉生成。进一步分析发现，高维空间中的矢量量化（VQ）面临关键信息丢失和 codebook collapse 问题，因此提出全局 PCA 重加权机制来稳定 VQ 并保留关键信息。在 ImageNet 256×256 上，DINO-Tok 达到 28.54 PSNR（AE）和 23.98 PSNR（VQ）的重...</div>
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (5/5)</div>
+                    <div class="content">本文提出 DINO-Tok，一种基于 DINO 的视觉分词器，将分层表示统一为信息完整的潜在空间。通过整合保留细粒度细节的浅层特征和编码全局语义的深层特征，DINO-Tok 有效桥接了预训练表征与视觉生成。进一步分析了向量量化在高维空间中面临的挑战——关键信息经常丢失且易出现码本坍缩。因此提出全局 PCA 重加权机制以稳定 VQ 并保留维度的关键信息。在 ImageNet 256×256 上，DINO-Tok 达到 28.54 PSNR 自编码和 23.98 PSNR 基于 VQ 建模的 SOTA 重建性能，显著优于先前分词器，可与十亿级数据训练的模型（如 Hunyuan 和 Wan）相媲美。</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (5/5)</div>
+                    <div class="content">本文提出DINO-Tok，一个基于DINO的视觉tokenizer，将分层表征统一到信息完备的latent空间中。现有的tokenizer从零训练，难以平衡语义表征和重建质量。本文通过整合保留细粒度细节的浅层特征和编码全局语义的深层特征，有效桥接预训练表征与视觉生成。文章还分析了高维空间中向量量化（VQ）面临的信息丢失和codebook崩溃问题，提出全局PCA重加权机制来稳定VQ并保留关键维度信息。在ImageNet 256×256上，DINO-Tok达到28.54 PSNR自编码和23.98 PSNR基于VQ建模的SOTA性能。</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (5/5)</div>
+                    <div class="content">DINO-Tok是一种基于DINO的视觉tokenizer，通过整合保留细粒度纹理的浅层特征与编码全局语义的深层特征，构建信息完备的潜在空间。该方法进一步分析了高维空间中向量量化面临的挑战——关键信息丢失和码本坍缩，提出全局PCA重加权机制来稳定VQ并保留关键维度信息。在ImageNet 256×256上，DINO-Tok达到28.54 PSNR自编码和23.98 PSNR VQ建模的SOTA重建性能，显著优于先前tokenizer。</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">✍️ editorial_note（编辑评论）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (5/5) ⭐</div>
+                    <div class="content">现有视觉 tokenizer 多从零训练，难以同时兼顾语义和保真度。本文创新性地将冻结的 DINO 预训练模型直接改造为 tokenizer，通过双分支设计解决深层特征缺乏高频细节的问题，用 PCA 重加权机制攻克高维 VQ 不稳定的难题。实验仅用 ImageNet-1k 训练即超越使用数十亿级数据的方法，证明预训练表示的直接可复用性。创新程度属于显著（significant）——引入新范式而非单纯刷点；但 PCA 重加权增加了计算开销，且双分支设计增加了模型复杂度，这是实际部署的主要考虑。</div>
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (4/5)</div>
+                    <div class="content">传统视觉分词器如 VQ-VAE、VAE 主要关注重建保真度而非语义表征，学习到的潜在空间往往低维且缺乏与高级语义的结构化对齐。本文通过融合 DINO 的浅层特征（保留细节）和深层特征（编码语义），构建了信息完整的潜在空间，并提出 PCA 重加权机制解决高维空间 VQ 不稳定问题。该方法在 ImageNet 256×256 上取得了自编码 28.54 PSNR 和 VQ 23.98 PSNR 的 SOTA 重建性能，仅用 ImageNet-1k 训练即可媲美十亿级数据训练的模型。创新程度显著，但 PCA 重加权增加了计算开销，且依赖于 DINO 预训练模型的特性，可能无法直接迁移到其他骨架网络。</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (4/5)</div>
+                    <div class="content">[前驱] 本文建立在DINO/DINOv2的预训练视觉特征基础上，融合了VQ-VAE的量化机制和近年来tokenizer相关工作（如VAR、MAGVIT）的技术。核心模块DINO特征提取和分层融合思路来自已有工作。 [贡献] 作者真正做的事情可以归结为两点：（1）将DINO的浅层+深层特征融合引入tokenizer设计；（2）针对高维VQ的信息丢失问题提出PCA重加权。 [判断] 这是有效但不深刻的改进——将预训练特征用于tokenization是自然的想法，PCA重加权也是工程技巧。在billion级别数据训练的模型（如Hunyuan、Wan）背景下，改进幅度有限但工程价值存在。</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (5/5)</div>
+                    <div class="content">[前驱]本文建立在DINOv2/v3预训练表征学习、VQ-VAE向量量化、以及将CLIP/DINO蒸馏到tokenizer的相关工作基础上，核心模块来自DINO特征提取和VAE编解码架构。[贡献]作者真正做的事情可以简化理解为：1）用DINO浅层+深层特征双分支解决语义-纹理矛盾；2）用PCA特征值重加权解决高维VQ不稳定问题。[判断]这是有效但不深刻的工作——工程上结合了已有想法解决了VQ维度爆炸问题，但核心insight（PCA重加权）相对直接，性能提升显著但不算突破性。</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">🎯 why_read（目标读者）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1">
+                    <div class="setting-label">H1_M25</div>
+                    <div class="content">研究视觉生成中 tokenization 效率-质量权衡的工程师，可借鉴其利用预训练模型层次特征和量化维度重加权的技术思路</div>
+                </div>
+
+                <div class="setting-box h1">
+                    <div class="setting-label">H1_M21</div>
+                    <div class="content">研究视觉生成和离散 token 的工程师，可学习其将预训练 DINO 适配为分词器的思路及 PCA 重加权量化技巧</div>
+                </div>
+
+                <div class="setting-box h2">
+                    <div class="setting-label">H2_M25</div>
+                    <div class="content">如果你在研究视觉tokenizer或自回归图像生成，这篇论文提供了将DINO特征与tokenization结合的具体实现思路，特别是分层特征融合和VQ稳定化技巧，对相关工作有参考价值。</div>
+                </div>
+
+                <div class="setting-box h2">
+                    <div class="setting-label">H2_M21</div>
+                    <div class="content">如果你做视觉生成或tokenizer相关研究，可以了解如何将预训练表征模型（如DINO）适配为高效tokenizer的完整pipeline，特别是高维VQ的稳定化技巧。</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">🔧 method_variants（方法变体）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (5/5) - 4项 ⭐</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">dinov2:frozen-tokenizer</span>
+                        <span class="tag">dinov2</span>
+                        <br>DINOv2 原本用于特征提取和表示学习；本文将其冻结后直接作为视觉 tokenizer 编码器，保留预训练语义知识
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">dinov3:frozen-tokenizer</span>
+                        <span class="tag">dinov3</span>
+                        <br>DINOv3 原本用于特征提取和表示学习；本文将其冻结后直接作为视觉 tokenizer 编码器
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vq-vae:pca-reweighting</span>
+                        <span class="tag">vq-vae</span>
+                        <br>传统 VQ-VAE 使用 L2 距离进行码本查找，高维空间下距离集中导致量化不稳定；本文引入 PCA 重加权机制，强调高特征值维度，稳定量化过程
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vae:dual-branch</span>
+                        <span class="tag">vae</span>
+                        <br>传统 VAE 使用单分支编码器重建图像；本文提出双分支设计，融合浅层特征（保留纹理细节）和深层特征（语义信息），构建信息完整的潜在空间
+                    </div>
+
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (5/5) - 2项</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">dinov2:dual-branch-fusion</span>
+                        <span class="tag">dinov2</span>
+                        <br>DINOv2 直接用作 encoder 缺少细粒度纹理；本文融合浅层 F1 和深层 FL 特征，兼顾语义和纹理
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vq-vae:pca-reweighting</span>
+                        <span class="tag">vq-vae</span>
+                        <br>VQ-VAE 在高维空间 L2 距离趋同导致量化不稳定；本文引入 PCA 重加权机制，强调高特征值维度以稳定量化
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (3/5) - 2项</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">dino:feature-hierarchy</span>
+                        <span class="tag">?</span>
+                        <br>DINO原始设计用于图像级特征提取；本文将其浅层特征（保留细粒度纹理）和深层特征（全局语义）分离并融合到tokenizer中，使tokenizer同时具备细节重建能力和语义对齐能力
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vq:pca-reweighting</span>
+                        <span class="tag">?</span>
+                        <br>高维VQ空间中关键信息分布不均且易出现codebook崩溃；本文提出全局PCA重加权机制，根据主成分方差重新调整维度权重，稳定量化过程并减少信息丢失
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (2/5) - 3项</div>
+                    
+                    <div class="variant-item">
+                        <span class="tag">dinov2:dual-branch</span>
+                        <span class="tag">?</span>
+                        <br>DINO深层特征缺乏高频细节导致重建颜色偏移和纹理丢失；引入浅层特征投影支路与深层特征concatenate，在保留语义的同时恢复细粒度纹理，实现28.54 PSNR自编码重建
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vq-vae:pca-reweighting</span>
+                        <span class="tag">?</span>
+                        <br>高维DINO特征（768维）进行L2最近邻查找时因距离集中效应导致语义替换和码本坍缩；提出PCA特征值重加权策略强调高方差维度，稳定VQ训练并保留关键语义信息
+                    </div>
+
+                    <div class="variant-item">
+                        <span class="tag">vq-vae:dual-codebook</span>
+                        <span class="tag">?</span>
+                        <br>单一码本难以同时兼顾语义和纹理表征；引入语义码本（处理PCA重加权深层特征）和纹理码本（处理浅层特征）的双码本设计，互补捕获不同层次信息
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">📚 core_cite（核心引用）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M25 (5/5) - 18条 ⭐</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>DINOv2: Learning Robust Visual Features ...</strong>
+                        <br><small>直接采用 DINOv2 作为 tokenizer 编码器，将冻结的预训练模型改造为视觉 tokenization 基础</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>DINOv3</strong>
+                        <br><small>采用最新的 DINOv3 编码器作为 tokenizer 基础</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Visual Autoregressive Modeling: Scalable...</strong>
+                        <br><small>使用 VAR 作为生成模型进行对比实验</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>High-Resolution Image Synthesis with Lat...</strong>
+                        <br><small>使用 SD-VAE 作为 baseline 进行对比</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Masked Generative Image Transformer</strong>
+                        <br><small>使用 MaskGIT 范式进行生成对比</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Zero-Shot Text-to-Image Generation</strong>
+                        <br><small>使用 LlamaGen 范式进行对比</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Emu3: Next-Token Prediction is All You N...</strong>
+                        <br><small>使用 Emu3 范式进行对比</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Scalable Diffusion Models with Transform...</strong>
+                        <br><small>使用 DiT 框架进行生成实验</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 10 条</div>
+                </div>
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M21 (5/5) - 10条</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Language Model Beats Diffusion -- Tokeni...</strong>
+                        <br><small>论证了 tokenizer 质量对自回归生成的关键作用，DINO-Tok 正是改进 tokenizer 的工作</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>DINOv2: Learning Robust Visual Features ...</strong>
+                        <br><small>基于 DINOv2 预训练模型进行改造，将其适配为视觉分词器</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>High-Resolution Image Synthesis with Lat...</strong>
+                        <br><small>潜在扩散模型的基础背景，说明 tokenizer 在 LDM 中的重要性</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Scalable Diffusion Models with Transform...</strong>
+                        <br><small>DiT 是生成模型的基础架构，tokenizer 质量影响生成效果</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>MaskGIT: Masked Generative Image Transfo...</strong>
+                        <br><small>作为离散 token 生成方法的对比基线</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>LlamaGen: Autoregressive Model Beats Dif...</strong>
+                        <br><small>自回归生成与扩散模型对比，DINO-Tok 可用于两类生成范式</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>VA-VAE: Taming Optimization Dilemma in L...</strong>
+                        <br><small>采用类似的语义监督方法到 VAE 中</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Visual Autoregressive Modeling: Scalable...</strong>
+                        <br><small>VAR 采用离散 token 进行自回归生成，DINO-Tok 可为其提供更好的 tokenizer</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 2 条</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (4/5) - 10条</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>DINOv2: Learning Robust Visual Features ...</strong>
+                        <br><small>本文直接使用DINOv2作为特征提取器，提取浅层和深层特征用于tokenizer，是方法的核心基础</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>Visual Autoregressive Modeling: Scalable...</strong>
+                        <br><small>VAR是自回归图像生成的重要工作，本文tokenizer与其生成范式兼容，旨在提供更好的latent表征</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>Finite Scalar Quantization: VQ-VAE Made ...</strong>
+                        <br><small>FSQ提供了一种简化的量化方法，本文在PCA重加权机制中借鉴了其量化思路</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Language Model Beats Diffusion -- Tokeni...</strong>
+                        <br><small>论文指出tokenizer质量对生成效果的关键影响，为本文的动机提供支撑</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Scalable Diffusion Models with Transform...</strong>
+                        <br><small>DiT展示了Transformer在扩散模型中的应用，本文tokenizer可与扩散/自回归等多种生成范式结合</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Masked Autoencoders Are Scalable Vision ...</strong>
+                        <br><small>MAE的预训练表征学习为DINO等自监督方法奠定基础，间接影响本文的特征提取策略</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>High-Resolution Image Synthesis with Lat...</strong>
+                        <br><small>LDM展示latent space用于图像生成的有效性，本文tokenizer是这一范式的延续</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Autoregressive Image Generation using Re...</strong>
+                        <br><small>RQ（残差量化）是tokenizer量化的一种方法，本文研究与量化技术密切相关</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 2 条</div>
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (5/5) - 12条</div>
+                    
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>DINOv2: Learning Robust Visual Features ...</strong>
+                        <br><small>本文直接使用冻结的DINOv2/v3作为encoder基础，提取分层特征用于tokenization，是本文的核心基础</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-extends">extends</span>
+                        <strong>VQ-VAE: Neural Discrete Representation L...</strong>
+                        <br><small>VQ-VAE是离散tokenizer的经典工作，本文在其基础上针对高维特征做了PCA重加权改进</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-uses">uses</span>
+                        <strong>VA-VAE: Representation Alignment for Gen...</strong>
+                        <br><small>使用类似的蒸馏思路将预训练表征对齐到潜在空间，但采用更直接的特征融合方式</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Language Model Beats Diffusion -- Tokeni...</strong>
+                        <br><small>强调tokenizer质量对生成模型的关键影响，是本文研究动机的背景支撑</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Scalable Diffusion Models with Transform...</strong>
+                        <br><small>DiT/VAE架构作为本文生成实验的baseline对比</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>Autoregressive Image Generation using Re...</strong>
+                        <br><small>RQ-VAE采用分层量化降低单层维度，本文通过PCA重加权直接在完整维度上稳定化</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-contrasts">contrasts</span>
+                        <strong>Finite Scalar Quantization: VQ-VAE Made ...</strong>
+                        <br><small>FSQ用有限标量替代向量量化解决codebook学习问题，本文方法与其思路不同但目标类似</small>
+                    </div>
+
+                    <div class="cite-item">
+                        <span class="tag role-supports">supports</span>
+                        <strong>Visual Autoregressive Modeling: Scalable...</strong>
+                        <br><small>VAR作为本文生成任务的对比方法之一</small>
+                    </div>
+<div style="color:#666;text-align:center;">... 还有 4 条</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="field-section">
+            <div class="field-title">💡 idea（研究方向）</div>
+            <div class="setting-grid">
+
+                <div class="setting-box h1 ">
+                    <div class="setting-label">H1_M25 (4/5) - 4条</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 扩展到视频/3D tokenization</strong>
+                        <br><small>本文验证了图像上浅层+深层特征融合的有效性，视频和3D同样具有层次化结构信息，可类似地融合时序/空间细粒度特征与语义特征，实现视频或3D的 tokenizati...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 更高效的量化方法</strong>
+                        <br><small>PCA 重加权需要逐样本计算特征值带来额外开销，未来可探索预计算通道重要性或学习轻量预测器，在保持语义信息的同时降低计算成本</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 结合更大规模生成模型</strong>
+                        <br><small>本文已在 ImageNet 256×256 上展示良好生成质量，可进一步结合 FLUX 等更大规模的 DiT 架构，探索 512×512 或更高分辨率的生成能力</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>4. 探索与其他预训练模型的结合</strong>
+                        <br><small>当前仅使用 DINO 系列，可尝试结合 CLIP、SAM 等其他预训练模型，探索不同预训练表示对 tokenization 质量的影响</small>
+                    </div>
+
+                </div>
+
+                <div class="setting-box h1 best">
+                    <div class="setting-label">H1_M21 (5/5) - 3条 ⭐</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 拓展到其他预训练骨架</strong>
+                        <br><small>本文仅验证了 DINO 系列，可尝试将方法迁移到 CLIP、SAM 等其他预训练模型，验证 PCA 重加权是否具有普遍有效性。A 类局限：作者未在 Limita...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 视频分词器</strong>
+                        <br><small>图像 tokenization 已验证有效性，但视频时序信息未被利用。可将双分支融合扩展到时序维度，浅层捕获运动细节，深层编码动作语义。B 类引用挖掘：DINO...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 动态 token 数量</strong>
+                        <br><small>当前使用固定 16× 下采样，可探索可变速率的 tokenization，根据图像复杂度自适应调整 token 数量，在细节丰富区域使用更多 token。C 类...</small>
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M25 (5/5) - 3条</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 将DINO分层特征融合引入视频tokenizer</strong>
+                        <br><small>DINO-Tok在图像tokenizer中验证了浅层+深层特征融合的有效性，但视频tokenization面临时序一致性挑战。视频帧间的快速运动会导致token...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 探索PCA重加权与codebook学习的联合优化</strong>
+                        <br><small>当前PCA重加权是静态的预处理步骤，未与codebook训练联合优化。可以探索端到端的可学习重加权机制，让网络自动学习最优的维度重要性分布。当前方法没做可能是因...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 将tokenizer与更大规模的预训练模型结合</strong>
+                        <br><small>DINO-Tok使用DINOv2作为特征提取器，但近年来出现了更大规模的视觉基础模型（如DINOv3、Emu3）。这些模型可能提供更强的语义表征。需要验证更大规...</small>
+                    </div>
+
+                </div>
+
+                <div class="setting-box h2 ">
+                    <div class="setting-label">H2_M21 (4/5) - 4条</div>
+                    
+                    <div class="idea-item">
+                        <strong>1. 将DINO-Tok扩展到视频tokenization</strong>
+                        <br><small>本文验证了DINO特征双分支设计在图像上的有效性，但视频tokenization面临时序一致性问题。DINO浅层特征天然捕捉局部纹理变化，若引入光流信息约束时序...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>2. 探索更先进的离散化方法替代PCA重加权</strong>
+                        <br><small>PCA重加权本质上是线性方法，可能无法完全捕获DINO特征的语义结构。可探索基于语义相似度的学习型重加权或软量化方法，让网络自主学习哪些维度对重建更重要。当前设...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>3. 将DINO-Tok与多模态大模型结合</strong>
+                        <br><small>本文的tokenizer与LLM/VLM的tokenizer存在差距——后者需要更离散、语义更紧凑的表示。可以探索将DINO-Tok的连续表示与离散语言toke...</small>
+                    </div>
+
+                    <div class="idea-item">
+                        <strong>4. 借鉴DiT中间层特征增强tokenizer语义</strong>
+                        <br><small>REPA等工作验证了DiT中间层特征可以蒸馏到tokenizer提升生成质量，但目前没人尝试将DiT中间层与DINO特征融合。若能结合两者——DINO提供静态语...</small>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="analysis-section">
+        <h2>📊 汇总分析</h2>
+        
+        <h3>各字段最佳 Setting 统计</h3>
+        <table class="summary-table">
+            <tr>
+                <th>字段</th>
+                <th>H1_M25 最佳</th>
+                <th>H1_M21 最佳</th>
+                <th>H2_M25 最佳</th>
+                <th>H2_M21 最佳</th>
+            </tr>
+            <tr><td><strong>cn_oneliner</strong></td><td class="">0</td><td class="">2</td><td class="">0</td><td class="best-cell">3</td></tr>
+            <tr><td><strong>cn_abstract</strong></td><td class="best-cell">4</td><td class="">1</td><td class="">0</td><td class="">0</td></tr>
+            <tr><td><strong>editorial_note</strong></td><td class="">2</td><td class="best-cell">3</td><td class="">0</td><td class="">0</td></tr>
+            <tr><td><strong>method_variants</strong></td><td class="best-cell">5</td><td class="">0</td><td class="">0</td><td class="">0</td></tr>
+            <tr><td><strong>core_cite</strong></td><td class="best-cell">5</td><td class="">0</td><td class="">0</td><td class="">0</td></tr>
+            <tr><td><strong>idea</strong></td><td class="best-cell">4</td><td class="">1</td><td class="">0</td><td class="">0</td></tr>
+
+        </table>
+        
+        <h3>🦊 Mox 分析点评</h3>
+        <div style="background: white; padding: 20px; border-radius: 8px; margin-top: 15px;">
+
+            <h4>1. H1 vs H2 对比</h4>
+            <ul>
+                <li><strong>H1（清单型）最佳次数：</strong>27 次</li>
+                <li><strong>H2（判断型）最佳次数：</strong>3 次</li>
+                <li><strong>结论：</strong>H1 整体表现更好</li>
+            </ul>
+            
+            <h4>2. M25 vs M21 对比</h4>
+            <ul>
+                <li><strong>M25 最佳次数：</strong>20 次</li>
+                <li><strong>M21 最佳次数：</strong>10 次</li>
+            </ul>
+            
+            <h4>3. 各字段表现分析</h4>
+            <ul>
+                <li><strong>cn_oneliner：</strong>H2_M21 最佳 3 次</li>
+                <li><strong>cn_abstract：</strong>H1_M25 最佳 4 次</li>
+                <li><strong>editorial_note：</strong>H1_M21 最佳 3 次</li>
+                <li><strong>method_variants：</strong>H1_M25 最佳 5 次</li>
+                <li><strong>core_cite：</strong>H1_M25 最佳 5 次</li>
+                <li><strong>idea：</strong>H1_M25 最佳 4 次</li>
+
+            </ul>
+            
+            <h4>4. 推荐选择</h4>
+            <p><strong>生产环境推荐：H1_M21</strong></p>
+            <ul>
+                <li>结构化输出最稳定（method_variants 完整性最好）</li>
+                <li>速度快（~1.5min/paper）</li>
+                <li>质量与 M25 相当</li>
+            </ul>
+            
+            <p><strong>如需更深度的 idea 分析：H2_M21</strong></p>
+            <ul>
+                <li>cn_oneliner 和 cn_abstract 质量更高</li>
+                <li>idea 深度更好（solid 检验通过才写入）</li>
+                <li>但 method_variants 容易缺字段</li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>

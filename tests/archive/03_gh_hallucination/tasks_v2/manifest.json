@@ -1,0 +1,90 @@
+{
+  "2406.07550": {
+    "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+    "ref_count": 67,
+    "task_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/H_2406.07550.txt",
+    "task_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/Ia_2406.07550.txt",
+    "result_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2406.07550_H.json",
+    "result_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2406.07550_Ia.json"
+  },
+  "2501.07730": {
+    "title": "Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens",
+    "ref_count": 61,
+    "task_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/H_2501.07730.txt",
+    "task_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/Ia_2501.07730.txt",
+    "result_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2501.07730_H.json",
+    "result_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2501.07730_Ia.json"
+  },
+  "2503.08685": {
+    "title": "\"Principal Components\" Enable A New Language of Images",
+    "ref_count": 51,
+    "task_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/H_2503.08685.txt",
+    "task_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/Ia_2503.08685.txt",
+    "result_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2503.08685_H.json",
+    "result_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2503.08685_Ia.json"
+  },
+  "2503.10772": {
+    "title": "FlowTok: Flowing Seamlessly Across Text and Image Tokens",
+    "ref_count": 84,
+    "task_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/H_2503.10772.txt",
+    "task_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/Ia_2503.10772.txt",
+    "result_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2503.10772_H.json",
+    "result_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2503.10772_Ia.json"
+  },
+  "2504.08736": {
+    "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+    "ref_count": 67,
+    "task_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/H_2504.08736.txt",
+    "task_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/Ia_2504.08736.txt",
+    "result_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2504.08736_H.json",
+    "result_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2504.08736_Ia.json"
+  },
+  "2505.21473": {
+    "title": "DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction",
+    "ref_count": 43,
+    "task_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/H_2505.21473.txt",
+    "task_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/Ia_2505.21473.txt",
+    "result_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2505.21473_H.json",
+    "result_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2505.21473_Ia.json"
+  },
+  "2505.12053": {
+    "title": "VFRTok: Variable Frame Rates Video Tokenizer with Duration-Proportional Information Assumption",
+    "ref_count": 36,
+    "task_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/H_2505.12053.txt",
+    "task_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/Ia_2505.12053.txt",
+    "result_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2505.12053_H.json",
+    "result_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2505.12053_Ia.json"
+  },
+  "2506.05289": {
+    "title": "AliTok: Towards Sequence Modeling Alignment between Tokenizer and Autoregressive Model",
+    "ref_count": 52,
+    "task_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/H_2506.05289.txt",
+    "task_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/Ia_2506.05289.txt",
+    "result_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2506.05289_H.json",
+    "result_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2506.05289_Ia.json"
+  },
+  "2507.08441": {
+    "title": "Vision Foundation Models as Effective Visual Tokenizers for Autoregressive Image Generation",
+    "ref_count": 58,
+    "task_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/H_2507.08441.txt",
+    "task_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/Ia_2507.08441.txt",
+    "result_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2507.08441_H.json",
+    "result_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2507.08441_Ia.json"
+  },
+  "2511.20565": {
+    "title": "DINO-Tok: Adapting DINO for Visual Tokenizers",
+    "ref_count": 57,
+    "task_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/H_2511.20565.txt",
+    "task_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/Ia_2511.20565.txt",
+    "result_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2511.20565_H.json",
+    "result_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2511.20565_Ia.json"
+  },
+  "2601.01535": {
+    "title": "Improving Flexible Image Tokenizers for Autoregressive Image Generation",
+    "ref_count": 53,
+    "task_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/H_2601.01535.txt",
+    "task_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/tasks_v2/Ia_2601.01535.txt",
+    "result_H": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2601.01535_H.json",
+    "result_Ia": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/test_gh/results_v2/2601.01535_Ia.json"
+  }
+}

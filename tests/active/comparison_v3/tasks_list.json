@@ -1,0 +1,182 @@
+[
+  {
+    "setting": "H3_M25",
+    "model": "wq/minimaxm25",
+    "arxiv_id": "2406.07550",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_M25_2406.07550.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  },
+  {
+    "setting": "H3_M25",
+    "model": "wq/minimaxm25",
+    "arxiv_id": "2503.08685",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_M25_2503.08685.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  },
+  {
+    "setting": "H3_M25",
+    "model": "wq/minimaxm25",
+    "arxiv_id": "2504.08736",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_M25_2504.08736.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  },
+  {
+    "setting": "H3_M25",
+    "model": "wq/minimaxm25",
+    "arxiv_id": "2506.05289",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_M25_2506.05289.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  },
+  {
+    "setting": "H3_M25",
+    "model": "wq/minimaxm25",
+    "arxiv_id": "2511.20565",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_M25_2511.20565.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  },
+  {
+    "setting": "H3_M21",
+    "model": "wq/minimaxm21",
+    "arxiv_id": "2406.07550",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_M21_2406.07550.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  },
+  {
+    "setting": "H3_M21",
+    "model": "wq/minimaxm21",
+    "arxiv_id": "2503.08685",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_M21_2503.08685.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  },
+  {
+    "setting": "H3_M21",
+    "model": "wq/minimaxm21",
+    "arxiv_id": "2504.08736",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_M21_2504.08736.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  },
+  {
+    "setting": "H3_M21",
+    "model": "wq/minimaxm21",
+    "arxiv_id": "2506.05289",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_M21_2506.05289.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  },
+  {
+    "setting": "H3_M21",
+    "model": "wq/minimaxm21",
+    "arxiv_id": "2511.20565",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_M21_2511.20565.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  },
+  {
+    "setting": "H3_Gemini31Pro",
+    "model": "wqoai/gemini31pro",
+    "arxiv_id": "2406.07550",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_Gemini31Pro_2406.07550.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  },
+  {
+    "setting": "H3_Gemini31Pro",
+    "model": "wqoai/gemini31pro",
+    "arxiv_id": "2503.08685",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_Gemini31Pro_2503.08685.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  },
+  {
+    "setting": "H3_Gemini31Pro",
+    "model": "wqoai/gemini31pro",
+    "arxiv_id": "2504.08736",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_Gemini31Pro_2504.08736.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  },
+  {
+    "setting": "H3_Gemini31Pro",
+    "model": "wqoai/gemini31pro",
+    "arxiv_id": "2506.05289",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_Gemini31Pro_2506.05289.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  },
+  {
+    "setting": "H3_Gemini31Pro",
+    "model": "wqoai/gemini31pro",
+    "arxiv_id": "2511.20565",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_Gemini31Pro_2511.20565.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  },
+  {
+    "setting": "H3_GPT52",
+    "model": "wqoai/gpt52",
+    "arxiv_id": "2406.07550",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_GPT52_2406.07550.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  },
+  {
+    "setting": "H3_GPT52",
+    "model": "wqoai/gpt52",
+    "arxiv_id": "2503.08685",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_GPT52_2503.08685.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  },
+  {
+    "setting": "H3_GPT52",
+    "model": "wqoai/gpt52",
+    "arxiv_id": "2504.08736",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_GPT52_2504.08736.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  },
+  {
+    "setting": "H3_GPT52",
+    "model": "wqoai/gpt52",
+    "arxiv_id": "2506.05289",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_GPT52_2506.05289.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  },
+  {
+    "setting": "H3_GPT52",
+    "model": "wqoai/gpt52",
+    "arxiv_id": "2511.20565",
+    "task_file": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/tasks/H3_GPT52_2511.20565.txt",
+    "result_file": null,
+    "transcript_path": null,
+    "status": "文件不存在"
+  }
+]

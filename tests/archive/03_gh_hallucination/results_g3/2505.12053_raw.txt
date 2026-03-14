@@ -1,0 +1,106 @@
+```json
+{
+  "arxiv_id": "2505.12053",
+  "title": "VFRTok: Variable Frame Rates Video Tokenizer with Duration-Proportional Information Assumption",
+  "cn_oneliner": "基于Transformer视频VAE，引入时长比例信息假设与非对称帧率训练及Partial RoPE，实现仅用1/8 token数量达到SOTA生成质量",
+  "cn_abstract": "现有基于潜扩散模型的视频生成框架受限于"帧比例信息假设"，导致token数量随帧率线性增长，计算开销过大。本文提出"时长比例信息假设"，认为视频信息容量上界正比于视频时长而非帧数，并在此基础上设计了VFRTok——一种基于Transformer的视频分词器，通过编解码器间的非对称帧率训练实现可变帧率编解码。此外，本文提出Partial RoPE以解耦位置与内容建模，将相关patch聚合为统一token，提升内容感知能力。实验表明，VFRTok在仅使用现有分词器1/8 token数量的条件下，实现了具有竞争力的重建质量和SOTA生成保真度。",
+  "contribution_type": "significant",
+  "editorial_note": "现有视频VAE（如CogVideoX、Cosmos、LTX-Video）均假设压缩率固定于帧数，token数随帧率线性增长，造成DiT计算瓶颈。本文提出"时长比例信息假设"这一新颖认知框架，设计VFRTok通过编解码器非对称帧率训练实现可变帧率表示，并提出Partial RoPE改善内容感知，将token压缩至1/8同时保持SOTA生成质量。核心假设有一定理论新颖性，工程落地完整，压缩比提升显著，对视频生成效率研究有实质推动，创新层次介于架构级别和工程优化之间，偏向significant。",
+  "why_read": "研究视频生成效率或视频tokenizer设计的研究者，可直接借鉴其"时长比例信息假设"框架、非对称帧率训练策略及Partial RoPE的设计思路以大幅降低DiT计算成本。",
+  "method_variants": [
+    "video_tokenizer:duration-proportional-assumption",
+    "training:asymmetric-framerate-encoder-decoder",
+    "position_embedding:partial-rope",
+    "architecture:transformer-based-vae",
+    "compression:4x-temporal-beyond-fixed-rate"
+  ],
+  "core_cite": [
+    {
+      "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis (Stable Diffusion 3)",
+      "arxiv_id": "2403.03206",
+      "role": "supports",
+      "note": "LDM范式基础，说明latent space压缩对生成模型效率的重要性"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers (DiT)",
+      "arxiv_id": "2212.09748",
+      "role": "uses",
+      "note": "Diffusion Transformer架构，VFRTok生成实验所依赖的扩散骨干"
+    },
+    {
+      "title": "CogVideoX: Text-to-Video Diffusion Models with An Expert Transformer",
+      "arxiv_id": "2408.06072",
+      "role": "contrasts",
+      "note": "典型帧比例假设tokenizer，作为对比基线展示token数随帧率线性增长问题"
+    },
+    {
+      "title": "Cosmos World Foundation Model Platform for Physical AI",
+      "arxiv_id": "2501.12599",
+      "role": "contrasts",
+      "note": "Cosmos tokenizer代表固定压缩率设计，本文与其对比压缩效率与生成质量"
+    },
+    {
+      "title": "LTX-Video: Realtime Video Latent Diffusion",
+      "arxiv_id": "2501.00103",
+      "role": "contrasts",
+      "note": "LTX tokenizer采用高时序压缩但仍基于帧比例假设，作为效率对比基线"
+    },
+    {
+      "title": "HunyuanVideo: A Systematic Framework For Large Video Generation Model",
+      "arxiv_id": "2412.03603",
+      "role": "contrasts",
+      "note": "大规模视频生成系统，其tokenizer设计代表帧比例假设主流实践"
+    },
+    {
+      "title": "Open-Sora: Democratizing Efficient Video Production for All",
+      "arxiv_id": "2412.00131",
+      "role": "contrasts",
+      "note": "开源视频生成框架，tokenizer设计作为对比参考"
+    },
+    {
+      "title": "OmniTokenizer: A Joint Image-Video Tokenizer for Visual Generation",
+      "arxiv_id": "2406.09399",
+      "role": "contrasts",
+      "note": "图像视频联合tokenizer，代表现有固定压缩率设计路线"
+    },
+    {
+      "title": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
+      "arxiv_id": "2104.09864",
+      "role": "extends",
+      "note": "Partial RoPE的基础，本文在其基础上提出仅对部分维度施加RoPE以解耦位置与内容"
+    },
+    {
+      "title": "Latent Diffusion Models (High-Resolution Image Synthesis with Latent Diffusion Models)",
+      "arxiv_id": "2112.10752",
+      "role": "uses",
+      "note": "LDM框架奠基工作，VFRTok作为其视频tokenizer组件"
+    },
+    {
+      "title": "VideoVAE+: Large Motion Video Autoencoding with Cross-modal Video VAE",
+      "arxiv_id": "2412.17805",
+      "role": "contrasts",
+      "note": "视频VAE设计工作，与VFRTok在重建质量和压缩效率上进行比较"
+    },
+    {
+      "title": "Latte: Latent Diffusion Transformer for Video Generation",
+      "arxiv_id": "2401.03048",
+      "role": "uses",
+      "note": "基于DiT的视频生成框架，用于验证VFRTok在下游生成任务中的效果"
+    }
+  ],
+  "idea": [
+    {
+      "title": "自适应时长感知压缩率的视频tokenizer",
+      "why": "VFRTok假设信息量正比于时长并使用全局固定的时长比例压缩，但视频不同片段的信息密度差异显著（如静止背景 vs 快速运动）。可探索内容感知的动态压缩率分配，对高动态区域分配更多token、静态区域更少token，在保持时长比例总量约束的同时进一步提升重建精度，结合VFRTok的Partial RoPE框架具有直接可行性。"
+    },
+    {
+      "title": "非对称帧率训练范式在视频理解模型中的迁移应用",
+      "why": "VFRTok的编解码器非对称帧率训练揭示了视频的时序冗余可以通过解耦编解码输入帧率来利用。该思想可迁移至视频理解（如动作识别、视频问答）的特征提取器设计中：以低帧率编码获得紧凑表示，再以高帧率解码还原细节用于精细判断，有望降低视频理解模型的计算开销，且与现有视频backbone结合改造成本较低。"
+    },
+    {
+      "title": "Partial RoPE在多模态长上下文模型中的位置编码设计",
+      "why": "本文提出仅对部分维度施加RoPE以解耦位置与内容建模，在视频token聚合中效果显著。该思路在多模态大语言模型（如处理交错图文视频序列的LLM）中同样有价值：不同模态的token对绝对位置的依赖程度不同，对内容相关维度去除位置偏置可缓解跨模态位置编码冲突问题，作者团队有Kling视频生成背景，延伸至多模态理解具备资源可行性。"
+    }
+  ]
+}
+```

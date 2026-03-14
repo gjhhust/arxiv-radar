@@ -1,0 +1,307 @@
+{
+  "results": {
+    "2406.07550": {
+      "H1": {
+        "cite_matched": 12,
+        "cite_total": 12,
+        "cite_rate": 1.0,
+        "mv_count": 1,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 1,
+        "idea_quality": 0.333,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2406.07550/results_20260314_H1.json"
+      },
+      "H2": {
+        "cite_matched": 11,
+        "cite_total": 11,
+        "cite_rate": 1.0,
+        "mv_count": 1,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 3,
+        "idea_quality": 1.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2406.07550/results_20260314_H2.json"
+      }
+    },
+    "2501.07730": {
+      "H1": {
+        "cite_matched": 13,
+        "cite_total": 13,
+        "cite_rate": 1.0,
+        "mv_count": 3,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 1,
+        "idea_gap": 0,
+        "idea_quality": -0.167,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2501.07730/results_20260314_H1.json"
+      },
+      "H2": {
+        "cite_matched": 14,
+        "cite_total": 14,
+        "cite_rate": 1.0,
+        "mv_count": 3,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 0,
+        "idea_quality": 0.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2501.07730/results_20260314_H2.json"
+      }
+    },
+    "2503.08685": {
+      "H1": {
+        "cite_matched": 12,
+        "cite_total": 12,
+        "cite_rate": 1.0,
+        "mv_count": 3,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 3,
+        "idea_quality": 1.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2503.08685/results_20260314_H1.json"
+      },
+      "H2": {
+        "cite_matched": 14,
+        "cite_total": 14,
+        "cite_rate": 1.0,
+        "mv_count": 2,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 3,
+        "idea_quality": 1.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2503.08685/results_20260314_H2.json"
+      }
+    },
+    "2503.10772": {
+      "H1": {
+        "cite_matched": 8,
+        "cite_total": 11,
+        "cite_rate": 0.727,
+        "mv_count": 2,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 0,
+        "idea_quality": 0.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2503.10772/results_20260314_H1.json"
+      },
+      "H2": {
+        "cite_matched": 6,
+        "cite_total": 12,
+        "cite_rate": 0.5,
+        "mv_count": 2,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 0,
+        "idea_quality": 0.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2503.10772/results_20260314_H2.json"
+      }
+    },
+    "2504.08736": {
+      "H1": {
+        "cite_matched": 15,
+        "cite_total": 15,
+        "cite_rate": 1.0,
+        "mv_count": 4,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 0,
+        "idea_quality": 0.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2504.08736/results_20260314_H1.json"
+      },
+      "H2": {
+        "cite_matched": 10,
+        "cite_total": 11,
+        "cite_rate": 0.909,
+        "mv_count": 3,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 1,
+        "idea_quality": 0.333,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2504.08736/results_20260314_H2.json"
+      }
+    },
+    "2505.21473": {
+      "H1": {
+        "cite_matched": 14,
+        "cite_total": 14,
+        "cite_rate": 1.0,
+        "mv_count": 3,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 1,
+        "idea_quality": 0.333,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2505.21473/results_20260314_H1.json"
+      },
+      "H2": {
+        "cite_matched": 12,
+        "cite_total": 12,
+        "cite_rate": 1.0,
+        "mv_count": 2,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 0,
+        "idea_quality": 0.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2505.21473/results_20260314_H2.json"
+      }
+    },
+    "2505.12053": {
+      "H1": {
+        "cite_matched": 12,
+        "cite_total": 12,
+        "cite_rate": 1.0,
+        "mv_count": 3,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 1,
+        "idea_quality": 0.333,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2505.12053/results_20260314_H1.json"
+      },
+      "H2": {
+        "cite_matched": 12,
+        "cite_total": 12,
+        "cite_rate": 1.0,
+        "mv_count": 2,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 3,
+        "idea_quality": 1.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2505.12053/results_20260314_H2.json"
+      }
+    },
+    "2506.05289": {
+      "H1": {
+        "cite_matched": 12,
+        "cite_total": 12,
+        "cite_rate": 1.0,
+        "mv_count": 3,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 1,
+        "idea_quality": 0.333,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2506.05289/results_20260314_H1.json"
+      },
+      "H2": {
+        "cite_matched": 14,
+        "cite_total": 14,
+        "cite_rate": 1.0,
+        "mv_count": 1,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 1,
+        "idea_quality": 0.333,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2506.05289/results_20260314_H2.json"
+      }
+    },
+    "2507.08441": {
+      "H1": {
+        "cite_matched": 15,
+        "cite_total": 15,
+        "cite_rate": 1.0,
+        "mv_count": 3,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 2,
+        "idea_quality": 0.667,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2507.08441/results_20260314_H1.json"
+      },
+      "H2": {
+        "cite_matched": 13,
+        "cite_total": 13,
+        "cite_rate": 1.0,
+        "mv_count": 4,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 3,
+        "idea_quality": 1.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2507.08441/results_20260314_H2.json"
+      }
+    },
+    "2511.20565": {
+      "H1": {
+        "cite_matched": 12,
+        "cite_total": 12,
+        "cite_rate": 1.0,
+        "mv_count": 3,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 3,
+        "idea_quality": 1.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2511.20565/results_20260314_H1.json"
+      },
+      "H2": {
+        "cite_matched": 12,
+        "cite_total": 12,
+        "cite_rate": 1.0,
+        "mv_count": 2,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 2,
+        "idea_quality": 0.667,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2511.20565/results_20260314_H2.json"
+      }
+    },
+    "2601.01535": {
+      "H1": {
+        "cite_matched": 5,
+        "cite_total": 10,
+        "cite_rate": 0.5,
+        "mv_count": 2,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 0,
+        "idea_quality": 0.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2601.01535/results_20260314_H1.json"
+      },
+      "H2": {
+        "cite_matched": 5,
+        "cite_total": 13,
+        "cite_rate": 0.385,
+        "mv_count": 2,
+        "mv_ok": true,
+        "mv_issues": 0,
+        "idea_restate": 0,
+        "idea_gap": 2,
+        "idea_quality": 0.667,
+        "path": "/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2601.01535/results_20260314_H2.json"
+      }
+    }
+  },
+  "retry": [
+    {
+      "arxiv_id": "2503.10772",
+      "scheme": "H2",
+      "reason": "cite_rate=50%"
+    },
+    {
+      "arxiv_id": "2601.01535",
+      "scheme": "H1",
+      "reason": "cite_rate=50%"
+    },
+    {
+      "arxiv_id": "2601.01535",
+      "scheme": "H2",
+      "reason": "cite_rate=38%"
+    }
+  ]
+}

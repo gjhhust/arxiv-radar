@@ -1,0 +1,109 @@
+{
+  "arxiv_id": "2504.08736",
+  "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+  "cn_oneliner": "基于 VQGAN，引入语义正则化（与预训练 DINOv2 特征对齐）和三大扩展策略（1D 分词器、解码器优先扩展、熵损失），解决视觉分词器扩展中的重构-生成困境，在 3B 参数规模下同时实现重构与 AR 生成的 SOTA",
+  "cn_abstract": "本文提出 GigaTok，首个在扩展视觉分词器时同时提升图像重构、下游自回归生成和表征质量的方法。研究发现分词器规模增大导致潜空间复杂度上升，是重构-生成困境的根本原因。为此，引入语义正则化，通过与预训练 DINOv2 特征对齐约束潜空间复杂度。结合三大扩展策略：1D 分词器、 解码器优先的非对称扩展、以及十亿级分词器的熵损失稳定化训练。最终将分词器扩展至 30 亿参数，在 ImageNet 256×256 上实现重构 SOTA（rFID）和生成 SOTA（gFID），并在表征学习任务上验证有效性。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱工作] 本文建立在 VQGAN 系列工作（VQ-VAE、VQGAN、ViT-VQGAN）基础上，分词器架构采用 CNN-Transformer 混合设计，语义正则化借鉴了 DINOv2 和 REPA 等表征对齐方法。[实质贡献] 作者核心贡献是识别并解决了扩展视觉分词器时的重构-生成困境：通过引入 DINOv2 语义正则化约束潜空间复杂度，配合 1D 分词器、非对称扩展和熵损失三个工程技巧，成功将分词器扩展到 3B 参数。[价值判断] 该工作有效解决了自回归图像生成中分词器扩展的核心瓶颈，贡献真实且有技术深度，而非简单堆砌参数或夸大贡献。",
+  "why_read": "从事自回归图像生成、视觉 tokenization、或者多模态大模型研究的工程师，可深入理解如何系统性扩展视觉分词器并平衡重构与生成质量",
+  "method_variants": [
+    {
+      "base_method": "vq-gan",
+      "variant_tag": "vq-gan:semantic-regularization",
+      "description": "VQGAN 原本仅优化重构损失；本文引入 DINOv2 语义正则化，对齐分词器特征与预训练视觉表征，降低潜空间复杂度以利于下游 AR 生成"
+    },
+    {
+      "base_method": "vit",
+      "variant_tag": "vit:1d-tokenizer",
+      "description": "ViT 保持 2D 空间结构；本文使用 Q-Former 将 2D 特征转为 1D 序列，消除 2D 归纳偏置以提升扩展性"
+    },
+    {
+      "base_method": "vq-gan",
+      "variant_tag": "vq-gan:entropy-loss",
+      "description": "小规模 VQGAN 训练无需额外正则；本文引入熵损失监督 codebook 利用率，稳定十亿级参数分词器的训练收敛"
+    },
+    {
+      "base_method": "vq-gan",
+      "variant_tag": "vq-gan:asymmetric-scaling",
+      "description": "传统 VQGAN 对称扩展编码器-解码器；本文采用解码器优先的非对称扩展，更高效地分配参数资源"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "arxiv_id": "2110.04627",
+      "role": "extends",
+      "note": "VQGAN 是本文视觉分词器的基线架构，本文在其基础上引入语义正则化和扩展策略"
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "arxiv_id": "2304.07193",
+      "role": "extends",
+      "note": "DINOv2 提供语义特征用于正则化，是本文语义正则化的核心依赖"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "uses",
+      "note": "使用 Llama 架构作为下游 AR 生成模型，验证分词器扩展的有效性"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "supports",
+      "note": "作为背景，说明 tokenization 对 AR 图像生成的关键作用"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "supports",
+      "note": "提及作为 AR 图像生成的另一种技术路径"
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "arxiv_id": "2010.11929",
+      "role": "uses",
+      "note": "ViT 架构用于 2D 分词器的编码器/解码器实现"
+    },
+    {
+      "title": "BLIP-2: Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models",
+      "arxiv_id": "2301.12597",
+      "role": "uses",
+      "note": "Q-Former 架构用于 1D 分词器的序列转换"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "supports",
+      "note": "DiT 作为扩散模型基线，论文在对比中说明 AR 生成的潜力"
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "arxiv_id": "2111.06377",
+      "role": "supports",
+      "note": "MAE 表征学习的线性探测方法被用于评估分词器的表征质量"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "supports",
+      "note": "LDM 作为潜在空间扩散的代表工作，用于说明不同生成范式的对比"
+    }
+  ],
+  "idea": [
+    {
+      "title": "扩展到视频分词与生成",
+      "why": "本文仅验证了图像分词器的扩展策略，未探索视频时序信息的建模。【本文局限】视频分词需额外处理时序依赖和长程相关性，与图像分词有本质区别。VideoPoet 等工作已证明 AR 视频生成的可行性，可借鉴本文的语义正则化和扩展策略到视频领域。"
+    },
+    {
+      "title": "探索其他视觉基础模型作为正则化监督",
+      "why": "本文仅使用 DINOv2 作为语义正则化的监督信号。【引用挖掘】DINOv2 主要学习视觉相似性，可尝试使用 CLIP 或其他具有更强语义理解能力的模型，可能进一步提升潜空间的语义一致性。"
+    },
+    {
+      "title": "更高分辨率图像生成",
+      "why": "本文实验限定在 ImageNet 256×256 分辨率。【本文局限】更高分辨率（如 512×512 或 1024×1024）需要更多 token 和更大模型，可能面临训练不稳定和计算开销问题。本文的三阶段扩展策略（1D、非对称、熵损失）为高分辨率场景提供了理论依据。"
+    }
+  ],
+  "transcript_path": "/Users/lanlanlan/.openclaw/agents/paper-analyst/sessions/e142f4d2-7a3c-48c2-b29d-df0842579302.jsonl",
+  "session_time": "2026-03-14 19:52:33"
+}

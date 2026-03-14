@@ -1,0 +1,116 @@
+{
+  "arxiv_id": "2506.05289",
+  "title": "AliTok: Towards Sequence Modeling Alignment between Tokenizer and Autoregressive Model",
+  "cn_oneliner": "基于传统双向图像tokenizer，引入因果解码器约束双向编码器的设计，实现token序列的前向依赖结构，使标准自回归模型首次超越SOTA扩散模型",
+  "cn_abstract": "本文提出AliTok解决自回归图像生成中tokenizer与自回归模型之间的根本性对齐问题。传统tokenizer为追求重建质量，使token之间形成双向依赖，与自回归模型的单向预测范式存在本质冲突。AliTok采用双向编码器结合因果解码器的架构，强制编码器产生具有前向依赖性的token序列。通过引入prefix tokens解决首行重建问题，并采用两阶段训练策略（第一阶段训练因果解码器约束的编码器，第二阶段冻结编码器并重新训练双向解码器提升重建质量），在ImageNet-256上，662M参数的模型达到gFID 1.28，超越SOTA扩散模型LightningDiT且推理速度快10倍。",
+  "contribution_type": "significant",
+  "editorial_note": "本文建立在VQ-VAE、TiTok、LlamaGen等已有tokenizer和自回归图像生成工作基础上，核心创新在于提出用因果解码器作为正则化器约束双向编码器。实质贡献是发现了传统tokenizer的双向依赖与AR模型单向预测之间的根本矛盾，并通过解耦全局语义构建与序列因果约束来解决这一问题。这个贡献的实质价值在于：它首次证明了标准decoder-only AR模型可以超越扩散模型，为多模态统一提供了更简洁的路径，是有明确问题导向的重要进展。",
+  "why_read": "研究自回归图像生成和多模态统一的研究者，可从本文学习如何通过设计数据侧的tokenizer来适配模型侧的学习范式",
+  "method_variants": [
+    {
+      "base_method": "vq-vae",
+      "variant_tag": "vq-vae:causal-decoder",
+      "description": "VQ-VAE的标准双向解码器会导致token间双向依赖；本文改为因果解码器约束编码器，强制生成前向依赖的token序列"
+    },
+    {
+      "base_method": "titok",
+      "variant_tag": "titok:causal-constraint",
+      "description": "TiTok将2D图像patch编码为1D序列但保持双向依赖；本文在此基础上引入因果解码器使token具有前向依赖结构"
+    },
+    {
+      "base_method": "llamagen",
+      "variant_tag": "llamagen:aligned-tokenizer",
+      "description": "LlamaGen使用标准decoder-only transformer但受限于tokenizer的双向依赖；本文提供AliTok tokenizer解决此根本问题"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Autoregressive Image Generation using Residual Quantization",
+      "arxiv_id": "2203.01941",
+      "role": "extends",
+      "note": "AR图像生成的基础工作，本文在其基础上解决tokenizer与AR模型的对齐问题"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "extends",
+      "note": "明确指出tokenizer是AR图像生成的关键，本文直接针对此问题提出解决方案"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "uses",
+      "note": "使用Llama的AR模型架构作为生成模型"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "uses",
+      "note": "基于TiTok的架构进行改进，是本文tokenizer的基础"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "contrasts",
+      "note": "本文不采用MaskGIT的双向注意力思路，而是从tokenizer侧解决问题"
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "contrasts",
+      "note": "VAR采用层级预测，本文保持标准AR范式，通过tokenizer创新达到更好效果"
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "arxiv_id": "2406.11838",
+      "role": "contrasts",
+      "note": "MAR通过无VQ方案解决AR生成问题，本文从tokenizer对齐角度提供不同路径"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "contrasts",
+      "note": "DiT是SOTA扩散模型基线，本文AR模型在此背景下超越之"
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "arxiv_id": "2309.15505",
+      "role": "supports",
+      "note": "FSQ提供了高效的codebook量化方法，是tokenizer的组成部分"
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "arxiv_id": "2409.04410",
+      "role": "uses",
+      "note": "使用Open-MAGVIT2的GAN损失进行训练"
+    },
+    {
+      "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "arxiv_id": "2504.08736",
+      "role": "supports",
+      "note": "大规模tokenizer工作，本文在重建质量上与其对比"
+    },
+    {
+      "title": "Chameleon: Mixed-Modal Early-Fusion Foundation Models",
+      "arxiv_id": "2405.09818",
+      "role": "supports",
+      "note": "多模态统一的工作，本文工作有利于此类统一框架"
+    }
+  ],
+  "idea": [
+    {
+      "title": "将因果约束扩展到多模态条件生成",
+      "why": "本文仅验证了类别条件的ImageNet生成，未探索文本条件或layout条件的场景。需要验证因果tokenizer在text-to-image任务中是否同样有效。可行性依据：文本条件与类别条件的差异主要在条件注入方式，tokenizer的因果结构与条件类型无关。"
+    },
+    {
+      "title": "探索更细粒度的码本大小与生成质量的权衡",
+      "why": "本文实验显示16384码本在重建上更好但生成略差，暗示码本大小与AR预测难度之间存在权衡。需要系统性探索不同码本大小对训练效率和生成质量的影响。实验设计相对简单，只需要改变codebook size参数。"
+    },
+    {
+      "title": "将因果tokenizer思想迁移到视频生成",
+      "why": "视频生成同样面临时空依赖的建模问题。将 causal decoder 思想扩展到3D时空tokenizer，使视频token也具备前向依赖结构，可能提升AR视频生成的效果。已有视频tokenizer如Video Tok可以此思路改进。"
+    }
+  ],
+  "transcript_path": "/Users/lanlanlan/.openclaw/agents/paper-analyst/sessions/ba0c28c8-d181-4f1c-9352-8fb5a487c342.jsonl",
+  "session_time": "2026-03-14 19:52:33"
+}

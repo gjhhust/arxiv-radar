@@ -1,0 +1,242 @@
+{
+  "arxiv_id": "2501.07730",
+  "title": "Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens",
+  "cn_oneliner": "TA-TiTok tokenizer通过在解码阶段引入CLIP文本嵌入，实现一阶段训练，离散/连续token双模式，达到私有数据模型相当的文生图效果",
+  "cn_abstract": "图像tokenizer是现代文生图生成模型的基础，但训练难度大。现有文生图模型大多依赖大规模高质量私有数据集，难以复现。本文提出Text-Aware Transformer-based 1-Dimensional Tokenizer (TA-TiTok)，一种高效强大的图像tokenizer，可使用离散或连续的一维token。TA-TiTok独特地在tokenizer解码阶段（即de-tokenization）整合文本信息，加速收敛并提升性能。TA-TiTok还受益于简化但有效的一阶段训练过程，消除了以往一维tokenizer使用的复杂两阶段蒸馏。基于此，本文提出MaskGen系列模型，完全在开放数据上训练，达到与私有数据训练模型相当的性能。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱]本文建立在TiTok一维tokenizer和MaskGIT/MaskBit等masked生成模型的基础上，同时吸收了diffusion模型中的adaLN conditioning、CLIP conditioning等技术。[贡献]本文真正做出了三个关键贡献：(1)将TiTok从两阶段蒸馏改为一阶段训练，大幅提升可扩展性；(2)将tokenizer从仅支持离散VQ扩展到支持连续VAE表示；(3)在de-tokenization阶段引入文本信息(CLIP嵌入)来增强语义对齐。[判断]虽然核心思想(一维tokenizer + 文本感知)并不完全原创，但将多个已有技术有效整合并解决了一维tokenizer扩展到text-to-image的实际工程问题，属于有实际价值的改进。",
+  "why_read": "适合关注文生图tokenizer和masked生成模型的研究者，特别是资源有限但希望复现高质量文生图模型的团队，可以从本文获得关于一维tokenizer训练、开放数据pipeline和高效模型架构的实践经验。",
+  "method_variants": [
+    {
+      "variant_tag": "titok:text-aware",
+      "description": "原TiTok仅在编码阶段处理图像，缺乏文本语义对齐能力→在解码阶段通过拼接CLIP文本嵌入与tokenized图像表示，使重建图像更好地保留与文本相关的细节→在文生图任务中实现更好的文本-图像对齐"
+    },
+    {
+      "variant_tag": "titok:one-stage",
+      "description": "原TiTok使用复杂的两阶段蒸馏训练流程，难以扩展到大规模数据集→简化为一阶段端到端训练，直接在目标数据集上训练tokenizer→显著提升可扩展性，支持大规模text-image数据训练"
+    },
+    {
+      "variant_tag": "titok:continuous",
+      "description": "原TiTok仅支持离散VQ token，存在quantization loss→扩展支持连续VAE表示，使用KL散度作为重建损失→消除量化损失，提升重建质量"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "extends",
+      "note": "MaskGIT提出了masked生成范式和双向transformer架构，本文MaskGen继承了这一训练和采样框架，是直接的技术基础"
+    },
+    {
+      "title": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "arxiv_id": "2301.00704",
+      "role": "extends",
+      "note": "Muse是将masked生成模型应用于text-to-image的先驱工作，展示了masked范式在文生图任务上的潜力，本文在此基础上进一步优化tokenizer"
+    },
+    {
+      "title": "MAGE: MAsked Generative Encoder to Unify Representation Learning and Image Synthesis",
+      "arxiv_id": "2211.09117",
+      "role": "extends",
+      "note": "MAGE提出了masked生成编码器的统一框架，为本文的masked生成模型设计提供了基础架构参考"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "uses",
+      "note": "本文借鉴了Tokenize是视觉生成关键这一论点，强调了高效tokenizer对文生图模型的重要性，使用了类似的离散tokenizer思路"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "uses",
+      "note": "本文借鉴了将图像处理为1D token序列的思想，与本文的一维tokenizer设计理念一致"
+    },
+    {
+      "title": "Scaling Autoregressive Models for Content-Rich Text-to-Image Generation",
+      "arxiv_id": "2206.10789",
+      "role": "uses",
+      "note": "Parti工作展示了序列模型在文生图上的潜力，本文采用类似的序列建模思路但使用masked生成而非autoregressive"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "uses",
+      "note": "LDM的工作表明在latent space进行diffusion可以提升效率，本文虽然用masked生成，但也采用latent space建模，并借鉴了CLIP conditioning等技术"
+    },
+    {
+      "title": "Diffusion Models Beat GANs on Image Synthesis",
+      "arxiv_id": "2105.05233",
+      "role": "contrasts",
+      "note": "本文的MaskGen选择masked生成范式而非diffusion，定位为与diffusion模型的对比，强调采样速度优势"
+    },
+    {
+      "title": "Denoising Diffusion Probabilistic Models",
+      "arxiv_id": "2006.11239",
+      "role": "contrasts",
+      "note": "DDPM是diffusion模型的经典工作，本文使用masked生成而非diffusion loss来生成连续token，与diffusion方法形成对比"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "contrasts",
+      "note": "本文明确与自回归和diffusion两条技术路线对比，论证masked生成在采样效率上的优势"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "uses",
+      "note": "VQ-GAN的工作表明使用离散tokenizer+transformer的有效性，本文采用类似的tokenizer设计思路"
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "arxiv_id": "2110.04627",
+      "role": "uses",
+      "note": "VQGAN改进了vector quantization方法，本文在离散token模式下借鉴了其codebook管理和训练技巧"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "supports",
+      "note": "VQ-VAE是离散tokenizer的经典工作，本文的离散token设计建立在VQ-VAE的理论基础之上"
+    },
+    {
+      "title": "MAGVIT: Masked Generative Video Transformer",
+      "arxiv_id": "2212.05199",
+      "role": "supports",
+      "note": "MAGVIT将masked生成扩展到视频领域，其方法论为本文的masked生成模型设计提供了参考"
+    }
+  ],
+  "idea": [
+    {
+      "title": "连续token的masked生成",
+      "why": "本文仅在离散token上展示了完整的T2I pipeline，对于连续token使用diffusion loss的masked生成没有充分探索其与纯diffusion模型的性能差距。需要验证：连续token的masked生成是否能在保持采样速度优势的前提下，达到与纯diffusion相当的生成质量？如果成功，将为混合架构提供新思路。成功会不平凡，因为这意味着masked范式可以统一离散和连续表示的生成。"
+    },
+    {
+      "title": "文本信息的更早融合",
+      "why": "本文选择在de-tokenization阶段引入文本信息，这是一个相对晚的阶段。一个潜在的改进方向是在encoder阶段就融入文本特征，这可能带来更强的文本-图像对齐。需要验证：encoder阶段的文本融合是否能进一步提升性能？本文没做是因为会增加训练复杂度，但探索encoder-decoder双阶段文本融合可能有更好效果。"
+    },
+    {
+      "title": "更大规模开放数据缩放",
+      "why": "本文强调使用开放数据集训练，但使用的仍是过滤后的子集（DataComp、LAION等）。一个关键问题是：更大规模的开放数据是否能让模型达到私有数据模型的水平？需要验证：数据规模与模型性能的 scaling law。邻域可以借鉴LLM scaling的成熟经验，应用于多模态生成模型。"
+    }
+  ],
+  "_cite_sims": [
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "best_score": 1.0,
+      "best_match": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "pass": true
+    },
+    {
+      "title": "MAGE: MAsked Generative Encoder to Unify Representation Learning and Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "MAGE: MAsked Generative Encoder to Unify Representation Learning and Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    },
+    {
+      "title": "Scaling Autoregressive Models for Content-Rich Text-to-Image Generation",
+      "best_score": 1.0,
+      "best_match": "Scaling Autoregressive Models for Content-Rich Text-to-Image Generation",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Diffusion Models Beat GANs on Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Diffusion Models Beat GANs on Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Denoising Diffusion Probabilistic Models",
+      "best_score": 1.0,
+      "best_match": "Denoising Diffusion Probabilistic Models",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "best_score": 1.0,
+      "best_match": "Vector-quantized Image Modeling with Improved VQGAN",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "best_score": 1.0,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "MAGVIT: Masked Generative Video Transformer",
+      "best_score": 1.0,
+      "best_match": "MAGVIT: Masked Generative Video Transformer",
+      "pass": true
+    }
+  ],
+  "_cite_matched": 14,
+  "_cite_total": 14,
+  "_cite_rate": 1.0,
+  "_ref_count": 61,
+  "_mv_count": 3,
+  "_mv_issues": [],
+  "_mv_ok": true,
+  "_idea_count": 3,
+  "_idea_analysis": [
+    {
+      "title": "连续token的masked生成",
+      "why_len": 203,
+      "has_gap": false,
+      "restate": false
+    },
+    {
+      "title": "文本信息的更早融合",
+      "why_len": 163,
+      "has_gap": false,
+      "restate": false
+    },
+    {
+      "title": "更大规模开放数据缩放",
+      "why_len": 141,
+      "has_gap": false,
+      "restate": false
+    }
+  ],
+  "_idea_restate": 0,
+  "_idea_gap": 0,
+  "_idea_quality": 0.0,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14"
+}

@@ -1,0 +1,225 @@
+{
+  "cn_oneliner": "基于潜在生成模型(LGMs)范式，引入DINO特征的双分支融合机制与全局PCA重加权，实现高维潜在空间下的语义-纹理平衡，PSNR达28.54（AE）/23.98（VQ）",
+  "cn_abstract": "本文提出DINO-Tok，一种基于预训练DINO模型的视觉tokenizer，用于桥接像素与语义。现有的tokenizer通常从头训练，难以在高维潜在空间中平衡语义表示与重建质量。DINO-Tok通过整合保留细粒度细节的浅层特征与编码全局语义的深层特征，构建信息完整的潜在空间。针对高维空间中向量量化(VQ)的关键信息丢失和码本坍缩问题，提出全局PCA重加权机制。在ImageNet 256×256上，DINO-Tok在自动编码模式下达到28.54 PSNR，VQ模式下达到23.98 PSNR，显著优于现有方法，可与十亿级数据训练的Hunyuan、Wan模型相媲美。",
+  "contribution_type": "significant",
+  "editorial_note": "DINO-Tok代表了视觉tokenizer设计的重要进展。其核心创新在于直接利用预训练DINO模型的分层表示能力，而非仅仅从中蒸馏知识。通过识别浅层特征保留细节、深层特征编码语义的规律，设计了双分支架构融合两者。针对高维VQ的挑战，创造性地引入PCA特征值重加权来稳定量化过程。这一工作表明，强大的预训练视觉模型可以直接适配为生成模型的tokenizer，为下一代视觉生成模型奠定了基础。",
+  "why_read": "视觉生成研究者/生成模型开发者将获得利用预训练模型构建高质量tokenizer的方法论",
+  "method_variants": [
+    {
+      "tag": "DINO-Tok-AE",
+      "note": "使用双分支结构融合浅层F1特征和深层FL特征，通过线性投影将浅层特征压缩到64维后拼接"
+    },
+    {
+      "tag": "DINO-Tok-VQ",
+      "note": "在AE基础上引入全局PCA重加权机制，使用语义码本和纹理码本两个独立码本进行向量量化"
+    },
+    {
+      "tag": "baseline-frozen-DINO",
+      "note": "直接使用冻结的DINO作为encoder，仅用最后一层特征进行重建，导致颜色偏移和细节丢失"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "VA-VAE: Variational Autoencoders with Latent Space Distillation",
+      "arxiv_id": "yao2025vavae",
+      "role": "extends",
+      "note": "使用潜在空间蒸馏来改进语义对齐，是DINO-Tok的比较基准之一"
+    },
+    {
+      "title": "VQ-VAE: Neural Discrete Representation Learning",
+      "arxiv_id": "van2017vqvae",
+      "role": "uses",
+      "note": "基础VQ-VAE框架，DINO-Tok-VQ在此基础上改进"
+    },
+    {
+      "title": "Latent Diffusion: High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "rombach2022ldm",
+      "role": "supports",
+      "note": "LDM是典型的潜在生成模型，DINO-Tok为其提供更好的tokenizer"
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "arxiv_id": "oquab2023dinov2",
+      "role": "uses",
+      "note": "DINOv2是DINO-Tok的骨干网络，提供预训练特征"
+    },
+    {
+      "title": "DINOv3: DINOv3: Learning Robust Visual Features with Multi-View Supervision",
+      "arxiv_id": "simeoni2025dinov3",
+      "role": "uses",
+      "note": "DINOv3的最新版本，提供分层特征表示"
+    },
+    {
+      "title": "LFQ: Latent Factorized Quantization",
+      "arxiv_id": "yu2023lfq",
+      "role": "contrasts",
+      "note": "使用二进制码本的量化方法，DINO-Tok的VQ方法与其思路不同"
+    },
+    {
+      "title": "FSQ: Finite Scalar Quantization",
+      "arxiv_id": "mentzer2023fsq",
+      "role": "contrasts",
+      "note": "无查找表量化方法，DINO-Tok使用传统码本方法"
+    },
+    {
+      "title": "VAR: Visual Autoregressive Modeling",
+      "arxiv_id": "tian2025var",
+      "role": "contrasts",
+      "note": "自回归视觉生成模型，使用不同的tokenization方法"
+    },
+    {
+      "title": "LlamaGen: Autoregressive Model Beats Diffusion",
+      "arxiv_id": "sun2024llamagen",
+      "role": "supports",
+      "note": "观察到高维latent会严重降低量化质量，DINO-Tok解决了这一问题"
+    },
+    {
+      "title": "Emu3: Generative Multimodal Unicorn",
+      "arxiv_id": "wang2024emu3",
+      "role": "supports",
+      "note": "发现高维latent的量化问题，需要降低瓶颈维度来稳定训练"
+    },
+    {
+      "title": "RAE: Replaced Encoder for Visual Generative Models",
+      "arxiv_id": "zheng2025rae",
+      "role": "extends",
+      "note": "使用冻结视觉骨干作为encoder，DINO-Tok进一步改进解决了细节丢失问题"
+    },
+    {
+      "title": "REPA: Representation Alignment for Diffusion Transformers",
+      "arxiv_id": "yu2024repa",
+      "role": "supports",
+      "note": "将DiT中间层特征与DINO表示对齐，证明预训练特征的有效性"
+    },
+    {
+      "title": "SD-VAE: Stable Diffusion VAE",
+      "arxiv_id": "rombach2022ldm",
+      "role": "contrasts",
+      "note": "SD的VAE tokenizer，是DINO-Tok的主要比较对象"
+    },
+    {
+      "title": "VQGAN: Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "esser2021vqgan",
+      "role": "contrasts",
+      "note": "经典离散tokenizer，使用卷积架构而非Transformer特征"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "chang2022maskgit",
+      "role": "supports",
+      "note": "使用VQ tokenizer的生成模型，DINO-Tok可为其提供更好的token"
+    }
+  ],
+  "idea": [
+    {
+      "title": "双分支特征融合",
+      "why": "浅层保留纹理细节，深层编码语义，通过拼接实现两者兼顾"
+    },
+    {
+      "title": "PCA重加权稳定VQ",
+      "why": "高维空间中L2距离趋同导致量化不稳定，通过特征值加权强调语义维度"
+    },
+    {
+      "title": "双码本设计",
+      "why": "语义码本处理重加权后的深层特征，纹理码本处理浅层特征，互补优化"
+    }
+  ],
+  "_similarities": [
+    {
+      "title": "VA-VAE: Variational Autoencoders with Latent Space Distillation",
+      "best_score": 0.493,
+      "best_match": "OD-VAE: An Omni-dimensional Video Compressor for Improving Latent Video Diffusion Model",
+      "pass": false
+    },
+    {
+      "title": "VQ-VAE: Neural Discrete Representation Learning",
+      "best_score": 0.907,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "Latent Diffusion: High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 0.87,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "best_score": 1.0,
+      "best_match": "DINOv2: Learning Robust Visual Features without Supervision",
+      "pass": true
+    },
+    {
+      "title": "DINOv3: DINOv3: Learning Robust Visual Features with Multi-View Supervision",
+      "best_score": 0.851,
+      "best_match": "DINOv2: Learning Robust Visual Features without Supervision",
+      "pass": true
+    },
+    {
+      "title": "LFQ: Latent Factorized Quantization",
+      "best_score": 0.525,
+      "best_match": "Factorized Visual Tokenization and Generation",
+      "pass": false
+    },
+    {
+      "title": "FSQ: Finite Scalar Quantization",
+      "best_score": 0.675,
+      "best_match": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "pass": false
+    },
+    {
+      "title": "VAR: Visual Autoregressive Modeling",
+      "best_score": 0.508,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": false
+    },
+    {
+      "title": "LlamaGen: Autoregressive Model Beats Diffusion",
+      "best_score": 0.605,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": false
+    },
+    {
+      "title": "Emu3: Generative Multimodal Unicorn",
+      "best_score": 0.506,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": false
+    },
+    {
+      "title": "RAE: Replaced Encoder for Visual Generative Models",
+      "best_score": 0.591,
+      "best_match": "CV-VAE: A Compatible Video VAE for Latent Generative Video Models",
+      "pass": false
+    },
+    {
+      "title": "REPA: Representation Alignment for Diffusion Transformers",
+      "best_score": 0.662,
+      "best_match": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "pass": false
+    },
+    {
+      "title": "SD-VAE: Stable Diffusion VAE",
+      "best_score": 0.535,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": false
+    },
+    {
+      "title": "VQGAN: Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 0.94,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    }
+  ],
+  "_matched": 6,
+  "_total": 15,
+  "_pass_rate": 0.4,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14",
+  "_ref_count": 57
+}

@@ -1,0 +1,214 @@
+{
+  "arxiv_id": "2505.12053",
+  "title": "VFRTok: Variable Frame Rates Video Tokenizer with Duration-Proportional Information Assumption",
+  "cn_oneliner": "基于DiT的视频tokenizer，引入时长-信息比例假设和非对称帧率训练，实现可变帧率编码，仅用1/8 tokens达到SOTA重建质量。",
+  "cn_abstract": "现有视频tokenizer基于Frame-Proportional Information Assumption，导致计算成本与帧率线性相关。VFRTok提出Duration-Proportional Information Assumption，即视频信息容量与时长成比例而非帧数。该方法采用非对称帧率训练实现可变帧率编解码，并引入Partial RoPE改进位置与内容解耦。实验表明仅需1/8 tokens即可达到SOTA重建质量和生成效果。",
+  "contribution_type": "incremental",
+  "editorial_note": "[前驱]建立在DiT视频生成（Scalable Diffusion Models with Transformers、Latte）、视频tokenizer（OmniTokenizer、Masked Autoencoders Are Effective Tokenizers）和RoPE位置编码（RoFormer）之上。[贡献]核心创新是提出时长-信息比例假设来解决固定帧率压缩的效率问题，通过非对称帧率训练实现可变帧率token化，并用Partial RoPE增强内容感知能力。[判断]在token数量减少87.5%的情况下仍保持竞争力，是incremental但工程价值显著的工作，适合追求高效视频生成的研究者关注。",
+  "why_read": "视频生成研究者应读，可获得高效token化的具体方案：在保持重建质量前提下将token数量降至1/8，显著降低DiT生成计算成本。",
+  "method_variants": [
+    {
+      "variant_tag": "dit:partial_rope",
+      "description": "传统完整RoPE同时编码位置和内容→Partial RoPE解耦位置与内容建模，将相关patch分组为统一token→增强内容感知能力，提升视频生成质量"
+    },
+    {
+      "variant_tag": "vq-vae:variable_frame_rate",
+      "description": "传统固定帧率编码导致token数与帧率线性相关→非对称帧率训练实现编解码器可变帧率→基于时长-信息比例假设动态分配token，仅1/8 tokens达SOTA"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "extends",
+      "note": "VFRTok基于DiT架构构建Transformer-based video tokenizer，是其核心骨架"
+    },
+    {
+      "title": "Latte: Latent Diffusion Transformer for Video Generation",
+      "arxiv_id": "2401.03048",
+      "role": "extends",
+      "note": "同为先前的DiT视频生成工作，VFRTok专注于tokenizer环节的效率提升"
+    },
+    {
+      "title": "OmniTokenizer: A Joint Image-Video Tokenizer for Visual Generation",
+      "arxiv_id": "2406.09399",
+      "role": "extends",
+      "note": "视频tokenizer的先前工作，VFRTok在基础上引入可变帧率机制"
+    },
+    {
+      "title": "Masked Autoencoders Are Effective Tokenizers for Diffusion Models",
+      "arxiv_id": "2502.03444",
+      "role": "extends",
+      "note": "MAE作为tokenizer的有效性论证，VFRTok采用类似tokenizer架构"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "uses",
+      "note": "masked token生成策略被用于tokenizer训练目标"
+    },
+    {
+      "title": "CogVideoX: Text-to-Video Diffusion Models with An Expert Transformer",
+      "arxiv_id": "2408.06072",
+      "role": "uses",
+      "note": "使用VFRTok tokenizer的视频生成模型案例"
+    },
+    {
+      "title": "HunyuanVideo: A Systematic Framework For Large Video Generative Models",
+      "arxiv_id": "2412.03603",
+      "role": "uses",
+      "note": "系统性视频生成框架，使用tokenizer进行视觉压缩"
+    },
+    {
+      "title": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
+      "arxiv_id": "2104.09864",
+      "role": "uses",
+      "note": "RoPE位置编码的技术基础，VFRTok改进为Partial RoPE"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "contrasts",
+      "note": "LDM的latent space思想，但针对图像；VFRTok将此范式扩展到视频并优化效率"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "contrasts",
+      "note": "固定32 tokens策略，VFRTok提出根据信息密度动态分配tokens，效率更优"
+    },
+    {
+      "title": "LARP: Tokenizing Videos with a Learned Autoregressive Generative Prior",
+      "arxiv_id": "2410.21264",
+      "role": "contrasts",
+      "note": "learned autoregressive prior的tokenizer，VFRTok采用diffusion-based更高效"
+    },
+    {
+      "title": "Classifier-Free Diffusion Guidance",
+      "arxiv_id": "2207.12598",
+      "role": "supports",
+      "note": "diffusion model的核心技术，VFRTok生成的token用于下游diffusion模型"
+    }
+  ],
+  "idea": [
+    {
+      "title": "当前按视频级别估计信息密度，可探索帧级或片段级动态分配",
+      "why": "新假设：更细粒度的信息密度估计可进一步提升token效率。本文为何没做：帧级动态分配训练复杂度高。不平凡：需要设计有效的训练策略和梯度掩码机制。"
+    },
+    {
+      "title": "Partial RoPE解耦思想可迁移至图像tokenizer和3D场景重建",
+      "why": "新假设：位置-内容解耦对长序列建模普遍有益。本文为何没做：聚焦视频场景。未充分探索：已有工作将图像tokenizer扩展到3D，未利用Partial RoPE优势。"
+    },
+    {
+      "title": "结合强化学习根据生成质量反馈动态调整token预算",
+      "why": "新假设：端到端优化token分配而非人工设计假设。本文为何没做：增加训练复杂度。不平凡：需要设计有效的reward signal和训练稳定化方法。"
+    }
+  ],
+  "_cite_sims": [
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "Latte: Latent Diffusion Transformer for Video Generation",
+      "best_score": 1.0,
+      "best_match": "Latte: Latent Diffusion Transformer for Video Generation",
+      "pass": true
+    },
+    {
+      "title": "OmniTokenizer: A Joint Image-Video Tokenizer for Visual Generation",
+      "best_score": 1.0,
+      "best_match": "OmniTokenizer: A Joint Image-Video Tokenizer for Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Masked Autoencoders Are Effective Tokenizers for Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "Masked Autoencoders Are Effective Tokenizers for Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "CogVideoX: Text-to-Video Diffusion Models with An Expert Transformer",
+      "best_score": 1.0,
+      "best_match": "CogVideoX: Text-to-Video Diffusion Models with An Expert Transformer",
+      "pass": true
+    },
+    {
+      "title": "HunyuanVideo: A Systematic Framework For Large Video Generative Models",
+      "best_score": 1.0,
+      "best_match": "HunyuanVideo: A Systematic Framework For Large Video Generative Models",
+      "pass": true
+    },
+    {
+      "title": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
+      "best_score": 1.0,
+      "best_match": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    },
+    {
+      "title": "LARP: Tokenizing Videos with a Learned Autoregressive Generative Prior",
+      "best_score": 1.0,
+      "best_match": "LARP: Tokenizing Videos with a Learned Autoregressive Generative Prior",
+      "pass": true
+    },
+    {
+      "title": "Classifier-Free Diffusion Guidance",
+      "best_score": 1.0,
+      "best_match": "Classifier-Free Diffusion Guidance",
+      "pass": true
+    }
+  ],
+  "_cite_matched": 12,
+  "_cite_total": 12,
+  "_cite_rate": 1.0,
+  "_ref_count": 36,
+  "_mv_count": 2,
+  "_mv_issues": [],
+  "_mv_ok": true,
+  "_idea_count": 3,
+  "_idea_analysis": [
+    {
+      "title": "当前按视频级别估计信息密度，可探索帧级或片段级动态分配",
+      "why_len": 72,
+      "has_gap": true,
+      "restate": false
+    },
+    {
+      "title": "Partial RoPE解耦思想可迁移至图像tokenizer和3D场景重建",
+      "why_len": 82,
+      "has_gap": true,
+      "restate": false
+    },
+    {
+      "title": "结合强化学习根据生成质量反馈动态调整token预算",
+      "why_len": 73,
+      "has_gap": true,
+      "restate": false
+    }
+  ],
+  "_idea_restate": 0,
+  "_idea_gap": 3,
+  "_idea_quality": 1.0,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14"
+}

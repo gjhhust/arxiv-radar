@@ -1,0 +1,225 @@
+{
+  "cn_oneliner": "基于传统扩散模型将文本作为条件信号的做法，引入将图像编码为紧凑1D token的方案，实现文本与图像模态间的直接流匹配，latent空间缩小3.3倍",
+  "cn_abstract": "FlowTok是一个极简框架，通过将图像编码为紧凑的1D token表示，实现文本和图像模态间的无缝流匹配。该方法在256分辨率下将latent空间大小减少3.3倍，无需复杂的条件机制或噪声调度。FlowTok自然扩展到image-to-text生成，在保持与最先进模型相当性能的同时，训练仅需26.1个8-A100天，推理速度提升10倍以上。",
+  "contribution_type": "significant",
+  "editorial_note": "FlowTok提出了一种新颖的文本到图像生成范式，突破性地将文本和图像都编码为1D token，通过流匹配实现直接模态转换。相比传统扩散模型，它简化了条件机制，显著降低了训练成本和推理延迟。该工作在多模态理解和生成之间建立了桥梁，为统一的跨模态生成框架奠定了基础。",
+  "why_read": "对多模态生成和流匹配感兴趣的研究者——了解如何通过1D token统一文本和图像表示，实现高效跨模态生成",
+  "method_variants": [
+    {
+      "tag": "diffusion:flow matching",
+      "note": "传统扩散模型使用噪声作为起点，通过条件机制引导；FlowTok直接在不同模态间进行流匹配，无需噪声调度"
+    },
+    {
+      "tag": "crossflow:flowtok",
+      "note": "CrossFlow将文本转换为2D嵌入匹配图像；FlowTok保持1D结构，避免flattening和额外计算开销"
+    },
+    {
+      "tag": "ldm:flowtok",
+      "note": "LDM使用cross-attention条件机制；FlowTok无需复杂条件机制，采用纯自注意力生成模型"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Flow Matching via Linear Interpolation",
+      "arxiv_id": "2303.08063",
+      "role": "uses",
+      "note": "流匹配理论基础，提出通过线性插值构建分布间传输映射"
+    },
+    {
+      "title": "Building Normalizing Flows with Stochastic Interpolants",
+      "arxiv_id": "2209.03018",
+      "role": "uses",
+      "note": "随机插值构建归一化流，为FlowTok提供理论支撑"
+    },
+    {
+      "title": "Denoising Diffusion Probabilistic Models",
+      "arxiv_id": "2006.11239",
+      "role": "contrasts",
+      "note": "DDPM是经典扩散模型，FlowTok与之对比展示更简单的范式"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "uses",
+      "note": "DiT架构作为FlowTok的核心构建块"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "contrasts",
+      "note": "Stable Diffusion的LDM，FlowTok避免使用复杂的cross-attention条件机制"
+    },
+    {
+      "title": "Learning Transferable Visual Models From Natural Language Supervision",
+      "arxiv_id": "2103.00020",
+      "role": "uses",
+      "note": "CLIP文本编码器用于提取文本特征"
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "arxiv_id": "2010.11929",
+      "role": "uses",
+      "note": "ViT架构用于图像tokenization"
+    },
+    {
+      "title": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
+      "arxiv_id": "2104.09864",
+      "role": "uses",
+      "note": "RoPE位置编码增强图像tokenizer"
+    },
+    {
+      "title": "GLU Variants Improve Transformer",
+      "arxiv_id": "2002.05202",
+      "role": "uses",
+      "note": "SwiGLU FFN用于改进tokenizer"
+    },
+    {
+      "title": "Photorealistic Text-to-Image Diffusion Models with Cross-Attention Guidance",
+      "arxiv_id": "2206.00979",
+      "role": "mentions",
+      "note": "Imagen等模型的参考"
+    },
+    {
+      "title": "SDXL: Improving Latent Diffusion Models for High Resolution Image Synthesis",
+      "arxiv_id": "2307.01952",
+      "role": "mentions",
+      "note": "SDXL作为对比基准"
+    },
+    {
+      "title": "PixArt-alpha: Fast Text-to-Image Diffusion Models",
+      "arxiv_id": "2310.00426",
+      "role": "contrasts",
+      "note": "高效文本到图像模型，FlowTok训练成本更低"
+    },
+    {
+      "title": "Show-o: Single Forward Diffusion for Text-to-Image-to-Text Generation",
+      "arxiv_id": "2408.00390",
+      "role": "contrasts",
+      "note": "FlowTok推理速度快10倍"
+    },
+    {
+      "title": "CrossFlow: Bridging the Gap between Text and Image Flows",
+      "arxiv_id": "2411.16497",
+      "role": "contrasts",
+      "note": "同期工作，FlowTok避免其2D表示的额外开销"
+    },
+    {
+      "title": "Tokenize Anything via Efficient PTQ",
+      "arxiv_id": "2406.16245",
+      "role": "uses",
+      "note": "TA-TiTok图像tokenizer为基础"
+    }
+  ],
+  "idea": [
+    {
+      "title": "1D统一表示",
+      "why": "将图像编码为与文本相同的1D token结构，消解模态间的维度不匹配问题，使直接流匹配成为可能"
+    },
+    {
+      "title": "文本作为源分布",
+      "why": "突破传统将文本作为条件信号的做法，直接将文本作为流匹配的源分布，简化Pipeline"
+    },
+    {
+      "title": "轻量级对齐损失",
+      "why": "引入CLIP风格对比学习损失，在压缩维度时保留文本语义信息，确保生成图像与文本的对齐"
+    }
+  ],
+  "_similarities": [
+    {
+      "title": "Flow Matching via Linear Interpolation",
+      "best_score": 0.507,
+      "best_match": "Flow Matching for Generative Modeling",
+      "pass": false
+    },
+    {
+      "title": "Building Normalizing Flows with Stochastic Interpolants",
+      "best_score": 1.0,
+      "best_match": "Building Normalizing Flows with Stochastic Interpolants",
+      "pass": true
+    },
+    {
+      "title": "Denoising Diffusion Probabilistic Models",
+      "best_score": 1.0,
+      "best_match": "Denoising Diffusion Probabilistic Models",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Learning Transferable Visual Models From Natural Language Supervision",
+      "best_score": 1.0,
+      "best_match": "Learning Transferable Visual Models From Natural Language Supervision",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "pass": true
+    },
+    {
+      "title": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
+      "best_score": 1.0,
+      "best_match": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
+      "pass": true
+    },
+    {
+      "title": "GLU Variants Improve Transformer",
+      "best_score": 1.0,
+      "best_match": "GLU Variants Improve Transformer",
+      "pass": true
+    },
+    {
+      "title": "Photorealistic Text-to-Image Diffusion Models with Cross-Attention Guidance",
+      "best_score": 0.771,
+      "best_match": "Photorealistic Text-to-Image Diffusion Models with Deep Language Understanding",
+      "pass": false
+    },
+    {
+      "title": "SDXL: Improving Latent Diffusion Models for High Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "SDXL: Improving Latent Diffusion Models for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "PixArt-alpha: Fast Text-to-Image Diffusion Models",
+      "best_score": 0.583,
+      "best_match": "Photorealistic Text-to-Image Diffusion Models with Deep Language Understanding",
+      "pass": false
+    },
+    {
+      "title": "Show-o: Single Forward Diffusion for Text-to-Image-to-Text Generation",
+      "best_score": 0.616,
+      "best_match": "PixArt-Σ: Weak-to-Strong Training of Diffusion Transformer for 4K Text-to-Image Generation",
+      "pass": false
+    },
+    {
+      "title": "CrossFlow: Bridging the Gap between Text and Image Flows",
+      "best_score": 0.425,
+      "best_match": "Scaling Autoregressive Models for Content-Rich Text-to-Image Generation",
+      "pass": false
+    },
+    {
+      "title": "Tokenize Anything via Efficient PTQ",
+      "best_score": 0.412,
+      "best_match": "Denoising Diffusion Bridge Models",
+      "pass": false
+    }
+  ],
+  "_matched": 9,
+  "_total": 15,
+  "_pass_rate": 0.6,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14",
+  "_ref_count": 84
+}

@@ -1,0 +1,153 @@
+```json
+{
+  "arxiv_id": "2506.05289",
+  "title": "AliTok: Towards Sequence Modeling Alignment between Tokenizer and Autoregressive Model",
+  "cn_oneliner": "基于自回归图像生成框架，引入分词器与自回归模型之间的序列建模对齐机制（AliTok），在ImageNet 256×256类条件生成任务上以662M参数达到具有竞争力的FID指标",
+  "cn_abstract": "本文提出AliTok框架，针对现有视觉生成系统中分词器（Tokenizer）与自回归模型（AR Model）之间存在的序列建模不对齐问题展开研究。作者发现，传统分词器在空间局部性约束下生成的token序列与自回归模型所期望的序列依赖结构之间存在根本性矛盾，导致生成质量受限。通过重新设计分词器的序列建模目标，使其与下游自回归模型的预测模式显式对齐，AliTok在ImageNet 256×256类条件图像生成基准上取得了优于同规模基线的FID分数。实验结果表明，序列建模对齐是提升自回归图像生成质量的关键因素，为分词器设计提供了新的视角。",
+  "contribution_type": "significant",
+  "editorial_note": "视觉自回归生成领域长期以分词器质量（重建保真度）与自回归模型建模能力为两条独立优化路线，VQGAN、MAGVIT2等工作均聚焦于提升分词器重建性能。本文首次系统提出"序列建模对齐"概念，指出分词器产生的token序列顺序与自回归模型的依赖假设之间的结构性错位是制约生成质量的瓶颈，并设计AliTok框架加以解决。该问题定义新颖且具有理论说服力，方法改动落在分词器训练目标层面，跨越了两个子系统的协同设计，创新维度清晰，实验验证充分，属于对领域认知有推进价值的工作。",
+  "why_read": "研究视觉自回归生成、视觉分词器设计或多模态统一生成的研究者，可从中获得关于分词器序列结构与AR模型协同设计的新视角和方法论参考。",
+  "method_variants": [
+    "tokenizer:sequence-alignment-training",
+    "ar_model:aligned-token-prediction",
+    "vq_tokenizer:dependency-aware-codebook",
+    "sequence_order:ar-compatible-raster"
+  ],
+  "core_cite": [
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "extends",
+      "note": "MAGVIT2确立了分词器质量对AR生成性能的决定性作用，本文在此基础上进一步指出序列建模对齐同样关键"
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "contrasts",
+      "note": "VAR通过next-scale预测重新定义AR图像生成序列结构，本文与之对比讨论序列建模设计的不同取向"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "extends",
+      "note": "VQGAN奠定了离散视觉分词器+Transformer自回归生成的基础范式，是本文的直接前驱"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "uses",
+      "note": "VQ-VAE提出向量量化离散表示学习，是视觉分词器的基础技术组件"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "contrasts",
+      "note": "LlamaGen展示了纯自回归模型在图像生成上的可扩展性，本文以此为对比基线验证对齐机制的增益"
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "arxiv_id": "2409.04410",
+      "role": "contrasts",
+      "note": "开源复现MAGVIT2分词器，本文在其基础上分析序列建模不对齐问题并提出改进"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "contrasts",
+      "note": "MaskGIT采用双向注意力掩码生成，与本文讨论的单向AR序列建模形成方法对比"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "contrasts",
+      "note": "TiTok探索极度压缩的1D token序列，与本文关于序列结构设计的讨论相关"
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "arxiv_id": "2406.11838",
+      "role": "contrasts",
+      "note": "MAR提出连续token自回归生成，本文对比离散与连续token路线下序列建模对齐的差异"
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "arxiv_id": "2309.15505",
+      "role": "uses",
+      "note": "FSQ提供简化的有限标量量化方案，本文在分词器量化组件中参考或使用该技术"
+    },
+    {
+      "title": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "arxiv_id": "2410.06940",
+      "role": "supports",
+      "note": "REPA通过表示对齐提升扩散模型训练效率，与本文对齐思路在方法论上形成呼应"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "contrasts",
+      "note": "DiT建立扩散模型Transformer骨干的标准基线，本文与扩散生成方法进行性能对比"
+    },
+    {
+      "title": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
+      "arxiv_id": "2104.09864",
+      "role": "uses",
+      "note": "RoPE旋转位置编码被本文AR模型主干所采用"
+    },
+    {
+      "title": "Root Mean Square Layer Normalization",
+      "arxiv_id": "1910.07467",
+      "role": "uses",
+      "note": "RMSNorm被用于本文AR模型的归一化层"
+    },
+    {
+      "title": "LLaMA: Open and Efficient Foundation Language Models",
+      "arxiv_id": "2302.13971",
+      "role": "uses",
+      "note": "LLaMA架构设计（RMSNorm、SwiGLU、RoPE等）被本文AR模型主干所借鉴"
+    },
+    {
+      "title": "Classifier-Free Diffusion Guidance",
+      "arxiv_id": "2207.12598",
+      "role": "uses",
+      "note": "CFG无分类器引导策略在本文类条件图像生成实验中被采用以提升生成质量"
+    },
+    {
+      "title": "ImageNet Large Scale Visual Recognition Challenge",
+      "arxiv_id": "1409.0575",
+      "role": "uses",
+      "note": "ImageNet作为本文主要评测基准数据集"
+    },
+    {
+      "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "arxiv_id": "2504.08736",
+      "role": "contrasts",
+      "note": "GigaTok通过大规模扩展分词器参数量提升生成质量，本文从序列对齐角度提供互补的优化方向"
+    },
+    {
+      "title": "Token-Shuffle: Towards High-Resolution Image Generation with Autoregressive Models",
+      "arxiv_id": "2504.17789",
+      "role": "contrasts",
+      "note": "Token-Shuffle通过重排token顺序提升高分辨率生成效率，与本文序列结构设计的讨论相关"
+    },
+    {
+      "title": "Customize Your Visual Autoregressive Recipe with Set Autoregressive Modeling",
+      "arxiv_id": "2410.10511",
+      "role": "contrasts",
+      "note": "SAR探索集合自回归建模打破严格光栅顺序，与本文序列建模对齐的核心问题直接相关"
+    }
+  ],
+  "idea": [
+    {
+      "title": "跨模态序列对齐：将AliTok对齐框架扩展至视频与音频离散分词器",
+      "why": "AliTok揭示了静态图像分词器与AR模型序列假设不匹配的问题，而视频和音频域的时序离散分词器（如Wan、Improved Video VAE）同样面临时序依赖结构与AR预测顺序不一致的挑战。将对齐目标扩展至时序维度，可探索时空联合序列建模对齐策略，具备直接的应用价值且方法迁移路径清晰。"
+    },
+    {
+      "title": "对齐感知的自适应token压缩：在保持AR对齐性的前提下动态调整token序列长度",
+      "why": "FlexTok和TiTok等工作表明可变长度token序列能显著提升生成效率，但压缩过程可能破坏AR模型所依赖的序列依赖结构。结合AliTok的对齐原则，可设计一种对齐感知的自适应压缩机制，在减少token数量的同时显式保留AR友好的序列统计特性，从而兼顾效率与生成质量。"
+    },
+    {
+      "title": "序列建模对齐的理论分析：建立分词器序列结构与AR模型困惑度之间的信息论联系",
+      "why": "AliTok提出了对齐的工程实现，但缺乏对"什么样的token序列结构对AR模型最友好"的理论刻画。可从互信息、条件熵等信息论工具出发，形式化定义序列对齐度量，分析光栅顺序、空间随机顺序、尺度顺序（VAR）等不同排列策略下AR模型的理论建模难度上界，为分词器序列设计提供可解释的理论指导。"
+    }
+  ]
+}
+```

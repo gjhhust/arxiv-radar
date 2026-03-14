@@ -1,0 +1,204 @@
+{
+  "arxiv_id": "2503.10772",
+  "title": "FlowTok: Flowing Seamlessly Across Text and Image Tokens",
+  "cn_oneliner": "基于flow-matching，引入将图像编码为紧凑1D token（77×16）的改进，实现文本与图像模态间的直接流转换，潜在空间压缩3.3倍",
+  "cn_abstract": "FlowTok是一个简洁的跨模态生成框架，通过flow matching直接在文本和图像token之间建立流转换。本文将图像编码为紧凑的1D token表示（77×16），与文本token共享统一的潜在空间，消除了传统方法中复杂的条件机制和噪声调度。在COCO数据集上，FlowTok-H达到FID-30K为9.67，MJHQ-30K上FID为7.15，同时训练成本仅需26.1个8-A100天，推理速度达18.2 samples/s。此外，该框架可无缝扩展到图像到文本生成，在COCO上BLEU-4达37.1，CIDEr达117.0。",
+  "contribution_type": "incremental",
+  "editorial_note": "前驱文本到图像方法依赖复杂的交叉注意力或条件嵌入机制，需精心设计噪声调度。FlowTok通过将图像编码为与文本等长的1D token，建立统一潜在空间，实现模态间的直接流转换。此设计将latent大小从32×32×4压缩至77×16，训练资源降低10倍以上，推理速度提升10×以上，在公开数据上达到与闭源模型相当的性能，为高效跨模态生成提供了简洁可行的新思路。",
+  "why_read": "面向多模态生成研究者与工程实践者。阅读本文可掌握：1）如何构建文本与图像的统一1D token空间；2）flow matching从同模态扩展到跨模态的具体做法；3）高效训练的实战技巧，包括batch size 8K的配置和20步采样的推理优化。",
+  "method_variants": [
+    {
+      "base_method": "flow-matching",
+      "variant_tag": "flow-matching:cross-modal-token",
+      "description": "flow-matching原本在噪声和目标图像之间进行转换；本文将其改为在文本token和图像token之间直接流转换，以实现文本到图像和图像到文本的双向生成"
+    },
+    {
+      "base_method": "ta-titok",
+      "variant_tag": "ta-titok:rope-swiglu",
+      "description": "TA-TiTok原本使用可学习1D位置编码和标准MLP；本文引入RoPE增强位置信息和SwiGLU FFN替代MLP，并将token数设为77以对齐CLIP文本encoder输出"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Flow Matching for Generative Modeling",
+      "arxiv_id": "2401.08740",
+      "role": "uses",
+      "note": "SiT提出了flow matching的插值transformer架构，本文采用类似DiT结构进行token转换"
+    },
+    {
+      "title": "Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens",
+      "arxiv_id": "2501.07730",
+      "role": "extends",
+      "note": "TA-TiTok是FlowTok图像tokenizer的基础，提供1D视觉token化方法"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "uses",
+      "note": "DiT是FlowTok的骨干网络架构，用于建模token间相互作用"
+    },
+    {
+      "title": "Learning Transferable Visual Models From Natural Language Supervision",
+      "arxiv_id": "2103.00020",
+      "role": "uses",
+      "note": "CLIP提供预训练文本encoder，提取1D文本嵌入作为FlowTok输入"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "supports",
+      "note": "Latent Diffusion通过VAE将图像映射到潜在空间，为本文token化方法提供理论基础"
+    },
+    {
+      "title": "Show-o: One Single Transformer to Unify Multimodal Understanding and Generation",
+      "arxiv_id": "2408.12528",
+      "role": "uses",
+      "note": "Show-o统一多模态理解和生成，与FlowTok目标相似但采用不同技术路线"
+    },
+    {
+      "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2403.03206",
+      "role": "contrasts",
+      "note": "Rectified Flow (RF) 是当前最先进的文本到图像模型之一，使用噪声作为条件进行生成；FlowTok使用文本作为源分布进行直接转换，两者形成技术路线对比"
+    },
+    {
+      "title": "Chameleon: Mixed-Modal Early-Fusion Foundation Models",
+      "arxiv_id": "2405.09818",
+      "role": "supports",
+      "note": "Chameleon探索早期融合的多模态统一框架，验证了混合模态表示的可行性"
+    },
+    {
+      "title": "Emu3: Next-Token Prediction is All You Need",
+      "arxiv_id": "2409.18869",
+      "role": "supports",
+      "note": "Emu3通过next-token prediction统一多模态，为模态统一提供了不同视角"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "supports",
+      "note": "自回归模型在图像生成上展现竞争力，验证了离散token序列生成的有效性"
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "arxiv_id": "2502.13967",
+      "role": "supports",
+      "note": "FlexTok提出灵活长度的1D token化方法，为FlowTok的固定77 token提供改进思路"
+    }
+  ],
+  "idea": [
+    {
+      "title": "动态token长度适配",
+      "why": "FlowTok使用固定的77个token，无法适应不同分辨率或复杂度的图像。可借鉴FlexTok的灵活长度思想，设计分辨率自适应的token数量，在保持语义完整性的同时优化计算效率。"
+    },
+    {
+      "title": "优化流轨迹",
+      "why": "FlowTok采用线性插值构建潜在轨迹，未考虑轨迹曲率优化。SiT等工作表明使用高阶插值可提升生成质量。可探索引入曲率正则或多项式轨迹，提升少步采样下的生成效果。"
+    },
+    {
+      "title": "扩展更多模态",
+      "why": "FlowTok目前仅支持文本和图像两种模态。Chameleon和Emu3已展示音频、视频等多模态统一的可能性。可将1D token统一空间扩展到音频/视频编码，实现更广泛的跨模态生成。"
+    }
+  ],
+  "_cite_sims": [
+    {
+      "title": "Flow Matching for Generative Modeling",
+      "best_score": 1.0,
+      "best_match": "Flow Matching for Generative Modeling",
+      "pass": true
+    },
+    {
+      "title": "Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens",
+      "best_score": 1.0,
+      "best_match": "Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "Learning Transferable Visual Models From Natural Language Supervision",
+      "best_score": 1.0,
+      "best_match": "Learning Transferable Visual Models From Natural Language Supervision",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Show-o: One Single Transformer to Unify Multimodal Understanding and Generation",
+      "best_score": 1.0,
+      "best_match": "Show-o: One Single Transformer to Unify Multimodal Understanding and Generation",
+      "pass": true
+    },
+    {
+      "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Chameleon: Mixed-Modal Early-Fusion Foundation Models",
+      "best_score": 0.577,
+      "best_match": "Movie Gen: A Cast of Media Foundation Models",
+      "pass": false
+    },
+    {
+      "title": "Emu3: Next-Token Prediction is All You Need",
+      "best_score": 0.706,
+      "best_match": "Attention is All you Need",
+      "pass": false
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "best_score": 0.415,
+      "best_match": "Depth Anything: Unleashing the Power of Large-Scale Unlabeled Data",
+      "pass": false
+    }
+  ],
+  "_cite_matched": 8,
+  "_cite_total": 11,
+  "_cite_rate": 0.727,
+  "_ref_count": 84,
+  "_mv_count": 2,
+  "_mv_issues": [],
+  "_mv_ok": true,
+  "_idea_count": 3,
+  "_idea_analysis": [
+    {
+      "title": "动态token长度适配",
+      "why_len": 91,
+      "has_gap": false,
+      "restate": false
+    },
+    {
+      "title": "优化流轨迹",
+      "why_len": 81,
+      "has_gap": false,
+      "restate": false
+    },
+    {
+      "title": "扩展更多模态",
+      "why_len": 92,
+      "has_gap": false,
+      "restate": false
+    }
+  ],
+  "_idea_restate": 0,
+  "_idea_gap": 0,
+  "_idea_quality": 0.0,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14"
+}

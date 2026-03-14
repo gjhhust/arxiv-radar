@@ -1,0 +1,87 @@
+{
+  "arxiv_id": "2504.08736",
+  "model": "minimaxm25",
+  "timestamp": "2026-03-12T23:48:00.935536",
+  "latency_s": 28.89,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于VQGAN引入DINOv2语义正则化解决重构与生成权衡问题，实现3B参数tokenizer多任务SOTA\",\"cn_abstract\":\"本文研究自回归图像生成中视觉tokenizer的扩展难题。针对扩展tokenizer导致重构质量提升但生成质量下降的矛盾，作者提出语义正则化方法，将tokenizer特征与预训练DINOv2特征对齐以约束潜在空间复杂度。结合1D tokenizer架构、非对称编解码器扩展和entropy loss三大实践，成功训练3B参数tokenizer，在ImageNet上同时实现最优重构、重构与生成性能。\",\"contribution_type\":\"significant\",\"editorial_note\":\"[前驱] 本文建立在VQGAN/TiTok/MAGVIT-v2等离散tokenizer方法基础上，采用混合CNN-Transformer架构和Q-Former实现1D tokenizer，语义正则化思想借鉴自REPA和VA-VAE。[贡献] 核心创新是语义正则化：训练时让tokenizer decoder特征与DINOv2对齐，显著降低大模型潜在空间复杂度，从而解决重构vs生成的权衡问题。此外发现1D比2D tokenizer更好扩展、decoder应比encoder大、entropy loss对十亿级模型收敛关键。[判断] 该工作首次系统研究离散tokenizer扩展问题并提出有效解决方案，贡献显著但本质上属于工程优化加已知技术组合，非范式级创新。\",\"why_read\":\"做自回归视觉生成的研究者值得关注，能从中获得tokenizer扩展的具体实践指导、语义正则化的实现细节，以及3B tokenizer训练稳定的经验。\",\"method_variants\":[{\"base_method\":\"vqgan\",\"variant_tag\":\"vqgan:semantic-regularization-dinov2\",\"description\":\"原vqgan仅用重构损失训练；本文添加DINOv2特征对齐损失约束潜在空间，解决扩展时的重构-生成权衡\"},{\"base_method\":\"vqgan\",\"variant_tag\":\"vqgan:1d-qformer-tokenizer\",\"description\":\"原vqgan为2D结构；本文用Q-Former将2D特征转为1D序列，提升扩展性\"},{\"base_method\":\"vqgan\",\"variant_tag\":\"vqgan:asymmetric-encoder-decoder-scaling\",\"description\":\"原对称扩展编解码器；本文优先扩展decoder使参数量大于encoder，提升图像重建质量\"},{\"base_method\":\"vqgan\",\"variant_tag\":\"vqgan:entropy-loss-vq\",\"description\":\"原标准VQ训练；本文添加entropy loss提升codebook利用率，稳定十亿级模型训练\"}],\"core_cite\":[{\"title\":\"Vector Quantized Image Modeling with Improved VQGAN\",\"role\":\"extends\",\"note\":\"VQGAN是本文tokenizer的基线方法，直接继承其VQ框架和训练目标\"},{\"title\":\"LlamaGen: Scalable and Efficient Image Generation with LLMs\",\"role\":\"extends\",\"note\":\"LlamaGen的下游AR生成模型直接采用其Llama风格架构进行next-token预测\"},{\"title\":\"TiTok: A Robust Tokenizer for Generative Image Modeling\",\"role\":\"extends\",\"note\":\"TiTok的1D tokenizer设计启发本文采用Q-Former实现1D架构\"},{\"title\":\"MAGVIT: Masked Generative Video Transformer\",\"role\":\"uses\",\"note\":\"使用MAGVIT-v2的entropy loss来稳定大规模tokenizer训练\"},{\"title\":\"DINOv2: Learning Robust Visual Features without Supervision\",\"role\":\"uses\",\"note\":\"使用DINOv2-B作为语义正则化的目标网络，提供预训练特征\"},{\"title\":\"ViT-VQGAN: Image Tokenization with Hierarchical Visual Transformers\",\"role\":\"supports\",\"note\":\"ViT-VQGAN的ViT tokenizer架构支持本文的transformer扩展分析\"},{\"title\":\"Autoregressive Image Generation without Vector Quantization\",\"role\":\"supports\",\"note\":\"支持引入AR probing来评估tokenizer对下游生成的影响\"},{\"title\":\"MaskGIT: Masked Generative Image Transformer\",\"role\":\"contrasts\",\"note\":\"作为图像生成baseline在实验中对比\"},{\"title\":\"VAR: Autoregressive Image Generation with Vector Quantized Diffusion\",\"role\":\"contrasts\",\"note\":\"作为图像生成baseline在实验中对比\"},{\"title\":\"VQVAE: Learning Sparse Hierarchical Representation with Locality Sensitive Hashing\",\"role\":\"mentions\",\"note\":\"VQ基础工作，为离散tokenizer提供背景\"}]}",
+  "cn_oneliner": "基于VQGAN引入DINOv2语义正则化解决重构与生成权衡问题，实现3B参数tokenizer多任务SOTA",
+  "cn_abstract": "本文研究自回归图像生成中视觉tokenizer的扩展难题。针对扩展tokenizer导致重构质量提升但生成质量下降的矛盾，作者提出语义正则化方法，将tokenizer特征与预训练DINOv2特征对齐以约束潜在空间复杂度。结合1D tokenizer架构、非对称编解码器扩展和entropy loss三大实践，成功训练3B参数tokenizer，在ImageNet上同时实现最优重构、重构与生成性能。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱] 本文建立在VQGAN/TiTok/MAGVIT-v2等离散tokenizer方法基础上，采用混合CNN-Transformer架构和Q-Former实现1D tokenizer，语义正则化思想借鉴自REPA和VA-VAE。[贡献] 核心创新是语义正则化：训练时让tokenizer decoder特征与DINOv2对齐，显著降低大模型潜在空间复杂度，从而解决重构vs生成的权衡问题。此外发现1D比2D tokenizer更好扩展、decoder应比encoder大、entropy loss对十亿级模型收敛关键。[判断] 该工作首次系统研究离散tokenizer扩展问题并提出有效解决方案，贡献显著但本质上属于工程优化加已知技术组合，非范式级创新。",
+  "why_read": "做自回归视觉生成的研究者值得关注，能从中获得tokenizer扩展的具体实践指导、语义正则化的实现细节，以及3B tokenizer训练稳定的经验。",
+  "method_variants": [
+    {
+      "base_method": "vqgan",
+      "variant_tag": "vqgan:semantic-regularization-dinov2",
+      "description": "原vqgan仅用重构损失训练；本文添加DINOv2特征对齐损失约束潜在空间，解决扩展时的重构-生成权衡"
+    },
+    {
+      "base_method": "vqgan",
+      "variant_tag": "vqgan:1d-qformer-tokenizer",
+      "description": "原vqgan为2D结构；本文用Q-Former将2D特征转为1D序列，提升扩展性"
+    },
+    {
+      "base_method": "vqgan",
+      "variant_tag": "vqgan:asymmetric-encoder-decoder-scaling",
+      "description": "原对称扩展编解码器；本文优先扩展decoder使参数量大于encoder，提升图像重建质量"
+    },
+    {
+      "base_method": "vqgan",
+      "variant_tag": "vqgan:entropy-loss-vq",
+      "description": "原标准VQ训练；本文添加entropy loss提升codebook利用率，稳定十亿级模型训练"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Vector Quantized Image Modeling with Improved VQGAN",
+      "role": "extends",
+      "note": "VQGAN是本文tokenizer的基线方法，直接继承其VQ框架和训练目标"
+    },
+    {
+      "title": "LlamaGen: Scalable and Efficient Image Generation with LLMs",
+      "role": "extends",
+      "note": "LlamaGen的下游AR生成模型直接采用其Llama风格架构进行next-token预测"
+    },
+    {
+      "title": "TiTok: A Robust Tokenizer for Generative Image Modeling",
+      "role": "extends",
+      "note": "TiTok的1D tokenizer设计启发本文采用Q-Former实现1D架构"
+    },
+    {
+      "title": "MAGVIT: Masked Generative Video Transformer",
+      "role": "uses",
+      "note": "使用MAGVIT-v2的entropy loss来稳定大规模tokenizer训练"
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "role": "uses",
+      "note": "使用DINOv2-B作为语义正则化的目标网络，提供预训练特征"
+    },
+    {
+      "title": "ViT-VQGAN: Image Tokenization with Hierarchical Visual Transformers",
+      "role": "supports",
+      "note": "ViT-VQGAN的ViT tokenizer架构支持本文的transformer扩展分析"
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "role": "supports",
+      "note": "支持引入AR probing来评估tokenizer对下游生成的影响"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "role": "contrasts",
+      "note": "作为图像生成baseline在实验中对比"
+    },
+    {
+      "title": "VAR: Autoregressive Image Generation with Vector Quantized Diffusion",
+      "role": "contrasts",
+      "note": "作为图像生成baseline在实验中对比"
+    },
+    {
+      "title": "VQVAE: Learning Sparse Hierarchical Representation with Locality Sensitive Hashing",
+      "role": "mentions",
+      "note": "VQ基础工作，为离散tokenizer提供背景"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "paper_id": "2603.06577",
+  "scheme": "A",
+  "model": "wq/claude46",
+  "latency_s": 16.4,
+  "success": true,
+  "output": {
+    "cn_abstract": "现有多模态大语言模型（MLLMs）主要依赖自回归架构，而本文提出Omni-Diffusion——首个完全基于mask-based discrete diffusion models构建的any-to-any多模态语言模型，统一了文本、语音和图像的理解与生成任务。Omni-Diffusion采用统一的masked discrete diffusion框架替代传统自回归范式，在多模态理解与生成中展现出显著潜力。",
+    "cn_oneliner": "首个用掩码离散扩散模型统一文本、语音、图像理解与生成的多模态大模型！",
+    "contribution_type": "significant",
+    "editorial_note": "首次将masked discrete diffusion作为统一backbone应用于any-to-any多模态理解与生成，架构层面的探索具有新颖性，但核心贡献更多在于系统集成而非diffusion方法本身的突破，跨域价值在于验证了非自回归范式在多模态统一模型中的可行性。",
+    "why_read": "值得一读，因为它是首个完全基于masked discrete diffusion的any-to-any多模态模型，为替代自回归架构提供了重要的实证参考。",
+    "method_variants": [
+      {
+        "base_method": "masked discrete diffusion",
+        "variant_tag": "masked-diffusion:unified-multimodal",
+        "description": "将masked discrete diffusion从单模态扩展为统一处理文本、语音和图像的any-to-any多模态生成与理解框架"
+      },
+      {
+        "base_method": "show-o",
+        "variant_tag": "show-o:full-diffusion-backbone",
+        "description": "将Show-o中自回归与diffusion混合的架构替换为完全基于masked diffusion的统一架构"
+      },
+      {
+        "base_method": "muse",
+        "variant_tag": "muse:multimodal-extension",
+        "description": "将Muse的masked generative transformer从text-to-image扩展到多模态any-to-any场景"
+      }
+    ],
+    "key_refs": [
+      {
+        "title": "Show-o: One Single Transformer to Unify Multimodal Understanding and Generation",
+        "stance": "contrasts",
+        "note": "Show-o混合使用自回归和diffusion，Omni-Diffusion则完全采用masked diffusion，形成架构对比"
+      },
+      {
+        "title": "NExT-GPT: Any-to-Any Multimodal LLM",
+        "stance": "extends",
+        "note": "继承any-to-any多模态框架的目标，但用masked diffusion替代自回归backbone"
+      },
+      {
+        "title": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+        "stance": "extends",
+        "note": "在Muse的masked generative建模基础上扩展到多模态统一理解与生成"
+      },
+      {
+        "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+        "stance": "uses",
+        "note": "借鉴其视觉tokenizer设计思路，将图像离散化以适配discrete diffusion框架"
+      },
+      {
+        "title": "LAION-5B: An open large-scale dataset for training next generation image-text models",
+        "stance": "uses",
+        "note": "作为大规模图文训练数据来源"
+      }
+    ]
+  },
+  "parse_error": null
+}

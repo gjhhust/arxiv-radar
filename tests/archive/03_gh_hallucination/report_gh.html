@@ -1,0 +1,543 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G vs H Hallucination Report</title>
+<style>
+:root{--bg:#0d0f18;--card:#141720;--card2:#1a1d2b;--border:#252840;
+  --accent:#6c8ef5;--green:#3ecf8e;--yellow:#f5a623;--red:#e05c5c;
+  --text:#dde3f0;--muted:#7a849a;--mono:'JetBrains Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:13px/1.65 -apple-system,sans-serif;padding:14px;padding-bottom:40px}
+h1{font-size:17px;color:#fff;margin-bottom:3px}
+h2{font-size:12px;color:#fff;margin:20px 0 8px;padding:5px 12px;
+   background:var(--card2);border-left:3px solid var(--accent);border-radius:0 4px 4px 0}
+.meta{color:var(--muted);font-size:11px;margin-bottom:14px}
+.rate-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:10px 0}
+.rate-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
+.rate-card .rn{font-size:22px;font-weight:700}
+.rate-card .rl{font-size:10px;color:var(--muted);margin-top:2px}
+.pb{margin:14px 0}
+.pb-hdr{padding:7px 12px;background:var(--card2);border-radius:4px 4px 0 0;
+  font-family:var(--mono);font-size:12px;font-weight:700;border-bottom:1px solid var(--border)}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--border);
+  border-top:none;border-radius:0 0 6px 6px;overflow:hidden}
+.col{padding:8px 10px;border-right:1px solid var(--border)}
+.col:last-child{border-right:none}
+.col-hdr{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--accent);margin-bottom:5px}
+.col-rate{font-size:11px;margin-bottom:6px;padding:3px 8px;border-radius:4px;background:#111;font-family:var(--mono)}
+.cite{padding:3px 0;font-size:11px;border-bottom:1px solid #1a1d2b;display:flex;align-items:flex-start;gap:4px;flex-wrap:wrap}
+.cite:last-child{border-bottom:none}
+.role-tag{flex-shrink:0;padding:1px 5px;border-radius:3px;font-size:9px;font-family:var(--mono);font-weight:700}
+.cite-title{flex:1;word-break:break-word}
+.sim-badge{flex-shrink:0;font-family:var(--mono);font-size:10px;padding:1px 5px;border-radius:3px;background:#1e2235}
+.susp{color:var(--red)}
+.ok{color:var(--text)}
+.prev-section{margin-top:24px;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:8px}
+</style></head><body>
+<h1>Scheme G vs H — core_cite 幻觉率对比</h1>
+<div class="meta">11 papers × minimaxm25 · DB per-paper ref 验证(Jaccard>0.5) · 2026-03-13 01:58</div>
+<div class="rate-grid">
+<div class="rate-card"><div class="rn" style="color:var(--red)">58.7%</div><div class="rl">G Round1<br>61/104 suspicious</div></div>
+<div class="rate-card"><div class="rn" style="color:var(--red)">55.7%</div><div class="rl">G Round2 (重跑)<br>54/97 suspicious</div></div>
+<div class="rate-card"><div class="rn" style="color:var(--red)">59.4%</div><div class="rl">H (self-check)<br>63/106 suspicious</div></div>
+<div class="rate-card"><div class="rn" style="color:var(--green)">0.0%</div><div class="rl">F旧(回溯验证，供参考)<br>0/131</div></div>
+</div>
+<h2>逐篇详情（G | G重跑 | H）</h2>
+<div class="pb" id="2406.07550">
+<div class="pb-hdr">2406.07550  <span style="font-weight:400;color:var(--muted)">基于VQ-VAE引入1D序列标记化将图像压缩至32个token，实现高压缩率下保持重建与生成质量</span></div>
+<div class="cols">
+<div class="col">
+<div class="col-hdr">G Round1</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">20%</span>  2/10</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title ok">Taming Transformers for High-Resolution Image Synthesis</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">MaskGIT: Masked Generative Image Transformer</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">An Image is Worth 16x16 Words: Transformers for Image Recognition at Sca</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Vector-quantized Image Modeling with Improved VQGAN</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">Scalable Diffusion Models with Transformers</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">LDM: High-Resolution Image Synthesis with Latent Diffusion Models</span><span class="sim-badge" style="color:var(--green)">0.89(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ Autoregressive Image Generation without Vector Quantization</span><span class="sim-badge" style="color:var(--red)">0.50(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title ok">Masked Autoencoders Are Scalable Vision Learners</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ Perceiver: General Perception with Iterative Attention</span><span class="sim-badge" style="color:var(--red)">0.11(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title ok">BEiT: BERT Pre-Training of Image Transformers</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+</div>
+<div class="col">
+<div class="col-hdr">G Round2</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">20%</span>  2/10</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title ok">Taming Transformers for High-Resolution Image Synthesis</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">MaskGIT: Masked Generative Image Transformer</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">Scalable Diffusion Models with Transformers</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">An Image is Worth 16x16 Words: Transformers for Image Recognition at Sca</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title ok">Vector-quantized Image Modeling with Improved VQGAN</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ Autoencoding Transformers for Conditional Generation</span><span class="sim-badge" style="color:var(--red)">0.22(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title ok">FLAMINGO: Visual Language Models for Few-Shot Learning</span><span class="sim-badge" style="color:var(--green)">0.78(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">LDM: High-Resolution Image Synthesis with Latent Diffusion Models</span><span class="sim-badge" style="color:var(--green)">0.89(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ BET: Large-Scale Architecture for Image Generation</span><span class="sim-badge" style="color:var(--red)">0.36(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Masked Autoencoders Are Scalable Vision Learners</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+</div>
+<div class="col">
+<div class="col-hdr">H</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">17%</span>  2/12</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title ok">Taming Transformers for High-Resolution Image Synthesis</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title ok">MaskGIT: Masked Generative Image Transformer</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Attention Is All You Need</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">An Image is Worth 16x16 Words: Transformers for Image Recognition at Sca</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">BEiT: BERT Pre-Training of Image Transformers</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Masked Autoencoders Are Scalable Vision Learners</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title ok">End-to-End Object Detection with Transformers</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ Flamingo: Visual Language Models Are Few-Shot Learners</span><span class="sim-badge" style="color:var(--red)">0.46(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">Scalable Diffusion Models with Transformers</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">Vector-Quantized Image Modeling with Improved VQGAN</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">High-Resolution Image Synthesis with Latent Diffusion Models</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ Discrete Latent Representation</span><span class="sim-badge" style="color:var(--red)">0.00(word_count)</span></div>
+</div>
+</div></div>
+<div class="pb" id="2501.07730">
+<div class="pb-hdr">2501.07730  <span style="font-weight:400;color:var(--muted)">把TiTok从两阶段蒸馏改为一阶段训练，引入CLIP文本嵌入到解码器实现文本感知，配合MaskGen在开放数据</span></div>
+<div class="cols">
+<div class="col">
+<div class="col-hdr">G Round1</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">38%</span>  5/13</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ Transformer-based 1-Dimensional Tokenizer for Image Generation</span><span class="sim-badge" style="color:var(--red)">0.29(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ MaskBit: Efficient Tokenization of Images for Autoregressive Generation</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">MaskGIT: Masked Generative Image Transformer</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Scalable Diffusion Models with Transformers</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">An Image is Worth 16x16 Words: Transformers for Image Recognition at Sca</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Learning Transferable Visual Models From Natural Language Supervision</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Autoregressive Model for Image Generation</span><span class="sim-badge" style="color:var(--green)">0.56(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ Show-o: One Single Tokenizer Autoregressive and Masked Generative Models</span><span class="sim-badge" style="color:var(--red)">0.27(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#888"></span><span class="cite-title susp">⚠ LlamaGen: Autoregressive Model Beats Diffusion Model","role":"contrasts</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">PixArt-α: Fast Training of Diffusion Transformer for Photorealistic Text</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">SDXL: Improving Latent Diffusion Models for High Resolution Image Synthe</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ Democratizing Data Quality: Reproducible Benchmarks using DataComp</span><span class="sim-badge" style="color:var(--red)">0.08(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title ok">LAION-5B: An open large-scale dataset for training large multimodal mode</span><span class="sim-badge" style="color:var(--green)">0.61(db)</span></div>
+</div>
+<div class="col">
+<div class="col-hdr">G Round2</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">36%</span>  4/11</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ Image Tokenizers are Enough for High-Quality Text-to-Image Generation</span><span class="sim-badge" style="color:var(--red)">0.29(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ MaskBit: Efficient Tokenization of Images for Autoregressive Generation</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title ok">MaskGIT: Masked Generative Image Transformer</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Autoregressive Model Beats Diffusion Model: LLM for Image Generation</span><span class="sim-badge" style="color:var(--green)">0.70(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Scalable Diffusion Models with Transformers</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">Scaling Autoregressive Models for Content-Rich Text-to-Image Generation</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">Muse: Text-to-Image Generation via Masked Generative Transformers</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ Show-o: One Single Tokenizer Autoregressive and Masked Generative Models</span><span class="sim-badge" style="color:var(--red)">0.27(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">LlamaGen: Autoregressive Model Beats Diffusion Model in Image Generation</span><span class="sim-badge" style="color:var(--green)">0.60(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ PixArt-alpha: Fast Diffusion-based Text-to-Image Generation</span><span class="sim-badge" style="color:var(--red)">0.39(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">SDXL: Improving Latent Diffusion Models for High Resolution Image Synthe</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+</div>
+<div class="col">
+<div class="col-hdr">H</div>
+<div style="color:var(--muted);font-size:11px">—</div>
+</div>
+</div></div>
+<div class="pb" id="2503.08685">
+<div class="pb-hdr">2503.08685  <span style="font-weight:400;color:var(--muted)">把嵌套CFG和扩散解码器结合，在1D token中实现PCA-like层级结构，解耦语义与频谱</span></div>
+<div class="cols">
+<div class="col">
+<div class="col-hdr">G Round1</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">80%</span>  8/10</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ Tokenizer Scaled: What Works and What Doesn't in 1D Tokenizers for Autor</span><span class="sim-badge" style="color:var(--red)">0.27(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Autoregressive Image Generation without Vector Quantization</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">Maskbit: Embedding-free Image Generation through Bit-Plane Tokenization</span><span class="sim-badge" style="color:var(--green)">0.55(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ Scalar: Scalable Autoregressive Visual Generation</span><span class="sim-badge" style="color:var(--red)">0.50(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ An Empirical Study of Scaling ViT-based Visual Tokenizers</span><span class="sim-badge" style="color:var(--red)">0.23(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ Diffusion Models as Autoencoders</span><span class="sim-badge" style="color:var(--red)">0.40(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ Scaling Autoregressive Models for Content-Rich Vector-Quantized Image Ge</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ Transformer is All You Need for Visual Generation</span><span class="sim-badge" style="color:var(--red)">0.23(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ Global precedence effect in processing hierarchical stimuli</span><span class="sim-badge" style="color:var(--red)">0.08(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ Stable and Controllable Image Generation with Diffusion Models: A Condit</span><span class="sim-badge" style="color:var(--red)">0.31(db)</span></div>
+</div>
+<div class="col">
+<div class="col-hdr">G Round2</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">70%</span>  7/10</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Scalable Diffusion Models with Transformers</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ TiTok: An End-to-End Tokenizer for Generative Media</span><span class="sim-badge" style="color:var(--red)">0.15(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">MaskGIT: Masked Generative Image Transformer</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ Tokenizer Scale: On Division of Token and Compute in Visual Generation</span><span class="sim-badge" style="color:var(--red)">0.23(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ Efficient Visual Tokenizer</span><span class="sim-badge" style="color:var(--red)">0.00(word_count)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ Diffusion Models as Autoencoders</span><span class="sim-badge" style="color:var(--red)">0.40(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Autoregressive Image Generation without Vector Quantization</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ LlamaGen: Open Foundation Models for Image Generation</span><span class="sim-badge" style="color:var(--red)">0.27(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ VAR: Visual Autoregressive Modeling</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ Learning to Tokenize for Visual Generation</span><span class="sim-badge" style="color:var(--red)">0.29(db)</span></div>
+</div>
+<div class="col">
+<div class="col-hdr">H</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">90%</span>  9/10</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ Transformer is All You Need for Visual Generation: Embedding Images into</span><span class="sim-badge" style="color:var(--red)">0.22(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ TiTok: Tokenized Image Tokenization with 1D Latent Manifold</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Scalable Diffusion Models with Transformers</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ Autoregressive Model</span><span class="sim-badge" style="color:var(--red)">0.00(word_count)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ Vector Quantized Variational Autoencoders</span><span class="sim-badge" style="color:var(--red)">0.22(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#888">contrast</span><span class="cite-title susp">⚠ Maskbit: Efficient Tokenization for Visual Generation</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ Visual Autoregressive Modeling: Next-Token Prediction Adapts to Resoluti</span><span class="sim-badge" style="color:var(--red)">0.39(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ Learning to Parse Images with Continuous Diffusion</span><span class="sim-badge" style="color:var(--red)">0.22(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ FiT: Flexible Vision Tokenizer for Image Generation</span><span class="sim-badge" style="color:var(--red)">0.27(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ Image Tokenization with 2D Latent Manifold</span><span class="sim-badge" style="color:var(--red)">0.30(db)</span></div>
+</div>
+</div></div>
+<div class="pb" id="2503.10772">
+<div class="pb-hdr">2503.10772  <span style="font-weight:400;color:var(--muted)">基于TiTok将图像编码为77×16的1D token，结合CLIP文本encoder，通过flow matc</span></div>
+<div class="cols">
+<div class="col">
+<div class="col-hdr">G Round1</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">64%</span>  7/11</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ Tokenized Semantic Tokens (TiTok): A Unified Tokenizer for LLMs, VLMs, D</span><span class="sim-badge" style="color:var(--red)">0.18(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ CrossFlow: Cross-modal Flow Matching for Text-to-Image Generation</span><span class="sim-badge" style="color:var(--red)">0.29(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Scalable Diffusion Models with Transformers (DiT)</span><span class="sim-badge" style="color:var(--green)">0.83(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">CLIP: Learning Transferable Visual Models From Natural Language Supervis</span><span class="sim-badge" style="color:var(--green)">0.89(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title ok">Flow Matching for Generative Modeling</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">Stable Diffusion: High-Resolution Image Synthesis with Latent Diffusion </span><span class="sim-badge" style="color:var(--green)">0.89(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ PixArt-α: Fast Diffusion-Based Text-to-Image Generation</span><span class="sim-badge" style="color:var(--red)">0.42(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ Autoregressive Models</span><span class="sim-badge" style="color:var(--red)">0.00(word_count)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ Masked Generative Models (Muse, MaskBit, Meissonic)</span><span class="sim-badge" style="color:var(--red)">0.27(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ MDM: Mask Diffusion Models are Efficient Image Generators</span><span class="sim-badge" style="color:var(--red)">0.23(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ 1D Visual Tokenization</span><span class="sim-badge" style="color:var(--red)">0.00(word_count)</span></div>
+</div>
+<div class="col">
+<div class="col-hdr">G Round2</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">54%</span>  7/13</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title ok">Flow Matching for Generative Modeling</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ Continuous Normalizing Flows</span><span class="sim-badge" style="color:var(--red)">0.00(word_count)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ 1D Visual Tokenization</span><span class="sim-badge" style="color:var(--red)">0.00(word_count)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ Tokenized Semantic Tokens (TiTok)</span><span class="sim-badge" style="color:var(--red)">0.11(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ Learning to Regress Tokens for Images</span><span class="sim-badge" style="color:var(--red)">0.22(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">CLIP: Learning Transferable Visual Models From Natural Language Supervis</span><span class="sim-badge" style="color:var(--green)">0.89(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Scalable Diffusion Models with Transformers</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ CrossFlow: Cross-modal Flow Matching for Text-to-Image Generation</span><span class="sim-badge" style="color:var(--red)">0.29(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">High-Resolution Image Synthesis with Latent Diffusion Models</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ PixArt-α: Fast Diffusion-Based Text-to-Image Generation</span><span class="sim-badge" style="color:var(--red)">0.42(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">Scaling Autoregressive Models for Content-Rich Text-to-Image Generation</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ RoFormer: Enhanced Position Embedding for Rotarary Position Embedding</span><span class="sim-badge" style="color:var(--red)">0.44(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">GLU Variants Improve Transformer</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+</div>
+<div class="col">
+<div class="col-hdr">H</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">50%</span>  5/10</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title ok">Flow Matching for Generative Modeling</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ Continuous Normalizing Flows</span><span class="sim-badge" style="color:var(--red)">0.00(word_count)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ Scaling Autoregressive Transformers</span><span class="sim-badge" style="color:var(--red)">0.00(word_count)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ Token-Semantics Tokenization for Visual Generation</span><span class="sim-badge" style="color:var(--red)">0.40(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Learning Transferable Visual Models From Natural Language Supervision</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ An Image is Worth 16x16 Words</span><span class="sim-badge" style="color:var(--red)">0.50(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">PixArt-alpha: Fast Training of Diffusion Transformer for Photo-Realistic</span><span class="sim-badge" style="color:var(--green)">0.69(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ CrossFlow: Flowing Text through Image for Seamless Cross-Modal Generatio</span><span class="sim-badge" style="color:var(--red)">0.27(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">High-Resolution Image Synthesis with Latent Diffusion Models</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Scalable Diffusion Models with Transformers</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+</div>
+</div></div>
+<div class="pb" id="2504.08736">
+<div class="pb-hdr">2504.08736  <span style="font-weight:400;color:var(--muted)">基于DINOv2语义正则化解决tokenizer规模化时重建vs生成困境，实现3B参数tokenizer在重建</span></div>
+<div class="cols">
+<div class="col">
+<div class="col-hdr">G Round1</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">70%</span>  7/10</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ LlamaGen: Scalable Efficient Image Generation Training</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">MAGViT-v2: Masked Generative Video Transformer</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">DINOv2: Learning Robust Visual Features without Supervision</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ ViT-VQGAN: Image Tokenization with Discrete Visual Tokens</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ TiTok: Tokenized Image Tokenization</span><span class="sim-badge" style="color:var(--red)">0.20(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ VAR: Autoregressive Image Generation with Learned Visual Priors</span><span class="sim-badge" style="color:var(--red)">0.36(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title ok">VQGAN: Taming Transformers for High-Resolution Image Synthesis</span><span class="sim-badge" style="color:var(--green)">0.88(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ Scaling Visual Tokenizers for Autoregressive Image Generation</span><span class="sim-badge" style="color:var(--red)">0.46(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ REPA: Representation Alignment for Scalable Image Generation</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ ImageFolder: Towards Unified Visual Tokenizer and Text-to-Image Generati</span><span class="sim-badge" style="color:var(--red)">0.42(db)</span></div>
+</div>
+<div class="col">
+<div class="col-hdr">G Round2</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">50%</span>  5/10</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ LlamaGen: Scalable Efficient Image Generation Training</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title ok">MAGVIT-V2: Masked Generative Video Transformer</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title ok">VQGAN: Taming Transformers for High-Resolution Image Synthesis</span><span class="sim-badge" style="color:var(--green)">0.88(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ ViT-VQGAN: Image Tokenization with Discrete Visual Tokens</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">DINOv2: Learning Robust Visual Features without Supervision</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title ok">BLIP-2: Bootstrapping Language-Image Pre-training with Frozen Image Enco</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ TiTok: Tokenized Image Tokenization</span><span class="sim-badge" style="color:var(--red)">0.20(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ REPA: Representation Alignment for Scalable Image Generation</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title ok">MaskGIT: Masked Generative Image Transformer</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ VAR: Autoregressive Image Generation with Learned Visual Priors</span><span class="sim-badge" style="color:var(--red)">0.36(db)</span></div>
+</div>
+<div class="col">
+<div class="col-hdr">H</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">70%</span>  7/10</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ TiTok: Tokenizer is All You Need for Autoregressive Image Generation</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title ok">Vector Quantized Image Modeling with Improved VQGAN</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">DINOv2: Learning Robust Visual Features without Supervision</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ MAGViT-V2: Language Model Can Scale, So Can Vision Tokenizer</span><span class="sim-badge" style="color:var(--red)">0.30(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ LlamaGen: Autoregressive Image Generation without Pixel-level VAEs</span><span class="sim-badge" style="color:var(--red)">0.40(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ REPA: Representation Alignment for Autoregressive Image Generation</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ ViT-VQGAN: Image Tokenization with Transformer</span><span class="sim-badge" style="color:var(--red)">0.30(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">MaskGIT: Masked Generative Image Transformer</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ VAR: Visual Autoregressive Modeling</span><span class="sim-badge" style="color:var(--red)">0.27(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ ImageFolder: Efficient and Scalable Tokenizer for Autoregressive Generat</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+</div>
+</div></div>
+<div class="pb" id="2505.12053">
+<div class="pb-hdr">2505.12053  <span style="font-weight:400;color:var(--muted)">基于时长成比例假设，引入变帧率编码和部分RoPE，实现高效视频token化</span></div>
+<div class="cols">
+<div class="col">
+<div class="col-hdr">G Round1</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">60%</span>  6/10</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ TiTok: Tokenized Image Recognition</span><span class="sim-badge" style="color:var(--red)">0.20(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ SoftVQ-VAE: Soft VQ-VAE for Efficient Image Encoding</span><span class="sim-badge" style="color:var(--red)">0.30(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ MAETok: Mask-Autoencoder Tokenizer</span><span class="sim-badge" style="color:var(--red)">0.00(word_count)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ Cosmos Tokenizer: Scalable and Efficient Video Tokenization</span><span class="sim-badge" style="color:var(--red)">0.18(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ OmniTokenizer: Unified Image and Video Tokenization</span><span class="sim-badge" style="color:var(--red)">0.27(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">LTX-VAE: Latent Transformer for Video Generation</span><span class="sim-badge" style="color:var(--green)">0.56(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title ok">DiT: Scalable Diffusion Models with Transformers</span><span class="sim-badge" style="color:var(--green)">0.83(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ LARP: Language-guided Autoregressive Video Tokenization</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">ViT: An Image is Worth 16x16 Words: Transformers for Image Recognition a</span><span class="sim-badge" style="color:var(--green)">0.89(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title ok">MaskGiT: Masked Generative Image Transformer</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+</div>
+<div class="col">
+<div class="col-hdr">G Round2</div>
+<div style="color:var(--muted);font-size:11px">—</div>
+</div>
+<div class="col">
+<div class="col-hdr">H</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">82%</span>  9/11</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ Tokenized Video Tokens for Autoregressive Image and Video Generation</span><span class="sim-badge" style="color:var(--red)">0.50(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ SoftVQ-VAE: Learning CSS Latents for Image Generation</span><span class="sim-badge" style="color:var(--red)">0.27(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ MAETok: Mask-Aware Efficient Tokenizer for Image Generation</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ LARP: Language-Ranked Autonomous Retrieval and Planning for Video Tokeni</span><span class="sim-badge" style="color:var(--red)">0.20(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ Cosmos Tokenizer: Scalable and Efficient Tokenizers for Visual Generatio</span><span class="sim-badge" style="color:var(--red)">0.31(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ OmniTokenizer: Unified Image and Video Compression with Modality-Aware T</span><span class="sim-badge" style="color:var(--red)">0.29(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ LTX-VAE: Latent Video Autoencoder for High-Quality Video Generation</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">DiT: Scalable Diffusion Models with Transformers</span><span class="sim-badge" style="color:var(--green)">0.83(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Scalable Diffusion Models with Transformers</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ Latte: Efficient Video Diffusion Transformers</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ HunyuanVideo: A Video Generation System with Efficient Video Tokenizer</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+</div>
+</div></div>
+<div class="pb" id="2505.21473">
+<div class="pb-hdr">2505.21473  <span style="font-weight:400;color:var(--muted)">基于1D tokenizer引入next-detail预测实现粗到细图像生成，用128 tokens达到2.9</span></div>
+<div class="cols">
+<div class="col">
+<div class="col-hdr">G Round1</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">50%</span>  5/10</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">Visual Autoregressive Modeling: Scalable Generation via Next-Token Predi</span><span class="sim-badge" style="color:var(--green)">0.73(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ FlexVAR: Flexible Visual Autoregressive Modeling with Adaptive Tokenizer</span><span class="sim-badge" style="color:var(--red)">0.36(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ TiTok: A Unified Tokenizer for Vision and Language</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ FlexTok: Demanding Flexibility for Visual Tokens</span><span class="sim-badge" style="color:var(--red)">0.18(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ TokenFlow: Unified Image Generation via Parallel Flow</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">MaskGIT: Masked Generative Image Transformer</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">VQ-GAN: Taming Transformers for High-Resolution Image Synthesis</span><span class="sim-badge" style="color:var(--green)">0.88(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ Improving Language Understanding by Generative Pre-Training</span><span class="sim-badge" style="color:var(--red)">0.20(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title ok">LLaMA: Open and Efficient Foundation Language Models</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title ok">CART: Compositional Autoregressive Transformer for Image Generation</span><span class="sim-badge" style="color:var(--green)">0.67(db)</span></div>
+</div>
+<div class="col">
+<div class="col-hdr">G Round2</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">60%</span>  6/10</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title ok">Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ An Image is Worth 16x16 Words: Transformers for Image Recognition at Sca</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Taming Transformers for High-Resolution Image Synthesis</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ TiTok: A Unified Tokenizer for Vision and Language</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ FlexTok: Demanding Flexibility for Visual Tokens</span><span class="sim-badge" style="color:var(--red)">0.18(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">MaskGIT: Masked Generative Image Transformer</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title ok">Scalable Diffusion Models with Transformers</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ Vector Quantized Variational Autoencoder</span><span class="sim-badge" style="color:var(--red)">0.22(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ Image Generation with Explicit Length-Adaptive Tokenization</span><span class="sim-badge" style="color:var(--red)">0.27(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ CART: Composed Autoregressive Transformer</span><span class="sim-badge" style="color:var(--red)">0.20(db)</span></div>
+</div>
+<div class="col">
+<div class="col-hdr">H</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">50%</span>  6/12</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title ok">Visual Autoregressive Modeling: Scalable Generation via Next-Token Predi</span><span class="sim-badge" style="color:var(--green)">0.73(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ TiTok: An Efficient Tokenizer for Image Generation</span><span class="sim-badge" style="color:var(--red)">0.36(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ FlexTok: Efficient Image Tokenization and Generation</span><span class="sim-badge" style="color:var(--red)">0.30(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ CART: Compositional Autoregressive Transformers for Image Generation</span><span class="sim-badge" style="color:var(--red)">0.50(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">VQGAN: Taming Transformers for High-Generation Image Synthesis</span><span class="sim-badge" style="color:var(--green)">0.67(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">MaskGIT: Masked Generative Image Transformer</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ EMU3: Generative Multimodal Models are In-Context Learners</span><span class="sim-badge" style="color:var(--red)">0.30(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title ok">RQ-VAE: Autoregressive Image Generation with Residual Quantization</span><span class="sim-badge" style="color:var(--green)">0.62(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ MoVQ: Multi-Order Vector Quantization for Image Generation</span><span class="sim-badge" style="color:var(--red)">0.40(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ Latent Diffusion Models</span><span class="sim-badge" style="color:var(--red)">0.00(word_count)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title ok">DiT: Scalable Diffusion Models with Transformers</span><span class="sim-badge" style="color:var(--green)">0.83(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title ok">Scaling Autoregressive Models for Image Generation</span><span class="sim-badge" style="color:var(--green)">0.67(db)</span></div>
+</div>
+</div></div>
+<div class="pb" id="2506.05289">
+<div class="pb-hdr">2506.05289  <span style="font-weight:400;color:var(--muted)"></span></div>
+<div class="cols">
+<div class="col">
+<div class="col-hdr">G Round1</div>
+<div style="color:var(--muted);font-size:11px">—</div>
+</div>
+<div class="col">
+<div class="col-hdr">G Round2</div>
+<div style="color:var(--muted);font-size:11px">—</div>
+</div>
+<div class="col">
+<div class="col-hdr">H</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">73%</span>  8/11</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ An Image is Worth 16x16 Words: Transformers for Image Recognition at Sca</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ Tokenizer: Unified Encoder-Decoder for Image Generation</span><span class="sim-badge" style="color:var(--red)">0.27(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title ok">Autoregressive Model Beats Diffusion: Llama for Scalable Image Generatio</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title ok">MaskGIT: Masked Generative Image Transformer</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ MAR: Masked Autoencoders Are Efficient Generative Image Models</span><span class="sim-badge" style="color:var(--red)">0.30(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ LightningDiT: Efficient Diffusion Models for Image Generation</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ Randomized Autoregressive Visualization</span><span class="sim-badge" style="color:var(--red)">0.00(word_count)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ VAR: Visual Autoregressive Modeling</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ Open-MagViT2</span><span class="sim-badge" style="color:var(--red)">0.00(word_count)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">VQ-GAN: Taming Transformers for High-Quality Image Synthesis</span><span class="sim-badge" style="color:var(--green)">0.67(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ Representation Learning with Diffusion Models</span><span class="sim-badge" style="color:var(--red)">0.43(db)</span></div>
+</div>
+</div></div>
+<div class="pb" id="2507.08441">
+<div class="pb-hdr">2507.08441  <span style="font-weight:400;color:var(--muted)">基于VQGAN引入区域级量化和语义重建，利用冻结VFM作为编码器实现高效图像分词</span></div>
+<div class="cols">
+<div class="col">
+<div class="col-hdr">G Round1</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">60%</span>  6/10</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ LlamaGen: Autoregressive Language Models Pretrain on Visual Knowledge</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title ok">VQGAN: Taming Transformers for High-Resolution Image Synthesis</span><span class="sim-badge" style="color:var(--green)">0.88(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">DINOv2: Learning Robust Visual Features without Supervision</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">CLIP: Learning Transferable Visual Models From Natural Language Supervis</span><span class="sim-badge" style="color:var(--green)">0.89(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ SigLIP2: Learning Visual Features from Language Annotations</span><span class="sim-badge" style="color:var(--red)">0.36(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Deformable DETR: Deformable Transformers for End-to-End Object Detection</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ VAR: Visual Autoregressive Modeling</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ Show-o: Single Transformer Unified Autoregressive and Diffusion Generati</span><span class="sim-badge" style="color:var(--red)">0.42(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ REPA: Representation Alignment for Scalable Visual Generation</span><span class="sim-badge" style="color:var(--red)">0.29(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ TokenFlow: Semantic Correspondence for Image Editing</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+</div>
+<div class="col">
+<div class="col-hdr">G Round2</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">64%</span>  7/11</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title ok">Vector Quantized Image Modeling with Improved VQGAN</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ LlamaGen: Autoregressive Language Models Pretrain on Visual Knowledge</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">DINOv2: Learning Robust Visual Features without Supervision</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">CLIP: Learning Transferable Visual Models From Natural Language Supervis</span><span class="sim-badge" style="color:var(--green)">0.89(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ SigLIP2: Learning Visual Features from Language Annotations</span><span class="sim-badge" style="color:var(--red)">0.36(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ TokenFlow: Semantic Correspondence for Image Editing</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ REPA: Representation Alignment for Scalable Visual Generation</span><span class="sim-badge" style="color:var(--red)">0.29(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Deformable DETR: Deformable Attention for Object Detection</span><span class="sim-badge" style="color:var(--green)">0.62(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ ViT-VQGAN: Image Tokenization with Hierarchical Visual Transformers</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ VAR: Visual Autoregressive Modeling</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ Show-o: Single Transformer Unified Autoregressive and Diffusion Generati</span><span class="sim-badge" style="color:var(--red)">0.42(db)</span></div>
+</div>
+<div class="col">
+<div class="col-hdr">H</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">45%</span>  5/11</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ VQGAN: End-to-end Optimization of Learned Video Codecs</span><span class="sim-badge" style="color:var(--red)">0.10(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ Language Model Beats Diffusion -- Equalling AR Generation</span><span class="sim-badge" style="color:var(--red)">0.36(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Scalable Diffusion Models with Transformers</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">DINOv2: Learning Robust Visual Features without Supervision</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">CLIP: Learning Transferable Visual Models From Natural Language Supervis</span><span class="sim-badge" style="color:var(--green)">0.89(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">SigLIP: sigmoid loss for language-image pretraining</span><span class="sim-badge" style="color:var(--green)">0.56(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Deformable DETR: Deformable Transformers for End-to-End Object Detection</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ VAR: Visual Autoregressive Modeling</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ Show-o: One Single Transformer Decoder For All</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title ok">Vector-Quantized Image Modeling with Improved VQGAN</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ Stable VQGAN: Improving Image Generation with Unified Latent Space</span><span class="sim-badge" style="color:var(--red)">0.27(db)</span></div>
+</div>
+</div></div>
+<div class="pb" id="2511.20565">
+<div class="pb-hdr">2511.20565  <span style="font-weight:400;color:var(--muted)">基于DINO引入浅深双分支特征融合和PCA重加权机制，解决高维latent空间的语义-纹理矛盾与VQ不稳定问题</span></div>
+<div class="cols">
+<div class="col">
+<div class="col-hdr">G Round1</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">80%</span>  8/10</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">DINOv2: Learning Robust Visual Features without Supervision</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ VA-VAE: Leveraging Semantic Features for Visual Tokenization</span><span class="sim-badge" style="color:var(--red)">0.23(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ VQ-GAN: Taming Transformers for Image Generation</span><span class="sim-badge" style="color:var(--red)">0.44(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ LlamaGen: Autoregressive Generation meets Image Generation</span><span class="sim-badge" style="color:var(--red)">0.38(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ Emu3: Generating Images with Multimodal Large Language Models</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ REPA: Representation Alignment for Autoregressive Image Generation</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ RAE: Reconstituting Images with Frozen Vision Encoders</span><span class="sim-badge" style="color:var(--red)">0.19(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ Vector Quantization with PCA</span><span class="sim-badge" style="color:var(--red)">0.22(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title ok">MaskGIT: Masked Generative Image Transformer</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ Latent Diffusion Models</span><span class="sim-badge" style="color:var(--red)">0.00(word_count)</span></div>
+</div>
+<div class="col">
+<div class="col-hdr">G Round2</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">80%</span>  8/10</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ VA-VAE: Leveraging Semantic Features for Visual Tokenization</span><span class="sim-badge" style="color:var(--red)">0.23(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">DINOv2: Learning Robust Visual Features without Supervision</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ Reconstituting Images with Frozen Vision Encoders</span><span class="sim-badge" style="color:var(--red)">0.20(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ Vector Quantization with PCA</span><span class="sim-badge" style="color:var(--red)">0.22(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ Autoencoding beyond Pixels using Learned Similarity Metrics</span><span class="sim-badge" style="color:var(--red)">0.08(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ Latent Diffusion Models</span><span class="sim-badge" style="color:var(--red)">0.00(word_count)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ Image Generation with VQ-VAE</span><span class="sim-badge" style="color:var(--red)">0.38(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ LlamaGen: Autoregressive Generation meets Image Generation</span><span class="sim-badge" style="color:var(--red)">0.38(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ Emu3: Generating Images with Multimodal Large Language Models</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">MaskGIT: Masked Generative Image Transformer</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+</div>
+<div class="col">
+<div class="col-hdr">H</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">60%</span>  6/10</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title ok">DINOv2: Learning Robust Visual Features without Supervision</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">VQ-VAE: Neural Discrete Representation Learning</span><span class="sim-badge" style="color:var(--green)">0.80(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">VQ-GAN: Taming Transformers for High-Resolution Image Synthesis</span><span class="sim-badge" style="color:var(--green)">0.88(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ RAE: Reconstruction with Frozen Encoders for Visual Generation</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ VA-VAE: Aligning Latent Spaces for Semantic Control in Visual Generation</span><span class="sim-badge" style="color:var(--red)">0.23(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ ImageNet: A large-scale hierarchical image database</span><span class="sim-badge" style="color:var(--red)">0.14(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ VAR: Visual Autoregressive Modeling</span><span class="sim-badge" style="color:var(--red)">0.27(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title ok">LDM: High-Resolution Image Synthesis with Latent Diffusion Models</span><span class="sim-badge" style="color:var(--green)">0.89(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ Flow Matching for Generative Modeling</span><span class="sim-badge" style="color:var(--red)">0.20(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ DINO: Emerging Properties in Self-Supervised Vision Transformers</span><span class="sim-badge" style="color:var(--red)">0.09(db)</span></div>
+</div>
+</div></div>
+<div class="pb" id="2601.01535">
+<div class="pb-hdr">2601.01535  <span style="font-weight:400;color:var(--muted)">基于nested dropout引入冗余token填充和层级语义正则化，缓解信息过度集中问题，提升AR生成质量</span></div>
+<div class="cols">
+<div class="col">
+<div class="col-hdr">G Round1</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">70%</span>  7/10</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ GigaTok: Scaling Tokenizers for Joint Image-Video Generation</span><span class="sim-badge" style="color:var(--red)">0.50(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ FlexTok: Toward Flexible Tokenization for Visual Generation</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ TiTok: A Tokenizer for Conditional Generation of Images and Videos</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ One-D-Piece: Unified Image Tokenization via Latent Patterns</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ DetailFlow: Detail-Oriented Flow-based Image Tokenizer</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">DINOv2: Learning Robust Visual Features without Supervision</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">LlamaGen: Autoregressive Image Generation without Learned Vector Quantiz</span><span class="sim-badge" style="color:var(--green)">0.56(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title ok">Taming Transformers for High-Resolution Image Synthesis</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ Representation Alignment in Generative Models</span><span class="sim-badge" style="color:var(--red)">0.18(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ Learning Hierarchical Text-Guided Image Compression</span><span class="sim-badge" style="color:var(--red)">0.17(db)</span></div>
+</div>
+<div class="col">
+<div class="col-hdr">G Round2</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">67%</span>  8/12</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ GigaTok: Scaling Tokenizers for Joint Image-Video Generation</span><span class="sim-badge" style="color:var(--red)">0.50(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ FlexTok: Toward Flexible Tokenization for Visual Generation</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ TiTok: A Tokenizer for Conditional Generation of Images and Videos</span><span class="sim-badge" style="color:var(--red)">0.33(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">VQGAN: Taming Transformers for High-Resolution Image Synthesis</span><span class="sim-badge" style="color:var(--green)">0.88(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">DINOv2: Learning Robust Visual Features without Supervision</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ Representation Alignment in Generative Models</span><span class="sim-badge" style="color:var(--red)">0.18(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ LlamaGen: Autoregressive Language Models Are Scalable Image Generators</span><span class="sim-badge" style="color:var(--red)">0.27(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ One-D-Piece: Unified Image Tokenization via Latent Patterns</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ DetailFlow: Detail-Oriented Flow-based Image Tokenizer</span><span class="sim-badge" style="color:var(--red)">0.25(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title ok">Vector Quantized Image Modeling with Improved VQGAN</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title ok">MaskGIT: Masked Generative Image Transformer</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#7a849a">mentions</span><span class="cite-title susp">⚠ Learning Discrete Latent Variables via Spectral Estimation</span><span class="sim-badge" style="color:var(--red)">0.22(db)</span></div>
+</div>
+<div class="col">
+<div class="col-hdr">H</div>
+<div class="col-rate">幻觉率 <span style="color:var(--red);font-weight:700">67%</span>  6/9</div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#b08ef5">extends</span><span class="cite-title susp">⚠ GigaTok: Scaling Visual Tokenizers for Autoregressive Generative Models</span><span class="sim-badge" style="color:var(--red)">0.50(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ TiTok: A Discrete Tokenizer for Autoregressive Models</span><span class="sim-badge" style="color:var(--red)">0.23(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Taming Transformers for High-Resolution Image Synthesis</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">Neural Discrete Representation Learning</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title ok">DINOv2: Learning Robust Visual Features without Supervision</span><span class="sim-badge" style="color:var(--green)">1.00(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ Representation Alignment for Training Vector Quantized Autoencoders</span><span class="sim-badge" style="color:var(--red)">0.29(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#22d3ee">uses</span><span class="cite-title susp">⚠ LlamaGen: Autoregressive Image Generation without Attention</span><span class="sim-badge" style="color:var(--red)">0.50(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#f59e0b">contrasts</span><span class="cite-title susp">⚠ FlexTok: Towards Flexible Image Tokenization</span><span class="sim-badge" style="color:var(--red)">0.20(db)</span></div>
+<div class="cite"><span class="role-tag" style="background:#1e2235;color:#3ecf8e">supports</span><span class="cite-title susp">⚠ Learning Hierarchical Priors for VAEs</span><span class="sim-badge" style="color:var(--red)">0.12(db)</span></div>
+</div>
+</div></div>
+<div class="prev-section">
+<h2 style="margin:0 0 10px">📊 F方案(旧minimaxm25)回溯对比</h2>
+<div style="font-size:11px;color:var(--muted);margin-bottom:8px">回溯用该论文DB引用验证，仅供参考（F方案跑时无此验证）</div>
+<div style="padding:4px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="font-family:var(--mono);color:var(--accent)">2406.07550</span>  幻觉率 <span style="color:var(--yellow);font-weight:700">9%</span>  1/11  <span style="color:var(--red)">⚠ Generative pretraining from pixels</span></div>
+<div style="padding:4px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="font-family:var(--mono);color:var(--accent)">2501.07730</span>  幻觉率 <span style="color:var(--red);font-weight:700">20%</span>  2/10  <span style="color:var(--red)">⚠ Pixart-$\backslash$sigma: Weak-to-strong training of diffusion transformer for 4k text-to-image generation, MAR: Masked Autoencoders are Efficient Generative Encoders</span></div>
+<div style="padding:4px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="font-family:var(--mono);color:var(--accent)">2503.08685</span>  幻觉率 <span style="color:var(--red);font-weight:700">58%</span>  7/12  <span style="color:var(--red)">⚠ Tokenized Tokenizers for Autoregressive Models, RQ-VAE: Learning Discrete Latent Codes via Hierarchical Labeling</span></div>
+<div style="padding:4px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="font-family:var(--mono);color:var(--accent)">2503.10772</span>  幻觉率 <span style="color:var(--red);font-weight:700">40%</span>  4/10  <span style="color:var(--red)">⚠ Masked Generative Video Transformer, Flowing from Words to Pixels: A Framework for Cross-Modality Evolution</span></div>
+<div style="padding:4px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="font-family:var(--mono);color:var(--accent)">2504.08736</span>  幻觉率 <span style="color:var(--red);font-weight:700">50%</span>  5/10  <span style="color:var(--red)">⚠ LlamaGen: Scalable and Efficient Image Generation with LLMs, TiTok: A Robust Tokenizer for Generative Image Modeling</span></div>
+<div style="padding:4px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="font-family:var(--mono);color:var(--accent)">2505.12053</span>  幻觉率 <span style="color:var(--green);font-weight:700">0%</span>  0/10  <span style="color:var(--green)">✓ clean</span></div>
+<div style="padding:4px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="font-family:var(--mono);color:var(--accent)">2505.21473</span>  幻觉率 <span style="color:var(--green);font-weight:700">0%</span>  0/13  <span style="color:var(--green)">✓ clean</span></div>
+<div style="padding:4px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="font-family:var(--mono);color:var(--accent)">2506.05289</span>  幻觉率 <span style="color:var(--red);font-weight:700">80%</span>  20/25  <span style="color:var(--red)">⚠ SiT-XL, REPA</span></div>
+<div style="padding:4px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="font-family:var(--mono);color:var(--accent)">2507.08441</span>  幻觉率 <span style="color:var(--green);font-weight:700">0%</span>  0/10  <span style="color:var(--green)">✓ clean</span></div>
+<div style="padding:4px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="font-family:var(--mono);color:var(--accent)">2511.20565</span>  幻觉率 <span style="color:var(--yellow);font-weight:700">10%</span>  1/10  <span style="color:var(--red)">⚠ On the surprising behavior of distance metrics in high dimensional space</span></div>
+<div style="padding:4px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="font-family:var(--mono);color:var(--accent)">2601.01535</span>  幻觉率 <span style="color:var(--green);font-weight:700">0%</span>  0/10  <span style="color:var(--green)">✓ clean</span></div>
+</div>
+</body></html>

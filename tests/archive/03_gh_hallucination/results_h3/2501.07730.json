@@ -1,0 +1,284 @@
+{
+  "arxiv_id": "2501.07730",
+  "title": "Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens",
+  "cn_oneliner": "基于TiTok一维图像tokenizer，引入文本感知的紧凑1D token表示与MaskGen掩码生成框架，在256×256分辨率上以128个token实现高质量文本到图像生成，GenEval得分达0.72",
+  "cn_abstract": "本文提出TA-TiTok，一种文本感知的紧凑一维图像tokenizer，通过将文本信息融入tokenization过程，在极少量token（如128个）下实现高质量文本到图像生成。基于此tokenizer，作者构建了MaskGen掩码生成框架，支持VQ和VAE两种token形式。在CC12M等公开数据集上训练的MaskGen在GenEval基准上达到0.72分，在256×256分辨率下仅用128个token，推理速度较扩散模型快约31倍，展示了在有限计算资源下民主化文本到图像生成的可行性。",
+  "contribution_type": "significant",
+  "editorial_note": "TiTok等一维图像tokenizer已证明紧凑token表示在类别条件生成中的有效性，但文本到图像场景下如何将语义条件融入tokenization尚未充分探索。本文将文本信息注入tokenizer训练过程，提出TA-TiTok，并配套设计MaskGen生成框架，同时支持VQ和连续VAE两种token形式，在公开数据上验证了竞争性能。方法创新覆盖tokenizer与生成器两个层次，且关注民主化（低成本公开数据训练）这一实际价值，整体贡献扎实，不止于刷点，但规模与影响力尚待社区验证。",
+  "why_read": "研究高效文本到图像生成或图像tokenizer设计的学者，可从中获得文本条件如何改善紧凑1D token质量的具体方案及公开复现路径",
+  "method_variants": [
+    "tokenizer:TA-TiTok-VQ",
+    "tokenizer:TA-TiTok-VAE",
+    "generation:MaskGen-VQ",
+    "generation:MaskGen-VAE",
+    "token_length:64",
+    "token_length:128",
+    "token_length:256"
+  ],
+  "core_cite": [
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "extends",
+      "note": "TA-TiTok直接扩展TiTok的一维图像tokenization框架，将文本感知引入其中"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "extends",
+      "note": "MaskGen生成框架基于MaskGIT的掩码生成范式，并将其扩展至文本条件场景"
+    },
+    {
+      "title": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "arxiv_id": "2301.00704",
+      "role": "contrasts",
+      "note": "Muse是文本到图像掩码生成的代表工作，本文在更紧凑token和公开数据下对比其效果"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "uses",
+      "note": "TA-TiTok-VQ采用VQ-VAE框架进行离散token学习"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "uses",
+      "note": "VQGAN训练目标和判别器设计被用于TA-TiTok tokenizer训练"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "contrasts",
+      "note": "作为扩散模型基线，本文对比MaskGen与LDM系列在速度和质量上的权衡"
+    },
+    {
+      "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2403.03206",
+      "role": "contrasts",
+      "note": "SD3/FLUX代表当前扩散模型SOTA，用于对比MaskGen的生成质量与推理效率"
+    },
+    {
+      "title": "GenEval: An Object-Focused Framework for Evaluating Text-to-Image Alignment",
+      "arxiv_id": "2310.11513",
+      "role": "uses",
+      "note": "GenEval作为主要文本对齐评估基准，MaskGen在此达到0.72分"
+    },
+    {
+      "title": "Learning Transferable Visual Models From Natural Language Supervision",
+      "arxiv_id": "2103.00020",
+      "role": "uses",
+      "note": "CLIP文本编码器被用作TA-TiTok中的文本条件输入"
+    },
+    {
+      "title": "Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer",
+      "arxiv_id": "1910.10683",
+      "role": "uses",
+      "note": "T5文本编码器作为另一文本条件选项用于MaskGen生成模型"
+    },
+    {
+      "title": "Conceptual 12M: Pushing Web-Scale Image-Text Pre-Training To Recognize Long-Tail Visual Concepts",
+      "arxiv_id": "2102.08981",
+      "role": "uses",
+      "note": "CC12M作为主要训练数据集，体现本文民主化（低资源公开数据）的核心出发点"
+    },
+    {
+      "title": "LAION-5B: An open large-scale dataset for training next generation image-text models",
+      "arxiv_id": "2210.08402",
+      "role": "uses",
+      "note": "LAION数据集用于扩展实验，验证数据规模对MaskGen性能的影响"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "contrasts",
+      "note": "MAGVIT-v2强调tokenizer对生成质量的决定性作用，与本文观点呼应"
+    },
+    {
+      "title": "Classifier-Free Diffusion Guidance",
+      "arxiv_id": "2207.12598",
+      "role": "uses",
+      "note": "无分类器引导策略被MaskGen生成过程采用以提升生成质量"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "contrasts",
+      "note": "DiT作为扩散Transformer基线，用于对比MaskGen在速度和质量上的优势"
+    },
+    {
+      "title": "PixArt-α: Fast Training of Diffusion Transformer for Photorealistic Text-to-Image Synthesis",
+      "arxiv_id": "2310.00426",
+      "role": "contrasts",
+      "note": "PixArt-α代表高效扩散Transformer训练方案，与本文的高效掩码生成方案形成对比"
+    },
+    {
+      "title": "Scaling Autoregressive Models for Content-Rich Text-to-Image Generation",
+      "arxiv_id": "2206.10789",
+      "role": "contrasts",
+      "note": "Parti作为自回归文本到图像生成基线，用于对比不同生成范式的性能"
+    },
+    {
+      "title": "MaskBit: Embedding-free Image Generation via Bit Tokens",
+      "arxiv_id": "2409.16211",
+      "role": "contrasts",
+      "note": "MaskBit是掩码生成的近期工作，用于对比不同token表示下的掩码生成性能"
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "arxiv_id": "2010.11929",
+      "role": "uses",
+      "note": "ViT架构被用作TA-TiTok tokenizer和MaskGen生成器的骨干网络基础"
+    },
+    {
+      "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+      "arxiv_id": "1810.04805",
+      "role": "supports",
+      "note": "BERT的掩码预测思想是MaskGIT及本文MaskGen掩码生成范式的理论来源"
+    }
+  ],
+  "idea": [
+    {
+      "title": "跨分辨率自适应的文本感知一维Tokenizer",
+      "why": "当前TA-TiTok在固定分辨率（256×256）下训练和评估，而实际应用需要支持多分辨率生成。可探索在tokenizer中引入分辨率感知的位置编码和动态token数量分配，结合文本条件自适应调整token压缩率，从而在单一模型中支持从256到1024的多分辨率文本到图像生成，参考MultiRes-Diffusion等多分辨率扩散工作的设计思路。"
+    },
+    {
+      "title": "统一理解与生成的文本感知紧凑Token表示",
+      "why": "TA-TiTok的文本感知token天然携带语义信息，具备用于视觉理解任务的潜力。可借鉴MAGE和Show-o的统一框架思路，探索以TA-TiTok token同时支持图像理解（如VQA、图像描述）和生成任务，验证紧凑语义token是否能在两类任务上均达到竞争性性能，同时大幅降低多模态模型的序列长度开销。"
+    },
+    {
+      "title": "基于掩码生成的视频token压缩与生成",
+      "why": "一维紧凑token在图像生成中已展示出显著的序列压缩优势（128 token vs 数千token），将此思路扩展到视频生成面临更大挑战也有更大收益。可参考MAGVIT在视频掩码生成上的工作，设计时序感知的文本条件一维视频tokenizer，将时空信息压缩进极少量1D token，探索在有限计算资源下实现高质量文本到视频生成的可行路径。"
+    }
+  ],
+  "_scheme": "H",
+  "_model": "wq/minimaxm25",
+  "_verified_at": "2026-03-13",
+  "_s2_ref_count": 61,
+  "_similarities": [
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "best_score": 1.0,
+      "best_match": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "best_score": 1.0,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "GenEval: An Object-Focused Framework for Evaluating Text-to-Image Alignment",
+      "best_score": 1.0,
+      "best_match": "GenEval: An Object-Focused Framework for Evaluating Text-to-Image Alignment",
+      "pass": true
+    },
+    {
+      "title": "Learning Transferable Visual Models From Natural Language Supervision",
+      "best_score": 1.0,
+      "best_match": "Learning Transferable Visual Models From Natural Language Supervision",
+      "pass": true
+    },
+    {
+      "title": "Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer",
+      "best_score": 1.0,
+      "best_match": "Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer",
+      "pass": true
+    },
+    {
+      "title": "Conceptual 12M: Pushing Web-Scale Image-Text Pre-Training To Recognize Long-Tail Visual Concepts",
+      "best_score": 1.0,
+      "best_match": "Conceptual 12M: Pushing Web-Scale Image-Text Pre-Training To Recognize Long-Tail Visual Concepts",
+      "pass": true
+    },
+    {
+      "title": "LAION-5B: An open large-scale dataset for training next generation image-text models",
+      "best_score": 1.0,
+      "best_match": "LAION-5B: An open large-scale dataset for training next generation image-text models",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Classifier-Free Diffusion Guidance",
+      "best_score": 1.0,
+      "best_match": "Classifier-Free Diffusion Guidance",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "PixArt-α: Fast Training of Diffusion Transformer for Photorealistic Text-to-Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "PixArt-α: Fast Training of Diffusion Transformer for Photorealistic Text-to-Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Scaling Autoregressive Models for Content-Rich Text-to-Image Generation",
+      "best_score": 1.0,
+      "best_match": "Scaling Autoregressive Models for Content-Rich Text-to-Image Generation",
+      "pass": true
+    },
+    {
+      "title": "MaskBit: Embedding-free Image Generation via Bit Tokens",
+      "best_score": 1.0,
+      "best_match": "MaskBit: Embedding-free Image Generation via Bit Tokens",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "pass": true
+    },
+    {
+      "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+      "best_score": 1.0,
+      "best_match": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+      "pass": true
+    }
+  ],
+  "_matched": 20,
+  "_total": 20,
+  "_pass_rate": 1.0,
+  "_elapsed_s": 46.0
+}

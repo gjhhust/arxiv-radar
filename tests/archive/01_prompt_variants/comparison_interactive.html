@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Variant D Model Comparison — Interactive</title>
+<style>
+:root { --bg:#0f1117; --card:#1a1d27; --card2:#21253a; --border:#2e3250; --accent:#5b8dee; --green:#3ecf8e; --yellow:#f5a623; --red:#e05c5c; --purple:#a78bfa; --text:#e2e8f0; --muted:#8892a4; --mono:'JetBrains Mono',monospace; --orange:#f59e0b; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--text); font-family:-apple-system,sans-serif; font-size:14px; line-height:1.7; }
+.container { max-width:1200px; margin:0 auto; padding:30px 20px; }
+h1 { font-size:20px; color:#fff; margin-bottom:4px; }
+h2 { font-size:16px; color:#fff; margin:28px 0 12px; border-left:3px solid var(--accent); padding-left:10px; }
+.meta { color:var(--muted); font-size:12px; margin-bottom:20px; }
+
+/* Tabs */
+.tabs { display:flex; gap:6px; margin:14px 0; flex-wrap:wrap; }
+.tab { padding:8px 18px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600;
+  background:var(--card); border:1px solid var(--border); color:var(--muted); transition:all 0.2s; }
+.tab:hover { border-color:var(--accent); color:var(--text); }
+.tab.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+.tab .lat { font-size:10px; opacity:0.7; margin-left:4px; }
+
+/* Compare panels */
+.compare-area { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:14px 0; }
+.panel { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:16px; min-height:100px; }
+.panel.selected { border-color:var(--green); }
+.panel h3 { font-size:13px; color:var(--accent); margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
+.panel h3 .model-name { font-family:var(--mono); }
+
+/* Field sections */
+.field-section { margin:20px 0; }
+.field-label { font-family:var(--mono); font-size:12px; color:var(--accent); font-weight:700; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+.field-content { font-size:13px; line-height:1.7; }
+.contrib { display:inline-block; padding:2px 8px; border-radius:8px; font-size:11px; font-weight:600; }
+.contrib.incremental { background:#1a2c5a; color:var(--accent); }
+.contrib.significant { background:#1f3a2a; color:var(--green); }
+.contrib.story-heavy { background:#3a341f; color:var(--yellow); }
+.contrib.foundational { background:#2a1a3a; color:var(--purple); }
+
+.cite-item { margin:4px 0; padding:5px 8px; background:#0a0d16; border-radius:4px; font-size:12px; }
+.cite-role { font-family:var(--mono); font-size:10px; padding:1px 5px; border-radius:3px; background:#21253a; color:var(--purple); margin-right:4px; }
+.cite-note { color:var(--muted); }
+.mv-item { margin:3px 0; padding:4px 8px; background:#0a0d16; border-radius:4px; font-size:12px; }
+.mv-tag { font-family:var(--mono); font-size:11px; color:var(--yellow); }
+
+/* Vote */
+.vote-bar { display:flex; gap:8px; margin:20px 0; align-items:center; }
+.vote-btn { padding:8px 20px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600;
+  border:2px solid var(--border); background:var(--card); color:var(--text); transition:all 0.2s; }
+.vote-btn:hover { border-color:var(--accent); }
+.vote-btn.voted { border-color:var(--green); background:#1a2c1a; color:var(--green); }
+.vote-summary { margin:10px 0; padding:12px 16px; background:var(--card); border:1px solid var(--border); border-radius:6px; font-size:13px; }
+.vote-summary .count { font-family:var(--mono); color:var(--green); font-weight:700; }
+
+/* Toggle */
+.toggle-row { display:flex; gap:10px; margin:10px 0; }
+.toggle-btn { padding:4px 12px; border-radius:4px; cursor:pointer; font-size:12px;
+  background:var(--card2); border:1px solid var(--border); color:var(--muted); }
+.toggle-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+</style>
+</head><body>
+<div class="container">
+<h1>Variant D 模型对比 — 交互式评测</h1>
+<div class="meta">论文: 2601.01535 — Improving Flexible Image Tokenizers for Autoregressive Image Generation<br>
+融合方案 Variant D · 点击模型 tab 查看输出 · 为每个字段投票选出最佳模型</div>
+
+<h2>选择对比模型</h2>
+<div class="tabs" id="modelTabs"></div>
+
+<h2>逐字段对比</h2>
+<div id="compareArea"></div>
+
+<h2>投票汇总</h2>
+<div class="vote-summary" id="voteSummary">点击每个字段下方的模型按钮进行投票</div>
+
+</div>
+
+<script>
+const MODELS = ["minimaxm25", "claude46", "deepseekv32", "gpt52"];
+const RESULTS = {"minimaxm25": {"cn_oneliner": "基于GigaTok引入冗余token填充和层次语义正则化，解决灵活tokenizer尾部token未被充分利用的生成瓶颈问题", "cn_abstract": "本文针对灵活image tokenizer使用nested dropout导致信息过度集中于早期token、下游自回归生成质量随token数增加不增反降的问题，提出ReTok方法。通过冗余token填充增加尾部token激活频率，结合层次语义正则化让早期token聚焦语义对齐、尾部token专注细节重建，显著提升了灵活tokenizer在自回归图像生成中的效果。在ImageNet 256×256上，ReTok在256 tokens达到gFID 2.27，优于其他灵活tokenizer。", "contribution_type": "significant", "editorial_note": "在GigaTok基础上针对灵活tokenizer的生成瓶颈进行改进，核心改动是引入冗余token padding解决tail tokens激活不足，以及用层次化语义正则化替代原来统一的正则化强度。方法创新性较强，成功让AR生成质量随token数增加而提升，解决了该领域的核心痛点。", "why_read": "了解如何解决灵活tokenizer的生成瓶颈问题，学习冗余token填充和层次语义正则化的具体实现", "method_variants": [{"base_method": "gigatok", "variant_tag": "gigatok:redundant-padding", "description": "在原始token序列后追加冗余token，使nested dropout能更频繁激活原始序列中的尾部token"}, {"base_method": "gigatok", "variant_tag": "gigatok:hierarchical-semantic-reg", "description": "对不同位置的token使用递减的语义正则化强度，早期token强调语义对齐，后期token允许细节重建"}, {"base_method": "flextok", "variant_tag": "flextok:decoder-finetune", "description": "冻结encoder和quantizer后微调decoder，放松语义约束以提升短token序列的重建质量"}], "core_cite": [{"title": "GigaTok: Scaling visual tokenizers to 3 billion parameters for autoregressive image generation", "role": "extends", "note": "ReTok基于GigaTok架构，采用相同的ViT encoder-decoder设计并继承其representation alignment技术"}, {"title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length", "role": "uses", "note": "采用FlexTok的nested dropout训练策略来实现灵活的token序列长度"}, {"title": "Dinov2: Learning robust visual features without supervision", "role": "uses", "note": "使用DINOv2作为视觉基础模型提取语义特征，用于层次语义正则化中的特征对齐"}, {"title": "Learning ordered representations with nested dropout", "role": "uses", "note": "采用nested dropout技术作为灵活tokenizer训练的核心机制"}, {"title": "Autoregressive model beats diffusion: Llama for scalable image generation", "role": "uses", "note": "使用LlamaGen作为下游自回归生成模型进行评估"}, {"title": "Representation alignment for generation: Training diffusion transformers is easier than you think", "role": "uses", "note": "借鉴representation alignment方法，将tokenizer的解码特征与视觉基础模型特征对齐"}, {"title": "TiTok: An image is worth 32 tokens for reconstruction and generation", "role": "contrasts", "note": "作为1D tokenizer的baseline对比，ReTok在相同token预算下表现更优"}, {"title": "DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction", "role": "contrasts", "note": "同为灵活tokenizer，DetailFlow在高token数时生成质量下降，ReTok解决了此问题"}]}, "claude46": {"cn_oneliner": "基于GigaTok引入冗余token填充和层次语义正则化，解决灵活tokenizer尾部token未被充分利用的生成瓶颈问题", "cn_abstract": "现有灵活图像tokenizer通过nested dropout训练，导致图像信息过度集中于早期token，使得下游AR生成质量随token数增加不升反降。本文提出ReTok，引入冗余token填充（在序列尾部追加额外query token以提高尾部token的激活频率）和层次语义正则化（对早期token施加较强的DINOv2语义对齐约束，随序列增长逐步递减以保留细节重建能力）。在ImageNet 256×256上，ReTok-S-B配合LlamaGen-XL达到2.27 gFID，不仅显著优于One-D-Piece、FlexTok等灵活tokenizer，还与同参数量的固定长度tokenizer GigaTok持平。", "contribution_type": "incremental", "editorial_note": "本文在GigaTok基础上做了两处训练策略改动：用冗余padding token扩展nested dropout作用范围、用线性衰减的语义正则化权重替换固定权重；核心改动均属训练技巧层面，架构无变化，且冗余token在推理时被丢弃，实质上是对nested dropout信息分布偏差的工程修正，而非方法范式创新。与FlexTok、One-D-Piece的主要差距在于对生成瓶颈做了系统性诊断并给出了有效的组合修复方案。", "why_read": "若你在用nested dropout训练灵活tokenizer并遭遇生成质量随token数饱和甚至下降的问题，本文提供了一套直接可复用的训练策略修复方案。", "method_variants": [{"base_method": "nested-dropout", "variant_tag": "nested-dropout:redundant-padding", "description": "在原始token序列尾部拼接M个冗余query token再做nested dropout，迫使原序列尾部token承担更多信息编码，推理时丢弃冗余部分"}, {"base_method": "gigatok", "variant_tag": "gigatok:hierarchical-semantic-reg", "description": "将GigaTok的固定语义正则化权重改为随保留序列长度线性递减的函数，使早期token偏向高层语义、尾部token偏向低层细节重建"}, {"base_method": "gigatok", "variant_tag": "gigatok:decoder-finetuning", "description": "冻结编码器和量化器，以小常数语义约束单独微调解码器，改善短token序列下的重建与生成质量"}], "core_cite": [{"title": "GigaTok: Scaling visual tokenizers to 3 billion parameters for autoregressive image generation", "role": "extends", "note": "ReTok直接继承GigaTok的架构设计（编解码器结构、codebook配置），并以GigaTok-S-S预训练权重初始化，所有改动均在其基础上叠加"}, {"title": "Learning ordered representations with nested dropout", "role": "uses", "note": "nested dropout是ReTok灵活tokenizer训练的基础机制，本文的冗余token填充策略正是针对其信息过度集中问题的直接改进"}, {"title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length", "role": "contrasts", "note": "作为灵活tokenizer的主要对比baseline，论文指出FlexTok在32 token时达最优gFID后随token增加反而变差，与本文诊断的生成瓶颈完全吻合"}, {"title": "One-d-piece: Image tokenizer meets quality-controllable compression", "role": "contrasts", "note": "另一灵活tokenizer baseline，论文在多个token长度下与其对比gFID，指出其128到256 token间几乎无提升，验证了生成瓶颈的普遍性"}, {"title": "DINOv2: Learning robust visual features without supervision", "role": "uses", "note": "作为层次语义正则化的特征提供方，DINOv2-B的输出特征被用于与tokenizer解码器中间层特征做余弦相似度对齐"}, {"title": "Autoregressive model beats diffusion: Llama for scalable image generation", "role": "uses", "note": "LlamaGen系列（B/L/XL）作为下游AR生成模型用于评估tokenizer质量，是全部生成实验的统一测试床"}, {"title": "Representation alignment for generation: Training diffusion transformers is easier than you think", "role": "supports", "note": "语义正则化的理论先驱，GigaTok将其引入tokenizer训练，本文进一步将其扩展为层次化变权重形式"}, {"title": "DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction", "role": "contrasts", "note": "另一灵活tokenizer对比方法，论文指出DetailFlow采用分辨率渐进重建，短token下只能输出低分辨率图像，损害了灵活性"}, {"title": "Taming transformers for high-resolution image synthesis", "role": "uses", "note": "VQGAN的重建损失（像素级、感知损失、对抗损失、VQ codebook损失）被ReTok直接沿用作为基础重建目标"}, {"title": "Highly Compressed Tokenizer Can Generate Without Training", "role": "supports", "note": "该工作发现高压缩率1D tokenizer天然学习语义表示，启发了ReTok对早期token施加强语义约束的层次正则化设计"}]}, "deepseekv32": {"cn_oneliner": "基于GigaTok引入冗余token填充和层次语义正则化，解决灵活tokenizer尾部token未被充分利用的生成瓶颈问题", "cn_abstract": "本文针对现有灵活图像tokenizer（如FlexTok）采用nested dropout训练时，图像信息过度集中于序列头部、导致尾部token在自回归生成中利用率低的问题，提出了ReTok方法。该方法核心包括：1）冗余token填充，通过在原始序列尾部拼接额外token，增加尾部token在训练中的激活频率；2）层次语义正则化，利用预训练视觉基础模型（如DINOv2）的特征，对早期token施加强语义对齐约束，并随序列位置线性衰减该约束，使尾部token专注于重建细节。实验表明，ReTok在ImageNet 256×256上超越了现有灵活tokenizer，并达到了与固定长度tokenizer（如GigaTok）相当的生成质量。", "contribution_type": "significant", "editorial_note": "在GigaTok（固定长度1D tokenizer）和FlexTok（基于nested dropout的灵活tokenizer）的基础上，通过冗余token填充和层次语义正则化两项核心改动，实质性地解决了灵活tokenizer在自回归生成中的瓶颈问题，实现了从'方法可行'到'性能可比肩固定长度方法'的跨越。", "why_read": "为解决灵活tokenizer在自回归图像生成中的核心瓶颈（尾部token利用不足）提供了清晰且有效的技术方案。", "method_variants": [{"base_method": "gigatok", "variant_tag": "gigatok:redundant-token-padding", "description": "在原始查询token序列尾部拼接额外的padding token，使原始序列在应用nested dropout时成为'早期'token，从而激活其尾部token。"}, {"base_method": "gigatok", "variant_tag": "gigatok:hierarchical-semantic-regularization", "description": "将语义正则化权重λ设为保留序列长度k的线性递减函数，使早期token强对齐DINOv2语义特征，后期token弱约束以重建细节。"}, {"base_method": "flextok", "variant_tag": "flextok:redundant-token-padding", "description": "在FlexTok的nested dropout训练框架中，引入冗余token填充来缓解信息过度集中于头部的问题。"}, {"base_method": "nested-dropout", "variant_tag": "nested-dropout:redundant-padding", "description": "对应用了nested dropout的token序列进行冗余填充，改变信息压缩的分布，使原始序列的尾部token得到更多训练。"}], "core_cite": [{"title": "GigaTok: Scaling visual tokenizers to 3 billion parameters for autoregressive image generation", "role": "extends", "note": "本文方法ReTok直接基于GigaTok的架构和训练框架（包括其1D tokenizer设计和representation alignment技术）进行改进，是核心的baseline和起点。"}, {"title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length", "role": "contrasts", "note": "作为主要的灵活tokenizer对比方法，本文指出其使用naive nested dropout导致信息集中于头部、尾部token利用不足的生成瓶颈问题。"}, {"title": "Learning ordered representations with nested dropout", "role": "uses", "note": "本文方法沿用并改进了nested dropout技术，将其作为实现灵活（可变长度）tokenizer的核心训练机制。"}, {"title": "Dinov2: Learning robust visual features without supervision", "role": "uses", "note": "作为层次语义正则化中提取高层语义特征的目标模型，用于对齐tokenizer解码器的中间特征。"}, {"title": "Representation alignment for generation: Training diffusion transformers is easier than you think", "role": "uses", "note": "本文采用了其提出的representation alignment思想，将其改造为层次化的语义正则化应用于tokenizer训练。"}, {"title": "One-d-piece: Image tokenizer meets quality-controllable compression", "role": "contrasts", "note": "作为另一灵活tokenizer，本文指出其缺乏对下游自回归生成的分析，且在生成质量上存在瓶颈。"}, {"title": "DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction", "role": "contrasts", "note": "作为分层重建的灵活tokenizer，本文指出其早期token只能生成低分辨率图像，限制了AR模型的灵活性。"}, {"title": "Autoregressive model beats diffusion: Llama for scalable image generation", "role": "uses", "note": "本文使用LlamaGen作为下游自回归图像生成模型，来评估不同tokenizer的生成性能。"}, {"title": "Highly Compressed Tokenizer Can Generate Without Training", "role": "supports", "note": "该工作表明高压缩比的1D tokenizer能有效学习语义表示，为本文提出层次语义正则化（早期token侧重语义）提供了依据。"}]}, "gpt52": {"cn_oneliner": "基于GigaTok引入冗余token填充和层次语义正则化，实现灵活tokenizer尾部token充分利用并提升AR生成质量", "cn_abstract": "灵活图像tokenizer通常用nested dropout随机截断尾部token训练，但会迫使信息过度集中在前缀token，导致AR生成在token变长时质量不升反降且落后于同预算固定长度tokenizer。本文提出ReToK：用Redundant Token Padding在训练时向序列尾部追加冗余query/token并在更长序列上做nested dropout，从而提高原序列尾部token被激活的频率；再用Hierarchical Semantic Regularization将decoder中间特征与预训练视觉基础模型DINOv2对齐，并随保留长度k增大线性衰减正则强度以保留细节重建能力。ImageNet 256×256上，ReToK在不同token长度下实现更一致的gFID改善，且在256 tokens时优于现有flexible tokenizers并接近/达到强固定长度1D tokenizer的下游AR生成表现。", "contribution_type": "incremental", "editorial_note": "工作本质是在FlexTok/One-D-Piece式nested dropout灵活tokenization框架上，借鉴GigaTok的representation alignment，把“尾部token不常被训练”这一分布偏置用冗余padding重采样来纠正，并把语义对齐做成随长度衰减的层次权重。核心改动工程上直接有效，但方法创新主要是训练策略组合与调度设计，属于对既有1D tokenizer+语义正则路线的针对性补丁式增强。", "why_read": "如果你在做可变长度AR图像生成，ReToK提供了一个几乎不改架构、仅改训练分布与正则调度就能缓解“长序列不增益”的实用方案与系统性诊断。", "method_variants": [{"base_method": "gigaTok", "variant_tag": "gigatok:retok-redundant-padding", "description": "在GigaTok式1D离散tokenizer训练中追加冗余query/token到序列尾部，并在(N+M)长度上做nested dropout以提升原序列尾部token的激活与学习频率，推理时丢弃padding tokens。"}, {"base_method": "nested-dropout", "variant_tag": "nested-dropout:tail-activation-via-padding", "description": "把原本只截断尾部的nested dropout改为在更长的“原序列+冗余尾巴”上截断，使原序列的后段在统计上更像“中段”从而被更充分训练。"}, {"base_method": "representation-alignment", "variant_tag": "representation-alignment:hierarchical-semantic-decay", "description": "将对齐DINOv2特征的语义正则权重从常数λ改为随保留长度k线性衰减的λ(k)，让短序列更偏语义、长序列更偏细节。"}, {"base_method": "gigatok", "variant_tag": "gigatok:decoder-finetune-low-reg", "description": "冻结encoder与quantizer，仅以较小且固定的语义正则权重微调decoder，提升短token长度下的重建与生成表现。"}], "core_cite": [{"title": "GigaTok: Scaling visual tokenizers to 3 billion parameters for autoregressive image generation | arxiv:2504.08736", "role": "extends", "note": "ReToK沿用其1D tokenizer架构与训练范式，并直接采用其DINOv2语义正则/对齐思路作为基础，再提出padding与层次λ(k)来修复flexible训练下的token利用问题。"}, {"title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length", "role": "contrasts", "note": "作为flexible tokenizer代表，采用nested dropout训练；本文指出其尾部token利用不足导致生成随token变长不稳定，并以ReToK在多长度gFID上对比改进。"}, {"title": "Learning ordered representations with nested dropout", "role": "supports", "note": "提供nested dropout形成有序/可截断表示的理论与训练机制来源；本文的瓶颈分析与“在更长序列上截断”的改造都建立在该机制之上。"}, {"title": "Dinov2: Learning robust visual features without supervision | arxiv:2304.07193", "role": "uses", "note": "作为预训练视觉基础模型输出语义特征，ReToK用其对decoder中间特征做cosine对齐，并提出随k衰减的层次语义正则。"}, {"title": "Representation alignment for generation: Training diffusion transformers is easier than you think | arxiv:2410.06940", "role": "supports", "note": "为“用foundation model特征对齐来提升生成/收敛”的方法论依据；ReToK将该思想迁移到flexible tokenizer并做层次化权重调度。"}, {"title": "Autoregressive model beats diffusion: Llama for scalable image generation | arxiv:2406.06525", "role": "uses", "note": "作为下游AR生成器与评测平台（LlamaGen-B/L/XL），用于验证不同token长度下ReToK对gFID等指标的提升与稳定性。"}, {"title": "An image is worth 32 tokens for reconstruction and generation", "role": "supports", "note": "提供1D query-token tokenizer（TiTok）背景与“少token可承载高层语义”的经验启发，支撑ReToK把更强语义约束施加在短/早期token上的设计。"}, {"title": "Taming transformers for high-resolution image synthesis", "role": "uses", "note": "ReToK的重建训练目标沿用VQGAN式组合损失（像素/感知/对抗/码本），作为tokenizer训练的关键实现基座。"}]}};
+const LATENCY = {"minimaxm25": 41.01, "claude46": 35.23, "deepseekv32": 76.4, "gpt52": 78.79};
+const FIELDS = ["cn_oneliner", "cn_abstract", "contribution_type", "editorial_note", "why_read", "method_variants", "core_cite"];
+const FIELD_LABELS = {
+  cn_oneliner: "cn_oneliner（≤45字方法核心）",
+  cn_abstract: "cn_abstract（中文技术摘要）",
+  contribution_type: "contribution_type（贡献类型）",
+  editorial_note: "editorial_note（编辑深度判断）",
+  why_read: "why_read（推荐理由）",
+  method_variants: "method_variants（方法变体）",
+  core_cite: "core_cite（核心引用）"
+};
+
+let selectedModels = MODELS.slice(0, 2);
+let votes = {};
+FIELDS.forEach(f => votes[f] = null);
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderTabs() {
+  const container = document.getElementById('modelTabs');
+  container.innerHTML = MODELS.map(m => {
+    const active = selectedModels.includes(m) ? ' active' : '';
+    const lat = LATENCY[m] ? ` (${LATENCY[m].toFixed(1)}s)` : '';
+    return `<div class="tab${active}" onclick="toggleModel('${m}')">${m}<span class="lat">${lat}</span></div>`;
+  }).join('');
+}
+
+function toggleModel(m) {
+  const idx = selectedModels.indexOf(m);
+  if (idx >= 0) {
+    if (selectedModels.length > 1) selectedModels.splice(idx, 1);
+  } else {
+    if (selectedModels.length >= 2) selectedModels.shift();
+    selectedModels.push(m);
+  }
+  renderTabs();
+  renderCompare();
+}
+
+function renderFieldContent(model, field) {
+  const data = RESULTS[model] || {};
+  const val = data[field];
+  if (!val) return '<span style="color:var(--red)">—</span>';
+
+  if (field === 'contribution_type') {
+    return `<span class="contrib ${val}">${val}</span>`;
+  }
+  if (field === 'method_variants' && Array.isArray(val)) {
+    return val.map(mv =>
+      `<div class="mv-item"><span class="mv-tag">${esc(mv.variant_tag||'')}</span> — ${esc(mv.description||'')}</div>`
+    ).join('');
+  }
+  if (field === 'core_cite' && Array.isArray(val)) {
+    return val.map(c =>
+      `<div class="cite-item"><span class="cite-role">${c.role||'?'}</span> <strong>${esc((c.title||'').substring(0,70))}</strong><br><span class="cite-note">${esc(c.note||'')}</span></div>`
+    ).join('');
+  }
+  return esc(String(val));
+}
+
+function renderCompare() {
+  const area = document.getElementById('compareArea');
+  let html = '';
+
+  FIELDS.forEach(field => {
+    html += `<div class="field-section">`;
+    html += `<div class="field-label">${FIELD_LABELS[field] || field}</div>`;
+    html += `<div class="compare-area">`;
+
+    selectedModels.forEach(m => {
+      const voted = votes[field] === m;
+      html += `<div class="panel${voted ? ' selected' : ''}">`;
+      html += `<h3><span class="model-name">${m}</span><span style="font-size:11px;color:var(--muted)">${LATENCY[m]?.toFixed(1)}s</span></h3>`;
+      html += `<div class="field-content">${renderFieldContent(m, field)}</div>`;
+      html += `</div>`;
+    });
+
+    html += `</div>`;
+
+    // Vote buttons for ALL models
+    html += `<div class="vote-bar">`;
+    html += `<span style="font-size:12px;color:var(--muted);margin-right:8px;">👆 选最佳:</span>`;
+    MODELS.forEach(m => {
+      const voted = votes[field] === m;
+      html += `<div class="vote-btn${voted ? ' voted' : ''}" onclick="vote('${field}','${m}')">${m}</div>`;
+    });
+    html += `</div>`;
+    html += `</div>`;
+  });
+
+  area.innerHTML = html;
+}
+
+function vote(field, model) {
+  votes[field] = votes[field] === model ? null : model;
+  renderCompare();
+  renderVoteSummary();
+}
+
+function renderVoteSummary() {
+  const summary = document.getElementById('voteSummary');
+  const counts = {};
+  MODELS.forEach(m => counts[m] = 0);
+  let voted = 0;
+  Object.values(votes).forEach(v => { if (v) { counts[v]++; voted++; } });
+
+  if (voted === 0) {
+    summary.innerHTML = '点击每个字段下方的模型按钮进行投票';
+    return;
+  }
+
+  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
+  let html = `<strong>投票结果 (${voted}/${FIELDS.length} 字段已投):</strong><br><br>`;
+  sorted.forEach(([m, c]) => {
+    const bar = '█'.repeat(c) + '░'.repeat(FIELDS.length - c);
+    html += `<span class="count">${m}</span>: ${bar} (${c}/${FIELDS.length})<br>`;
+  });
+
+  // Detail
+  html += '<br><strong>逐字段:</strong><br>';
+  FIELDS.forEach(f => {
+    const v = votes[f];
+    html += `${FIELD_LABELS[f]?.split('（')[0] || f}: ${v ? `<span class="count">${v}</span>` : '<span style="color:var(--muted)">未投</span>'}<br>`;
+  });
+
+  summary.innerHTML = html;
+}
+
+// Init
+renderTabs();
+renderCompare();
+</script>
+</body></html>

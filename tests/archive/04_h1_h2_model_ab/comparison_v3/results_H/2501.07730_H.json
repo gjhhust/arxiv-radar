@@ -1,0 +1,193 @@
+{
+  "cn_oneliner": "基于TiTok 1D tokenizer，引入文本感知解码阶段整合CLIP文本嵌入，实现高效且语义对齐的text-to-image masked生成模型",
+  "cn_abstract": "本文提出TA-TiTok，一种文本感知的1维图像tokenizer，支持离散和连续的1维token表示。TA-TiTok创新性地在解码阶段整合CLIP文本嵌入，增强语义对齐能力，并采用简化的单阶段训练流程替代复杂的两阶段蒸馏。基于TA-TiTok构建的MaskGen系列模型仅使用开放数据训练，在MJHQ-30K上达到FID 7.51（离散token）和6.53（连续token），GenEval基准上达到0.57，推理速度比Show-o快18.5倍。",
+  "contribution_type": "significant",
+  "editorial_note": "前驱方法TiTok虽然实现了高效的1D tokenization，但其两阶段训练流程复杂且缺乏文本感知能力，限制了在大规模数据集上的可扩展性。本文通过引入文本感知解码机制和单阶段训练流程解决了这些问题，在仅使用开放数据的情况下实现了与私有数据训练模型相当的性能。编辑认为该工作为masked生成模型的民主化提供了重要贡献，具有重要的学术和实践价值。",
+  "why_read": "适合对text-to-image生成和masked模型感兴趣的研究者和开发者，可了解如何仅用开放数据训练出高效的masked生成模型并实现先进的生成质量",
+  "method_variants": [
+    {
+      "tag": "TiTok:VQ",
+      "note": "离散token变体，使用向量量化将1D latent映射到codebook条目"
+    },
+    {
+      "tag": "TiTok:KL",
+      "note": "连续token变体，使用KL散度正则化的VAE表示，保留更多细节信息"
+    },
+    {
+      "tag": "MaskGen:discrete",
+      "note": "使用交叉熵损失训练，预测masked位置的codebook索引"
+    },
+    {
+      "tag": "MaskGen:continuous",
+      "note": "使用diffusion损失训练，通过MLP近似每个token的分布"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "extends",
+      "note": "TiTok是本文tokenizer的基础方法，本文在此上引入文本感知能力"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "uses",
+      "note": "使用masked生成范式作为MaskGen的训练目标"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "uses",
+      "note": "使用VQGAN的tokenizer框架和对抗损失"
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "arxiv_id": "2110.04627",
+      "role": "uses",
+      "note": "改进的VQGAN作为tokenizer的参考"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "uses",
+      "note": "采用DiT架构作为MaskGen的transformer backbone"
+    },
+    {
+      "title": "Denoising Diffusion Probabilistic Models",
+      "arxiv_id": "2006.11239",
+      "role": "uses",
+      "note": "diffusion损失的理论基础"
+    },
+    {
+      "title": "Classifier-Free Diffusion Guidance",
+      "arxiv_id": "2207.12598",
+      "role": "uses",
+      "note": "用于提升生成质量的classifier-free guidance技术"
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "arxiv_id": "2406.11838",
+      "role": "uses",
+      "note": "MAR的diffusion损失用于连续token的生成"
+    },
+    {
+      "title": "MAGVIT: Masked Generative Video Transformer",
+      "arxiv_id": "2212.05199",
+      "role": "uses",
+      "note": "使用MAGVIT的tokenizer架构作为参考"
+    },
+    {
+      "title": "SDXL: Improving Latent Diffusion Models for High-Resolution Image Synthesis",
+      "arxiv_id": "2307.01952",
+      "role": "contrasts",
+      "note": "作为对比基准，SDXL需要私有数据和更多训练资源"
+    },
+    {
+      "title": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "arxiv_id": "2301.00704",
+      "role": "uses",
+      "note": "masked生成transformer的参考架构"
+    },
+    {
+      "title": "MaskBit: Embedding-free Image Generation via Bit Tokens",
+      "arxiv_id": "2409.16211",
+      "role": "uses",
+      "note": "使用MaskBit的改进训练技术提升tokenizer训练"
+    }
+  ],
+  "idea": [
+    {
+      "title": "文本感知1D解码",
+      "why": "在tokenizer的解码阶段引入CLIP文本嵌入，使重建的图像能够感知文本语义信息。这一设计弥补了compact 1D token缺乏高层语义的不足，在32 tokens配置下性能提升最为显著（rFID提升）。"
+    },
+    {
+      "title": "单阶段训练流程",
+      "why": "简化了TiTok原本复杂的两阶段蒸馏流程，直接在大规模数据集（如DataComp-1B）上进行训练，提升了可扩展性。这一改进使得tokenizer能够高效地扩展到数十亿级别的数据集。"
+    },
+    {
+      "title": "离散/连续双模态支持",
+      "why": "TA-TiTok同时支持离散VQ和连续KL两种token表示，MaskGen可以灵活选择：离散token使用交叉熵损失实现快速推理，连续token使用diffusion损失获得更好的重建质量。这种设计提供了速度和质量的 tradeoff。"
+    }
+  ],
+  "_similarities": [
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "best_score": 1.0,
+      "best_match": "Vector-quantized Image Modeling with Improved VQGAN",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "Denoising Diffusion Probabilistic Models",
+      "best_score": 1.0,
+      "best_match": "Denoising Diffusion Probabilistic Models",
+      "pass": true
+    },
+    {
+      "title": "Classifier-Free Diffusion Guidance",
+      "best_score": 1.0,
+      "best_match": "Classifier-Free Diffusion Guidance",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Image Generation without Vector Quantization",
+      "pass": true
+    },
+    {
+      "title": "MAGVIT: Masked Generative Video Transformer",
+      "best_score": 1.0,
+      "best_match": "MAGVIT: Masked Generative Video Transformer",
+      "pass": true
+    },
+    {
+      "title": "SDXL: Improving Latent Diffusion Models for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "SDXL: Improving Latent Diffusion Models for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "best_score": 1.0,
+      "best_match": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "pass": true
+    },
+    {
+      "title": "MaskBit: Embedding-free Image Generation via Bit Tokens",
+      "best_score": 1.0,
+      "best_match": "MaskBit: Embedding-free Image Generation via Bit Tokens",
+      "pass": true
+    }
+  ],
+  "_matched": 12,
+  "_total": 12,
+  "_pass_rate": 1.0,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14",
+  "_ref_count": 61
+}

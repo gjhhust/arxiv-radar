@@ -1,0 +1,44 @@
+{
+  "paper_id": "2603.06449",
+  "scheme": "A",
+  "model": "wq/glm5",
+  "latency_s": 56.546,
+  "success": true,
+  "output": {
+    "cn_abstract": "自回归（AR）模型依赖因果tokenization，但将其扩展至视觉领域仍面临序列非因果或启发式排序不一致的挑战。本文提出CaTok，一种配备MeanFlow decoder的一维因果图像tokenizer，通过将时间间隔token绑定至MeanFlow目标进行训练。该方法学习的因果表征不仅解决了对齐问题，还支持快速的one-step generation和高保真的multi-step sampling。",
+    "cn_oneliner": "提出CaTok，利用MeanFlow解码器实现一维因果图像标记，兼顾生成速度与质量。",
+    "contribution_type": "significant",
+    "editorial_note": "该论文提出了MeanFlow解码器以解决视觉自回归建模中因果性与生成质量的权衡问题，方法具有实质创新性。",
+    "why_read": "推荐阅读，因为它为将大语言模型（LLM）的范式无缝迁移至视觉生成领域提供了关键的因果量化解决方案。",
+    "method_variants": [
+      {
+        "base_method": "flow matching",
+        "variant_tag": "flow:mean-flow-decoder",
+        "description": "提出MeanFlow目标，通过时间间隔选择绑定token，实现支持因果推断的流匹配解码器。"
+      },
+      {
+        "base_method": "image tokenizer",
+        "variant_tag": "tokenizer:1d-causal",
+        "description": "设计了严格的一维亚因果分词器，克服了二维展平或启发式排序对自回归建模的不利影响。"
+      }
+    ],
+    "key_refs": [
+      {
+        "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+        "stance": "supports",
+        "note": "论文核心动机与该文献一致，强调分词器设计是视觉生成胜过扩散模型的关键。"
+      },
+      {
+        "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+        "stance": "contrasts",
+        "note": "对比了VAR的多尺度预测方法，本文坚持传统一维因果序列建模，路径不同。"
+      },
+      {
+        "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+        "stance": "extends",
+        "note": "作为核心参考，本文工作可视为对该文中Llama架构在视觉因果分词瓶颈上的延伸与优化。"
+      }
+    ]
+  },
+  "parse_error": null
+}

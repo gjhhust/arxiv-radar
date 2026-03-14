@@ -1,0 +1,173 @@
+{
+  "arxiv_id": "2505.21473",
+  "title": "DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction",
+  "cn_oneliner": "基于 VAR 的多尺度自回归图像生成范式，引入 1D 分辨率感知 token 序列与 next-detail 预测策略，以 128 个 token 实现优于 VAR/FlexVAR（680 token）的图像生成质量与约 2× 推理加速",
+  "cn_abstract": "本文提出 DetailFlow，一种从粗到细的 1D 自回归图像生成方法，通过 next-detail 预测策略建模图像。该方法学习由逐步退化图像监督的分辨率感知 token 序列，使生成过程从全局结构开始逐步细化细节。此外，提出具有自纠正能力的并行推理机制，在加速约 8× 的同时降低 teacher-forcing 监督固有的累积采样误差。在 ImageNet 256×256 基准上，DetailFlow 仅用 128 个 token 达到 2.96 gFID，优于 VAR（3.3 FID / 680 token）和 FlexVAR（3.05 FID / 680 token），推理速度快约 2×。",
+  "contribution_type": "significant",
+  "editorial_note": "VAR 开创了 next-scale 多尺度自回归图像生成范式，但依赖 2D token 图且 token 数量较多（680）。本文核心贡献在于将多尺度思想压缩为 1D coarse-to-fine token 序列，通过分辨率感知训练与并行自纠正解码，以极少 token（128）达到更优 FID 并显著加速推理。方法在 token 效率与生成质量间取得出色平衡，1D 序列设计更利于与 LLM 统一，是自回归视觉生成方向的实质性推进。",
+  "why_read": "研究自回归图像生成 token 效率与多尺度建模的研究者，可从中获取 1D coarse-to-fine tokenizer 设计与并行自纠正解码的实用思路",
+  "method_variants": [
+    "tokenizer:resolution-aware-1D-coarse-to-fine",
+    "ar-prediction:next-detail",
+    "inference:parallel-self-correction",
+    "training:progressive-degradation-supervision"
+  ],
+  "core_cite": [
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "extends",
+      "note": "VAR 提出 next-scale 预测范式，本文将其从 2D 多尺度 token 图改进为 1D coarse-to-fine token 序列"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "contrasts",
+      "note": "VQGAN 采用 raster-scan 2D→1D 展平策略，本文对比其 token 效率低、空间连续性差的问题"
+    },
+    {
+      "title": "FlexVAR: Flexible Visual Autoregressive Modeling",
+      "arxiv_id": "2503.11734",
+      "role": "contrasts",
+      "note": "FlexVAR 在 VAR 基础上引入灵活尺度，仍需 680 token，本文以 128 token 超越其 FID"
+    },
+    {
+      "title": "Language Models are Unsupervised Multitask Learners",
+      "arxiv_id": "",
+      "role": "supports",
+      "note": "GPT-2，自回归语言模型基础，本文方法的 AR 建模范式源于此"
+    },
+    {
+      "title": "Scaling Autoregressive Models for Content-Rich Text-to-Image Generation",
+      "arxiv_id": "2206.10789",
+      "role": "contrasts",
+      "note": "Parti，大规模 raster-scan AR 图像生成，本文对比其 token 冗余问题"
+    },
+    {
+      "title": "Emu3: Next-Token Prediction is All You Need",
+      "arxiv_id": "2409.18869",
+      "role": "contrasts",
+      "note": "统一多模态 AR 生成，采用 next-token 预测，本文 1D 设计同样利于统一架构"
+    },
+    {
+      "title": "TokenFlow: Unified Image Tokenizer for Multimodal Understanding and Generation",
+      "arxiv_id": "2412.03069",
+      "role": "uses",
+      "note": "统一视觉 tokenizer，与本文 1D token 设计目标一致"
+    },
+    {
+      "title": "Chameleon: Mixed-Modal Early-Fusion Foundation Models",
+      "arxiv_id": "2405.09818",
+      "role": "mentions",
+      "note": "统一多模态 AR 框架，本文在引言中作为 AR 视觉生成的代表工作引用"
+    },
+    {
+      "title": "Denoising Diffusion Probabilistic Models",
+      "arxiv_id": "2006.11239",
+      "role": "contrasts",
+      "note": "DDPM，扩散模型代表，本文在背景中对比 AR 与扩散范式"
+    },
+    {
+      "title": "LlamaGen: Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "contrasts",
+      "note": "基于 Llama 的 AR 图像生成，使用标准 next-token 预测，本文对比其 token 效率"
+    },
+    {
+      "title": "Show-o: One Single Transformer to Unify Multimodal Understanding and Generation",
+      "arxiv_id": "2408.12528",
+      "role": "mentions",
+      "note": "统一多模态理解与生成的 AR 框架"
+    }
+  ],
+  "idea": [
+    {
+      "title": "将 DetailFlow 的 1D coarse-to-fine tokenizer 应用于视频生成",
+      "why": "视频的 token 数量远超图像，coarse-to-fine 1D 压缩在视频场景下节省 token 的收益更大。可在时间维度上扩展 resolution-aware 监督，先生成低帧率全局运动再逐步补充时空细节，天然适配 AR 视频生成的长序列瓶颈。"
+    },
+    {
+      "title": "自适应 token 长度的 DetailFlow：根据图像复杂度动态分配 detail token 数量",
+      "why": "当前所有图像使用固定 128 token，但简单图像（如纯色背景）可能仅需更少 token。可设计一个复杂度感知的提前退出机制，在 AR 生成过程中当细节增量低于阈值时停止，进一步提升推理效率，类似于 LLM 中的投机解码思路。"
+    },
+    {
+      "title": "将 next-detail 预测与多模态理解统一：构建同时支持理解和生成的 coarse-to-fine 视觉语言模型",
+      "why": "1D coarse-to-fine token 天然兼容 LLM 的序列建模，且粗粒度 token 已包含丰富语义信息，可直接用于视觉理解任务。可在同一 AR 模型中，利用前几个粗粒度 token 做理解（分类/VQA），完整序列做生成，实现理解与生成的自然统一而无需额外编码器。"
+    }
+  ],
+  "_scheme": "G",
+  "_model": "wq/minimaxm25",
+  "_verified_at": "2026-03-13",
+  "_s2_ref_count": 43,
+  "_similarities": [
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "best_score": 1.0,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "FlexVAR: Flexible Visual Autoregressive Modeling",
+      "best_score": 0.774,
+      "best_match": "FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction",
+      "pass": false
+    },
+    {
+      "title": "Language Models are Unsupervised Multitask Learners",
+      "best_score": 0.705,
+      "best_match": "Language Models are Few-Shot Learners",
+      "pass": false
+    },
+    {
+      "title": "Scaling Autoregressive Models for Content-Rich Text-to-Image Generation",
+      "best_score": 1.0,
+      "best_match": "Scaling Autoregressive Models for Content-Rich Text-to-Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Emu3: Next-Token Prediction is All You Need",
+      "best_score": 1.0,
+      "best_match": "Emu3: Next-Token Prediction is All You Need",
+      "pass": true
+    },
+    {
+      "title": "TokenFlow: Unified Image Tokenizer for Multimodal Understanding and Generation",
+      "best_score": 1.0,
+      "best_match": "TokenFlow: Unified Image Tokenizer for Multimodal Understanding and Generation",
+      "pass": true
+    },
+    {
+      "title": "Chameleon: Mixed-Modal Early-Fusion Foundation Models",
+      "best_score": 1.0,
+      "best_match": "Chameleon: Mixed-Modal Early-Fusion Foundation Models",
+      "pass": true
+    },
+    {
+      "title": "Denoising Diffusion Probabilistic Models",
+      "best_score": 0.452,
+      "best_match": "Chameleon: Mixed-Modal Early-Fusion Foundation Models",
+      "pass": false
+    },
+    {
+      "title": "LlamaGen: Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 0.936,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Show-o: One Single Transformer to Unify Multimodal Understanding and Generation",
+      "best_score": 1.0,
+      "best_match": "Show-o: One Single Transformer to Unify Multimodal Understanding and Generation",
+      "pass": true
+    }
+  ],
+  "_matched": 8,
+  "_total": 11,
+  "_pass_rate": 0.727,
+  "_elapsed_s": 42.3
+}

@@ -1,0 +1,221 @@
+{
+  "arxiv_id": "2505.12053",
+  "title": "VFRTok: Variable Frame Rates Video Tokenizer with Duration-Proportional Information Assumption",
+  "cn_oneliner": "基于VQ-VAE视频tokenizer范式，引入时长比例信息假设和非对称帧率训练，实现可变帧率视频tokenization，在保持重建质量的同时仅使用1/8 tokens",
+  "cn_abstract": "现代视频生成框架基于潜在扩散模型，但现有tokenizer采用帧比例信息假设，提供固定时间压缩率，导致扩散模型计算成本与帧率成线性关系。本文提出时长比例信息假设：视频信息容量上界与时长成正比而非帧数。基于此提出VFRTok，一个基于Transformer的视频tokenizer，通过编码器和解码器非对称帧率训练实现可变帧率编解码。进一步提出Partial RoPE解耦位置与内容建模，将相关patches分组为统一tokens以增强内容感知。实验表明，VFRTok在仅使用1/8 tokens的情况下达到有竞争力的重建质量和最先进的生成效果。",
+  "contribution_type": "incremental",
+  "editorial_note": "前驱方法（如CogVideoX、Latte等视频生成模型）采用帧比例信息假设，导致token数量随帧率线性增长，计算效率低下。本文提出时长比例信息假设，认为视频信息容量与时长成正比，并基于此设计非对称帧率训练机制，实现可变帧率tokenization。这是将信息论思想引入视频tokenization的有益尝试，Partial RoPE也是对位置编码的针对性改进。编辑认为该工作在特定场景下有实用价值，但核心假设的泛化性仍需进一步验证，整体属于增量性贡献。",
+  "why_read": "从事视频生成研究的研究者和工程师。具体收获：(1)理解时长比例信息假设如何改变视频tokenization范式；(2)学习非对称帧率训练的设计思路；(3)掌握Partial RoPE在解耦位置与内容建模中的应用；(4)了解如何在大致保持质量的前提下大幅压缩token数量（1/8比例）。",
+  "method_variants": [
+    {
+      "base_method": "vq-vae",
+      "variant_tag": "vq-vae:时长比例信息假设",
+      "description": "传统VQ-VAE视频tokenizer假设信息量与帧数成正比，提供固定时间压缩率；本文改为假设信息量与时长成正比，支持可变帧率编码，解决计算成本随帧率线性增长的问题"
+    },
+    {
+      "base_method": "rope",
+      "variant_tag": "rope:partial-rope",
+      "description": "标准RoFormer旋转位置编码同时建模位置和内容信息；本文提出Partial RoPE解耦两者，将相关patches分组为统一tokens，增强内容感知能力"
+    },
+    {
+      "base_method": "dit",
+      "variant_tag": "dit:非对称帧率训练",
+      "description": "标准DiT架构的encoder和decoder使用相同帧率处理；本文改为encoder和decoder使用不同帧率训练，实现非对称编解码，支持可变帧率推理"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "CogVideoX: Text-to-Video Diffusion Models with An Expert Transformer",
+      "arxiv_id": "2408.06072",
+      "role": "extends",
+      "note": "本文继承CogVideoX的DiT架构作为视频生成backbone，但聚焦于改进tokenizer层以提升效率"
+    },
+    {
+      "title": "Latte: Latent Diffusion Transformer for Video Generation",
+      "arxiv_id": "2401.03048",
+      "role": "extends",
+      "note": "Latte是重要的DiT视频生成工作，本文使用其Transformer结构作为tokenizer基础"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "extends",
+      "note": "DiT是视频生成的主流架构，本文基于DiT构建VFRTok的Transformer tokenizer"
+    },
+    {
+      "title": "Wan: Open and Advanced Large-Scale Video Generative Models",
+      "arxiv_id": "2503.20314",
+      "role": "uses",
+      "note": "Wan是最新的大规模视频生成工作，本文与其一样关注tokenizer效率优化"
+    },
+    {
+      "title": "HunyuanVideo: A Systematic Framework For Large Video Generative Models",
+      "arxiv_id": "2412.03603",
+      "role": "uses",
+      "note": "HunyuanVideo提供了视频生成的系统性框架视角，本文借鉴其tokenizer设计思路"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "uses",
+      "note": "MaskGIT是VQ-VAE类型tokenizer的代表性工作，本文采用类似的masked生成范式"
+    },
+    {
+      "title": "OmniTokenizer: A Joint Image-Video Tokenizer for Visual Generation",
+      "arxiv_id": "2406.09399",
+      "role": "uses",
+      "note": "OmniTokenizer是联合图像-视频tokenizer，本文参考其视频tokenization方法"
+    },
+    {
+      "title": "Masked Autoencoders Are Effective Tokenizers for Diffusion Models",
+      "arxiv_id": "2502.03444",
+      "role": "contrasts",
+      "note": "MAE方法使用固定压缩率的masked自编码器；本文提出可变帧率tokenization以实现更灵活的信息编码"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "supports",
+      "note": "LDM（Stable Diffusion）是潜在扩散模型的基础工作，本文在LDM框架下改进tokenizer"
+    },
+    {
+      "title": "Reconstruction vs. Generation: Taming Optimization Dilemma in Latent Diffusion Models",
+      "arxiv_id": "2501.01423",
+      "role": "supports",
+      "note": "本文分析了tokenizer训练中重建与生成的权衡问题，VFRTok的设计借鉴了其分析思路"
+    },
+    {
+      "title": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
+      "arxiv_id": "2104.09864",
+      "role": "uses",
+      "note": "RoFormer提出旋转位置编码，本文在此基础上提出Partial RoPE进行针对性改进"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "uses",
+      "note": "该工作探索token数量对重建和生成的影响，本文通过减少token数量（1/8）实现高效tokenization"
+    }
+  ],
+  "idea": [
+    {
+      "title": "自适应token分配策略",
+      "why": "当前方法按固定比例压缩视频，对于不同复杂度场景可能导致信息冗余或不足。未来可探索根据视频内容复杂度动态分配token数量的方法，在保持质量的同时进一步压缩简单视频的token使用。"
+    },
+    {
+      "title": "跨模态tokenizer统一框架",
+      "why": "当前视频tokenizer多为专用设计，与图像tokenizer框架不同。借鉴OmniTokenizer的联合tokenization思路，可探索图像-视频-音频统一的tokenizer框架，减少多模态生成中的跨模态对齐问题。"
+    },
+    {
+      "title": "参考LARP的自回归生成prior",
+      "why": "LARP提出使用学习到的自回归生成先验进行tokenization，可以更好地捕获生成式先验。当前VFRTok主要关注重建质量，未来可考虑引入更强的生成式先验以提升生成分辨率。"
+    }
+  ],
+  "_cite_sims": [
+    {
+      "title": "CogVideoX: Text-to-Video Diffusion Models with An Expert Transformer",
+      "best_score": 1.0,
+      "best_match": "CogVideoX: Text-to-Video Diffusion Models with An Expert Transformer",
+      "pass": true
+    },
+    {
+      "title": "Latte: Latent Diffusion Transformer for Video Generation",
+      "best_score": 1.0,
+      "best_match": "Latte: Latent Diffusion Transformer for Video Generation",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "Wan: Open and Advanced Large-Scale Video Generative Models",
+      "best_score": 1.0,
+      "best_match": "Wan: Open and Advanced Large-Scale Video Generative Models",
+      "pass": true
+    },
+    {
+      "title": "HunyuanVideo: A Systematic Framework For Large Video Generative Models",
+      "best_score": 1.0,
+      "best_match": "HunyuanVideo: A Systematic Framework For Large Video Generative Models",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "OmniTokenizer: A Joint Image-Video Tokenizer for Visual Generation",
+      "best_score": 1.0,
+      "best_match": "OmniTokenizer: A Joint Image-Video Tokenizer for Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Masked Autoencoders Are Effective Tokenizers for Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "Masked Autoencoders Are Effective Tokenizers for Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Reconstruction vs. Generation: Taming Optimization Dilemma in Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "Reconstruction vs. Generation: Taming Optimization Dilemma in Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
+      "best_score": 1.0,
+      "best_match": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    }
+  ],
+  "_cite_matched": 12,
+  "_cite_total": 12,
+  "_cite_rate": 1.0,
+  "_ref_count": 36,
+  "_mv_count": 3,
+  "_mv_issues": [],
+  "_mv_ok": true,
+  "_idea_count": 3,
+  "_idea_analysis": [
+    {
+      "title": "自适应token分配策略",
+      "why_len": 90,
+      "has_gap": true,
+      "restate": false
+    },
+    {
+      "title": "跨模态tokenizer统一框架",
+      "why_len": 113,
+      "has_gap": false,
+      "restate": false
+    },
+    {
+      "title": "参考LARP的自回归生成prior",
+      "why_len": 88,
+      "has_gap": false,
+      "restate": false
+    }
+  ],
+  "_idea_restate": 0,
+  "_idea_gap": 1,
+  "_idea_quality": 0.333,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14"
+}

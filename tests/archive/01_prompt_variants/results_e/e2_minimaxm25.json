@@ -1,0 +1,103 @@
+{
+  "variant": "e2",
+  "model": "minimaxm25",
+  "timestamp": "2026-03-12T19:53:49.735208",
+  "latency_s": 65.97,
+  "parse_success": true,
+  "error": null,
+  "raw_output": "```json\n{\n  \"cn_oneliner\": \"基于GigaTok引入冗余token填充和分层语义正则化解决尾部token信息稀疏问题\",\n  \"cn_abstract\": \"灵活图像tokenizer使用nested dropout随机截断尾部token进行训练，导致图像信息集中在早期token，限制了下游自回归生成质量。本文提出ReTok，通过冗余token填充增加尾部token激活频率，并采用分层语义正则化将早期token解码特征与DINOv2对齐，逐步降低对后续token的正则化强度以允许重建更精细的图像细节。实验表明，该方法在ImageNet 256×256上取得优于现有灵活和固定长度tokenizer的生成性能。\",\n  \"contribution_type\": \"incremental\",\n  \"editorial_note\": \"**[前驱]** 方法直接基于GigaTok的1D tokenizer架构，继承了其encoder-decoder设计和codebook量化，并采用FlexTok提出的nested dropout训练策略，同时引入DINOv2的representation alignment。**[贡献]** 作者发现尾部token因nested dropout截断频率低而信息稀疏，提出两个修复：1）在训练时padding冗余token使尾部token被更频繁激活；2）对早期token施加更强的语义正则化约束。**[判断]** 问题诊断准确（尾部token信息不足确实限制了AR生成），但解决方案是显而易见的工程补丁——padding和分层正则化都是直接可想到的思路，没有方法论创新，属于有效但不深刻的增量改进。\",\n  \"why_read\": \"对自回归图像生成和tokenizer研究感兴趣的研究者可以获得关于灵活tokenizer训练策略的洞见，了解如何通过改进训练目标来提升下游生成质量。\",\n  \"method_variants\": [\n    {\n      \"base_method\": \"gigatok\",\n      \"variant_tag\": \"redundant_token_padding\",\n      \"description\": \"在原始token序列尾部添加224个冗余query tokens，在nested dropout时激活更多尾部位置\"\n    },\n    {\n      \"base_method\": \"gigatok\",\n      \"variant_tag\": \"hierarchical_semantic_regularization\",\n      \"description\": \"将语义正则化权重设为token数量的递减函数，早期tokens高约束、后期tokens低约束\"\n    },\n    {\n      \"base_method\": \"gigatok\",\n      \"variant_tag\": \"decoder_finetuning\",\n      \"description\": \"冻结encoder和quantizer，仅微调decoder并固定语义约束以改善早期token重建\"\n    }\n  ],\n  \"core_cite\": [\n    {\n      \"title\": \"GigaTok: Scaling visual tokenizers to 3 billion parameters for autoregressive image generation\",\n      \"role\": \"extends\",\n      \"note\": \"直接继承GigaTok的1D tokenizer架构、encoder-decoder设计和codebook量化，作为base model进行改进\"\n    },\n    {\n      \"title\": \"FlexTok: Resampling Images into 1D Token Sequences of Flexible Length\",\n      \"role\": \"extends\",\n      \"note\": \"采用FlexTok提出的nested dropout训练策略来解决灵活tokenizer训练问题\"\n    },\n    {\n      \"title\": \"DinoV2: Learning robust visual features without supervision\",\n      \"role\": \"uses\",\n      \"note\": \"使用DINOv2作为vision foundation model提取语义特征，用于representation alignment\"\n    },\n    {\n      \"title\": \"One-d-piece: Image tokenizer meets quality-controllable compression\",\n      \"role\": \"contrasts\",\n      \"note\": \"作为baseline对比，从128到256 tokens生成质量提升微弱(3.86→3.86)，ReTok显著优于该方法\"\n    },\n    {\n      \"title\": \"DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction\",\n      \"role\": \"contrasts\",\n      \"note\": \"作为baseline对比，DetailFlow需生成不同分辨率图像，ReTok在256 tokens条件下与其生成质量相当(2.66 vs 2.75)但更灵活\"\n    },\n    {\n      \"title\": \"Language Model Beats Diffusion--Tokenizer is Key to Visual Generation\",\n      \"role\": \"supports\",\n      \"note\": \"引用来支持tokenizer对AR生成质量至关重要的观点\"\n    },\n    {\n      \"title\": \"Autoregressive model beats diffusion: Llama for scalable image generation\",\n      \"role\": \"uses\",\n      \"note\": \"使用LlamaGen作为下游AR生成模型进行训练和评估\"\n    },\n    {\n      \"title\": \"Representation alignment for generation: Training diffusion transformers is easier than you think\",\n      \"role\": \"uses\",\n      \"note\": \"采用representation alignment技术来训练tokenizer\"\n    },\n    {\n      \"title\": \"TiTok: An image is worth 32 tokens for reconstruction and generation\",\n      \"role\": \"supports\",\n      \"note\": \"引用1D tokenizer的工作来支持1D表示的优势\"\n    },\n    {\n      \"title\": \"Learning ordered representations with nested dropout\",\n      \"role\": \"uses\",\n      \"note\": \"采用nested dropout技术作为灵活tokenizer的核心训练策略\"\n    },\n    {\n      \"title\": \"Scalable diffusion models with transformers\",\n      \"role\": \"mentions\",\n      \"note\": \"作为diffusion生成模型的背景对比\"\n    },\n    {\n      \"title\": \"Vector-quantized image modeling with improved vqgan\",\n      \"role\": \"mentions\",\n      \"note\": \"背景引用，VQGAN系列工作\"\n    },\n    {\n      \"title\": \"Taming transformers for high-resolution image synthesis\",\n      \"role\": \"mentions\",\n      \"note\": \"背景引用，AR图像生成早期工作\"\n    }\n  ]\n}\n```",
+  "parsed": {
+    "cn_oneliner": "基于GigaTok引入冗余token填充和分层语义正则化解决尾部token信息稀疏问题",
+    "cn_abstract": "灵活图像tokenizer使用nested dropout随机截断尾部token进行训练，导致图像信息集中在早期token，限制了下游自回归生成质量。本文提出ReTok，通过冗余token填充增加尾部token激活频率，并采用分层语义正则化将早期token解码特征与DINOv2对齐，逐步降低对后续token的正则化强度以允许重建更精细的图像细节。实验表明，该方法在ImageNet 256×256上取得优于现有灵活和固定长度tokenizer的生成性能。",
+    "contribution_type": "incremental",
+    "editorial_note": "**[前驱]** 方法直接基于GigaTok的1D tokenizer架构，继承了其encoder-decoder设计和codebook量化，并采用FlexTok提出的nested dropout训练策略，同时引入DINOv2的representation alignment。**[贡献]** 作者发现尾部token因nested dropout截断频率低而信息稀疏，提出两个修复：1）在训练时padding冗余token使尾部token被更频繁激活；2）对早期token施加更强的语义正则化约束。**[判断]** 问题诊断准确（尾部token信息不足确实限制了AR生成），但解决方案是显而易见的工程补丁——padding和分层正则化都是直接可想到的思路，没有方法论创新，属于有效但不深刻的增量改进。",
+    "why_read": "对自回归图像生成和tokenizer研究感兴趣的研究者可以获得关于灵活tokenizer训练策略的洞见，了解如何通过改进训练目标来提升下游生成质量。",
+    "method_variants": [
+      {
+        "base_method": "gigatok",
+        "variant_tag": "redundant_token_padding",
+        "description": "在原始token序列尾部添加224个冗余query tokens，在nested dropout时激活更多尾部位置"
+      },
+      {
+        "base_method": "gigatok",
+        "variant_tag": "hierarchical_semantic_regularization",
+        "description": "将语义正则化权重设为token数量的递减函数，早期tokens高约束、后期tokens低约束"
+      },
+      {
+        "base_method": "gigatok",
+        "variant_tag": "decoder_finetuning",
+        "description": "冻结encoder和quantizer，仅微调decoder并固定语义约束以改善早期token重建"
+      }
+    ],
+    "core_cite": [
+      {
+        "title": "GigaTok: Scaling visual tokenizers to 3 billion parameters for autoregressive image generation",
+        "role": "extends",
+        "note": "直接继承GigaTok的1D tokenizer架构、encoder-decoder设计和codebook量化，作为base model进行改进"
+      },
+      {
+        "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+        "role": "extends",
+        "note": "采用FlexTok提出的nested dropout训练策略来解决灵活tokenizer训练问题"
+      },
+      {
+        "title": "DinoV2: Learning robust visual features without supervision",
+        "role": "uses",
+        "note": "使用DINOv2作为vision foundation model提取语义特征，用于representation alignment"
+      },
+      {
+        "title": "One-d-piece: Image tokenizer meets quality-controllable compression",
+        "role": "contrasts",
+        "note": "作为baseline对比，从128到256 tokens生成质量提升微弱(3.86→3.86)，ReTok显著优于该方法"
+      },
+      {
+        "title": "DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction",
+        "role": "contrasts",
+        "note": "作为baseline对比，DetailFlow需生成不同分辨率图像，ReTok在256 tokens条件下与其生成质量相当(2.66 vs 2.75)但更灵活"
+      },
+      {
+        "title": "Language Model Beats Diffusion--Tokenizer is Key to Visual Generation",
+        "role": "supports",
+        "note": "引用来支持tokenizer对AR生成质量至关重要的观点"
+      },
+      {
+        "title": "Autoregressive model beats diffusion: Llama for scalable image generation",
+        "role": "uses",
+        "note": "使用LlamaGen作为下游AR生成模型进行训练和评估"
+      },
+      {
+        "title": "Representation alignment for generation: Training diffusion transformers is easier than you think",
+        "role": "uses",
+        "note": "采用representation alignment技术来训练tokenizer"
+      },
+      {
+        "title": "TiTok: An image is worth 32 tokens for reconstruction and generation",
+        "role": "supports",
+        "note": "引用1D tokenizer的工作来支持1D表示的优势"
+      },
+      {
+        "title": "Learning ordered representations with nested dropout",
+        "role": "uses",
+        "note": "采用nested dropout技术作为灵活tokenizer的核心训练策略"
+      },
+      {
+        "title": "Scalable diffusion models with transformers",
+        "role": "mentions",
+        "note": "作为diffusion生成模型的背景对比"
+      },
+      {
+        "title": "Vector-quantized image modeling with improved vqgan",
+        "role": "mentions",
+        "note": "背景引用，VQGAN系列工作"
+      },
+      {
+        "title": "Taming transformers for high-resolution image synthesis",
+        "role": "mentions",
+        "note": "背景引用，AR图像生成早期工作"
+      }
+    ]
+  },
+  "fill_rate": 1.0,
+  "core_cite_count": 13,
+  "method_variant_count": 3
+}

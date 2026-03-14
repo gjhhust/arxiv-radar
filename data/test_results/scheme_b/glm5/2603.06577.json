@@ -1,0 +1,34 @@
+{
+  "paper_id": "2603.06577",
+  "scheme": "B",
+  "model": "wq/glm5",
+  "latency_s": 80.061,
+  "success": true,
+  "output": {
+    "cn_oneliner": "首个基于掩码离散扩散的任意到任意多模态大模型。",
+    "cn_abstract": "本文提出了 Omni-Diffusion，这是首个完全基于 mask-based discrete diffusion 构建的 any-to-any multimodal language model。该模型摒弃了主流的 autoregressive 架构，利用离散扩散模型在视觉领域的潜力，统一了文本、语音和图像的理解与生成任务。",
+    "contribution_type": "significant",
+    "editorial_note": "该工作挑战了自回归架构在多模态大模型中的统治地位，证明了离散扩散模型作为统一骨干的可行性，具有极高的架构探索价值。",
+    "why_read": "如果你关注非自回归架构在多模态大模型中的应用潜力，或寻找统一理解与生成的新范式，这篇论文值得一读。",
+    "method_variants": [
+      {
+        "base_method": "muse",
+        "variant_tag": "muse:unified-multimodal",
+        "description": "将原本仅用于图像生成的 Muse 扩展为支持文本、语音、图像统一理解与生成的多模态模型。"
+      }
+    ],
+    "key_refs": [
+      {
+        "title": "Show-o: One Single Transformer to Unify Multimodal Understanding and Generation",
+        "stance": "contrasts",
+        "note": "Show-o 混合了自回归和掩码建模，本文则完全采用离散扩散以实现架构统一。"
+      },
+      {
+        "title": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+        "stance": "extends",
+        "note": "将 Muse 的掩码生成技术从单一图像生成扩展到多模态理解与生成任务。"
+      }
+    ]
+  },
+  "parse_error": null
+}

@@ -1,0 +1,122 @@
+{
+  "arxiv_id": "2406.07550",
+  "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+  "cn_oneliner": "基于 VQGAN 的 2D 网格 tokenization，引入 1D 序列 latent 表示和 Transformer 编码器，实现 32 token 压缩 256×256 图像（较此前 256-1024 token 压缩 8×-64×），生成质量超越 DiT 且速度快 74-410 倍",
+  "cn_abstract": "本文提出 TiTok（Transformer-based 1-Dimensional Tokenizer），将图像从传统的 2D 网格 latent 表示转变为 1D 序列表示。通过将 256×256×3 图像压缩至仅 32 个离散 token（此前方法需要 256 或 1024 个 token），在 ImageNet 256×256 上使用相同 MaskGIT 生成框架达到 gFID=1.97，较基线提升 4.21。在 ImageNet 512×512 上，TiTok 超越 DiT-XL/2（gFID 2.74 vs 3.04），生成速度快 410 倍。最佳变体 gFID=2.13 超越 DiT-XL/2（3.04），且速度快 74 倍。",
+  "contribution_type": "significant",
+  "editorial_note": "本文建立在 VQ-VAE/VQGAN（离散 token 表示）、ViT（Transformer 编码器/解码器架构）、MaskGIT（生成框架）基础上，核心想法受 DETR/Perceiver 中 object queries 和 1D 表示的启发。实质贡献是打破传统 2D 网格 latent 限制，用任意数量（32-128）的 1D token 表示完整图像，并通过两阶段训练策略（proxy codes 预热 + decoder 微调）解决训练稳定性问题。价值判断：有意义的方法创新，首次系统性验证 1D tokenization 可行性，在保持生成质量的同时实现显著压缩比和加速，但本质上是通过架构改变提升了压缩效率而非根本性的生成能力突破。",
+  "why_read": "研究图像生成效率优化的工程师和研究者，可学习 1D tokenization 范式及如何通过模型规模与 token 数量的权衡实现高效生成",
+  "method_variants": [
+    {
+      "base_method": "vq-vae",
+      "variant_tag": "vq-vae:1d-tokenization",
+      "description": "VQ-VAE 将图像编码为 2D 网格latent；本文改为 1D 序列 latent，token 数量从 256-1024 降至 32-128，解决图像冗余未被充分利用的问题"
+    },
+    {
+      "base_method": "vit",
+      "variant_tag": "vit:tokenizer-decoder",
+      "description": "ViT 通常用于分类；本文将其作为 VQ tokenization 的 encoder 和 decoder，利用 Transformer 全局建模能力"
+    },
+    {
+      "base_method": "maskgit",
+      "variant_tag": "maskgit:1d-tokens",
+      "description": "MaskGIT 使用 2D VQGAN tokenizer；本文将其替换为 TiTok 1D tokenizer，验证了 1D 表示在非自回归生成中的有效性"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "extends",
+      "note": "VQGAN 的原始工作，本文的核心 baseline，使用 2D 网格 tokenization"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "uses",
+      "note": "采用其作为生成框架，用 TiTok 替换其 VQGAN tokenizer"
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "arxiv_id": "2010.11929",
+      "role": "uses",
+      "note": "ViT 架构，用于 TiTok 的 encoder 和 decoder"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "contrasts",
+      "note": "DiT 扩散模型，本文在 ImageNet 512×512 上与其对比（gFID 2.74 vs 3.04）"
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "arxiv_id": "2110.04627",
+      "role": "supports",
+      "note": "ViT-VQGAN， transformer-based VQ 方法的改进"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "supports",
+      "note": "LDM 扩散模型在 latent 空间生成，是本文对比的基线之一"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "supports",
+      "note": "VQ-VAE 原始工作，离散表示学习的奠基性工作"
+    },
+    {
+      "title": "End-to-End Object Detection with Transformers",
+      "arxiv_id": "2005.12872",
+      "role": "supports",
+      "note": "DETR 使用 object queries 的 1D 表示启发本文"
+    },
+    {
+      "title": "BLIP-2: Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models",
+      "arxiv_id": "2301.12597",
+      "role": "supports",
+      "note": "Perceiver Resampler 架构，用于图像到 1D token 序列的转换"
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "arxiv_id": "2111.06377",
+      "role": "supports",
+      "note": "MAE 的 masked token 机制被本文 decoder 采用"
+    },
+    {
+      "title": "Autoregressive Image Generation using Residual Quantization",
+      "arxiv_id": "2203.01941",
+      "role": "supports",
+      "note": "RQ-VAE，多层向量量化，是对 VQ 的改进之一"
+    },
+    {
+      "title": "MAGVIT: Masked Generative Video Transformer",
+      "arxiv_id": "2212.05199",
+      "role": "supports",
+      "note": "MAGVIT-v2 的 lookup-free quantization 被本文提及"
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "arxiv_id": "2309.15505",
+      "role": "supports",
+      "note": "FSQ 无查询量化方法，被本文列为未来可结合的方向"
+    }
+  ],
+  "idea": [
+    {
+      "title": "结合更先进的量化方法提升 codebook 效率",
+      "why": "本文使用标准 VQ 量化，可结合 FSQ（Finite Scalar Quantization）或 MAGVIT-v2 的 lookup-free quantization 进一步提升性能。本文作者在表格注释中提到 advanced quantization methods may further benefit TiTok。已有工作在 2D tokenization 上验证了这些方法的有效性，迁移到 1D tokenization 是合理的扩展。"
+    },
+    {
+      "title": "扩展到视频生成任务",
+      "why": "本文专注于图像 tokenization，视频可以看作图像的时间序列，1D tokenization 思想可以扩展到视频的时空联合建模。MAGVIT 已验证了 VQ 在视频上的可行性，TiTok 的 1D 表示可能更适合视频的时序压缩。本文局限性章节明确提到将扩展到视频是未来的重要方向。"
+    },
+    {
+      "title": "结合扩散模型解码器替代 ViT decoder",
+      "why": "本文使用 ViT decoder 进行重建，可探索用 diffusion decoder 替代以提升重建质量。LDM 已证明 latent space + diffusion decoder 的有效性，将 VQ latent 喂入 diffusion decoder 可结合两者的优势。本文关注的是 tokenization 阶段，生成用的是 MaskGIT，但理论上可以用 diffusion 作为 decoder。"
+    }
+  ],
+  "transcript_path": "/Users/lanlanlan/.openclaw/agents/paper-analyst/sessions/810bd16d-03c0-4d49-91fe-96de9551681a.jsonl",
+  "session_time": "2026-03-14 19:52:33"
+}

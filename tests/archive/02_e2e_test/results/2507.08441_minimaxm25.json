@@ -1,0 +1,82 @@
+{
+  "arxiv_id": "2507.08441",
+  "model": "minimaxm25",
+  "timestamp": "2026-03-12T23:50:30.724453",
+  "latency_s": 26.58,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于冻结视觉基础模型(DINOv2/SigLIP2)作为编码器，引入区域自适应量化和语义重建目标，实现高效图像分词器，gFID 1.36\",\"cn_abstract\":\"本文提出VFMTok，利用冻结的预训练视觉基础模型作为分词器编码器。为提升效能，本文引入两个关键组件：区域自适应量化框架减少2D网格特征的冗余，以及语义重建目标使分词器输出与基础模型表示对齐以保持语义保真度。在ImageNet上，VFMTok达到gFID 1.36，训练收敛加速3倍，无需classifier-free guidance实现高质量类条件生成。\",\"contribution_type\":\"significant\",\"editorial_note\":\"[前驱] 本文建立在VQGAN架构基础上，将编码器替换为冻结的视觉基础模型(DINOv2/SigLIP/SigLIP2)，量化器沿用现有设计。[贡献] 核心创新是直接使用冻结VFM作为编码器并冻结权重，提出区域自适应采样减少2D网格冗余，增加语义重建损失对齐VFM特征空间。[判断] 首次系统验证了VFM特征可直接用于自回归图像生成，解决了VFM特征用于生成任务的有效性问题，是有实质进展的工作。\",\"why_read\":\"如果你做自回归图像生成或图像分词研究，会得到一个利用预训练VFM特征的新思路，区域自适应设计对减少token冗余有参考价值，且训练收敛速度提升3倍的实际收益明确。\",\"method_variants\":[{\"base_method\":\"vqgan\",\"variant_tag\":\"vqgan:frozen-vfm-encoder\",\"description\":\"原VQGAN做法是从头训练编码器；本文改为冻结预训练视觉基础模型(DINOv2/SigLIP2)作为编码器提取特征，保留语义信息并减少训练成本\"},{\"base_method\":\"vqgan\",\"variant_tag\":\"vqgan:region-adaptive-quantization\",\"description\":\"原VQGAN做法是对规则2D网格特征均匀量化；本文改为区域自适应采样通过可变形注意力对相似模式区域进行非均匀采样，减少冗余并提升token效率\"},{\"base_method\":\"vqgan\",\"variant_tag\":\"vqgan:semantic-reconstruction\",\"description\":\"原VQGAN做法是仅用像素重建损失；本文增加语义重建损失，让分词器输出与冻结VFM的特征空间对齐，保持高层语义保真度\"}],\"core_cite\":[{\"title\":\"Taming transformers for high-resolution image synthesis\",\"role\":\"extends\",\"note\":\"VQGAN架构是本文分词器的基础框架\"},{\"title\":\"LlamaGen: Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation\",\"role\":\"extends\",\"note\":\"采用LlamaGen的VQGAN实现作为基线架构\"},{\"title\":\"Siglip 2: Multilingual vision-language encoders with improved semantic understanding, localization, and dense features\",\"role\":\"uses\",\"note\":\"使用SigLIP2作为冻结编码器提取语义特征\"},{\"title\":\"Learning transferable visual models from natural language supervision\",\"role\":\"uses\",\"note\":\"使用CLIP作为冻结编码器之一进行对比实验\"},{\"title\":\"DINOv2: Learning Robust Visual Features without Supervision\",\"role\":\"uses\",\"note\":\"使用DINOv2作为冻结编码器提取自监督特征\"},{\"title\":\"Visual autoregressive modeling: Scalable image generation via next-scale prediction\",\"role\":\"contrasts\",\"note\":\"VAR是自回归图像生成的重要baseline\"},{\"title\":\"Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation\",\"role\":\"contrasts\",\"note\":\"LlamaGen是主要对比的AR生成方法\"},{\"title\":\"Efficient Diffusion Models with Transformers\",\"role\":\"supports\",\"note\":\"支持使用VFM特征有助于生成模型训练的观点\"},{\"title\":\"Tokenflow: Unified image tokenizer for multimodal understanding and generation\",\"role\":\"mentions\",\"note\":\"相关工作尝试用VFM特征增强tokenizer\"},{\"title\":\"Stabilize the latent space for image autoregressive modeling: A unified perspective\",\"role\":\"mentions\",\"note\":\"相关工作尝试用VFM特征初始化量化器\"}]}",
+  "cn_oneliner": "基于冻结视觉基础模型(DINOv2/SigLIP2)作为编码器，引入区域自适应量化和语义重建目标，实现高效图像分词器，gFID 1.36",
+  "cn_abstract": "本文提出VFMTok，利用冻结的预训练视觉基础模型作为分词器编码器。为提升效能，本文引入两个关键组件：区域自适应量化框架减少2D网格特征的冗余，以及语义重建目标使分词器输出与基础模型表示对齐以保持语义保真度。在ImageNet上，VFMTok达到gFID 1.36，训练收敛加速3倍，无需classifier-free guidance实现高质量类条件生成。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱] 本文建立在VQGAN架构基础上，将编码器替换为冻结的视觉基础模型(DINOv2/SigLIP/SigLIP2)，量化器沿用现有设计。[贡献] 核心创新是直接使用冻结VFM作为编码器并冻结权重，提出区域自适应采样减少2D网格冗余，增加语义重建损失对齐VFM特征空间。[判断] 首次系统验证了VFM特征可直接用于自回归图像生成，解决了VFM特征用于生成任务的有效性问题，是有实质进展的工作。",
+  "why_read": "如果你做自回归图像生成或图像分词研究，会得到一个利用预训练VFM特征的新思路，区域自适应设计对减少token冗余有参考价值，且训练收敛速度提升3倍的实际收益明确。",
+  "method_variants": [
+    {
+      "base_method": "vqgan",
+      "variant_tag": "vqgan:frozen-vfm-encoder",
+      "description": "原VQGAN做法是从头训练编码器；本文改为冻结预训练视觉基础模型(DINOv2/SigLIP2)作为编码器提取特征，保留语义信息并减少训练成本"
+    },
+    {
+      "base_method": "vqgan",
+      "variant_tag": "vqgan:region-adaptive-quantization",
+      "description": "原VQGAN做法是对规则2D网格特征均匀量化；本文改为区域自适应采样通过可变形注意力对相似模式区域进行非均匀采样，减少冗余并提升token效率"
+    },
+    {
+      "base_method": "vqgan",
+      "variant_tag": "vqgan:semantic-reconstruction",
+      "description": "原VQGAN做法是仅用像素重建损失；本文增加语义重建损失，让分词器输出与冻结VFM的特征空间对齐，保持高层语义保真度"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Taming transformers for high-resolution image synthesis",
+      "role": "extends",
+      "note": "VQGAN架构是本文分词器的基础框架"
+    },
+    {
+      "title": "LlamaGen: Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "role": "extends",
+      "note": "采用LlamaGen的VQGAN实现作为基线架构"
+    },
+    {
+      "title": "Siglip 2: Multilingual vision-language encoders with improved semantic understanding, localization, and dense features",
+      "role": "uses",
+      "note": "使用SigLIP2作为冻结编码器提取语义特征"
+    },
+    {
+      "title": "Learning transferable visual models from natural language supervision",
+      "role": "uses",
+      "note": "使用CLIP作为冻结编码器之一进行对比实验"
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "role": "uses",
+      "note": "使用DINOv2作为冻结编码器提取自监督特征"
+    },
+    {
+      "title": "Visual autoregressive modeling: Scalable image generation via next-scale prediction",
+      "role": "contrasts",
+      "note": "VAR是自回归图像生成的重要baseline"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "role": "contrasts",
+      "note": "LlamaGen是主要对比的AR生成方法"
+    },
+    {
+      "title": "Efficient Diffusion Models with Transformers",
+      "role": "supports",
+      "note": "支持使用VFM特征有助于生成模型训练的观点"
+    },
+    {
+      "title": "Tokenflow: Unified image tokenizer for multimodal understanding and generation",
+      "role": "mentions",
+      "note": "相关工作尝试用VFM特征增强tokenizer"
+    },
+    {
+      "title": "Stabilize the latent space for image autoregressive modeling: A unified perspective",
+      "role": "mentions",
+      "note": "相关工作尝试用VFM特征初始化量化器"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "arxiv_id": "2511.20565",
+  "model": "minimaxm25",
+  "timestamp": "2026-03-12T23:51:12.073852",
+  "latency_s": 25.12,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于DINO特征引入双分支结构融合浅层纹理与深层语义，并提出PCA重新加权稳定高维VQ量化\",\"cn_abstract\":\"本文提出DINO-Tok，将预训练DINO模型适配为视觉tokenizer。核心设计包括：1）双分支结构融合浅层特征（F1，保留细粒度纹理）与深层特征（FL，编码全局语义），构建信息完备的潜空间；2）全局PCA重新加权机制，根据特征通道的方差重新校准L2距离，解决高维空间VQ中距离集中和codebook坍缩问题。在ImageNet 256×256上，DINO-Tok达到28.54 PSNR（AE模型）和23.98 PSNR（VQ模型），显著超越既往tokenizer。\",\"contribution_type\":\"incremental\",\"editorial_note\":\"[前驱]本文建立在DINOv2/v3层次特征的分析之上，核心模块来自：1）DINO预训练模型的特征提取；2）UNet风格的多尺度特征融合思路；3）VQ-VAE的离散化框架。[贡献]作者真正做的事情非常具体：把DINO的浅层和深层特征拼接起来做重建，以及用PCA特征值对VQ的L2距离加权。前者解决语义-纹理冲突，后者解决高维VQ不稳定。[判断]这个工作做了应该做的事——把已有认知（浅层有纹理、深层有语义、高维VQ有问题）转化为具体技术方案并验证有效。效果确实好（PSNR显著提升），但核心思路是可预期的改进，而非范式改变。\",\"why_read\":\"如果你在研究visual tokenizer或 representation-aligned generation，这篇论文提供了如何利用预训练模型层次特征的清晰思路，特别是PCA reweighting这个简单但有效的技巧。\",\"method_variants\":[{\"base_method\":\"dinov2\",\"variant_tag\":\"dinov2:dual-branch-shallow-deep-fusion\",\"description\":\"原dinov2仅用最后一层特征做重建，缺乏细粒度纹理；本文改为同时注入第一层特征投影，双分支融合后做解码，保留高频细节和颜色信息\"},{\"base_method\":\"vqvae\",\"variant_tag\":\"vqvae:pca-reweighting\",\"description\":\"原vqvae直接用L2距离查找codebook，在高维空间存在距离集中问题；本文改为根据PCA特征值对各维度距离加权，突出高语义维度，抑制噪声维度，提升VQ稳定性\"},{\"base_method\":\"rae\",\"variant_tag\":\"rae:dual-branch-enhancement\",\"description\":\"原rae直接使用冻结DINO encoder做autoencoder，出现颜色偏移和细节缺失；本文改为dual-branch设计融合浅层特征来恢复纹理\"}],\"core_cite\":[{\"title\":\"Dinov2: Learning robust visual features without supervision\",\"role\":\"extends\",\"note\":\"直接使用冻结DINO encoder作为tokenizer的核心backbone\"},{\"title\":\"Diffusion Transformers with Representation Autoencoders | arxiv:2510.11690\",\"role\":\"contrasts\",\"note\":\"同期工作RAE同样使用冻结encoder，但本文指出其存在颜色偏移问题并对比改进效果\"},{\"title\":\"Reconstruction vs. generation: Taming optimization dilemma in latent diffusion models\",\"role\":\"supports\",\"note\":\"引用VA-VAE说明蒸馏预训练特征到tokenizer的思路\"},{\"title\":\"Vision foundation models as effective visual tokenizers for autoregressive image generation | arxiv:2507.08441\",\"role\":\"supports\",\"note\":\"引用VFM-Tok说明利用VFM特征做tokenizer的趋势\"},{\"title\":\"Finite scalar quantization: Vq-vae made simple | arxiv:2309.15505\",\"role\":\"supports\",\"note\":\"引用FSQ说明VQ技术的演进\"},{\"title\":\"Language Model Beats Diffusion--Tokenizer is Key to Visual Generation | arxiv:2310.05737\",\"role\":\"supports\",\"note\":\"引用LFQ说明lookup-free quantization思路\"},{\"title\":\"Autoregressive model beats diffusion: Llama for scalable image generation | arxiv:2406.06525\",\"role\":\"supports\",\"note\":\"引用LlamaGen说明tokenizer对AR生成的重要性\"},{\"title\":\"Emu3: Next-token prediction is all you need | arxiv:2409.18869\",\"role\":\"supports\",\"note\":\"引用Emu3说明离散tokenizer在生成模型中的应用\"},{\"title\":\"On the surprising behavior of distance metrics in high dimensional space\",\"role\":\"supports\",\"note\":\"引用距离集中理论解释高维VQ不稳定的根本原因\"},{\"title\":\"U-net: Convolutional networks for biomedical image segmentation\",\"role\":\"supports\",\"note\":\"引用UNet说明多尺度特征融合在重建任务中的有效性\"}]}",
+  "cn_oneliner": "基于DINO特征引入双分支结构融合浅层纹理与深层语义，并提出PCA重新加权稳定高维VQ量化",
+  "cn_abstract": "本文提出DINO-Tok，将预训练DINO模型适配为视觉tokenizer。核心设计包括：1）双分支结构融合浅层特征（F1，保留细粒度纹理）与深层特征（FL，编码全局语义），构建信息完备的潜空间；2）全局PCA重新加权机制，根据特征通道的方差重新校准L2距离，解决高维空间VQ中距离集中和codebook坍缩问题。在ImageNet 256×256上，DINO-Tok达到28.54 PSNR（AE模型）和23.98 PSNR（VQ模型），显著超越既往tokenizer。",
+  "contribution_type": "incremental",
+  "editorial_note": "[前驱]本文建立在DINOv2/v3层次特征的分析之上，核心模块来自：1）DINO预训练模型的特征提取；2）UNet风格的多尺度特征融合思路；3）VQ-VAE的离散化框架。[贡献]作者真正做的事情非常具体：把DINO的浅层和深层特征拼接起来做重建，以及用PCA特征值对VQ的L2距离加权。前者解决语义-纹理冲突，后者解决高维VQ不稳定。[判断]这个工作做了应该做的事——把已有认知（浅层有纹理、深层有语义、高维VQ有问题）转化为具体技术方案并验证有效。效果确实好（PSNR显著提升），但核心思路是可预期的改进，而非范式改变。",
+  "why_read": "如果你在研究visual tokenizer或 representation-aligned generation，这篇论文提供了如何利用预训练模型层次特征的清晰思路，特别是PCA reweighting这个简单但有效的技巧。",
+  "method_variants": [
+    {
+      "base_method": "dinov2",
+      "variant_tag": "dinov2:dual-branch-shallow-deep-fusion",
+      "description": "原dinov2仅用最后一层特征做重建，缺乏细粒度纹理；本文改为同时注入第一层特征投影，双分支融合后做解码，保留高频细节和颜色信息"
+    },
+    {
+      "base_method": "vqvae",
+      "variant_tag": "vqvae:pca-reweighting",
+      "description": "原vqvae直接用L2距离查找codebook，在高维空间存在距离集中问题；本文改为根据PCA特征值对各维度距离加权，突出高语义维度，抑制噪声维度，提升VQ稳定性"
+    },
+    {
+      "base_method": "rae",
+      "variant_tag": "rae:dual-branch-enhancement",
+      "description": "原rae直接使用冻结DINO encoder做autoencoder，出现颜色偏移和细节缺失；本文改为dual-branch设计融合浅层特征来恢复纹理"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Dinov2: Learning robust visual features without supervision",
+      "role": "extends",
+      "note": "直接使用冻结DINO encoder作为tokenizer的核心backbone"
+    },
+    {
+      "title": "Diffusion Transformers with Representation Autoencoders | arxiv:2510.11690",
+      "role": "contrasts",
+      "note": "同期工作RAE同样使用冻结encoder，但本文指出其存在颜色偏移问题并对比改进效果"
+    },
+    {
+      "title": "Reconstruction vs. generation: Taming optimization dilemma in latent diffusion models",
+      "role": "supports",
+      "note": "引用VA-VAE说明蒸馏预训练特征到tokenizer的思路"
+    },
+    {
+      "title": "Vision foundation models as effective visual tokenizers for autoregressive image generation | arxiv:2507.08441",
+      "role": "supports",
+      "note": "引用VFM-Tok说明利用VFM特征做tokenizer的趋势"
+    },
+    {
+      "title": "Finite scalar quantization: Vq-vae made simple | arxiv:2309.15505",
+      "role": "supports",
+      "note": "引用FSQ说明VQ技术的演进"
+    },
+    {
+      "title": "Language Model Beats Diffusion--Tokenizer is Key to Visual Generation | arxiv:2310.05737",
+      "role": "supports",
+      "note": "引用LFQ说明lookup-free quantization思路"
+    },
+    {
+      "title": "Autoregressive model beats diffusion: Llama for scalable image generation | arxiv:2406.06525",
+      "role": "supports",
+      "note": "引用LlamaGen说明tokenizer对AR生成的重要性"
+    },
+    {
+      "title": "Emu3: Next-token prediction is all you need | arxiv:2409.18869",
+      "role": "supports",
+      "note": "引用Emu3说明离散tokenizer在生成模型中的应用"
+    },
+    {
+      "title": "On the surprising behavior of distance metrics in high dimensional space",
+      "role": "supports",
+      "note": "引用距离集中理论解释高维VQ不稳定的根本原因"
+    },
+    {
+      "title": "U-net: Convolutional networks for biomedical image segmentation",
+      "role": "supports",
+      "note": "引用UNet说明多尺度特征融合在重建任务中的有效性"
+    }
+  ]
+}

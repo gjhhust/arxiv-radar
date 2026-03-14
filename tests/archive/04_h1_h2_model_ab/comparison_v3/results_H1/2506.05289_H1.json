@@ -1,0 +1,221 @@
+{
+  "arxiv_id": "2506.05289",
+  "title": "AliTok: Towards Sequence Modeling Alignment between Tokenizer and Autoregressive Model",
+  "cn_oneliner": "基于VQ-VAE/图像tokenizer，引入双向编码器+因果解码器结构+前缀tokens，实现gFID 1.28超越SOTA扩散模型",
+  "cn_abstract": "本文针对自回归图像生成中tokenizer与生成模型之间的结构不对齐问题，提出AliTok对齐tokenizer。核心方法：双向编码器受因果解码器约束，强制编码器产生具有前向依赖性的token序列，同时保留语义丰富性。引入前缀tokens解决第一行重建问题，采用两阶段训练策略提升重建质量。实验表明：177M参数模型在ImageNet-256上达到gFID 1.44、IS 319.5；662M参数模型达到gFID 1.28，超越LightningDiT且采样速度快10倍",
+  "contribution_type": "significant",
+  "editorial_note": "前驱局限：传统图像tokenizer采用双向编码器进行高效压缩，导致token之间形成双向依赖关系，与自回归模型的单向预测范式存在根本性冲突，使得条件概率分布具有极高不确定性，严重限制生成质量。本文解决：AliTok通过因果解码器约束双向编码器，迫使编码器学习具有前向依赖结构的表示，同时引入前缀tokens解决首行重建问题，采用两阶段训练平衡生成友好性与重建质量。编辑判断：这是首个标准自回归模型超越SOTA扩散模型的工作，在ImageNet上实现gFID 1.28，采样速度提升10倍，是自回归视觉生成的重要突破。",
+  "why_read": "生成模型研究者与从业者：了解如何通过改造tokenizer结构解决自回归模型与扩散模型长期竞争的性能差距，获得可直接复现的技术细节；多模态统一研究者：理解如何通过数据结构层面的改进简化生成范式，为多模态统一提供新思路",
+  "method_variants": [
+    {
+      "base_method": "vq-vae",
+      "variant_tag": "vq-vae:双向编码器+因果解码器",
+      "description": "vq-vae原本使用双向编码器压缩图像；本文改为双向编码器+因果解码器架构，因果解码器作为强隐式正则器，迫使编码器产生具有前向依赖的token表示"
+    },
+    {
+      "base_method": "vit",
+      "variant_tag": "vit:前缀tokens",
+      "description": "ViT原本处理全部patch tokens；本文为第一行引入K=16个前缀tokens，配套辅助损失提供第一行的上下文先验，解决因果约束下首行重建质量差的问题"
+    },
+    {
+      "base_method": "tokenizer",
+      "variant_tag": "tokenizer:两阶段训练",
+      "description": "传统tokenizer单阶段训练；本文采用两阶段策略：第一阶段训练因果解码器约束的编码器，第二阶段冻结编码器并重训双向解码器，平衡生成友好性与重建质量"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "extends",
+      "note": "VAR证明多尺度预测对自回归生成有效，本文通过tokenizer结构改进实现标准AR模型的类似效果"
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "arxiv_id": "2406.11838",
+      "role": "uses",
+      "note": "MAR的掩码自回归思想被本文引用，其研究表明双向依赖是AR图像生成的核心挑战"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "uses",
+      "note": "MaskGIT证明双向建模对视觉生成有效，本文通过tokenizer端解决而非修改模型"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "uses",
+      "note": "VQ-GAN将GAN引入tokenizer提升视觉质量，本文的tokenizer采用类似的对抗训练"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "uses",
+      "note": "VQ-VAE的离散表示学习是本文tokenizer量化部分的理论基础"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "extends",
+      "note": "该工作指出tokenizer是视觉生成的关键，本文进一步揭示双向依赖问题并提出解决方案"
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "arxiv_id": "2409.04410",
+      "role": "uses",
+      "note": "Open-MAGVIT2的GAN实现被本文用于tokenizer的对抗损失"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "contrasts",
+      "note": "DiT是 diffusion Transformer；本文证明标准AR模型可超越DiT级别的扩散模型"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "extends",
+      "note": "LlamaGen证明了标准AR模型的能力上限；本文通过改进tokenizer进一步提升AR模型性能"
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "uses",
+      "note": "VAR的多尺度预测思想被本文消融实验对比"
+    },
+    {
+      "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "arxiv_id": "2504.08736",
+      "role": "uses",
+      "note": "GigaTok的tokenizer重建性能被本文作为对比基准"
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "arxiv_id": "2502.13967",
+      "role": "uses",
+      "note": "FlexTok的多粒度语义编码思想被本文引用"
+    }
+  ],
+  "idea": [
+    {
+      "title": "tokenizer结构与生成范式对齐",
+      "why": "当前工作聚焦于修改生成模型架构(MAR/VAR)来适应数据，本文证明可从tokenizer端解决问题。未来可探索更彻底的前向依赖结构，如完全禁止token之间的非因果信息交互。"
+    },
+    {
+      "title": "语义压缩与前向依赖的平衡",
+      "why": "AliTok通过因果解码器实现了生成友好性，但代价是重建质量下降(GigaTok rFID 0.81 vs AliTok rFID 0.86)。可探索更高效的编码策略，在保持前向依赖的同时提升语义压缩效率。"
+    },
+    {
+      "title": "自回归建模目标的重新思考",
+      "why": "传统tokenizer优化重建质量，但忽略了后续AR生成任务的需求。可引入基于生成任务的弱监督信号，直接优化tokenizer的生成友好性，而非仅依赖重建的隐式约束。"
+    }
+  ],
+  "_cite_sims": [
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Image Generation without Vector Quantization",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "best_score": 1.0,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "best_score": 1.0,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "best_score": 1.0,
+      "best_match": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "pass": true
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "best_score": 1.0,
+      "best_match": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "pass": true
+    }
+  ],
+  "_cite_matched": 12,
+  "_cite_total": 12,
+  "_cite_rate": 1.0,
+  "_ref_count": 52,
+  "_mv_count": 3,
+  "_mv_issues": [],
+  "_mv_ok": true,
+  "_idea_count": 3,
+  "_idea_analysis": [
+    {
+      "title": "tokenizer结构与生成范式对齐",
+      "why_len": 88,
+      "has_gap": false,
+      "restate": false
+    },
+    {
+      "title": "语义压缩与前向依赖的平衡",
+      "why_len": 103,
+      "has_gap": false,
+      "restate": false
+    },
+    {
+      "title": "自回归建模目标的重新思考",
+      "why_len": 83,
+      "has_gap": true,
+      "restate": false
+    }
+  ],
+  "_idea_restate": 0,
+  "_idea_gap": 1,
+  "_idea_quality": 0.333,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14"
+}

@@ -1,0 +1,176 @@
+{
+  "cn_oneliner": "基于VQ-VAE视频分词范式，引入时长比例信息假设和非对称帧率训练，实现仅用1/8 tokens达到竞争性重建质量和最优生成保真度",
+  "cn_abstract": "现代视频生成框架基于潜在扩散模型，但在分词方面存在低效问题。现有分词器采用帧比例信息假设，导致计算成本与帧率成线性关系。本文提出时长比例信息假设：视频信息容量上限与时长成比例，而非帧数。基于此提出VFRTok，一个基于Transformer的视频分词器，通过编码器和解码器之间的非对称帧率训练实现可变帧率编码和解码。同时提出Partial RoPE来解耦位置和内容建模，将相关patches分组为统一token，有效提升内容感知能力。实验表明VFRTok仅需1/8 tokens即可达到竞争力的重建质量和最先进的生成保真度。",
+  "contribution_type": "significant",
+  "editorial_note": "VFRTok是一个视频分词器的创新工作，从信息论角度重新思考视频分词问题。其核心贡献包括：一是提出时长比例信息假设，从根本上改变视频信息容量的认知，认为视频信息量与时长成正比而非帧数；二是设计非对称帧率训练实现可变帧率编码解码，使编码器和解码器可以使用不同的帧率训练；三是提出Partial RoPE改进位置建模，将相关patches分组为统一token。实验结果显示仅需1/8的tokens即可达到优秀的重建和生成质量，为视频生成领域的分词器设计提供了新的思路。",
+  "why_read": "视频生成和扩散模型研究者可以学习可变帧率分词如何显著提升token效率",
+  "method_variants": [],
+  "core_cite": [
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "uses",
+      "note": "VFRTok采用DiT架构作为分词器的核心框架"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "uses",
+      "note": "潜在扩散模型是视频生成的基础技术"
+    },
+    {
+      "title": "Latte: Latent Diffusion Transformer for Video Generation",
+      "arxiv_id": "2401.03048",
+      "role": "uses",
+      "note": "视频生成领域的Transformer架构参考"
+    },
+    {
+      "title": "OmniTokenizer: A Joint Image-Video Tokenizer for Visual Generation",
+      "arxiv_id": "2406.09399",
+      "role": "contrasts",
+      "note": "对比现有视频分词器的设计方法"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "uses",
+      "note": "MASK机制用于生成模型的思路"
+    },
+    {
+      "title": "CogVideoX: Text-to-Video Diffusion Models with An Expert Transformer",
+      "arxiv_id": "2408.06072",
+      "role": "uses",
+      "note": "视频生成模型的架构参考"
+    },
+    {
+      "title": "HunyuanVideo: A Systematic Framework For Large Video Generative Models",
+      "arxiv_id": "2412.03603",
+      "role": "uses",
+      "note": "大规模视频生成系统的设计参考"
+    },
+    {
+      "title": "Wan: Open and Advanced Large-Scale Video Generative Models",
+      "arxiv_id": "2503.20314",
+      "role": "uses",
+      "note": "开源视频生成模型的实现参考"
+    },
+    {
+      "title": "Masked Autoencoders Are Effective Tokenizers for Diffusion Models",
+      "arxiv_id": "2502.03444",
+      "role": "extends",
+      "note": "MAE作为分词器的方法基础"
+    },
+    {
+      "title": "SoftVQ-VAE: Efficient 1-Dimensional Continuous Tokenizer",
+      "arxiv_id": "2412.10958",
+      "role": "extends",
+      "note": "连续分词器的设计思路"
+    },
+    {
+      "title": "LARP: Tokenizing Videos with a Learned Autoregressive Generative Prior",
+      "arxiv_id": "2410.21264",
+      "role": "contrasts",
+      "note": "对比视频分词器的不同方法"
+    },
+    {
+      "title": "Classifier-Free Diffusion Guidance",
+      "arxiv_id": "2207.12598",
+      "role": "uses",
+      "note": "扩散模型引导技术的应用"
+    }
+  ],
+  "idea": [
+    {
+      "title": "时长比例信息假设",
+      "why": "提出视频信息容量与时长成正比而非帧数，从信息论角度重新定义视频分词的理论基础，为可变帧率分词提供理论依据"
+    },
+    {
+      "title": "非对称帧率训练",
+      "why": "编码器和解码器使用不同的帧率训练，实现可变帧率编码解码，使不同内容可以使用不同的采样密度，大幅提升token效率"
+    },
+    {
+      "title": "Partial RoPE位置编码",
+      "why": "提出部分旋转位置嵌入解耦位置和内容建模，将相关patches分组为统一token，增强内容感知能力提升生成质量"
+    }
+  ],
+  "_similarities": [
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Latte: Latent Diffusion Transformer for Video Generation",
+      "best_score": 1.0,
+      "best_match": "Latte: Latent Diffusion Transformer for Video Generation",
+      "pass": true
+    },
+    {
+      "title": "OmniTokenizer: A Joint Image-Video Tokenizer for Visual Generation",
+      "best_score": 1.0,
+      "best_match": "OmniTokenizer: A Joint Image-Video Tokenizer for Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "CogVideoX: Text-to-Video Diffusion Models with An Expert Transformer",
+      "best_score": 1.0,
+      "best_match": "CogVideoX: Text-to-Video Diffusion Models with An Expert Transformer",
+      "pass": true
+    },
+    {
+      "title": "HunyuanVideo: A Systematic Framework For Large Video Generative Models",
+      "best_score": 1.0,
+      "best_match": "HunyuanVideo: A Systematic Framework For Large Video Generative Models",
+      "pass": true
+    },
+    {
+      "title": "Wan: Open and Advanced Large-Scale Video Generative Models",
+      "best_score": 1.0,
+      "best_match": "Wan: Open and Advanced Large-Scale Video Generative Models",
+      "pass": true
+    },
+    {
+      "title": "Masked Autoencoders Are Effective Tokenizers for Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "Masked Autoencoders Are Effective Tokenizers for Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "SoftVQ-VAE: Efficient 1-Dimensional Continuous Tokenizer",
+      "best_score": 1.0,
+      "best_match": "SoftVQ-VAE: Efficient 1-Dimensional Continuous Tokenizer",
+      "pass": true
+    },
+    {
+      "title": "LARP: Tokenizing Videos with a Learned Autoregressive Generative Prior",
+      "best_score": 1.0,
+      "best_match": "LARP: Tokenizing Videos with a Learned Autoregressive Generative Prior",
+      "pass": true
+    },
+    {
+      "title": "Classifier-Free Diffusion Guidance",
+      "best_score": 1.0,
+      "best_match": "Classifier-Free Diffusion Guidance",
+      "pass": true
+    }
+  ],
+  "_matched": 12,
+  "_total": 12,
+  "_pass_rate": 1.0,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14",
+  "_ref_count": 36
+}

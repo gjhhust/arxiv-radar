@@ -1,0 +1,17 @@
+{
+  "paper_id": "2603.06449",
+  "scheme": "A",
+  "model": "wq/claude46",
+  "latency_s": 0.0,
+  "success": false,
+  "output": {
+    "cn_abstract": "",
+    "cn_oneliner": "",
+    "contribution_type": "",
+    "editorial_note": "",
+    "why_read": "",
+    "method_variants": [],
+    "key_refs": []
+  },
+  "parse_error": "call1_error: HTTP Error 429: Too Many Requests; call2_error: HTTP Error 429: Too Many Requests"
+}

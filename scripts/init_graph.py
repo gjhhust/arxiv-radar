@@ -181,6 +181,7 @@ def run_domain_expansion(
     years_back: int = 3,
     run_baseline: bool = True,
     rank_refs: bool = False,
+    no_analyze: bool = False,
 ) -> dict:
     """
     Full domain expansion pipeline.
@@ -193,6 +194,7 @@ def run_domain_expansion(
         years_back: only include papers from last N years
         run_baseline: also run baseline extraction after expansion
         rank_refs: use LLM to rank references and extract method variants
+        no_analyze: if True, skip all analysis (baseline + rank_refs), only crawl data
 
     Returns:
         stats dict
@@ -213,6 +215,14 @@ def run_domain_expansion(
                            max_papers=max_papers, years_back=years_back)
 
     total_stats = {"bfs": bfs_stats}
+
+    # Skip all analysis if no_analyze is True
+    if no_analyze:
+        logger.info("\n[NO-ANALYZE MODE] Skipping baseline extraction and LLM ranking")
+        db_stats = db.stats()
+        total_stats["db"] = db_stats
+        logger.info(f"\nFinal DB stats: {json.dumps(db_stats, indent=2)}")
+        return total_stats
 
     # Run baseline extraction on all added papers
     if run_baseline:
@@ -260,6 +270,8 @@ if __name__ == "__main__":
     parser.add_argument("--no-baseline", action="store_true")
     parser.add_argument("--rank-refs", action="store_true",
                         help="Use LLM (wq/claude46) to rank refs and extract method variants")
+    parser.add_argument("--no-analyze", action="store_true",
+                        help="Skip all analysis (baseline + rank_refs), only crawl raw data")
     parser.add_argument("--dry-run", action="store_true", help="Test with 2 seeds only")
     args = parser.parse_args()
 
@@ -280,6 +292,7 @@ if __name__ == "__main__":
         years_back=args.years_back,
         run_baseline=not args.no_baseline,
         rank_refs=args.rank_refs,
+        no_analyze=args.no_analyze,
     )
     print("\n=== Final Stats ===")
     print(json.dumps(stats, indent=2))

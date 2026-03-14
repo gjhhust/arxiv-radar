@@ -1,0 +1,158 @@
+{
+  "results": {
+    "2406.07550": {
+      "H": {
+        "matched": 17,
+        "total": 17,
+        "rate": 1.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_H/2406.07550_H.json"
+      },
+      "Ia": {
+        "matched": 9,
+        "total": 10,
+        "rate": 0.9,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_Ia/2406.07550_Ia.json"
+      }
+    },
+    "2501.07730": {
+      "H": {
+        "matched": 12,
+        "total": 12,
+        "rate": 1.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_H/2501.07730_H.json"
+      },
+      "Ia": {
+        "matched": 7,
+        "total": 12,
+        "rate": 0.583,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_Ia/2501.07730_Ia.json"
+      }
+    },
+    "2503.08685": {
+      "H": {
+        "matched": 12,
+        "total": 12,
+        "rate": 1.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_H/2503.08685_H.json"
+      },
+      "Ia": {
+        "matched": 14,
+        "total": 14,
+        "rate": 1.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_Ia/2503.08685_Ia.json"
+      }
+    },
+    "2503.10772": {
+      "H": {
+        "matched": 13,
+        "total": 13,
+        "rate": 1.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_H/2503.10772_H.json"
+      },
+      "Ia": {
+        "matched": 9,
+        "total": 15,
+        "rate": 0.6,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_Ia/2503.10772_Ia.json"
+      }
+    },
+    "2504.08736": {
+      "H": {
+        "matched": 10,
+        "total": 10,
+        "rate": 1.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_H/2504.08736_H.json"
+      },
+      "Ia": {
+        "matched": 7,
+        "total": 12,
+        "rate": 0.583,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_Ia/2504.08736_Ia.json"
+      }
+    },
+    "2505.21473": {
+      "H": {
+        "matched": 12,
+        "total": 12,
+        "rate": 1.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_H/2505.21473_H.json"
+      },
+      "Ia": {
+        "matched": 12,
+        "total": 12,
+        "rate": 1.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_Ia/2505.21473_Ia.json"
+      }
+    },
+    "2505.12053": {
+      "H": {
+        "matched": 12,
+        "total": 12,
+        "rate": 1.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_H/2505.12053_H.json"
+      },
+      "Ia": {
+        "matched": 4,
+        "total": 12,
+        "rate": 0.333,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_Ia/2505.12053_Ia.json"
+      }
+    },
+    "2506.05289": {
+      "H": {
+        "matched": 11,
+        "total": 11,
+        "rate": 1.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_H/2506.05289_H.json"
+      },
+      "Ia": {
+        "matched": 10,
+        "total": 15,
+        "rate": 0.667,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_Ia/2506.05289_Ia.json"
+      }
+    },
+    "2507.08441": {
+      "H": {
+        "matched": 13,
+        "total": 13,
+        "rate": 1.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_H/2507.08441_H.json"
+      },
+      "Ia": {
+        "matched": 6,
+        "total": 12,
+        "rate": 0.5,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_Ia/2507.08441_Ia.json"
+      }
+    },
+    "2511.20565": {
+      "H": {
+        "matched": 13,
+        "total": 13,
+        "rate": 1.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_H/2511.20565_H.json"
+      },
+      "Ia": {
+        "matched": 6,
+        "total": 15,
+        "rate": 0.4,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_Ia/2511.20565_Ia.json"
+      }
+    },
+    "2601.01535": {
+      "H": {
+        "matched": 13,
+        "total": 13,
+        "rate": 1.0,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_H/2601.01535_H.json"
+      },
+      "Ia": {
+        "matched": 7,
+        "total": 12,
+        "rate": 0.583,
+        "path": "/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar/tests/active/comparison_v3/results_Ia/2601.01535_Ia.json"
+      }
+    }
+  }
+}

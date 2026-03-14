@@ -1,0 +1,249 @@
+{
+  "cn_oneliner": "基于VQ-VAE/VQGAN的2D图像分词范式，引入1D序列隐表示和ViT编解码结构，实现仅用32个token表示256×256图像，生成质量超越DiT且加速74-410倍",
+  "cn_abstract": "TiTok是一种新型的Transformer-based 1D图像分词器，将图像转换为1D离散token序列。不同于传统2D分词器（如VQGAN）使用256或1024个token，TiTok仅需32个token即可表示256×256×3的图像。在ImageNet 256×256基准上，TiTok达到1.97 gFID，比MaskGIT基线提升4.21。在更高分辨率的512×512基准上，TiTok-L-64取得gFID 2.74，超越DiT-XL/2的3.04，且生成速度快410倍。最佳变体TiTok-B-128取得gFID 2.13，仍比DiT-XL/2快74倍。",
+  "contribution_type": "significant",
+  "editorial_note": "前驱2D图像分词器受限于隐空间的网格结构，无法有效利用图像中的区域冗余信息，导致需要大量token（256-1024个）才能保证重建质量。本文提出将图像展平为1D序列并使用ViT进行编解码，突破性地将256×256图像压缩至32个离散token，同时保持甚至超越原有生成质量。编辑判断：这是一项兼具理论洞察（1D表示的可行性）和工程价值的突破性工作，为图像生成的高效化开辟了新路径。",
+  "why_read": "图像生成研究者/从业者——理解1D tokenization如何以8-64倍压缩率实现与2D方法相当的生成质量，并获取DiT级别性能但快74-410倍的实操经验",
+  "method_variants": [
+    {
+      "tag": "VQGAN:TiTok-S",
+      "note": "Small版本，使用128个token，重建FID 1.71，配合MaskGIT-UViT-L生成器达到gFID 2.50"
+    },
+    {
+      "tag": "VQGAN:TiTok-B",
+      "note": "Base版本，使用64个token，重建FID 1.70，配合MaskGIT-ViT生成器达到gFID 2.48"
+    },
+    {
+      "tag": "VQGAN:TiTok-L",
+      "note": "Large版本，仅用32个token，重建FID 2.21，配合MaskGIT-ViT生成器达到gFID 2.77"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "uses",
+      "note": "采用MaskGIT作为生成框架，将VQGAN替换为TiTok进行图像生成"
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "arxiv_id": "2110.04627",
+      "role": "extends",
+      "note": "继承了VQGAN的encoder-quantizer-decoder架构，但将2D latent改为1D序列"
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "arxiv_id": "2111.06377",
+      "role": "uses",
+      "note": "采用ViT作为encoder/decoder架构，借鉴MAE的mask token设计"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "contrasts",
+      "note": "DiT作为对比基准，TiTok在512×512上gFID 2.74 vs DiT-XL/2的3.04，且快410倍"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "contrasts",
+      "note": "LDM作为对比基准，TiTok在256×256上比LDM-4 (gFID 3.60) 更好且快254倍"
+    },
+    {
+      "title": "Diffusion Models Beat GANs on Image Synthesis",
+      "arxiv_id": "2105.05233",
+      "role": "mentions",
+      "note": "ADM被用于评估生成质量(gFID)"
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "arxiv_id": "2010.11929",
+      "role": "uses",
+      "note": "采用ViT作为tokenizer的骨干网络"
+    },
+    {
+      "title": "Autoregressive Image Generation using Residual Quantization",
+      "arxiv_id": "2203.01941",
+      "role": "contrasts",
+      "note": "RQ-VAE作为对比方法，使用256个token"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "contrasts",
+      "note": "Taming-VQGAN/Taming-Transformer作为基线对比"
+    },
+    {
+      "title": "All are Worth Words: A ViT Backbone for Diffusion Models",
+      "arxiv_id": "2209.12152",
+      "role": "uses",
+      "note": "UViT被用作TiTok-S-128的生成器骨干"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "extends",
+      "note": "VQ-VAE的原始工作，TiTok继承了其离散表示学习范式"
+    },
+    {
+      "title": "MAGVIT: Masked Generative Video Transformer",
+      "arxiv_id": "2212.05199",
+      "role": "mentions",
+      "note": "作为相关的VQ改进方法被提及"
+    },
+    {
+      "title": "MoVQ: Modulating Quantized Vectors for High-Fidelity Image Generation",
+      "arxiv_id": "2209.09002",
+      "role": "mentions",
+      "note": "作为相关的量化改进方法被提及"
+    },
+    {
+      "title": "Efficient-VQGAN: Towards High-Resolution Image Generation with Efficient Vision Transformers",
+      "arxiv_id": "2310.05400",
+      "role": "mentions",
+      "note": "作为相关的ViT-VQGAN改进工作被提及"
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "arxiv_id": "2309.15505",
+      "role": "mentions",
+      "note": "作为无查找表的量化方法被提及"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "mentions",
+      "note": "被提及为关于tokenizer重要性的相关工作"
+    },
+    {
+      "title": "Scalable Pre-training of Large Autoregressive Image Models",
+      "arxiv_id": "2401.08541",
+      "role": "mentions",
+      "note": "SEED作为大规模自回归图像预训练模型被提及"
+    }
+  ],
+  "idea": [
+    {
+      "title": "1D离散图像表示",
+      "why": "传统VQ方法假设2D网格结构保持patch与latent的一一对应，这限制了利用图像相邻区域相似产生的冗余。将图像tokenization改为1D序列可以打破这种约束，实现更紧凑的32 token表示256×256图像。"
+    },
+    {
+      "title": "两阶段训练策略",
+      "why": "先用现成的MaskGIT-VQGAN生成的proxy codes训练1D tokenizer，避免复杂loss调参；再微调decoder到pixel空间。实验表明这种两阶段策略显著提升训练稳定性和重建质量。"
+    },
+    {
+      "title": "token数与模型规模权衡",
+      "why": "更大的tokenizer能在更少token下保持性能：TiTok-L用32 token匹配TiTok-B用64 token的效果。这揭示了通过scale-up tokenizer来实现更紧凑latent表示的可行路径。"
+    }
+  ],
+  "_similarities": [
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "best_score": 1.0,
+      "best_match": "Vector-quantized Image Modeling with Improved VQGAN",
+      "pass": true
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "best_score": 1.0,
+      "best_match": "Masked Autoencoders Are Scalable Vision Learners",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Diffusion Models Beat GANs on Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Diffusion Models Beat GANs on Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Image Generation using Residual Quantization",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Image Generation using Residual Quantization",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "All are Worth Words: A ViT Backbone for Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "All are Worth Words: A ViT Backbone for Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "best_score": 1.0,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "MAGVIT: Masked Generative Video Transformer",
+      "best_score": 1.0,
+      "best_match": "MAGVIT: Masked Generative Video Transformer",
+      "pass": true
+    },
+    {
+      "title": "MoVQ: Modulating Quantized Vectors for High-Fidelity Image Generation",
+      "best_score": 1.0,
+      "best_match": "MoVQ: Modulating Quantized Vectors for High-Fidelity Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Efficient-VQGAN: Towards High-Resolution Image Generation with Efficient Vision Transformers",
+      "best_score": 1.0,
+      "best_match": "Efficient-VQGAN: Towards High-Resolution Image Generation with Efficient Vision Transformers",
+      "pass": true
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "best_score": 1.0,
+      "best_match": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Scalable Pre-training of Large Autoregressive Image Models",
+      "best_score": 1.0,
+      "best_match": "Scalable Pre-training of Large Autoregressive Image Models",
+      "pass": true
+    }
+  ],
+  "_matched": 17,
+  "_total": 17,
+  "_pass_rate": 1.0,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14",
+  "_ref_count": 67
+}

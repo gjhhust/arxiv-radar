@@ -1,0 +1,77 @@
+{
+  "arxiv_id": "2505.12053",
+  "model": "minimaxm25",
+  "timestamp": "2026-03-12T23:49:17.841576",
+  "latency_s": 28.89,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于Duration-Proportional Information Assumption设计VFRTok，通过encoder/decoder不对称帧率训练实现可变帧率tokenization\",\"cn_abstract\":\"本文提出时长-比例信息假设(Duration-Proportional Information Assumption)，认为视频信息容量与时长成正比而非帧数。基于此设计VFRTok，一个基于Transformer的可变帧率视频tokenizer，支持encoder和decoder使用不同帧率进行非对称训练以学习连续时空表示。此外提出Partial RoPE(部分旋转位置嵌入)，仅对部分注意力头应用RoPE以解耦位置和内容建模，增强内容感知能力。实验表明VFRTok仅使用1/8 tokens即可达到与现有tokenizer相当的重建质量，并实现更优的生成保真度。\",\"contribution_type\":\"incremental\",\"editorial_note\":\"[前驱]本文基于TiTok的query-based架构和RoPE位置编码，并借鉴Omnitokenizer、Cosmos等视频tokenizer的时空压缩思想。[贡献]提出两个核心创新：1) Duration-Proportional Information Assumption——视频信息容量与时长成正比；2) VFRTok——支持encoder/decoder不对称帧率训练的可变帧率tokenizer，外加Partial RoPE改进内容建模。[判断]新假设有一定物理依据(插值误差理论)，实现上是对query-based tokenizer的有效扩展，但核心改进是可预期的工程迭代，未解决领域根本难题。\",\"why_read\":\"适合视频生成研究者阅读，可了解如何通过可变帧率设计降低token数量，以及Partial RoPE对内容建模的具体效果。\",\"method_variants\":[{\"base_method\":\"titok\",\"variant_tag\":\"titok:vfr-asymmetric-training\",\"description\":\"原TiTok做法是固定帧率编码；本文改为encoder和decoder使用不同帧率进行非对称训练，实现可变帧率tokenization\"},{\"base_method\":\"rope\",\"variant_tag\":\"rope:partial-attention-heads\",\"description\":\"原RoPE做法是对所有注意力头应用位置编码；本文改为仅对部分头应用RoPE，解耦位置和内容建模以增强内容感知\"}],\"core_cite\":[{\"title\":\"Omnitokenizer: A joint image-video tokenizer for visual generation\",\"role\":\"contrasts\",\"note\":\"实验对比的主要baseline之一\"},{\"title\":\"Cosmos world foundation model platform for physical ai\",\"role\":\"contrasts\",\"note\":\"实验对比的主要baseline之一\"},{\"title\":\"An image is worth 32 tokens for reconstruction and generation\",\"role\":\"extends\",\"note\":\"VFRTok直接基于TiTok的query-based架构进行改造\"},{\"title\":\"Roformer: Enhanced transformer with rotary position embedding\",\"role\":\"uses\",\"note\":\"使用RoPE作为位置编码基础\"},{\"title\":\"Ltx-video: Realtime video latent diffusion\",\"role\":\"contrasts\",\"note\":\"实验对比的tokenizer baseline\"},{\"title\":\"Hunyuan-dit: A powerful multi-resolution diffusion transformer with fine-grained chinese understanding\",\"role\":\"supports\",\"note\":\"引用支持LDM在视频生成中的应用\"},{\"title\":\"Latte: Latent diffusion transformer for video generation\",\"role\":\"supports\",\"note\":\"引用支持LDM在视频生成中的应用\"},{\"title\":\"SoftVQ-VAE: Efficient 1-Dimensional Continuous Tokenizer\",\"role\":\"extends\",\"note\":\"借鉴其1D连续tokenizer设计思想\"},{\"title\":\"Masked Autoencoders Are Effective Tokenizers for Diffusion Models\",\"role\":\"uses\",\"note\":\"使用其tokenizer框架思想\"},{\"title\":\"Larp: Tokenizing videos with a learned autoregressive generative prior\",\"role\":\"mentions\",\"note\":\"相关video tokenizer工作\"}]}",
+  "cn_oneliner": "基于Duration-Proportional Information Assumption设计VFRTok，通过encoder/decoder不对称帧率训练实现可变帧率tokenization",
+  "cn_abstract": "本文提出时长-比例信息假设(Duration-Proportional Information Assumption)，认为视频信息容量与时长成正比而非帧数。基于此设计VFRTok，一个基于Transformer的可变帧率视频tokenizer，支持encoder和decoder使用不同帧率进行非对称训练以学习连续时空表示。此外提出Partial RoPE(部分旋转位置嵌入)，仅对部分注意力头应用RoPE以解耦位置和内容建模，增强内容感知能力。实验表明VFRTok仅使用1/8 tokens即可达到与现有tokenizer相当的重建质量，并实现更优的生成保真度。",
+  "contribution_type": "incremental",
+  "editorial_note": "[前驱]本文基于TiTok的query-based架构和RoPE位置编码，并借鉴Omnitokenizer、Cosmos等视频tokenizer的时空压缩思想。[贡献]提出两个核心创新：1) Duration-Proportional Information Assumption——视频信息容量与时长成正比；2) VFRTok——支持encoder/decoder不对称帧率训练的可变帧率tokenizer，外加Partial RoPE改进内容建模。[判断]新假设有一定物理依据(插值误差理论)，实现上是对query-based tokenizer的有效扩展，但核心改进是可预期的工程迭代，未解决领域根本难题。",
+  "why_read": "适合视频生成研究者阅读，可了解如何通过可变帧率设计降低token数量，以及Partial RoPE对内容建模的具体效果。",
+  "method_variants": [
+    {
+      "base_method": "titok",
+      "variant_tag": "titok:vfr-asymmetric-training",
+      "description": "原TiTok做法是固定帧率编码；本文改为encoder和decoder使用不同帧率进行非对称训练，实现可变帧率tokenization"
+    },
+    {
+      "base_method": "rope",
+      "variant_tag": "rope:partial-attention-heads",
+      "description": "原RoPE做法是对所有注意力头应用位置编码；本文改为仅对部分头应用RoPE，解耦位置和内容建模以增强内容感知"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Omnitokenizer: A joint image-video tokenizer for visual generation",
+      "role": "contrasts",
+      "note": "实验对比的主要baseline之一"
+    },
+    {
+      "title": "Cosmos world foundation model platform for physical ai",
+      "role": "contrasts",
+      "note": "实验对比的主要baseline之一"
+    },
+    {
+      "title": "An image is worth 32 tokens for reconstruction and generation",
+      "role": "extends",
+      "note": "VFRTok直接基于TiTok的query-based架构进行改造"
+    },
+    {
+      "title": "Roformer: Enhanced transformer with rotary position embedding",
+      "role": "uses",
+      "note": "使用RoPE作为位置编码基础"
+    },
+    {
+      "title": "Ltx-video: Realtime video latent diffusion",
+      "role": "contrasts",
+      "note": "实验对比的tokenizer baseline"
+    },
+    {
+      "title": "Hunyuan-dit: A powerful multi-resolution diffusion transformer with fine-grained chinese understanding",
+      "role": "supports",
+      "note": "引用支持LDM在视频生成中的应用"
+    },
+    {
+      "title": "Latte: Latent diffusion transformer for video generation",
+      "role": "supports",
+      "note": "引用支持LDM在视频生成中的应用"
+    },
+    {
+      "title": "SoftVQ-VAE: Efficient 1-Dimensional Continuous Tokenizer",
+      "role": "extends",
+      "note": "借鉴其1D连续tokenizer设计思想"
+    },
+    {
+      "title": "Masked Autoencoders Are Effective Tokenizers for Diffusion Models",
+      "role": "uses",
+      "note": "使用其tokenizer框架思想"
+    },
+    {
+      "title": "Larp: Tokenizing videos with a learned autoregressive generative prior",
+      "role": "mentions",
+      "note": "相关video tokenizer工作"
+    }
+  ]
+}

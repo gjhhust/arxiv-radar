@@ -1,0 +1,173 @@
+{
+  "cn_oneliner": "基于2D图像分词范式，引入1D序列标记化方法，实现仅32个离散标记即可重建和生成256×256高质量图像，生成速度比DiT-XL/2快410倍。",
+  "cn_abstract": "本文提出TiTok（Transformer-based 1-Dimensional Tokenizer），一种创新的1D图像分词方法。现有方法如VQGAN使用2D潜在网格，存在图像冗余问题。本文将图像分词为1D潜在序列，显著紧凑化。256×256×3图像可压缩至仅32个离散标记（以往方法需256或1024个）。尽管紧凑，TiTok在ImageNet 256×256上使用相同生成框架达到1.97 gFID，比MaskGIT基线高4.21。在512×512上，TiTok不仅超越DiT-XL/2（gFID 2.74 vs 3.04），还将图像标记减少64倍，实现410倍加速。最佳变体gFID 2.13 vs 3.04，仍快74倍。",
+  "contribution_type": "significant",
+  "editorial_note": "ByteDance和慕尼黑工业大学联合发表，突破传统2D分词范式，将NLP中的1D序列思想引入图像生成，首次证明32个标记足以重建和生成高质量图像。其核心贡献在于解除固定空间对应约束，使每个标记能重建更大范围的图像区域，从而更高效地利用图像冗余信息。",
+  "why_read": "对于从事图像生成、扩散模型、多模态大模型研究的学者，TiTok提供了一种高效且有效的图像潜在表示方法。其核心洞见——更少的标记配合更大的模型可以保持甚至提升性能——对后续研究具有重要启发意义。",
+  "method_variants": [
+    {
+      "tag": "TiTok-S-128",
+      "note": "小型模型配合128个潜在标记，gFID 2.50，在256×256上比DiT-XL/2快13倍"
+    },
+    {
+      "tag": "TiTok-B-64",
+      "note": "基础模型配合64个潜在标记，gFID 2.48，平衡了压缩率与重建质量"
+    },
+    {
+      "tag": "TiTok-L-32",
+      "note": "大型模型配合32个潜在标记，gFID 2.77，仅用32个标记即可实现高质量重建"
+    },
+    {
+      "tag": "两阶段训练",
+      "note": "第一阶段使用MaskGIT-VQGAN的代理码进行训练，第二阶段微调解码器以提升重建质量"
+    },
+    {
+      "tag": "1D序列表示",
+      "note": "突破传统2D网格限制，每个潜在标记可重建超出固定网格的区域，学习更高层次的语义信息"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "arxiv_id": "2010.11929",
+      "role": "uses",
+      "note": "ViT将图像划分为patch序列，为本文1D序列分词提供思想基础"
+    },
+    {
+      "title": "Attention is All you Need",
+      "arxiv_id": "1706.03762",
+      "role": "uses",
+      "note": "Transformer架构是TiTok编码器和解码器的核心组成部分"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "uses",
+      "note": "LDM的潜在扩散框架为图像分词和生成提供了重要参考"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "contrasts",
+      "note": "MAGVIT对比研究强调tokenizer对生成质量的关键作用"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "contrasts",
+      "note": "MaskGIT是本文的主要基线，TiTok在同一生成框架下显著超越"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "extends",
+      "note": "VQ-VAE的离散表示学习是本文方法的重要理论基础"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "extends",
+      "note": "VQGAN将Transformer与离散潜在表示结合，是2D分词的代表工作"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2309.16671",
+      "role": "contrasts",
+      "note": "DiT是本文在512×512分辨率上的主要对比对象，TiTok在质量和速度上均超越"
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Generation via Next-Token Prediction",
+      "arxiv_id": "2406.09677",
+      "role": "relates",
+      "note": "VAR探索自回归模型的图像生成，与本文的离散token生成范式相关"
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "arxiv_id": "2112.09129",
+      "role": "uses",
+      "note": "MAE的掩码预测思想被本文借鉴用于训练策略"
+    }
+  ],
+  "idea": [
+    {
+      "title": "1D序列分词",
+      "why": "突破传统2D潜在网格范式，将图像压缩为1D离散序列，解除固定的空间对应约束，使每个标记能重建更大范围的图像区域，从而更高效地利用图像冗余信息"
+    },
+    {
+      "title": "极简标记表示",
+      "why": "首次证明仅需32个离散标记即可重建和生成256×256高质量图像，配合更大的模型可以进一步压缩标记数量同时保持性能，改变了\"更多标记=更好质量\"的固有认知"
+    },
+    {
+      "title": "高效生成架构",
+      "why": "在ImageNet 512×512上实现410倍加速（相比DiT-XL/2），将gFID从3.04降至2.74，证明了紧凑1D潜在空间对生成训练的显著优势，为实时图像生成提供了新可能"
+    }
+  ],
+  "_similarities": [
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "pass": true
+    },
+    {
+      "title": "Attention is All you Need",
+      "best_score": 1.0,
+      "best_match": "Attention is All you Need",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "best_score": 1.0,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Generation via Next-Token Prediction",
+      "best_score": 0.588,
+      "best_match": "Autoregressive Image Generation using Residual Quantization",
+      "pass": false
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "best_score": 1.0,
+      "best_match": "Masked Autoencoders Are Scalable Vision Learners",
+      "pass": true
+    }
+  ],
+  "_matched": 9,
+  "_total": 10,
+  "_pass_rate": 0.9,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14",
+  "_ref_count": 67
+}

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>H3_M25 完整测试报告</title>
+<style>
+* { box-sizing: border-box; }
+body { 
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+  margin: 10px; 
+  padding: 0;
+  background: #f5f5f5; 
+  font-size: 14px;
+  line-height: 1.6;
+}
+h1 { font-size: 20px; text-align: center; color: #333; margin: 10px 0; }
+h2 { font-size: 16px; color: #4CAF50; margin: 20px 0 10px 0; border-bottom: 2px solid #4CAF50; padding-bottom: 5px; }
+h3 { font-size: 14px; color: #666; margin: 10px 0 5px 0; }
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 10px 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.card-header {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+.card-title { font-weight: bold; font-size: 15px; color: #333; }
+.card-meta { font-size: 12px; color: #888; margin-top: 5px; }
+.field { margin: 10px 0; }
+.field-label { font-weight: bold; color: #555; font-size: 13px; }
+.field-value { color: #333; font-size: 13px; margin-top: 3px; }
+.tag { display: inline-block; background: #e8f5e9; color: #2e7d32; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-right: 5px; }
+.cite-item { background: #f9f9f9; padding: 8px; margin: 5px 0; border-radius: 4px; font-size: 12px; }
+.idea-item { background: #fff3e0; padding: 8px; margin: 5px 0; border-radius: 4px; font-size: 12px; }
+.method-item { background: #e3f2fd; padding: 8px; margin: 5px 0; border-radius: 4px; font-size: 12px; }
+.arxiv-link { color: #1976d2; text-decoration: none; font-size: 12px; }
+</style>
+</head>
+<body>
+<h1>📊 H3_M25 完整测试报告</h1>
+<p style="text-align: center; color: #666; font-size: 12px;">生成时间: 2026-03-14 20:52:04</p>
+
+<div class="card" style="text-align: center;">
+  <span class="tag" style="font-size: 14px;">✅ 成功率: 100% (5/5)</span>
+  <span class="tag" style="font-size: 14px;">⏱️ 平均: ~2min/任务</span>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">An Image is Worth 32 Tokens for Reconstruction and Generation</div>
+    <div class="card-meta">
+      <a class="arxiv-link" href="https://arxiv.org/abs/2406.07550" target="_blank">📄 2406.07550</a>
+      <span style="margin-left: 10px;">2026-03-14 19:52:33</span>
+    </div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">📝 一句话总结</div>
+    <div class="field-value">基于 VQGAN 的 2D 网格 tokenization，引入 1D 序列 latent 表示和 Transformer 编码器，实现 32 token 压缩 256×256 图像（较此前 256-1024 token 压缩 8×-64×），生成质量超越 DiT 且速度快 74-410 倍</div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">📖 中文摘要</div>
+    <div class="field-value">本文提出 TiTok（Transformer-based 1-Dimensional Tokenizer），将图像从传统的 2D 网格 latent 表示转变为 1D 序列表示。通过将 256×256×3 图像压缩至仅 32 个离散 token（此前方法需要 256 或 1024 个 token），在 ImageNet 256×256 上使用相同 MaskGIT 生成框架达到 gFID=1.97，较基线提升 4.21。在 ImageNet 512×512 上，TiTok 超越 DiT-XL/2（gFID 2.74 vs 3.04），生成速度快 410 倍。最佳变体 gFID=2.13 超越 DiT-XL/2（3.04），且速度快 74 倍。</div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">🏷️ 贡献类型</div>
+    <div class="field-value"><span class="tag">significant</span></div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">💬 编辑点评</div>
+    <div class="field-value">本文建立在 VQ-VAE/VQGAN（离散 token 表示）、ViT（Transformer 编码器/解码器架构）、MaskGIT（生成框架）基础上，核心想法受 DETR/Perceiver 中 object queries 和 1D 表示的启发。实质贡献是打破传统 2D 网格 latent 限制，用任意数量（32-128）的 1D token 表示完整图像，并通过两阶段训练策略（proxy codes 预热 + decoder 微调）解决训练稳定性问题。价值判断：有意义的方法创新，首次系统性验证 1D tokenization 可行性，在保持生成质量的同时实现显著压缩比和加速，但本质上是通过架构改变提升了压缩效率而非根本性的生成能力突破。</div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">🎯 目标读者</div>
+    <div class="field-value">研究图像生成效率优化的工程师和研究者，可学习 1D tokenization 范式及如何通过模型规模与 token 数量的权衡实现高效生成</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">🔧 方法改进</div>
+    <div class="method-item">
+      <strong>vq-vae:1d-tokenization</strong><br/>
+      VQ-VAE 将图像编码为 2D 网格latent；本文改为 1D 序列 latent，token 数量从 256-1024 降至 32-128，解决图像冗余未被充分利用的问题
+    </div>
+    <div class="method-item">
+      <strong>vit:tokenizer-decoder</strong><br/>
+      ViT 通常用于分类；本文将其作为 VQ tokenization 的 encoder 和 decoder，利用 Transformer 全局建模能力
+    </div>
+    <div class="method-item">
+      <strong>maskgit:1d-tokens</strong><br/>
+      MaskGIT 使用 2D VQGAN tokenizer；本文将其替换为 TiTok 1D tokenizer，验证了 1D 表示在非自回归生成中的有效性
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">📚 核心引用 (13条)</div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">extends</span>
+      Taming Transformers for High-Resolution Image Synt...
+      <a class="arxiv-link" href="https://arxiv.org/abs/2012.09841" target="_blank">2012.09841</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">uses</span>
+      MaskGIT: Masked Generative Image Transformer
+      <a class="arxiv-link" href="https://arxiv.org/abs/2202.04200" target="_blank">2202.04200</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">uses</span>
+      An Image is Worth 16x16 Words: Transformers for Im...
+      <a class="arxiv-link" href="https://arxiv.org/abs/2010.11929" target="_blank">2010.11929</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">contrasts</span>
+      Scalable Diffusion Models with Transformers
+      <a class="arxiv-link" href="https://arxiv.org/abs/2212.09748" target="_blank">2212.09748</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">supports</span>
+      Vector-quantized Image Modeling with Improved VQGA...
+      <a class="arxiv-link" href="https://arxiv.org/abs/2110.04627" target="_blank">2110.04627</a>
+    </div>
+    <div style="font-size: 12px; color: #888;">... 还有 8 条引用</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">💡 研究方向</div>
+    <div class="idea-item">
+      <strong>1. 结合更先进的量化方法提升 codebook 效率</strong><br/>
+      本文使用标准 VQ 量化，可结合 FSQ（Finite Scalar Quantization）或 MAGVIT-v2 的 lookup-free quantization 进一步提升性能。本文作者在表格注释中提到 advanced quantization methods may further benefit TiTok。已有工作在 2D tokenization 上验证了这些方法的有效性，迁移到 1D tokenization 是合理的扩展。
+    </div>
+    <div class="idea-item">
+      <strong>2. 扩展到视频生成任务</strong><br/>
+      本文专注于图像 tokenization，视频可以看作图像的时间序列，1D tokenization 思想可以扩展到视频的时空联合建模。MAGVIT 已验证了 VQ 在视频上的可行性，TiTok 的 1D 表示可能更适合视频的时序压缩。本文局限性章节明确提到将扩展到视频是未来的重要方向。
+    </div>
+    <div class="idea-item">
+      <strong>3. 结合扩散模型解码器替代 ViT decoder</strong><br/>
+      本文使用 ViT decoder 进行重建，可探索用 diffusion decoder 替代以提升重建质量。LDM 已证明 latent space + diffusion decoder 的有效性，将 VQ latent 喂入 diffusion decoder 可结合两者的优势。本文关注的是 tokenization 阶段，生成用的是 MaskGIT，但理论上可以用 diffusion 作为 decoder。
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">"Principal Components" Enable A New Language of Images</div>
+    <div class="card-meta">
+      <a class="arxiv-link" href="https://arxiv.org/abs/2503.08685" target="_blank">📄 2503.08685</a>
+      <span style="margin-left: 10px;">2026-03-14 19:52:33</span>
+    </div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">📝 一句话总结</div>
+    <div class="field-value">基于1D图像分词器，引入PCA类结构（嵌套CFG诱导有序性+扩散解码器解耦语义-频谱），实现rFID 0.72重建和仅32 token达到gFID 2.57的生成</div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">📖 中文摘要</div>
+    <div class="field-value">本文提出SEMANTICIST分词器，将PCA的可证明结构嵌入视觉token空间。该方法生成1D因果token序列，每个token贡献非重叠信息且解释方差递减，类似于主成分分析。核心创新包括嵌套分类器自由引导（强制前序token编码主要语义信息）和扩散解码器（利用其频谱自回归特性解耦语义-频谱信息）。实验表明，在ImageNet 256×256上达到rFID 0.72（较ImageFolder提升10%），εLlamaGen仅用前32个token即达到gFID 2.57，性能可比肩TiTok-L-32的gFID 2.77。</div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">🏷️ 贡献类型</div>
+    <div class="field-value"><span class="tag">significant</span></div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">💬 编辑点评</div>
+    <div class="field-value">本文建立在1D视觉分词器（TiTok）和扩散解码器的工作基础上，核心模块来自ViT编码器、嵌套dropout和Diffusion Transformer。去掉包装后，作者真正做的是将PCA的两个核心属性（正交性和有序性）引入现代tokenizer，通过嵌套CFG和扩散解码器协同诱导出PCA类结构。这个贡献的实质价值在于有效解决了1D分词器中语义-频谱耦合的难题，是真正解决问题的工作，方法创新且有理论保证。</div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">🎯 目标读者</div>
+    <div class="field-value">研究图像tokenization和自回归生成模型的工程师，可借鉴其PCA类结构设计和语义-频谱解耦技巧</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">🔧 方法改进</div>
+    <div class="method-item">
+      <strong>vq-vae:continuous-token</strong><br/>
+      VQ-VAE使用离散codebook存在量化误差；本文改为预测连续token配合扩散MLP解码，提升重建质量
+    </div>
+    <div class="method-item">
+      <strong>titok:pca-structure</strong><br/>
+      TiTok生成1D因果token但无结构约束；本文通过嵌套CFG诱导PCA类有序结构，使token重要性递减
+    </div>
+    <div class="method-item">
+      <strong>diffusion-decoder:semantic-decoupling</strong><br/>
+      标准扩散解码器直接重建像素；本文利用扩散的频谱自回归特性解耦语义和频谱信息
+    </div>
+    <div class="method-item">
+      <strong>cfg:nested-cfg</strong><br/>
+      标准CFG对全部token应用统一条件；本文采用嵌套CFG随机替换后续token为空白条件，强制前序token编码主要语义
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">📚 核心引用 (14条)</div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">uses</span>
+      An Image is Worth 32 Tokens for Reconstruction and...
+      <a class="arxiv-link" href="https://arxiv.org/abs/2406.07550" target="_blank">2406.07550</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">uses</span>
+      Visual Autoregressive Modeling: Scalable Image Gen...
+      <a class="arxiv-link" href="https://arxiv.org/abs/2404.02905" target="_blank">2404.02905</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">contrasts</span>
+      Autoregressive Model Beats Diffusion: Llama for Sc...
+      <a class="arxiv-link" href="https://arxiv.org/abs/2406.06525" target="_blank">2406.06525</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">contrasts</span>
+      FlexTok: Resampling Images into 1D Token Sequences...
+      <a class="arxiv-link" href="https://arxiv.org/abs/2402.03041" target="_blank">2402.03041</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">uses</span>
+      Scalable Diffusion Models with Transformers
+      <a class="arxiv-link" href="https://arxiv.org/abs/2212.09748" target="_blank">2212.09748</a>
+    </div>
+    <div style="font-size: 12px; color: #888;">... 还有 9 条引用</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">💡 研究方向</div>
+    <div class="idea-item">
+      <strong>1. 探索更高效的扩散解码器</strong><br/>
+      本文使用完整DiT-XL/2作为解码器，计算开销大。作者在Limitation中提到可探索流匹配或一致性模型来提升效率。这需要验证新假设：流匹配是否能保持语义-频谱解耦特性？成功的话可大幅降低推理成本。
+    </div>
+    <div class="idea-item">
+      <strong>2. 扩展到视频tokenization</strong><br/>
+      本文仅针对图像，但方法思想可迁移到视频。视频的时序维度可自然地与PCA结构结合。当前视频tokenizer多关注空间冗余，时序结构化是未探索方向。需要新假设：如何设计时序嵌套CFG使token同时捕获时序和语义信息？
+    </div>
+    <div class="idea-item">
+      <strong>3. 自适应token数量分配</strong><br/>
+      本文使用固定256个token，可借鉴FlexTok的思路实现自适应长度。当前PCA结构固定了token重要性顺序，但不同图像复杂度不同。需验证：是否可以根据图像复杂度动态决定使用多少个高重要性token？这样可以进一步压缩。
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation</div>
+    <div class="card-meta">
+      <a class="arxiv-link" href="https://arxiv.org/abs/2504.08736" target="_blank">📄 2504.08736</a>
+      <span style="margin-left: 10px;">2026-03-14 19:52:33</span>
+    </div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">📝 一句话总结</div>
+    <div class="field-value">基于 VQGAN，引入语义正则化（与预训练 DINOv2 特征对齐）和三大扩展策略（1D 分词器、解码器优先扩展、熵损失），解决视觉分词器扩展中的重构-生成困境，在 3B 参数规模下同时实现重构与 AR 生成的 SOTA</div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">📖 中文摘要</div>
+    <div class="field-value">本文提出 GigaTok，首个在扩展视觉分词器时同时提升图像重构、下游自回归生成和表征质量的方法。研究发现分词器规模增大导致潜空间复杂度上升，是重构-生成困境的根本原因。为此，引入语义正则化，通过与预训练 DINOv2 特征对齐约束潜空间复杂度。结合三大扩展策略：1D 分词器、 解码器优先的非对称扩展、以及十亿级分词器的熵损失稳定化训练。最终将分词器扩展至 30 亿参数，在 ImageNet 256×256 上实现重构 SOTA（rFID）和生成 SOTA（gFID），并在表征学习任务上验证有效性。</div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">🏷️ 贡献类型</div>
+    <div class="field-value"><span class="tag">significant</span></div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">💬 编辑点评</div>
+    <div class="field-value">[前驱工作] 本文建立在 VQGAN 系列工作（VQ-VAE、VQGAN、ViT-VQGAN）基础上，分词器架构采用 CNN-Transformer 混合设计，语义正则化借鉴了 DINOv2 和 REPA 等表征对齐方法。[实质贡献] 作者核心贡献是识别并解决了扩展视觉分词器时的重构-生成困境：通过引入 DINOv2 语义正则化约束潜空间复杂度，配合 1D 分词器、非对称扩展和熵损失三个工程技巧，成功将分词器扩展到 3B 参数。[价值判断] 该工作有效解决了自回归图像生成中分词器扩展的核心瓶颈，贡献真实且有技术深度，而非简单堆砌参数或夸大贡献。</div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">🎯 目标读者</div>
+    <div class="field-value">从事自回归图像生成、视觉 tokenization、或者多模态大模型研究的工程师，可深入理解如何系统性扩展视觉分词器并平衡重构与生成质量</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">🔧 方法改进</div>
+    <div class="method-item">
+      <strong>vq-gan:semantic-regularization</strong><br/>
+      VQGAN 原本仅优化重构损失；本文引入 DINOv2 语义正则化，对齐分词器特征与预训练视觉表征，降低潜空间复杂度以利于下游 AR 生成
+    </div>
+    <div class="method-item">
+      <strong>vit:1d-tokenizer</strong><br/>
+      ViT 保持 2D 空间结构；本文使用 Q-Former 将 2D 特征转为 1D 序列，消除 2D 归纳偏置以提升扩展性
+    </div>
+    <div class="method-item">
+      <strong>vq-gan:entropy-loss</strong><br/>
+      小规模 VQGAN 训练无需额外正则；本文引入熵损失监督 codebook 利用率，稳定十亿级参数分词器的训练收敛
+    </div>
+    <div class="method-item">
+      <strong>vq-gan:asymmetric-scaling</strong><br/>
+      传统 VQGAN 对称扩展编码器-解码器；本文采用解码器优先的非对称扩展，更高效地分配参数资源
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">📚 核心引用 (10条)</div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">extends</span>
+      Vector-quantized Image Modeling with Improved VQGA...
+      <a class="arxiv-link" href="https://arxiv.org/abs/2110.04627" target="_blank">2110.04627</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">extends</span>
+      DINOv2: Learning Robust Visual Features without Su...
+      <a class="arxiv-link" href="https://arxiv.org/abs/2304.07193" target="_blank">2304.07193</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">uses</span>
+      Autoregressive Model Beats Diffusion: Llama for Sc...
+      <a class="arxiv-link" href="https://arxiv.org/abs/2406.06525" target="_blank">2406.06525</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">supports</span>
+      Language Model Beats Diffusion -- Tokenizer is Key...
+      <a class="arxiv-link" href="https://arxiv.org/abs/2310.05737" target="_blank">2310.05737</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">supports</span>
+      MaskGIT: Masked Generative Image Transformer
+      <a class="arxiv-link" href="https://arxiv.org/abs/2202.04200" target="_blank">2202.04200</a>
+    </div>
+    <div style="font-size: 12px; color: #888;">... 还有 5 条引用</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">💡 研究方向</div>
+    <div class="idea-item">
+      <strong>1. 扩展到视频分词与生成</strong><br/>
+      本文仅验证了图像分词器的扩展策略，未探索视频时序信息的建模。【本文局限】视频分词需额外处理时序依赖和长程相关性，与图像分词有本质区别。VideoPoet 等工作已证明 AR 视频生成的可行性，可借鉴本文的语义正则化和扩展策略到视频领域。
+    </div>
+    <div class="idea-item">
+      <strong>2. 探索其他视觉基础模型作为正则化监督</strong><br/>
+      本文仅使用 DINOv2 作为语义正则化的监督信号。【引用挖掘】DINOv2 主要学习视觉相似性，可尝试使用 CLIP 或其他具有更强语义理解能力的模型，可能进一步提升潜空间的语义一致性。
+    </div>
+    <div class="idea-item">
+      <strong>3. 更高分辨率图像生成</strong><br/>
+      本文实验限定在 ImageNet 256×256 分辨率。【本文局限】更高分辨率（如 512×512 或 1024×1024）需要更多 token 和更大模型，可能面临训练不稳定和计算开销问题。本文的三阶段扩展策略（1D、非对称、熵损失）为高分辨率场景提供了理论依据。
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">AliTok: Towards Sequence Modeling Alignment between Tokenizer and Autoregressive Model</div>
+    <div class="card-meta">
+      <a class="arxiv-link" href="https://arxiv.org/abs/2506.05289" target="_blank">📄 2506.05289</a>
+      <span style="margin-left: 10px;">2026-03-14 19:52:33</span>
+    </div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">📝 一句话总结</div>
+    <div class="field-value">基于传统双向图像tokenizer，引入因果解码器约束双向编码器的设计，实现token序列的前向依赖结构，使标准自回归模型首次超越SOTA扩散模型</div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">📖 中文摘要</div>
+    <div class="field-value">本文提出AliTok解决自回归图像生成中tokenizer与自回归模型之间的根本性对齐问题。传统tokenizer为追求重建质量，使token之间形成双向依赖，与自回归模型的单向预测范式存在本质冲突。AliTok采用双向编码器结合因果解码器的架构，强制编码器产生具有前向依赖性的token序列。通过引入prefix tokens解决首行重建问题，并采用两阶段训练策略（第一阶段训练因果解码器约束的编码器，第二阶段冻结编码器并重新训练双向解码器提升重建质量），在ImageNet-256上，662M参数的模型达到gFID 1.28，超越SOTA扩散模型LightningDiT且推理速度快10倍。</div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">🏷️ 贡献类型</div>
+    <div class="field-value"><span class="tag">significant</span></div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">💬 编辑点评</div>
+    <div class="field-value">本文建立在VQ-VAE、TiTok、LlamaGen等已有tokenizer和自回归图像生成工作基础上，核心创新在于提出用因果解码器作为正则化器约束双向编码器。实质贡献是发现了传统tokenizer的双向依赖与AR模型单向预测之间的根本矛盾，并通过解耦全局语义构建与序列因果约束来解决这一问题。这个贡献的实质价值在于：它首次证明了标准decoder-only AR模型可以超越扩散模型，为多模态统一提供了更简洁的路径，是有明确问题导向的重要进展。</div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">🎯 目标读者</div>
+    <div class="field-value">研究自回归图像生成和多模态统一的研究者，可从本文学习如何通过设计数据侧的tokenizer来适配模型侧的学习范式</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">🔧 方法改进</div>
+    <div class="method-item">
+      <strong>vq-vae:causal-decoder</strong><br/>
+      VQ-VAE的标准双向解码器会导致token间双向依赖；本文改为因果解码器约束编码器，强制生成前向依赖的token序列
+    </div>
+    <div class="method-item">
+      <strong>titok:causal-constraint</strong><br/>
+      TiTok将2D图像patch编码为1D序列但保持双向依赖；本文在此基础上引入因果解码器使token具有前向依赖结构
+    </div>
+    <div class="method-item">
+      <strong>llamagen:aligned-tokenizer</strong><br/>
+      LlamaGen使用标准decoder-only transformer但受限于tokenizer的双向依赖；本文提供AliTok tokenizer解决此根本问题
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">📚 核心引用 (12条)</div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">extends</span>
+      Autoregressive Image Generation using Residual Qua...
+      <a class="arxiv-link" href="https://arxiv.org/abs/2203.01941" target="_blank">2203.01941</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">extends</span>
+      Language Model Beats Diffusion -- Tokenizer is Key...
+      <a class="arxiv-link" href="https://arxiv.org/abs/2310.05737" target="_blank">2310.05737</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">uses</span>
+      Autoregressive Model Beats Diffusion: Llama for Sc...
+      <a class="arxiv-link" href="https://arxiv.org/abs/2406.06525" target="_blank">2406.06525</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">uses</span>
+      An Image is Worth 32 Tokens for Reconstruction and...
+      <a class="arxiv-link" href="https://arxiv.org/abs/2406.07550" target="_blank">2406.07550</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">contrasts</span>
+      MaskGIT: Masked Generative Image Transformer
+      <a class="arxiv-link" href="https://arxiv.org/abs/2202.04200" target="_blank">2202.04200</a>
+    </div>
+    <div style="font-size: 12px; color: #888;">... 还有 7 条引用</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">💡 研究方向</div>
+    <div class="idea-item">
+      <strong>1. 将因果约束扩展到多模态条件生成</strong><br/>
+      本文仅验证了类别条件的ImageNet生成，未探索文本条件或layout条件的场景。需要验证因果tokenizer在text-to-image任务中是否同样有效。可行性依据：文本条件与类别条件的差异主要在条件注入方式，tokenizer的因果结构与条件类型无关。
+    </div>
+    <div class="idea-item">
+      <strong>2. 探索更细粒度的码本大小与生成质量的权衡</strong><br/>
+      本文实验显示16384码本在重建上更好但生成略差，暗示码本大小与AR预测难度之间存在权衡。需要系统性探索不同码本大小对训练效率和生成质量的影响。实验设计相对简单，只需要改变codebook size参数。
+    </div>
+    <div class="idea-item">
+      <strong>3. 将因果tokenizer思想迁移到视频生成</strong><br/>
+      视频生成同样面临时空依赖的建模问题。将 causal decoder 思想扩展到3D时空tokenizer，使视频token也具备前向依赖结构，可能提升AR视频生成的效果。已有视频tokenizer如Video Tok可以此思路改进。
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">DINO-Tok: Adapting DINO for Visual Tokenizers</div>
+    <div class="card-meta">
+      <a class="arxiv-link" href="https://arxiv.org/abs/2511.20565" target="_blank">📄 2511.20565</a>
+      <span style="margin-left: 10px;">2026-03-14 19:52:33</span>
+    </div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">📝 一句话总结</div>
+    <div class="field-value">基于DINO预训练视觉表征，引入浅层-深层特征双分支融合与PCA重加权量化机制，解决高维潜在空间中文自语义与纹理细节难以兼顾的难题，在ImageNet 256×256上实现28.54 PSNR连续tokenization与23.98 PSNR离散tokenization。</div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">📖 中文摘要</div>
+    <div class="field-value">本文提出DINO-Tok，一种基于DINO的视觉tokenizer，通过融合分层表征构建信息完备的潜在空间。方法整合保留细粒度纹理的浅层特征与编码全局语义的深层特征，有效桥接受限预训练表征与视觉生成。针对高维空间向量量化中关键信息丢失与codebook崩溃问题，提出全局PCA重加权机制以稳定量化并保留关键维度信息。在ImageNet 256×256上，DINO-Tok取得28.54 PSNR自编码重建与23.98 PSNR VQ重建，显著优于现有tokenizer，与Hunyuan、Wan等数十亿数据训练的模型相当。</div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">🏷️ 贡献类型</div>
+    <div class="field-value"><span class="tag">incremental</span></div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">💬 编辑点评</div>
+    <div class="field-value">本文建立在DINO预训练表征与VQ-VAE量化两大技术基础之上，核心模块分别来自DINOv2/v3的特征提取与向量量化技术。实质贡献在于提出双分支架构融合浅层/深层特征，并创新性地将PCA重加权应用于高维特征量化，解决了直接使用冻结DINO作为encoder时的颜色偏移与细节丢失问题。这个贡献有效但不深刻——技术方案解决了一个具体工程问题，但本质上是对已有方法的组合与调优，未能突破预训练模型直接应用于生成任务的固有局限。</div>
+  </div>
+  
+  <div class="field">
+    <div class="field-label">🎯 目标读者</div>
+    <div class="field-value">从事视觉tokenizer与潜在生成模型研究的工程师，可借鉴其利用预训练模型分层特征与PCA重加权稳定高维量化的技术思路。</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">🔧 方法改进</div>
+    <div class="method-item">
+      <strong>dinov2:frozen-encoder</strong><br/>
+      DINOv2原本用于表征学习提取特征；本文将其冻结后直接作为tokenizer encoder，以保留完整语义信息
+    </div>
+    <div class="method-item">
+      <strong>vq-vae:pca-reweighting</strong><br/>
+      VQ-VAE使用普通L2距离进行codebook查找；本文引入PCA特征值重加权，使高语义维度获得更大权重，稳定高维空间量化
+    </div>
+    <div class="method-item">
+      <strong>vae:dual-branch</strong><br/>
+      标准VAE使用单一编码器输出；本文采用双分支设计，融合深层语义特征与浅层纹理特征
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">📚 核心引用 (12条)</div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">extends</span>
+      DINOv2: Learning Robust Visual Features without Su...
+      <a class="arxiv-link" href="https://arxiv.org/abs/2304.07193" target="_blank">2304.07193</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">extends</span>
+      DINOv3
+      <a class="arxiv-link" href="https://arxiv.org/abs/2508.10104" target="_blank">2508.10104</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">uses</span>
+      Neural Discrete Representation Learning
+      <a class="arxiv-link" href="https://arxiv.org/abs/1711.00937" target="_blank">1711.00937</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">supports</span>
+      High-Resolution Image Synthesis with Latent Diffus...
+      <a class="arxiv-link" href="https://arxiv.org/abs/2112.10752" target="_blank">2112.10752</a>
+    </div>
+    <div class="cite-item">
+      <span class="tag" style="font-size: 11px;">contrasts</span>
+      Language Model Beats Diffusion -- Tokenizer is Key...
+      <a class="arxiv-link" href="https://arxiv.org/abs/2310.05737" target="_blank">2310.05737</a>
+    </div>
+    <div style="font-size: 12px; color: #888;">... 还有 7 条引用</div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">💡 研究方向</div>
+    <div class="idea-item">
+      <strong>1. 探索DINO-Tok与扩散模型结合</strong><br/>
+      本文验证了DINO-Tok在自回归生成中的效果，但未探索与扩散模型（如DiT）的结合。未来可研究语义丰富的DINO特征是否能为扩散模型提供更优的latent空间，提升生成质量与语义一致性。已有REPA等工作证明此方向可行，DINO-Tok的语义特征可能带来更大提升。
+    </div>
+    <div class="idea-item">
+      <strong>2. 扩展到视频tokenization任务</strong><br/>
+      本文聚焦图像tokenization，视频领域同样需要高质量tokenizer。当前方法如CV-VAE、Cosmos VAE主要从零训练，缺乏语义对齐。可探索将DINO-Tok的双分支与PCA重加权思想迁移到视频时序维度，构建视频生成用的语义tokenizer。
+    </div>
+    <div class="idea-item">
+      <strong>3. 自动化浅层特征层选择</strong><br/>
+      本文手工选择第一层特征F1作为浅层分支输入，未探讨其他浅层层级的效果。可研究自动选择最优浅层-深层特征组合的策略，或通过可学习方式动态融合多层级特征，进一步优化语义-纹理平衡。
+    </div>
+  </div>
+</div>
+
+<p style="text-align: center; color: #999; font-size: 11px; margin-top: 20px;">
+  Powered by H3 Template + MinimaxM25
+</p>
+</body>
+</html>

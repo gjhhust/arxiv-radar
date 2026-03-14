@@ -1,0 +1,34 @@
+{
+  "paper_id": "2603.06449",
+  "scheme": "B",
+  "model": "wq/glm5",
+  "latency_s": 67.617,
+  "success": true,
+  "output": {
+    "cn_oneliner": "CaTok引入MeanFlow解码器构建1D因果图像Tokenizer，实现了高效且兼容LLM范式的视觉生成。",
+    "cn_abstract": "本文针对现有视觉Tokenizer无法完美适配LLM“下一Token预测”范式的问题，提出了CaTok——一种带MeanFlow解码器的1D因果图像Tokenizer。通过在时间间隔上选择Token并结合MeanFlow目标，CaTok学习了因果1D表征，同时支持快速单步生成与高保真多步采样。",
+    "contribution_type": "significant",
+    "editorial_note": "该方法创新性地将Flow Matching引入Tokenizer解码器以解决因果依赖问题，为视觉生成模型与LLM架构的统一提供了扎实的技术路径。",
+    "why_read": "如果你关注视觉自回归模型如何突破“下一Token预测”的适配瓶颈，这篇论文提供了极具启发性的解码器设计思路。",
+    "method_variants": [
+      {
+        "base_method": "flow-matching",
+        "variant_tag": "flow-matching:mean-flow-decoder",
+        "description": "改造Flow Matching为MeanFlow目标，利用时间间隔Token选择机制在解码器中强制建立因果依赖。"
+      }
+    ],
+    "key_refs": [
+      {
+        "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+        "stance": "contrasts",
+        "note": "LlamaGen验证了标准AR范式在图像生成的可行性，本文在此基础上进一步解决了Tokenizer层面的因果一致性问题。"
+      },
+      {
+        "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+        "stance": "contrasts",
+        "note": "VAR采用多尺度预测范式，本文则坚持1D序列因果预测，展示了不同于多尺度路径的解决方案。"
+      }
+    ]
+  },
+  "parse_error": null
+}

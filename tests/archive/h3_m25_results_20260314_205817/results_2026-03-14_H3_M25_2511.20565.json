@@ -1,0 +1,116 @@
+{
+  "arxiv_id": "2511.20565",
+  "title": "DINO-Tok: Adapting DINO for Visual Tokenizers",
+  "cn_oneliner": "基于DINO预训练视觉表征，引入浅层-深层特征双分支融合与PCA重加权量化机制，解决高维潜在空间中文自语义与纹理细节难以兼顾的难题，在ImageNet 256×256上实现28.54 PSNR连续tokenization与23.98 PSNR离散tokenization。",
+  "cn_abstract": "本文提出DINO-Tok，一种基于DINO的视觉tokenizer，通过融合分层表征构建信息完备的潜在空间。方法整合保留细粒度纹理的浅层特征与编码全局语义的深层特征，有效桥接受限预训练表征与视觉生成。针对高维空间向量量化中关键信息丢失与codebook崩溃问题，提出全局PCA重加权机制以稳定量化并保留关键维度信息。在ImageNet 256×256上，DINO-Tok取得28.54 PSNR自编码重建与23.98 PSNR VQ重建，显著优于现有tokenizer，与Hunyuan、Wan等数十亿数据训练的模型相当。",
+  "contribution_type": "incremental",
+  "editorial_note": "本文建立在DINO预训练表征与VQ-VAE量化两大技术基础之上，核心模块分别来自DINOv2/v3的特征提取与向量量化技术。实质贡献在于提出双分支架构融合浅层/深层特征，并创新性地将PCA重加权应用于高维特征量化，解决了直接使用冻结DINO作为encoder时的颜色偏移与细节丢失问题。这个贡献有效但不深刻——技术方案解决了一个具体工程问题，但本质上是对已有方法的组合与调优，未能突破预训练模型直接应用于生成任务的固有局限。",
+  "why_read": "从事视觉tokenizer与潜在生成模型研究的工程师，可借鉴其利用预训练模型分层特征与PCA重加权稳定高维量化的技术思路。",
+  "method_variants": [
+    {
+      "base_method": "dinov2",
+      "variant_tag": "dinov2:frozen-encoder",
+      "description": "DINOv2原本用于表征学习提取特征；本文将其冻结后直接作为tokenizer encoder，以保留完整语义信息"
+    },
+    {
+      "base_method": "vq-vae",
+      "variant_tag": "vq-vae:pca-reweighting",
+      "description": "VQ-VAE使用普通L2距离进行codebook查找；本文引入PCA特征值重加权，使高语义维度获得更大权重，稳定高维空间量化"
+    },
+    {
+      "base_method": "vae",
+      "variant_tag": "vae:dual-branch",
+      "description": "标准VAE使用单一编码器输出；本文采用双分支设计，融合深层语义特征与浅层纹理特征"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "arxiv_id": "2304.07193",
+      "role": "extends",
+      "note": "本文直接使用冻结的DINOv2作为tokenizer encoder，是方法的核心基础"
+    },
+    {
+      "title": "DINOv3",
+      "arxiv_id": "2508.10104",
+      "role": "extends",
+      "note": "本文使用DINOv3作为encoder基础，表明方法对新一代DINO模型的适应性"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "uses",
+      "note": "采用VQ-VAE的向量量化框架，作为离散tokenization的基础技术"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "supports",
+      "note": "引用LDM/SD-VAE作为latent diffusion的背景技术，说明tokenizer在生成模型中的作用"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "contrasts",
+      "note": "VA-VAE工作采用蒸馏方式引入语义监督，本文直接使用冻结DINO作为对比"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "supports",
+      "note": "DiT作为生成模型背景，说明tokenizer与扩散模型结合的动机"
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "contrasts",
+      "note": "VAR作为自回归图像生成的代表方法，与本文tokenizer进行生成质量对比"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "supports",
+      "note": "LlamaGen等工作表明自回归模型在视觉生成中的潜力，tokenizer对这类模型至关重要"
+    },
+    {
+      "title": "Emu3: Next-Token Prediction is All You Need",
+      "arxiv_id": "2409.18869",
+      "role": "contrasts",
+      "note": "Emu3采用大维度latent导致量化困难的场景，与本文问题设定相似"
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "arxiv_id": "2111.06377",
+      "role": "supports",
+      "note": "MAE作为视觉预训练方法的代表，为DINO等自监督方法提供背景"
+    },
+    {
+      "title": "Learning Transferable Visual Models From Natural Language Supervision",
+      "arxiv_id": "2103.00020",
+      "role": "supports",
+      "note": "CLIP作为视觉-语言预训练代表，文中提及用于对比"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "supports",
+      "note": "MaskGIT作为离散token生成方法，用于生成任务对比实验"
+    }
+  ],
+  "idea": [
+    {
+      "title": "探索DINO-Tok与扩散模型结合",
+      "why": "本文验证了DINO-Tok在自回归生成中的效果，但未探索与扩散模型（如DiT）的结合。未来可研究语义丰富的DINO特征是否能为扩散模型提供更优的latent空间，提升生成质量与语义一致性。已有REPA等工作证明此方向可行，DINO-Tok的语义特征可能带来更大提升。"
+    },
+    {
+      "title": "扩展到视频tokenization任务",
+      "why": "本文聚焦图像tokenization，视频领域同样需要高质量tokenizer。当前方法如CV-VAE、Cosmos VAE主要从零训练，缺乏语义对齐。可探索将DINO-Tok的双分支与PCA重加权思想迁移到视频时序维度，构建视频生成用的语义tokenizer。"
+    },
+    {
+      "title": "自动化浅层特征层选择",
+      "why": "本文手工选择第一层特征F1作为浅层分支输入，未探讨其他浅层层级的效果。可研究自动选择最优浅层-深层特征组合的策略，或通过可学习方式动态融合多层级特征，进一步优化语义-纹理平衡。"
+    }
+  ],
+  "transcript_path": "/Users/lanlanlan/.openclaw/agents/paper-analyst/sessions/aa746cdf-39dc-4f43-965f-59c5b145efb3.jsonl",
+  "session_time": "2026-03-14 19:52:33"
+}

@@ -1,0 +1,206 @@
+{
+  "arxiv_id": "2504.08736",
+  "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+  "cn_oneliner": "VQ-VAE tokenizer扩展至30亿参数+语义正则化，同时提升重建、生成和表示学习质量",
+  "cn_abstract": "GigaTok是首个在扩展视觉tokenizer时同时改善图像重建、生成和表示学习的方法。通过识别潜在空间复杂性是重建vs生成困境的关键因素，提出语义正则化将tokenizer特征与预训练视觉编码器对齐，防止扩展时潜在空间过度复杂。扩展到30亿参数后在重建、下游AR生成和表示质量方面达到SOTA。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱]建立在VQ-VAE系列工作(VQGAN、MAGVIT2)和自回归图像生成(MAR、VAR)的基础上，这些工作证明了离散tokenizer对AR生成的有效性，但扩展时面临重建与生成的权衡困境。[贡献]首次系统研究视觉tokenizer的大规模扩展，提出语义正则化方法解决扩展时的重建-生成权衡问题，并总结三条扩展实践(1D tokenizer、优先扩展decoder、熵损失)。[判断]30亿参数规模+同时提升三个指标是实质贡献，方法创新度中等但工程规模显著，属于significant工作。",
+  "why_read": "从事自回归图像生成或视觉tokenizer研究的开发者值得阅读，可获得大规模tokenizer训练的核心技巧和语义正则化的具体实现思路。",
+  "method_variants": [
+    {
+      "variant_tag": "vq-vae:semantic-regularization",
+      "description": "原局限：扩展tokenizer时潜在空间复杂性增加导致重建质量提升但生成质量下降→核心insight：通过语义正则化将tokenizer特征与预训练视觉编码器(DINOv2)对齐，约束潜在空间复杂度→效果：30亿参数下同时提升重建、生成和表示质量"
+    },
+    {
+      "variant_tag": "vq-vae:1d-tokenizer",
+      "description": "原局限：2D token排列在扩展时面临注意力计算和位置编码挑战→核心insight：使用1D tokenizer将图像视为序列，处理更高效→效果：更好地支持十亿级参数扩展"
+    },
+    {
+      "variant_tag": "vq-vae:decoder-scaling-priority",
+      "description": "原局限：同时扩展encoder和decoder但资源分配不合理→核心insight：优先扩展decoder，decoder容量对生成质量影响更大→效果：更高效地利用扩展参数提升生成质量"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "extends",
+      "note": "VAR是自回归图像生成的重要工作，GigaTok在其基础上改进tokenizer"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "extends",
+      "note": "MAR证明AR模型可超越扩散模型，GigaTok关注tokenizer对AR生成的影响"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "extends",
+      "note": "强调tokenizer是关键，GigaTok专注于此核心组件的扩展"
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "arxiv_id": "2409.04410",
+      "role": "uses",
+      "note": "MAGVIT2是tokenizer的代表性工作，GigaTok使用其框架进行扩展"
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "arxiv_id": "2110.04627",
+      "role": "uses",
+      "note": "VQGAN是改进的VQ-VAE实现，GigaTok继承其量化方法"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "contrasts",
+      "note": "VAR探讨token数量对重建和生成的影响，GigaTok从参数量角度扩展"
+    },
+    {
+      "title": "Reconstruction vs. Generation: Taming Optimization Dilemma in Latent Diffusion Models",
+      "arxiv_id": "2501.01423",
+      "role": "contrasts",
+      "note": "探讨LDM中重建与生成的权衡，GigaTok研究AR tokenizer中的类似问题"
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "arxiv_id": "2304.07193",
+      "role": "supports",
+      "note": "DINOv2提供语义一致的视觉特征，GigaTok用其作为语义正则化的监督目标"
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "arxiv_id": "2406.11838",
+      "role": "mentions",
+      "note": "无VQ的AR生成方法，与本文基于离散token的方法形成对比"
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "arxiv_id": "2309.15505",
+      "role": "mentions",
+      "note": "FSQ是简化的VQ方法，GigaTok使用标准VQ但可通过FSQ进一步优化"
+    },
+    {
+      "title": "ImageFolder: Autoregressive Image Generation with Folded Tokens",
+      "arxiv_id": "2410.01756",
+      "role": "mentions",
+      "note": "最近的AR图像生成工作，与GigaTok同期但关注点不同"
+    }
+  ],
+  "idea": [
+    {
+      "title": "本文局限：仅用DINOv2作为监督",
+      "why": "当前语义正则化仅依赖DINOv2的特征对齐，未探索其他预训练编码器(如CLIP、MAE)的效果。不同编码器提取的语义特征可能更适合特定下游任务。未来可研究多编码器融合或任务自适应的编码器选择。"
+    },
+    {
+      "title": "引用挖掘：VAR的多尺度tokenization",
+      "why": "VAR(2404.02905)提出next-scale预测的多尺度tokenization，可进一步融入GigaTok框架。当前1D序列化可能丢失多尺度结构信息。两者结合可能实现更好的重建-生成平衡。"
+    },
+    {
+      "title": "邻域借鉴：扩散模型的表示对齐",
+      "why": " Representation Alignment for Generation(2410.06940)提出Diffusion Transformer的表示对齐，可借鉴其对比学习方法。GigaTok的语义正则化是特征级别的对齐，未来可引入对比学习进一步提升表示质量。"
+    }
+  ],
+  "_cite_sims": [
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "best_score": 1.0,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "best_score": 1.0,
+      "best_match": "Vector-quantized Image Modeling with Improved VQGAN",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    },
+    {
+      "title": "Reconstruction vs. Generation: Taming Optimization Dilemma in Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "Reconstruction vs. Generation: Taming Optimization Dilemma in Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "best_score": 1.0,
+      "best_match": "DINOv2: Learning Robust Visual Features without Supervision",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Image Generation without Vector Quantization",
+      "pass": true
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "best_score": 0.466,
+      "best_match": "Restructuring Vector Quantization with the Rotation Trick",
+      "pass": false
+    },
+    {
+      "title": "ImageFolder: Autoregressive Image Generation with Folded Tokens",
+      "best_score": 1.0,
+      "best_match": "ImageFolder: Autoregressive Image Generation with Folded Tokens",
+      "pass": true
+    }
+  ],
+  "_cite_matched": 10,
+  "_cite_total": 11,
+  "_cite_rate": 0.909,
+  "_ref_count": 67,
+  "_mv_count": 3,
+  "_mv_issues": [],
+  "_mv_ok": true,
+  "_idea_count": 3,
+  "_idea_analysis": [
+    {
+      "title": "本文局限：仅用DINOv2作为监督",
+      "why_len": 96,
+      "has_gap": true,
+      "restate": false
+    },
+    {
+      "title": "引用挖掘：VAR的多尺度tokenization",
+      "why_len": 100,
+      "has_gap": false,
+      "restate": false
+    },
+    {
+      "title": "邻域借鉴：扩散模型的表示对齐",
+      "why_len": 133,
+      "has_gap": false,
+      "restate": false
+    }
+  ],
+  "_idea_restate": 0,
+  "_idea_gap": 1,
+  "_idea_quality": 0.333,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14"
+}

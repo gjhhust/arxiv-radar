@@ -1,0 +1,193 @@
+{
+  "cn_oneliner": "基于传统VQ视觉tokenizer，引入语义正则化（semantic regularization）技术，解决tokenizer放大时重建质量与生成质量之间的权衡困境，首次实现30亿参数规模下图像重建、生成和表示学习三重SOTA",
+  "cn_abstract": "GigaTok是首个在缩放视觉tokenizer时同时提升图像重建、下游自回归生成和表示学习的方法。论文发现tokenizer规模增大导致的潜在空间复杂度上升是重建-生成权衡问题的根源，提出语义正则化技术将tokenizer特征与预训练视觉编码器（DINOv2）的语义特征对齐以约束潜在空间复杂度。通过三大缩放策略：1D tokenizers、不对称解码器缩放、entropy loss，在30亿参数规模下在ImageNet 256×256分辨率上使用1.4B AR模型实现SOTA效果。",
+  "contribution_type": "significant",
+  "editorial_note": "GigaTok是ICCV 2025论文，针对自回归图像生成中视觉tokenizer scaling的难题。传统方法在放大tokenizer时会出现重建质量提升但生成质量下降的困境，论文核心贡献是识别出潜在空间复杂度是关键因素，并提出语义正则化来约束这一复杂度。这是首个探索到30亿参数规模的视觉tokenizer工作，具有重要的方法论创新性，为自回归视觉生成的大规模tokenizer设计提供了新范式。",
+  "why_read": "从事自回归图像生成、视觉tokenizer研究和多模态大模型的研究者可从中了解30亿参数tokenizer的缩放策略及语义正则化技巧",
+  "method_variants": [
+    {
+      "tag": "vanilla:1d",
+      "note": "使用1D tokenizer而非2D，去除2D归纳偏置，具有更好可扩展性"
+    },
+    {
+      "tag": "vanilla:2d",
+      "note": "使用ViT架构保持2D结构，但可扩展性不如1D版本"
+    },
+    {
+      "tag": "base:asymmetric",
+      "note": "优先缩放解码器而非编码器，不对称设计更高效"
+    },
+    {
+      "tag": "base:semantic_reg",
+      "note": "加入语义正则化与DINOv2特征对齐，约束潜在空间复杂度"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Learning Robust Visual Features without Supervision",
+      "arxiv_id": "2304.07193",
+      "role": "uses",
+      "note": "使用DINOv2作为语义正则化的预训练视觉编码器"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "extends",
+      "note": "MAGVIT-v2工作，奠定了visual tokenizer的研究基础"
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "arxiv_id": "2010.11929",
+      "role": "uses",
+      "note": "ViT架构用于tokenizer的Transformer模块实现"
+    },
+    {
+      "title": "LLaMA: Open and Efficient Foundation Language Models",
+      "arxiv_id": "2302.13971",
+      "role": "uses",
+      "note": "参考Llama架构设计下游AR生成模型"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.12691",
+      "role": "contrasts",
+      "note": "对比方法，探讨不同的token生成策略"
+    },
+    {
+      "title": "Scalable Visual Tokenizers for Autoregressive Image Generation",
+      "arxiv_id": "2412.16132",
+      "role": "extends",
+      "note": "之前关于tokenizer scaling的探索性工作"
+    },
+    {
+      "title": "TokenFlow: Unified Image Generation from Discrete Visual Tokens",
+      "arxiv_id": "2412.08869",
+      "role": "uses",
+      "note": "使用visual tokens进行统一图像生成的最新工作"
+    },
+    {
+      "title": "Janus: Decoupling Visual Encoding for Unified Multimodal Understanding and Generation",
+      "arxiv_id": "2412.01029",
+      "role": "uses",
+      "note": "统一多模态理解与生成的工作"
+    },
+    {
+      "title": "Emu3: Next-Token Prediction is All You Need",
+      "arxiv_id": "2411.05077",
+      "role": "supports",
+      "note": "验证next-token预测范式在视觉生成中的有效性"
+    },
+    {
+      "title": "VAR: Visual Autoregressive Modeling",
+      "arxiv_id": "2406.04037",
+      "role": "contrasts",
+      "note": "对比方法，采用不同的自回归生成范式"
+    },
+    {
+      "title": "TiTok: Tokenizer is Key to Arbitrary-shaped Image Generation",
+      "arxiv_id": "2401.12595",
+      "role": "extends",
+      "note": "探索tokenizer设计的相关工作"
+    },
+    {
+      "title": "Representation Alignment for Scalable Visual Tokenizer",
+      "arxiv_id": "2411.05076",
+      "role": "supports",
+      "note": "REPA工作，证明表示对齐对视觉生成的有效性"
+    }
+  ],
+  "idea": [
+    {
+      "title": "语义正则化约束复杂度",
+      "why": "通过与DINOv2特征对齐约束潜在空间，防止tokenizer规模增大时潜在空间过于复杂导致下游AR模型难以学习"
+    },
+    {
+      "title": "1DTokenizer更易扩展",
+      "why": "1D结构去除2D归纳偏置，在规模化时比2D ViT结构表现更好，更适合十亿级参数规模"
+    },
+    {
+      "title": "优先扩展解码器",
+      "why": "解码器承担从有损潜在码重建图像的任务，更大的解码器能更好恢复细节，提高重建质量"
+    }
+  ],
+  "_similarities": [
+    {
+      "title": "Learning Robust Visual Features without Supervision",
+      "best_score": 0.927,
+      "best_match": "DINOv2: Learning Robust Visual Features without Supervision",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "pass": true
+    },
+    {
+      "title": "LLaMA: Open and Efficient Foundation Language Models",
+      "best_score": 1.0,
+      "best_match": "LLaMA: Open and Efficient Foundation Language Models",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "Scalable Visual Tokenizers for Autoregressive Image Generation",
+      "best_score": 0.647,
+      "best_match": "Learnings from Scaling Visual Tokenizers for Reconstruction and Generation",
+      "pass": false
+    },
+    {
+      "title": "TokenFlow: Unified Image Generation from Discrete Visual Tokens",
+      "best_score": 0.559,
+      "best_match": "MaskBit: Embedding-free Image Generation via Bit Tokens",
+      "pass": false
+    },
+    {
+      "title": "Janus: Decoupling Visual Encoding for Unified Multimodal Understanding and Generation",
+      "best_score": 1.0,
+      "best_match": "Janus: Decoupling Visual Encoding for Unified Multimodal Understanding and Generation",
+      "pass": true
+    },
+    {
+      "title": "Emu3: Next-Token Prediction is All You Need",
+      "best_score": 1.0,
+      "best_match": "Emu3: Next-Token Prediction is All You Need",
+      "pass": true
+    },
+    {
+      "title": "VAR: Visual Autoregressive Modeling",
+      "best_score": 0.508,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": false
+    },
+    {
+      "title": "TiTok: Tokenizer is Key to Arbitrary-shaped Image Generation",
+      "best_score": 0.565,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": false
+    },
+    {
+      "title": "Representation Alignment for Scalable Visual Tokenizer",
+      "best_score": 0.579,
+      "best_match": "Exploring Representation-Aligned Latent Space for Better Generation",
+      "pass": false
+    }
+  ],
+  "_matched": 7,
+  "_total": 12,
+  "_pass_rate": 0.583,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14",
+  "_ref_count": 67
+}

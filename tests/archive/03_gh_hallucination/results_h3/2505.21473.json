@@ -1,0 +1,221 @@
+{
+  "arxiv_id": "2505.21473",
+  "title": "DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction",
+  "cn_oneliner": "基于VAR的next-scale预测范式，引入1D由粗到细的next-detail预测策略与并行自校正推理机制，以128个token实现ImageNet 256×256上2.96 gFID，推理速度较VAR提升约2倍",
+  "cn_abstract": "本文提出DetailFlow，一种基于next-detail预测的由粗到细1D自回归图像生成方法。通过学习以渐进退化图像为监督的分辨率感知token序列，DetailFlow使生成过程从全局结构出发并逐步细化细节，使1D token序列与自回归推理机制天然对齐。此外，作者提出带自校正的并行推理机制，在减少teacher-forcing积累误差的同时将生成速度提升约8倍。在ImageNet 256×256基准上，DetailFlow仅用128个token即达到2.96 gFID，优于需要680个token的VAR（3.3 FID）和FlexVAR（3.05 FID），整体推理速度也比VAR和FlexVAR快近2倍。",
+  "contribution_type": "significant",
+  "editorial_note": "VAR以next-scale预测取代光栅扫描，开创了2D多尺度自回归图像生成范式，但其token数量较多（680个）且推理效率有限。本文将多尺度语义压缩进1D token序列，提出next-detail预测策略，并设计并行自校正推理机制，在token数减少5倍的前提下实现更优FID，方法设计较为系统。该工作在效率与质量上均有实质提升，并非单纯刷点，但整体仍属对VAR范式的延伸改进，创新深度介于incremental与foundational之间，判定为significant。",
+  "why_read": "研究高效自回归图像生成的学者，可从中学习如何将多尺度信息压缩进紧凑1D序列并结合并行推理大幅提升效率的系统性方案。",
+  "method_variants": [
+    "tokenizer:1D-coarse-to-fine-resolution-aware",
+    "ar_prediction:next-detail-prediction",
+    "inference:parallel-with-self-correction",
+    "training:progressively-degraded-image-supervision"
+  ],
+  "core_cite": [
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "contrasts",
+      "note": "VAR提出next-scale预测范式，是本文的直接对比基线；DetailFlow在更少token下超越其FID并提升推理速度"
+    },
+    {
+      "title": "FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction",
+      "arxiv_id": "2502.20313",
+      "role": "contrasts",
+      "note": "FlexVAR是另一个强基线，同样需要680个token；本文以128 token超越其3.05 FID"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "contrasts",
+      "note": "VQGAN提出经典光栅扫描自回归生成框架，本文指出其token顺序不自然的问题"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "contrasts",
+      "note": "TiTok探索极少token的1D图像tokenizer，与本文在压缩1D序列方向形成对比"
+    },
+    {
+      "title": "SoftVQ-VAE: Efficient 1-Dimensional Continuous Tokenizer",
+      "arxiv_id": "2412.10958",
+      "role": "contrasts",
+      "note": "同为1D连续tokenizer的相关工作，本文在1D token设计上与之形成对比"
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "arxiv_id": "2502.13967",
+      "role": "contrasts",
+      "note": "FlexTok探索可变长度1D图像token序列，与本文1D coarse-to-fine方案相关"
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "arxiv_id": "2406.11838",
+      "role": "contrasts",
+      "note": "MAR提出无VQ的自回归生成，与本文在AR生成效率上形成对比"
+    },
+    {
+      "title": "Parallelized Autoregressive Visual Generation",
+      "arxiv_id": "2412.15119",
+      "role": "contrasts",
+      "note": "探索并行自回归视觉生成，与本文并行推理机制相关，形成方法对比"
+    },
+    {
+      "title": "TokenFlow: Unified Image Tokenizer for Multimodal Understanding and Generation",
+      "arxiv_id": "2412.03069",
+      "role": "mentions",
+      "note": "统一多模态理解与生成的tokenizer工作，被引用为统一框架背景"
+    },
+    {
+      "title": "Emu3: Next-Token Prediction is All You Need",
+      "arxiv_id": "2409.18869",
+      "role": "mentions",
+      "note": "Emu3将AR建模扩展至视觉生成统一框架，作为光栅扫描方法的代表被对比"
+    },
+    {
+      "title": "Infinity∞: Scaling Bitwise AutoRegressive Modeling for High-Resolution Image Synthesis",
+      "arxiv_id": "2412.04431",
+      "role": "contrasts",
+      "note": "Infinity探索高分辨率比特级自回归建模，作为高质量AR生成的对比方法"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "contrasts",
+      "note": "LlamaGen将LLaMA用于图像生成，证明AR模型可超越扩散模型，作为对比基线"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "contrasts",
+      "note": "MaskGIT提出掩码生成方式，与本文并行推理机制在加速策略上形成对比"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "contrasts",
+      "note": "LDM代表扩散模型生成基线，作为与AR方法对比的参照"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "uses",
+      "note": "VQ-VAE是离散图像tokenizer的基础工作，DetailFlow的tokenizer设计建立于此范式之上"
+    }
+  ],
+  "idea": [
+    {
+      "title": "层次化细节预测在文本条件生成与视频生成中的扩展",
+      "why": "DetailFlow的next-detail 1D token序列在类别条件生成上已显示出优势，但尚未验证在文本条件生成或视频时序建模中的有效性。视频帧间存在天然的由粗到细时空层次结构，将DetailFlow的分辨率感知token序列扩展至时序维度，有望以极少token高效建模视频内容，且该团队（ByteDance）具备相关数据与工程能力支撑。"
+    },
+    {
+      "title": "自校正并行推理机制的理论分析与通用化",
+      "why": "本文提出的并行自校正推理在实验上取得约8×加速同时降低误差积累，但其理论机制（为何自校正能补偿teacher-forcing偏差）尚未深入分析。建立该机制的误差界理论，并将其推广至其他AR生成模型（如语言模型的推测解码、MaskGIT类模型），可产生更广泛影响，且已有推测解码等相关理论工具可供借鉴。"
+    },
+    {
+      "title": "1D由粗到细token序列用于多模态统一理解与生成",
+      "why": "DetailFlow的1D token序列具有天然的语义排序性，低索引token对应粗粒度全局语义，高索引token对应细粒度纹理细节，这与多模态理解中不同粒度特征需求高度匹配。借鉴TokenFlow/Emu3等统一框架，将DetailFlow tokenizer与语言模型联合训练，有望在保持高质量生成的同时，利用粗粒度token高效完成视觉理解任务，实现更高效的多模态统一模型。"
+    }
+  ],
+  "_scheme": "H",
+  "_model": "wq/minimaxm25",
+  "_verified_at": "2026-03-13",
+  "_s2_ref_count": 43,
+  "_similarities": [
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "best_score": 1.0,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction",
+      "best_score": 1.0,
+      "best_match": "FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    },
+    {
+      "title": "SoftVQ-VAE: Efficient 1-Dimensional Continuous Tokenizer",
+      "best_score": 1.0,
+      "best_match": "SoftVQ-VAE: Efficient 1-Dimensional Continuous Tokenizer",
+      "pass": true
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "best_score": 1.0,
+      "best_match": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Image Generation without Vector Quantization",
+      "pass": true
+    },
+    {
+      "title": "Parallelized Autoregressive Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Parallelized Autoregressive Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "TokenFlow: Unified Image Tokenizer for Multimodal Understanding and Generation",
+      "best_score": 1.0,
+      "best_match": "TokenFlow: Unified Image Tokenizer for Multimodal Understanding and Generation",
+      "pass": true
+    },
+    {
+      "title": "Emu3: Next-Token Prediction is All You Need",
+      "best_score": 1.0,
+      "best_match": "Emu3: Next-Token Prediction is All You Need",
+      "pass": true
+    },
+    {
+      "title": "Infinity∞: Scaling Bitwise AutoRegressive Modeling for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Infinity∞: Scaling Bitwise AutoRegressive Modeling for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "best_score": 1.0,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    }
+  ],
+  "_matched": 15,
+  "_total": 15,
+  "_pass_rate": 1.0,
+  "_elapsed_s": 56.5
+}

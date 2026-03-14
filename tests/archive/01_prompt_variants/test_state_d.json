@@ -1,0 +1,33 @@
+{
+  "cells": {
+    "minimaxm25": {
+      "status": "done",
+      "latency_s": 41.01,
+      "parse_success": true,
+      "fill_rate": 1.0,
+      "error": null
+    },
+    "claude46": {
+      "status": "done",
+      "latency_s": 35.23,
+      "parse_success": true,
+      "fill_rate": 1.0,
+      "error": null
+    },
+    "deepseekv32": {
+      "status": "done",
+      "latency_s": 76.4,
+      "parse_success": true,
+      "fill_rate": 1.0,
+      "error": null
+    },
+    "gpt52": {
+      "status": "done",
+      "latency_s": 78.79,
+      "parse_success": true,
+      "fill_rate": 1.0,
+      "error": null
+    }
+  },
+  "started": "2026-03-12T19:17:39"
+}

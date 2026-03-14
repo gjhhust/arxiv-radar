@@ -1,0 +1,189 @@
+你是 CV 领域资深研究员，每周阅读 20+ 篇论文。对以下论文进行结构化分析，输出 JSON。
+
+**论文信息**
+- arxiv ID：2503.08685
+- 标题："Principal Components" Enable A New Language of Images
+
+---
+
+**字段要求**
+
+cn_oneliner（≤45字）
+  格式：「基于[X]，引入[Y]，实现[Z]」或「将[A]与[B]结合解决[C]」
+  必须包含：具体基础方法名 + 具体改动 + 具体效果。不要泛泛的"改进了性能"。
+
+cn_abstract（2-4句中文技术摘要）
+  完整。关键术语保留英文。保留核心数值。不得截断。
+
+contribution_type（严格四选一，从严判断）
+  incremental：有效但可预期的改进，"做了应该做的事"（最常见）
+  significant：解决了领域已知难题，或提供其他人可复用的新框架
+  story-heavy：工程堆砌为主，叙事高于实质
+  foundational：改变领域做事方式，未来论文会引用作为起点（极少）
+
+editorial_note（三段结构，总字数 80-150 字）
+  [前驱] 这篇论文建立在哪些已有工作的基础上，核心模块各来自哪里。
+  [贡献] 去掉包装之后，作者真正做了什么新事情（用最简单的话）。
+  [判断] 这个贡献的实质价值：是真正解决了问题，还是有效但不深刻，或者夸大了困难/贡献？
+
+why_read（1句，要有判断力）
+  不要"如果你做这个领域可以看看"。说清楚谁值得读，具体会得到什么。
+
+method_variants（方法变体列表）
+  JSON 数组，捕捉本文对已有方法的实质性改造，关注改动背后的 insight。每项两个字段：
+  - variant_tag：格式 "base_method:改动标签"（base_method 用小写英文，如 vq-vae、ddpm、vit、mae）
+  - description：一句话，说清楚：改动前的局限是什么 → 改动的核心 insight 是什么 → 效果
+
+  例：[
+    {"variant_tag": "vq-vae:fsq",
+     "description": "VQ-VAE 的 codebook 学习不稳定且利用率低；FSQ 用有限整数标量替代向量量化，消除 codebook 训练，利用率接近 100%"},
+    {"variant_tag": "ddpm:v-prediction",
+     "description": "DDPM 预测噪声 ε 在高噪声步骤数值不稳定；改为预测速度场 v（加权 ε 和 x₀），提升训练稳定性并改善细节生成"},
+    {"variant_tag": "vit:register-tokens",
+     "description": "ViT 在无语义区域会出现高范数 artifact token 干扰注意力图；引入额外 register token 吸收全局信息，artifact 消失，特征图更干净"}
+  ]
+  ⚠️ 不要把论文自身的不同规模版本（Small/Base/Large）列为 variants
+  ⚠️ 若本文无对已有方法的实质性改造，返回空数组 []
+
+core_cite
+  ≥10 条，构建一条清晰的引用故事线：哪些工作奠定了基础 → 哪些工作被本文直接扩展 → 哪些工作被本文超越。
+  每条包含：
+  - title：论文标题（须来自文末参考列表，找不到则删除）
+  - arxiv_id：来自参考列表中标注的 arxiv ID，否则留空字符串
+  - role：五选一 extends | contrasts | uses | supports | mentions
+  - note：一句话，说清楚它在本文的故事线中扮演什么角色
+
+  role 定义（选最准确的唯一一个）：
+  extends   — 本文直接在此工作基础上扩展
+  contrasts — 本文与此工作对比或批判
+  uses      — 本文直接使用其方法/代码/数据集
+  supports  — 作为背景支撑，引用以说明动机
+  mentions  — 简单提及，非核心
+
+  故事线排序建议：先写 extends，再写 uses，再写 contrasts，最后 supports/mentions
+  ⚠️ 所有 extends 和 contrasts 类引用不可遗漏
+
+idea
+  3 条研究方向，来自以下三类（每类至少一条）：
+  A. 本文局限 — 作者在 Limitation / Future Work 明确没做的事
+  B. 引用挖掘 — 参考列表中被本文用到但能力未充分挖掘的方法，其原本还能做什么？
+  C. 邻域借鉴 — 相邻子领域中有无解决类似问题的方法可迁移？大跨（NLP→视觉生成、音频→图像
+     tokenization）和小跨（视频生成→表征学习、3D 重建→视频生成、image AR→video AR）都算。
+
+  每条包含：
+  - title：研究方向标题（10-20 字）
+  - why：2-3 句。第一句说 gap，后续说可行性。
+
+  输出前，对每条 idea 做 solid 检验（只有通过才写入）：
+  1. 这个 idea 是否需要验证一个新假设？（而非只是"把 A 换成 B"）
+  2. 本文为什么没做？（资源？数据？理论框架限制？）—— 必须有合理答案
+  3. 如果成功，这个发现是否不平凡？
+
+  ✅ 好的 idea：
+  「将 DINO 的 patch-level 特征对齐引入视频 tokenizer（来源C/B）：
+  DINO 在图像 tokenizer 中提升了语义一致性，但视频 tokenizer 面临时序一致性问题；
+  DINO 的 patch 特征天然捕捉局部纹理变化，若与光流信息结合约束时序帧间 token 一致性，
+  可能解决当前视频 tokenizer 在快速运动场景下的重建模糊问题。本文没做是因为 DINO 对齐
+  只在静态图像上验证过，时序扩展需要新的训练策略。」
+
+  ❌ 差的 idea（禁止）：
+  - 复述本文已做的事：「本文引入了 DINOv2 对齐，可以进一步增强语义对齐损失」
+  - 纯拼凑：「将本方法与扩散模型结合」
+  - 太泛：「扩展到视频生成领域」
+
+---
+
+**输出格式**
+仅输出纯 JSON，不含任何其他文字：
+{
+  "arxiv_id": "2503.08685",
+  "title": ""Principal Components" Enable A New Language of Images",
+  "cn_oneliner": "...",
+  "cn_abstract": "...",
+  "contribution_type": "...",
+  "editorial_note": "...",
+  "why_read": "...",
+  "method_variants": [
+    {"variant_tag": "...", "description": "..."}
+  ],
+  "core_cite": [
+    {"title": "...", "arxiv_id": "...", "role": "...", "note": "..."}
+  ],
+  "idea": [
+    {"title": "...", "why": "..."}
+  ]
+}
+
+---
+
+**参考列表（core_cite 须来自其中，输出前逐条核查，列表中找不到则删除）：**
+- A Tutorial on Principal Component Analysis | arxiv:1404.1100
+- Adaptive Length Image Tokenization via Recurrent Allocation | arxiv:2411.02393
+- An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale | arxiv:2010.11929
+- An Image is Worth 32 Tokens for Reconstruction and Generation | arxiv:2406.07550
+- Autoregressive Image Generation using Residual Quantization | arxiv:2203.01941
+- Autoregressive Image Generation without Vector Quantization | arxiv:2406.11838
+- Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation | arxiv:2406.06525
+- Classifier-Free Diffusion Guidance | arxiv:2207.12598
+- Conditional Image Generation with PixelCNN Decoders | arxiv:1606.05328
+- DINOv2: Learning Robust Visual Features without Supervision | arxiv:2304.07193
+- Denoising Diffusion Implicit Models | arxiv:2010.02502
+- Denoising Diffusion Probabilistic Models | arxiv:2006.11239
+- Diffusion Autoencoders are Scalable Image Tokenizers | arxiv:2501.18593
+- Diffusion Autoencoders: Toward a Meaningful and Decodable Representation | arxiv:2111.15640
+- Diffusion Models Beat GANs on Image Synthesis | arxiv:2105.05233
+- Divot: Diffusion Powers Video Tokenizer for Comprehension and Generation | arxiv:2412.04432
+- Epsilon-VAE: Denoising as Visual Decoding | arxiv:2410.04081
+- FlexTok: Resampling Images into 1D Token Sequences of Flexible Length | arxiv:2502.13967
+- GLU Variants Improve Transformer | arxiv:2002.05202
+- Generative Modelling With Inverse Heat Dissipation | arxiv:2206.13397
+- Hierarchical Text-Conditional Image Generation with CLIP Latents | arxiv:2204.06125
+- High-Resolution Image Synthesis with Latent Diffusion Models | arxiv:2112.10752
+- ImageFolder: Autoregressive Image Generation with Folded Tokens | arxiv:2410.01756
+- Improved Techniques for Training GANs | arxiv:1606.03498
+- Information-Ordered Bottlenecks for Adaptive Semantic Compression | arxiv:2305.11213
+- Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation | arxiv:2310.05737
+- Learning Deep Transformer Models for Machine Translation | arxiv:1906.01787
+- Learning Ordered Representations with Nested Dropout | arxiv:1402.0915
+- Learning Transferable Visual Models From Natural Language Supervision | arxiv:2103.00020
+- Learnings from Scaling Visual Tokenizers for Reconstruction and Generation | arxiv:2501.09755
+- MaskBit: Embedding-free Image Generation via Bit Tokens | arxiv:2409.16211
+- MaskGIT: Masked Generative Image Transformer | arxiv:2202.04200
+- Masked Autoencoders Are Effective Tokenizers for Diffusion Models | arxiv:2502.03444
+- Masked Autoencoders Are Scalable Vision Learners | arxiv:2111.06377
+- Matryoshka Representation Learning | arxiv:2205.13147
+- Muse: Text-To-Image Generation via Masked Generative Transformers | arxiv:2301.00704
+- Neural Discrete Representation Learning | arxiv:1711.00937
+- One-D-Piece: Image Tokenizer Meets Quality-Controllable Compression | arxiv:2501.10064
+- Pixel Recurrent Neural Networks | arxiv:1601.06759
+- Planting a SEED of Vision in Large Language Model | arxiv:2307.08041
+- Randomized Autoregressive Visual Generation | arxiv:2411.00776
+- Reconstruction vs. Generation: Taming Optimization Dilemma in Latent Diffusion Models | arxiv:2501.01423
+- Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think | arxiv:2410.06940
+- Return of Unconditional Generation: A Self-supervised Representation Generation Method | arxiv:2312.03701
+- Root Mean Square Layer Normalization | arxiv:1910.07467
+- Scalable Diffusion Models with Transformers | arxiv:2212.09748
+- SiT: Exploring Flow and Diffusion-based Generative Models with Scalable Interpolant Transformers | arxiv:2401.08740
+- Taming Transformers for High-Resolution Image Synthesis | arxiv:2012.09841
+- Vector-quantized Image Modeling with Improved VQGAN | arxiv:2110.04627
+- Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction | arxiv:2404.02905
+- When Worse is Better: Navigating the compression-generation tradeoff in visual tokenization | arxiv:2412.16326
+
+---
+
+**保存要求（必须执行，不得跳过）**
+
+1. 将完整 JSON 写入以下文件（目录不存在则自动创建）：
+   `/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2503.08685/analyse-results/results_20260314_H2.json`
+
+3. 在写入 JSON 成功后，追加以下内容到 `memory/2026-03-14.md`（文件不存在则创建）：
+```
+## 2503.08685 | {title}
+- date: 2026-03-14
+- task_summary: H2 结构化分析
+- result: /Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2503.08685/analyse-results/results_20260314_H2.json
+```
+   （将 {title} 替换为实际论文标题）
+
+2. 写入成功后，**最后一行只输出该文件的绝对路径**，其他任何文字都不要：
+   示例：`/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2503.08685/analyse-results/results_20260314_H2.json`

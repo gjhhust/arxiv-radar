@@ -55,6 +55,7 @@ arxiv-radar 由三条独立但互连的 pipeline 组成：
 | **init_graph** | BFS 领域扩散初始化 | seeds | paper_network.db | paper_db, semantic_scholar |
 | **baseline_extractor** | 关键词 baseline 提取 | papers[] | baselines + edges | paper_db |
 | **reference_ranker** | LLM 引用排序+方法变体 | paper + refs | ranked refs + variants | paper_db, LLM |
+| **paper_analyst_v3** | H3 生产分析入口 | arxiv_id + title | 结构化分析 JSON + DB 状态 | paper_db, config_parser, OpenClaw |
 | **context_injector** | 图谱上下文注入 | paper_id + DB | context block | paper_db |
 | **trend** | 关键词趋势+Idea Seeds | papers[] | trend section | config_parser |
 | **obsidian_writer** | Obsidian 笔记生成 | papers[] | .md per paper | paper_db |
@@ -78,6 +79,12 @@ papers (
     source TEXT,                   -- "seed" | "s2_expansion" | "daily"
     s2_id TEXT,                    -- Semantic Scholar paper ID
     s2_citation_count INTEGER,
+    analysis_status TEXT,          -- pending / analyzing / completed / failed
+    analysis_date TEXT,            -- 分析日期
+    analysis_model TEXT,           -- 使用模型
+    analysis_session_id TEXT,      -- OpenClaw session ID
+    analysis_transcript TEXT,      -- transcript 路径
+    analysis_result_path TEXT,     -- 结果 JSON 存档路径
     created_at TEXT
 )
 
@@ -124,6 +131,7 @@ method_variants (
 | `data/paper_network.db` | 知识图谱数据库 | 持久，增量更新 |
 | `data/cache/YYYY-MM-DD.json` | 每日爬取缓存（避免重复爬） | 持久，按日归档 |
 | `data/cache/analysis_merged.json` | LLM 中文摘要缓存 | 持久，增量合入 |
+| `data/cache/analysis_v3/*.json` | paper-analyst-v3 结构化分析存档 | 持久，按论文归档 |
 | `data/cache/variant_batch*.json` | LLM 方法变体分析结果 | 持久，结果已入 DB |
 | `data/logs/*.log` | 运行日志 | 保留 30 天 |
 | `data/seeds/` | 领域种子论文列表 | 持久 |
@@ -209,3 +217,154 @@ method_variants (
 | 429 重试等待 | 45s | S2 需要较长冷却 |
 | 每日增量上限 | 20 篇新论文的 S2 调用 | 控制 API 成本 |
 
+---
+
+## 九、paper-analyst Agent 架构（v3，2026-03-13）
+
+### 概览
+
+paper-analyst 是一个独立的 OpenClaw 命名 agent，负责单篇论文的深度结构化分析。
+与 arxiv-radar 主流程解耦：Mox 通过 `sessions_spawn` 调用，只传入 arxiv_id + 任务描述 + S2 引用列表，接收返回的结果 json 路径。
+
+```
+Mox (arxiv-radar main pipeline)
+  │
+  ├─ sessions_spawn(task=template, model=minimaxm25)
+  │
+  ▼
+paper-analyst Agent
+  ├─ 检查 memory 缓存（已分析过？）
+  ├─ arxiv-fetch skill → papers/{id}/ 源文件
+  ├─ 读取 .tex / cite_map.json / paper_annotated.txt
+  ├─ 按任务格式输出分析结果
+  ├─ 写入 papers/{id}/analyse-results/results_YYYYMMDD.json（生产）或 results_YYYYMMDD_{scheme}.json（测试）
+  └─ 返回该 json 完整路径（最后一行仅输出绝对路径，无其他文字）
+  │
+  ▼
+Mox 收到路径
+  ├─ 读取 json，提取 core_cite
+  ├─ 与 S2 引用列表做高相似度匹配（≥0.8）
+  ├─ 写回验证字段（_verified / _matched / _similarities）
+  └─ 汇报幻觉率用于 Phase 1 G/H 测试
+```
+
+### Agent 配置
+
+| 参数 | 值 |
+|------|-----|
+| Agent ID | `paper-analyst` |
+| 模型 | `wq/minimaxm25`（默认），`wqoai/gpt52`（fallback） |
+| Workspace | `~/.openclaw/workspace-paper-analyst/` |
+| Discord | `#paper-analyse`（channel `1481818865385209926`） |
+| 工具权限 | 全权限（read / exec / write / memory_search / memory_get） |
+
+### 归档结构
+
+```
+~/.openclaw/workspace-paper-analyst/papers/
+├── {arxiv_id}/
+│   ├── *.tex / *.bbl / *.bib / cite_map.json  ← arxiv-fetch 输出（源文件）
+│   ├── paper_annotated.txt                     ← PDF fallback
+│   └── analyse-results/
+│       ├── results_20260313.json               ← 生产分析
+│       ├── results_20260314_H2.json            ← 测试分析（带 scheme 后缀）
+│       └── ...                                 ← Mox verify 后验证字段写回此文件
+└── ...
+```
+
+> **路径规范**：分析结果统一存放在 `analyse-results/` 子目录，与源文件隔离。
+> Mox 验证后将 `_verified`/`_matched`/`_similarities` 等字段直接写回该 JSON 文件。
+
+## 十、paper_analyst_v3.py（生产入口，2026-03-15）
+
+### 职责
+
+- 暴露 `analyse_paper(arxiv_id, title)` 作为生产入口
+- 解析 `llm_analyse` 配置，统一选择模型、prompt 和超时
+- 调用 `paper-analyst` agent；当前仓库仅保留 `sessions_spawn` 预留接口
+- 复用 H3 测试验证过的容错 JSON 读取逻辑，兼容 GLM5 风格输出
+- 将分析状态、session 溯源、结果路径统一写入 `PaperDB`
+- 预留 S2 引用后验证钩子，当前先利用 DB 中的 `CITES` 出边做精确匹配
+
+### 调用链
+
+```text
+main.py / weekly.py
+  -> analyse_paper(arxiv_id, title)
+  -> spawn_analyst()
+  -> paper-analyst agent (OpenClaw runtime)
+  -> safe_load_json()
+  -> verify_analysis_result()
+  -> PaperDB.update_analysis_status()
+```
+
+### 输出 JSON 字段
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `arxiv_id` | string | arxiv 论文 ID |
+| `title` | string | 论文标题 |
+| `date` | string | 分析日期 |
+| `task_summary` | string | 1-2句任务描述 |
+| `model` | string | 使用的模型 |
+| `abstract_en` | string | 英文原摘要 |
+| `cn_oneliner` | string | 一句话总结（基于X引入Y实现Z） |
+| `cn_abstract` | string | 中文摘要（2-4句） |
+| `contribution_type` | enum | incremental / significant / story-heavy / foundational |
+| `editorial_note` | string | 三段判断（前驱/贡献/评价），80-150字 |
+| `why_read` | string | 适读人群及理由 |
+| `method_variants` | list | base_method:variant_tag 对 |
+| `core_cite` | list | ≥10条，含 title/arxiv_id/role/note |
+| `idea` | list | 3条研究 idea，含 title + why |
+| `core_cite_verified` | bool | 初始 false，Mox 验证后写回 true |
+| `_verified_by` | string | "Mox"（Mox 写回） |
+| `_verified_at` | string | 验证日期（Mox 写回） |
+| `_matched` | int | 通过验证的 core_cite 数量（Mox 写回） |
+| `_total` | int | core_cite 总数（Mox 写回） |
+| `_similarities` | list | 每条 core_cite 的相似度得分（Mox 写回，debug 用） |
+
+### Mox 调用任务模板
+
+完整模板文件：`test_gh/task_template_v3.txt`
+
+简要结构：
+1. `用 arxiv-fetch skill 获取论文 {arxiv_id}`
+2. 字段要求（含 2-3 个通用示例）
+3. `确保每条 core_cite title 来自文末参考列表`
+4. 附 S2 引用列表（来自 DB CITES 边）
+
+### Memory 索引格式
+
+写入 `memory/YYYY-MM-DD.md`（轻量索引，完整内容在 json 文件）：
+
+```markdown
+## {arxiv_id} | {论文标题}
+- date: YYYY-MM-DD
+- task_summary: {任务描述}
+- result: {papers/{arxiv_id}/analyse-results/results_YYYYMMDD.json 完整路径}（测试期可带 _scheme 后缀）
+```
+
+### 双模式说明
+
+| 模式 | 触发 | 输出 | 归档 |
+|------|------|------|------|
+| 结构化任务（Mox 调用） | task 含格式要求 | 仅返回 json 路径 | ✅ |
+| 直接对话（用户聊天） | 无格式要求 | 自然语言（中文） | ✅ |
+
+---
+
+## §10 操作日志
+
+所有对 arxiv-radar 项目的操作和改动记录在 `logs/YYYY-MM-DD.md` 中，保证项目可溯源。
+
+```
+arxiv-radar/logs/
+├── 2026-03-14.md   ← 当日所有操作、改动、测试结果
+├── 2026-03-15.md
+└── ...
+```
+
+**规范：**
+- 每次修改代码/配置/架构文档时，先在当日日志中记录改动内容
+- 测试运行结果（通过/失败/重试）记录于日志
+- Mox 每次操作 arxiv-radar 项目文件时，须同步追加日志条目

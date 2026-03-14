@@ -1,0 +1,233 @@
+{
+  "cn_oneliner": "基于传统双向依赖的图像tokenization，引入因果解码器约束的双向编码器，实现token序列的前向依赖结构，使标准自回归模型超越SOTA diffusion方法",
+  "cn_abstract": "自回归图像生成旨在基于前面的token预测下一个token。然而，这一过程受到传统图像tokenization中固有的双向依赖的挑战，这与自回归模型的单向性质存在根本性的错位。为解决这一问题，我们提出了AliTok，一种新型的对齐tokenizer，它改变了token序列的依赖结构。AliTok采用双向编码器配合因果解码器的设计，迫使编码器生成既具有语义丰富性又具有前向依赖性的token序列。此外，通过引入前缀token并采用两阶段tokenizer训练过程来增强重建性能，AliTok同时实现了高保真度和可预测性。基于AliTok，一个仅有177M参数的标准解码器-only自回归模型在ImageNet-256上实现了gFID为1.44，IS为319.5。扩展到662M，我们的模型达到了gFID为1.28，超越SOTA diffusion方法且采样速度快10倍。在ImageNet-512上，我们的318M模型也实现了SOTA gFID为1.39。",
+  "contribution_type": "significant",
+  "editorial_note": "这篇论文针对自回归图像生成领域中一个根本性的问题——传统tokenizer产生的双向依赖token序列与自回归模型的单向预测范式之间的错位——提出了创新性的解决方案。不同于已有工作通过修改模型来适应数据属性，AliTok另辟蹊径，通过引入因果解码器来约束双向编码器，迫使其产生具有前向依赖结构的token序列。这一巧妙的设计使得编码器能够在保持全局语义丰富性的同时，为每个token的表示注入因果信息，从而显著提升了自回归模型的训练效率和生成质量。实验结果表明，即使是标准的decoder-only自回归模型也能首次超越最先进的diffusion模型，同时保持10倍的采样速度优势。该工作为多模态统一提供了新的思路。",
+  "why_read": "适合对自回归图像生成和多模态统一感兴趣的研究人员和工程师，通过理解token依赖结构的设计来优化生成模型的性能",
+  "method_variants": [
+    {
+      "tag": "baseline:bidirectional",
+      "note": "使用标准双向Transformer作为tokenizer的基线方法"
+    },
+    {
+      "tag": "baseline:causal_enc",
+      "note": "强制编码器采用因果结构，严格禁止前面的patch访问未来信息"
+    },
+    {
+      "tag": "alitok:causal_dec",
+      "note": "使用因果解码器约束双向编码器，在重建时严格限制token的可见性为因果上下文"
+    },
+    {
+      "tag": "alitok:prefix",
+      "note": "引入16个前缀token，专门用于补偿第一行token因缺乏前向上下文导致的重建质量问题"
+    },
+    {
+      "tag": "alitok:two_stage",
+      "note": "两阶段训练：第一阶段训练因果decoder的encoder，第二阶段冻结encoder并重新训练双向decoder提升重建质量"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "GPT-4 Technical Report",
+      "arxiv_id": "2303.08774",
+      "role": "uses",
+      "note": "GPT系列语言模型启发了将自回归范式应用于图像生成的研究"
+    },
+    {
+      "title": "LLaMA: Open and Efficient Foundation Language Models",
+      "arxiv_id": "2302.13971",
+      "role": "uses",
+      "note": "本文自回归模型架构参考了LLaMA的decoder-only设计"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.05027",
+      "role": "contrasts",
+      "note": "采用双向attention进行多轮并行生成，是本文方法对比的masked自回归方法"
+    },
+    {
+      "title": "MAGVIT-v2: Masked Generative Video Transformer",
+      "arxiv_id": "2306.09344",
+      "role": "uses",
+      "note": "使用其 tokenizer 作为本文的基线方法之一"
+    },
+    {
+      "title": "TiTok: An Efficient Tokenizer for Generative Image Models",
+      "arxiv_id": "2403.19636",
+      "role": "extends",
+      "note": "基于TiTok的transformer-based tokenizer架构进行改进"
+    },
+    {
+      "title": "VAR: Visual Autoregressive Modeling",
+      "arxiv_id": "2406.04037",
+      "role": "contrasts",
+      "note": "采用跨尺度自回归+尺度内双向attention，是另一种不同于本文的方法"
+    },
+    {
+      "title": "MAR: Autoregressive Image Generation without Vector Quantization",
+      "arxiv_id": "2406.11838",
+      "role": "contrasts",
+      "note": "无需向量量化的自回归图像生成，使用双向attention"
+    },
+    {
+      "title": "LlamaGen: Autoregressive Model Beats Diffusion Model",
+      "arxiv_id": "2404.10177",
+      "role": "uses",
+      "note": "标准decoder-only自回归图像生成方法，本文以此为基线"
+    },
+    {
+      "title": "LightningDiT: Efficient Diffusion Models",
+      "arxiv_id": "2501.04092",
+      "role": "contrasts",
+      "note": "本文超越的SOTA diffusion方法，在ImageNet-256上gFID为1.35"
+    },
+    {
+      "title": "VQ-VAE: Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "uses",
+      "note": "使用向量量化技术将连续潜在特征离散化"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "uses",
+      "note": "通过对抗损失显著提升视觉保真度"
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "arxiv_id": "2502.13967",
+      "role": "mentions",
+      "note": "探索从粗到细的多粒度语义编码"
+    },
+    {
+      "title": "Chameleon: Mixed-Modal Early-Fusion Foundation Models",
+      "arxiv_id": "2405.09818",
+      "role": "uses",
+      "note": "采用QK-Norm操作来稳定大规模模型训练"
+    },
+    {
+      "title": "Janus-Pro: Unified Multimodal Understanding and Generation",
+      "arxiv_id": "2501.17811",
+      "role": "mentions",
+      "note": "统一多模态理解和生成的工作"
+    },
+    {
+      "title": "RandAR: Autoregressive Random Masking",
+      "arxiv_id": "2412.09477",
+      "role": "contrasts",
+      "note": "采用随机生成顺序增强全局感知"
+    }
+  ],
+  "idea": [
+    {
+      "title": "Token依赖结构对齐",
+      "why": "传统tokenizer的 bidirectional 依赖与自回归模型的 unidirectional 预测存在根本性错位，通过因果解码器约束可以迫使编码器产生前向依赖的token序列"
+    },
+    {
+      "title": "因果解码器正则化",
+      "why": "因果解码器作为强大的隐式正则化器，强制编码器将重构patch所需的上下文信息有效地组织在其因果历史中，从而生成语义丰富且高度可预测的token"
+    },
+    {
+      "title": "两阶段训练解耦",
+      "why": "将生成友好（causal decoder）和高保真重建（bidirectional decoder）的目标解耦，第一阶段学习生成友好的encoder，第二阶段训练高保真decoder"
+    }
+  ],
+  "_similarities": [
+    {
+      "title": "GPT-4 Technical Report",
+      "best_score": 1.0,
+      "best_match": "GPT-4 Technical Report",
+      "pass": true
+    },
+    {
+      "title": "LLaMA: Open and Efficient Foundation Language Models",
+      "best_score": 1.0,
+      "best_match": "LLaMA: Open and Efficient Foundation Language Models",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "MAGVIT-v2: Masked Generative Video Transformer",
+      "best_score": 0.867,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "TiTok: An Efficient Tokenizer for Generative Image Models",
+      "best_score": 0.587,
+      "best_match": "LLaMA: Open and Efficient Foundation Language Models",
+      "pass": false
+    },
+    {
+      "title": "VAR: Visual Autoregressive Modeling",
+      "best_score": 0.577,
+      "best_match": "Customize Your Visual Autoregressive Recipe with Set Autoregressive Modeling",
+      "pass": false
+    },
+    {
+      "title": "MAR: Autoregressive Image Generation without Vector Quantization",
+      "best_score": 0.959,
+      "best_match": "Autoregressive Image Generation without Vector Quantization",
+      "pass": true
+    },
+    {
+      "title": "LlamaGen: Autoregressive Model Beats Diffusion Model",
+      "best_score": 0.64,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": false
+    },
+    {
+      "title": "LightningDiT: Efficient Diffusion Models",
+      "best_score": 0.565,
+      "best_match": "LLaMA: Open and Efficient Foundation Language Models",
+      "pass": false
+    },
+    {
+      "title": "VQ-VAE: Neural Discrete Representation Learning",
+      "best_score": 0.907,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "best_score": 1.0,
+      "best_match": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "pass": true
+    },
+    {
+      "title": "Chameleon: Mixed-Modal Early-Fusion Foundation Models",
+      "best_score": 1.0,
+      "best_match": "Chameleon: Mixed-Modal Early-Fusion Foundation Models",
+      "pass": true
+    },
+    {
+      "title": "Janus-Pro: Unified Multimodal Understanding and Generation",
+      "best_score": 0.806,
+      "best_match": "Janus-Pro: Unified Multimodal Understanding and Generation with Data and Model Scaling",
+      "pass": true
+    },
+    {
+      "title": "RandAR: Autoregressive Random Masking",
+      "best_score": 0.579,
+      "best_match": "RandAR: Decoder-only Autoregressive Visual Generation in Random Orders",
+      "pass": false
+    }
+  ],
+  "_matched": 10,
+  "_total": 15,
+  "_pass_rate": 0.667,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14",
+  "_ref_count": 52
+}

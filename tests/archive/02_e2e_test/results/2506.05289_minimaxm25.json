@@ -1,0 +1,162 @@
+{
+  "arxiv_id": "2506.05289",
+  "model": "minimaxm25",
+  "timestamp": "2026-03-12T23:49:57.318925",
+  "latency_s": 26.03,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于TA-TiTok引入因果解码器约束，使Tokenizer输出前向依赖的Token序列，解决传统双向Tokenizer与自回归模型的结构性冲突\",\"cn_abstract\":\"本文提出AliTok（对齐分词器），旨在解决图像分词器中双向依赖与自回归模型单向预测之间的本质冲突。AliTok采用双向编码器配合因果解码器的架构，通过因果解码器强制编码器产生具有前向依赖结构的Token序列，兼顾语义丰富性和可预测性。同时引入前缀Token解决首行重建问题，并采用两阶段训练策略提升重建质量。实验表明，基于AliTok的177M参数标准自回归模型在ImageNet-256上达到gFID 1.44和IS 319.5，662M模型达到gFID 1.28，超越SOTA扩散模型且采样速度快10倍。\",\"contribution_type\":\"significant\",\"editorial_note\":\"[前驱]本文建立在TA-TiTok（kim2025democratizing）的Tokenizer架构上，继承ViT编码器设计；同时借鉴LlamaGen（sun2024autoregressive）的标准自回归架构。核心创新来自对Tokenizer与AR模型之间结构性冲突的洞察。[贡献]作者提出用因果解码器约束双向编码器，强制Tokenizer输出具有前向依赖的Token序列，使标准decoder-only AR模型能够直接建模图像序列，无需修改生成范式。[判断]这是自回归图像生成领域的范式转换——不是修改AR模型适应数据，而是改造数据（Tokenizer输出）适配AR模型。首次实现标准AR模型超越SOTA扩散模型，具有重要的方法论意义。\",\"why_read\":\"从事自回归图像生成或Tokenizer研究的研究者应重点阅读，可从中获得「改造数据而非改造模型」的新视角，以及因果解码器约束这一具体可复用的技术方案\",\"method_variants\":[{\"base_method\":\"ta-titok\",\"variant_tag\":\"ta-titok:causal-decoder\",\"description\":\"原ta-titok使用双向解码器；本文改为因果解码器约束编码器，强制输出前向依赖Token序列\"},{\"base_method\":\"titok\",\"variant_tag\":\"titok:prefix-tokens\",\"description\":\"原titok无前缀Token；本文增加16个前缀Token解决首行重建退化问题\"},{\"base_method\":\"titok\",\"variant_tag\":\"titok:two-stage-training\",\"description\":\"原titok单阶段训练；本文采用两阶段训练，第二阶段冻结编码器并重训双向解码器提升重建质量\"},{\"base_method\":\"llamagen\",\"variant_tag\":\"llamagen:mixed-rope\",\"description\":\"原llamagen全使用2D RoPE；本文对前缀Token使用1D RoPE，对其余Token使用2D RoPE\"}],\"core_cite\":[{\"title\":\"Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens\",\"role\":\"extends\",\"note\":\"AliTok的encoder架构直接基于TA-TiTok的ViT-B设计，是本文Tokenizer方法的直接基础\"},{\"title\":\"Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation\",\"role\":\"extends\",\"note\":\"采用LlamaGen的decoder-only AR架构作为生成模型，是本文AR模型的基础\"},{\"title\":\"Language Model Beats Diffusion--Tokenizer is Key to Visual Generation\",\"role\":\"uses\",\"note\":\"使用MagViT-v2作为Tokenizer的参考设计，包含向量量化组件\"},{\"title\":\"SiT-XL\",\"role\":\"contrasts\",\"note\":\"实验中对比的扩散模型基线\"},{\"title\":\"REPA\",\"role\":\"contrasts\",\"note\":\"实验中对比的扩散模型基线\"},{\"title\":\"LightningDiT\",\"role\":\"contrasts\",\"note\":\"实验中对比的SOTA扩散模型，性能超越对象\"},{\"title\":\"VAR-d24\",\"role\":\"contrasts\",\"note\":\"实验中对比的VAR基线模型\"},{\"title\":\"VAR-d30\",\"role\":\"contrasts\",\"note\":\"实验中对比的VAR基线模型\"},{\"title\":\"MaskGIT: Masked Generative Image Transformer\",\"role\":\"contrasts\",\"note\":\"实验中对比的Mask AR模型基线\"},{\"title\":\"MAGVIT-v2\",\"role\":\"contrasts\",\"note\":\"实验中对比的Mask AR模型基线\"},{\"title\":\"TiTok-S-128\",\"role\":\"contrasts\",\"note\":\"实验中对比的Tokenizer基线\"},{\"title\":\"MAR-B\",\"role\":\"contrasts\",\"note\":\"实验中对比的Mask AR模型基线\"},{\"title\":\"MAR-L\",\"role\":\"contrasts\",\"note\":\"实验中对比的Mask AR模型基线\"},{\"title\":\"MAR-H\",\"role\":\"contrasts\",\"note\":\"实验中对比的Mask AR模型基线\"},{\"title\":\"LlamaGen-XL\",\"role\":\"contrasts\",\"note\":\"实验中对比的标准AR模型基线\"},{\"title\":\"LlamaGen-XXL\",\"role\":\"contrasts\",\"note\":\"实验中对比的标准AR模型基线\"},{\"title\":\"LlamaGen-3B\",\"role\":\"contrasts\",\"note\":\"实验中对比的大参数AR模型基线\"},{\"title\":\"RAR-B\",\"role\":\"contrasts\",\"note\":\"实验中对比的随机顺序AR模型基线\"},{\"title\":\"RAR-L\",\"role\":\"contrasts\",\"note\":\"实验中对比的随机顺序AR模型基线\"},{\"title\":\"RAR-XL\",\"role\":\"contrasts\",\"note\":\"实验中对比的随机顺序AR模型基线\"},{\"title\":\"RAR-XXL\",\"role\":\"contrasts\",\"note\":\"实验中对比的大参数随机顺序AR模型基线\"},{\"title\":\"The open images dataset v4\",\"role\":\"uses\",\"note\":\"使用Open Images数据集进行训练数据增强\"},{\"title\":\"Imagenet: A large-scale hierarchical image database\",\"role\":\"uses\",\"note\":\"主要训练和评测数据集 ImageNet-1K\"},{\"title\":\"Online clustered codebook\",\"role\":\"uses\",\"note\":\"采用在线聚类方法确保codebook利用率100%\"},{\"title\":\"Open-magvit2: An open-source project toward democratizing auto-regressive visual generation\",\"role\":\"uses\",\"note\":\"采用Open-MagViT2的GAN对抗损失进行训练\"}]}",
+  "cn_oneliner": "基于TA-TiTok引入因果解码器约束，使Tokenizer输出前向依赖的Token序列，解决传统双向Tokenizer与自回归模型的结构性冲突",
+  "cn_abstract": "本文提出AliTok（对齐分词器），旨在解决图像分词器中双向依赖与自回归模型单向预测之间的本质冲突。AliTok采用双向编码器配合因果解码器的架构，通过因果解码器强制编码器产生具有前向依赖结构的Token序列，兼顾语义丰富性和可预测性。同时引入前缀Token解决首行重建问题，并采用两阶段训练策略提升重建质量。实验表明，基于AliTok的177M参数标准自回归模型在ImageNet-256上达到gFID 1.44和IS 319.5，662M模型达到gFID 1.28，超越SOTA扩散模型且采样速度快10倍。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱]本文建立在TA-TiTok（kim2025democratizing）的Tokenizer架构上，继承ViT编码器设计；同时借鉴LlamaGen（sun2024autoregressive）的标准自回归架构。核心创新来自对Tokenizer与AR模型之间结构性冲突的洞察。[贡献]作者提出用因果解码器约束双向编码器，强制Tokenizer输出具有前向依赖的Token序列，使标准decoder-only AR模型能够直接建模图像序列，无需修改生成范式。[判断]这是自回归图像生成领域的范式转换——不是修改AR模型适应数据，而是改造数据（Tokenizer输出）适配AR模型。首次实现标准AR模型超越SOTA扩散模型，具有重要的方法论意义。",
+  "why_read": "从事自回归图像生成或Tokenizer研究的研究者应重点阅读，可从中获得「改造数据而非改造模型」的新视角，以及因果解码器约束这一具体可复用的技术方案",
+  "method_variants": [
+    {
+      "base_method": "ta-titok",
+      "variant_tag": "ta-titok:causal-decoder",
+      "description": "原ta-titok使用双向解码器；本文改为因果解码器约束编码器，强制输出前向依赖Token序列"
+    },
+    {
+      "base_method": "titok",
+      "variant_tag": "titok:prefix-tokens",
+      "description": "原titok无前缀Token；本文增加16个前缀Token解决首行重建退化问题"
+    },
+    {
+      "base_method": "titok",
+      "variant_tag": "titok:two-stage-training",
+      "description": "原titok单阶段训练；本文采用两阶段训练，第二阶段冻结编码器并重训双向解码器提升重建质量"
+    },
+    {
+      "base_method": "llamagen",
+      "variant_tag": "llamagen:mixed-rope",
+      "description": "原llamagen全使用2D RoPE；本文对前缀Token使用1D RoPE，对其余Token使用2D RoPE"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens",
+      "role": "extends",
+      "note": "AliTok的encoder架构直接基于TA-TiTok的ViT-B设计，是本文Tokenizer方法的直接基础"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "role": "extends",
+      "note": "采用LlamaGen的decoder-only AR架构作为生成模型，是本文AR模型的基础"
+    },
+    {
+      "title": "Language Model Beats Diffusion--Tokenizer is Key to Visual Generation",
+      "role": "uses",
+      "note": "使用MagViT-v2作为Tokenizer的参考设计，包含向量量化组件"
+    },
+    {
+      "title": "SiT-XL",
+      "role": "contrasts",
+      "note": "实验中对比的扩散模型基线"
+    },
+    {
+      "title": "REPA",
+      "role": "contrasts",
+      "note": "实验中对比的扩散模型基线"
+    },
+    {
+      "title": "LightningDiT",
+      "role": "contrasts",
+      "note": "实验中对比的SOTA扩散模型，性能超越对象"
+    },
+    {
+      "title": "VAR-d24",
+      "role": "contrasts",
+      "note": "实验中对比的VAR基线模型"
+    },
+    {
+      "title": "VAR-d30",
+      "role": "contrasts",
+      "note": "实验中对比的VAR基线模型"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "role": "contrasts",
+      "note": "实验中对比的Mask AR模型基线"
+    },
+    {
+      "title": "MAGVIT-v2",
+      "role": "contrasts",
+      "note": "实验中对比的Mask AR模型基线"
+    },
+    {
+      "title": "TiTok-S-128",
+      "role": "contrasts",
+      "note": "实验中对比的Tokenizer基线"
+    },
+    {
+      "title": "MAR-B",
+      "role": "contrasts",
+      "note": "实验中对比的Mask AR模型基线"
+    },
+    {
+      "title": "MAR-L",
+      "role": "contrasts",
+      "note": "实验中对比的Mask AR模型基线"
+    },
+    {
+      "title": "MAR-H",
+      "role": "contrasts",
+      "note": "实验中对比的Mask AR模型基线"
+    },
+    {
+      "title": "LlamaGen-XL",
+      "role": "contrasts",
+      "note": "实验中对比的标准AR模型基线"
+    },
+    {
+      "title": "LlamaGen-XXL",
+      "role": "contrasts",
+      "note": "实验中对比的标准AR模型基线"
+    },
+    {
+      "title": "LlamaGen-3B",
+      "role": "contrasts",
+      "note": "实验中对比的大参数AR模型基线"
+    },
+    {
+      "title": "RAR-B",
+      "role": "contrasts",
+      "note": "实验中对比的随机顺序AR模型基线"
+    },
+    {
+      "title": "RAR-L",
+      "role": "contrasts",
+      "note": "实验中对比的随机顺序AR模型基线"
+    },
+    {
+      "title": "RAR-XL",
+      "role": "contrasts",
+      "note": "实验中对比的随机顺序AR模型基线"
+    },
+    {
+      "title": "RAR-XXL",
+      "role": "contrasts",
+      "note": "实验中对比的大参数随机顺序AR模型基线"
+    },
+    {
+      "title": "The open images dataset v4",
+      "role": "uses",
+      "note": "使用Open Images数据集进行训练数据增强"
+    },
+    {
+      "title": "Imagenet: A large-scale hierarchical image database",
+      "role": "uses",
+      "note": "主要训练和评测数据集 ImageNet-1K"
+    },
+    {
+      "title": "Online clustered codebook",
+      "role": "uses",
+      "note": "采用在线聚类方法确保codebook利用率100%"
+    },
+    {
+      "title": "Open-magvit2: An open-source project toward democratizing auto-regressive visual generation",
+      "role": "uses",
+      "note": "采用Open-MagViT2的GAN对抗损失进行训练"
+    }
+  ]
+}

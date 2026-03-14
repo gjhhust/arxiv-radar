@@ -1,0 +1,132 @@
+{
+  "arxiv_id": "2503.10772",
+  "model": "gpt52",
+  "timestamp": "2026-03-12T21:21:37.394652",
+  "latency_s": 106.23,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于flow matching把TA-TiTok图像压成77×16 1D token并加text projector+CLIP式对齐，实现免cross-attn的T2I/I2T高速低显存生成\",\"cn_abstract\":\"FlowTok提出用flow matching在共享潜空间中直接“演化”text与image，而不是在2D latent扩散/流模型里把text当condition注入。方法核心是把图像通过改造的TA-TiTok编码为与CLIP文本长度对齐的1D tokens（K=77, D=16），并用轻量Transformer text projector将CLIP text embedding压到同形状的variational latent，同时用CLIP-style contrastive alignment loss缓解语义丢失。随后用DiT blocks做vanilla flow matching在Z_T与Z_I之间学习速度场，解码得到图像；同一框架可反向用于image-to-text并训练text decoder输出CLIP tokenizer indices。该1D表示在256分辨率下将latent从32×32×4压到77×16（约3.3×更小），从而显著降低训练/采样成本并获得与SOTA相近的FID与更快的推理速度。\",\"contribution_type\":\"significant\",\"editorial_note\":\"[前驱] 建立在Flow Matching/Rectified Flow与DiT生成骨干上，图像侧借鉴TA-TiTok/1D tokenization，文本侧依赖CLIP text encoder与VAE式KL正则，并沿用CFG做采样控制。\\n[贡献] 关键新点是把图像也变成与文本同长度的紧凑1D token（77×16），让“文本分布→图像分布”可在同形状空间里直接做flow matching，去掉cross-attn/concat等条件注入；同时用轻量对齐损失维持压缩后文本语义。\\n[判断] 这是对CrossFlow“同分布形状”思路的更极简且工程上很有效的落地：效率/速度收益明确，但语义对齐仍依赖额外loss且可能弱于强条件注入范式，属于可复用的高性价比框架改造。\",\"why_read\":\"想做低资源训练/高吞吐采样的T2I或统一T2I+I2T范式的人值得读：它给出把2D latent生成改写为同形状1D token flow的完整配方与关键对齐损失。\",\"method_variants\":[{\"base_method\":\"flow matching\",\"variant_tag\":\"flow matching:cross-modal-direct-transport\",\"description\":\"原本多从noise→image学习ODE速度场；本文把text token分布直接作为source，与image token同形状后做跨模态直接transport。\"},{\"base_method\":\"crossflow\",\"variant_tag\":\"crossflow:1d-shared-latent\",\"description\":\"CrossFlow将text映射到2D以匹配image latent并引入较重的text VAE/对齐；本文反向把image压成1D并与CLIP长度对齐，减少2D开销与复杂语义保持机制。\"},{\"base_method\":\"ta-titok\",\"variant_tag\":\"ta-titok:rope-swiglu-77tokens\",\"description\":\"TA-TiTok用1D token做图像表示以支持生成；本文将latent token数固定为77并用RoPE替换可学习pos emb、用SwiGLU替换MLP以提升重建与位置建模。\"},{\"base_method\":\"clip\",\"variant_tag\":\"clip:text-projector-variational-align\",\"description\":\"CLIP提供高维1D文本embedding；本文用6层Transformer projector压到16维并加KL使其可采样，同时用CLIP-style对比学习在batch内对齐压缩token与MLP投影目标以保语义。\"},{\"base_method\":\"dit\",\"variant_tag\":\"dit:self-attn-only-no-conditioning\",\"description\":\"DiT通常结合条件注入（如cross-attn/emb）；本文在同形状token空间中仅用自注意力DiT块建模速度场，不再显式注入文本条件。\"}],\"core_cite\":[{\"title\":\"Flow Matching for Generative Modeling\",\"role\":\"extends\",\"note\":\"作为核心训练目标与ODE速度场学习框架，FlowTok直接采用vanilla flow matching在Z_T↔Z_I间学习velocity。\"},{\"title\":\"Flowing from Words to Pixels: A Framework for Cross-Modality Evolution\",\"role\":\"extends\",\"note\":\"直接对标的跨模态flow matching范式；本文批评其2D text映射与text VAE开销，并以1D共享token替代。\"},{\"title\":\"Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens\",\"role\":\"extends\",\"note\":\"图像侧tokenizer基于TA-TiTok代码与设计，并在token数/位置编码/FFN上做改造以适配跨模态同形状。\"},{\"title\":\"Scalable diffusion models with transformers\",\"role\":\"uses\",\"note\":\"生成骨干采用DiT blocks来参数化flow matching中的速度场网络，并用于B/XL/H不同规模。\"},{\"title\":\"Learning transferable visual models from natural language supervision\",\"role\":\"uses\",\"note\":\"使用CLIP text encoder产生77长度的文本embedding，并借鉴CLIP式对比学习构造文本对齐损失。\"},{\"title\":\"High-resolution image synthesis with latent diffusion models\",\"role\":\"contrasts\",\"note\":\"作为主流“text as condition”的代表（SD系列）用于训练成本与采样速度/性能对比，并作为效率对照基线。\"},{\"title\":\"PixArt-$\\\\alpha$\",\"role\":\"contrasts\",\"note\":\"作为强基线的text-conditioned DiT扩散模型，对比FID、训练GPU-days与推理吞吐。\"},{\"title\":\"Scaling rectified flow transformers for high-resolution image synthesis\",\"role\":\"contrasts\",\"note\":\"作为SOTA flow-based T2I（rectified flow transformer）对比同类flow范式下的效率与性能。\"},{\"title\":\"Classifier-free diffusion guidance\",\"role\":\"uses\",\"note\":\"采样时引入CFG；本文按CrossFlow做法用CFG indicator在FlowTok中实现guidance。\"},{\"title\":\"Rectified Flow: Learning to Generate and Transfer Data with Rectified Flow\",\"role\":\"supports\",\"note\":\"作为flow matching/rectified flow在生成与加速采样上的理论与经验背景支撑。\"},{\"title\":\"An Image is Worth 32 Tokens for Reconstruction and Generation\",\"role\":\"supports\",\"note\":\"作为近期图像tokenization/紧凑token表示的直接相关工作，支撑将图像压成少量1D token的可行性。\"},{\"title\":\"Attention is all you need\",\"role\":\"uses\",\"note\":\"text projector与text decoder均由Transformer blocks构成，依赖自注意力与FFN基本结构。\"},{\"title\":\"Llama: Open and efficient foundation language models\",\"role\":\"mentions\",\"note\":\"作为序列建模/自回归视觉生成趋势的相关背景引用，用于定位本文与序列模型路线的关系。\"},{\"title\":\"Datacomp: In search of the next generation of multimodal datasets\",\"role\":\"uses\",\"note\":\"图像tokenizer训练使用DataComp-1B数据集以保证可复现与规模支撑。\"},{\"title\":\"Microsoft coco: Common objects in context\",\"role\":\"uses\",\"note\":\"T2I评测FID-30K与I2T训练/评测（Karpathy split）均基于COCO数据集。\"},{\"title\":\"Journeydb: A benchmark for generative image understanding\",\"role\":\"uses\",\"note\":\"作为高质量fine-tuning数据源之一，用于提升生成质量与美学表现。\"},{\"title\":\"Dalle3 1 Million+ High Quality Captions\",\"role\":\"uses\",\"note\":\"fine-tuning阶段引入的高质量caption数据，用于提升文本描述质量与生成对齐。\"},{\"title\":\"Playground v2.5: Three insights towards enhancing aesthetic quality in text-to-image generation\",\"role\":\"uses\",\"note\":\"使用其MJHQ-30K基准评测美学质量（FID on MJHQ-30K）。\"}]}",
+  "cn_oneliner": "基于flow matching把TA-TiTok图像压成77×16 1D token并加text projector+CLIP式对齐，实现免cross-attn的T2I/I2T高速低显存生成",
+  "cn_abstract": "FlowTok提出用flow matching在共享潜空间中直接“演化”text与image，而不是在2D latent扩散/流模型里把text当condition注入。方法核心是把图像通过改造的TA-TiTok编码为与CLIP文本长度对齐的1D tokens（K=77, D=16），并用轻量Transformer text projector将CLIP text embedding压到同形状的variational latent，同时用CLIP-style contrastive alignment loss缓解语义丢失。随后用DiT blocks做vanilla flow matching在Z_T与Z_I之间学习速度场，解码得到图像；同一框架可反向用于image-to-text并训练text decoder输出CLIP tokenizer indices。该1D表示在256分辨率下将latent从32×32×4压到77×16（约3.3×更小），从而显著降低训练/采样成本并获得与SOTA相近的FID与更快的推理速度。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱] 建立在Flow Matching/Rectified Flow与DiT生成骨干上，图像侧借鉴TA-TiTok/1D tokenization，文本侧依赖CLIP text encoder与VAE式KL正则，并沿用CFG做采样控制。\n[贡献] 关键新点是把图像也变成与文本同长度的紧凑1D token（77×16），让“文本分布→图像分布”可在同形状空间里直接做flow matching，去掉cross-attn/concat等条件注入；同时用轻量对齐损失维持压缩后文本语义。\n[判断] 这是对CrossFlow“同分布形状”思路的更极简且工程上很有效的落地：效率/速度收益明确，但语义对齐仍依赖额外loss且可能弱于强条件注入范式，属于可复用的高性价比框架改造。",
+  "why_read": "想做低资源训练/高吞吐采样的T2I或统一T2I+I2T范式的人值得读：它给出把2D latent生成改写为同形状1D token flow的完整配方与关键对齐损失。",
+  "method_variants": [
+    {
+      "base_method": "flow matching",
+      "variant_tag": "flow matching:cross-modal-direct-transport",
+      "description": "原本多从noise→image学习ODE速度场；本文把text token分布直接作为source，与image token同形状后做跨模态直接transport。"
+    },
+    {
+      "base_method": "crossflow",
+      "variant_tag": "crossflow:1d-shared-latent",
+      "description": "CrossFlow将text映射到2D以匹配image latent并引入较重的text VAE/对齐；本文反向把image压成1D并与CLIP长度对齐，减少2D开销与复杂语义保持机制。"
+    },
+    {
+      "base_method": "ta-titok",
+      "variant_tag": "ta-titok:rope-swiglu-77tokens",
+      "description": "TA-TiTok用1D token做图像表示以支持生成；本文将latent token数固定为77并用RoPE替换可学习pos emb、用SwiGLU替换MLP以提升重建与位置建模。"
+    },
+    {
+      "base_method": "clip",
+      "variant_tag": "clip:text-projector-variational-align",
+      "description": "CLIP提供高维1D文本embedding；本文用6层Transformer projector压到16维并加KL使其可采样，同时用CLIP-style对比学习在batch内对齐压缩token与MLP投影目标以保语义。"
+    },
+    {
+      "base_method": "dit",
+      "variant_tag": "dit:self-attn-only-no-conditioning",
+      "description": "DiT通常结合条件注入（如cross-attn/emb）；本文在同形状token空间中仅用自注意力DiT块建模速度场，不再显式注入文本条件。"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Flow Matching for Generative Modeling",
+      "role": "extends",
+      "note": "作为核心训练目标与ODE速度场学习框架，FlowTok直接采用vanilla flow matching在Z_T↔Z_I间学习velocity。"
+    },
+    {
+      "title": "Flowing from Words to Pixels: A Framework for Cross-Modality Evolution",
+      "role": "extends",
+      "note": "直接对标的跨模态flow matching范式；本文批评其2D text映射与text VAE开销，并以1D共享token替代。"
+    },
+    {
+      "title": "Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens",
+      "role": "extends",
+      "note": "图像侧tokenizer基于TA-TiTok代码与设计，并在token数/位置编码/FFN上做改造以适配跨模态同形状。"
+    },
+    {
+      "title": "Scalable diffusion models with transformers",
+      "role": "uses",
+      "note": "生成骨干采用DiT blocks来参数化flow matching中的速度场网络，并用于B/XL/H不同规模。"
+    },
+    {
+      "title": "Learning transferable visual models from natural language supervision",
+      "role": "uses",
+      "note": "使用CLIP text encoder产生77长度的文本embedding，并借鉴CLIP式对比学习构造文本对齐损失。"
+    },
+    {
+      "title": "High-resolution image synthesis with latent diffusion models",
+      "role": "contrasts",
+      "note": "作为主流“text as condition”的代表（SD系列）用于训练成本与采样速度/性能对比，并作为效率对照基线。"
+    },
+    {
+      "title": "PixArt-$\\alpha$",
+      "role": "contrasts",
+      "note": "作为强基线的text-conditioned DiT扩散模型，对比FID、训练GPU-days与推理吞吐。"
+    },
+    {
+      "title": "Scaling rectified flow transformers for high-resolution image synthesis",
+      "role": "contrasts",
+      "note": "作为SOTA flow-based T2I（rectified flow transformer）对比同类flow范式下的效率与性能。"
+    },
+    {
+      "title": "Classifier-free diffusion guidance",
+      "role": "uses",
+      "note": "采样时引入CFG；本文按CrossFlow做法用CFG indicator在FlowTok中实现guidance。"
+    },
+    {
+      "title": "Rectified Flow: Learning to Generate and Transfer Data with Rectified Flow",
+      "role": "supports",
+      "note": "作为flow matching/rectified flow在生成与加速采样上的理论与经验背景支撑。"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "role": "supports",
+      "note": "作为近期图像tokenization/紧凑token表示的直接相关工作，支撑将图像压成少量1D token的可行性。"
+    },
+    {
+      "title": "Attention is all you need",
+      "role": "uses",
+      "note": "text projector与text decoder均由Transformer blocks构成，依赖自注意力与FFN基本结构。"
+    },
+    {
+      "title": "Llama: Open and efficient foundation language models",
+      "role": "mentions",
+      "note": "作为序列建模/自回归视觉生成趋势的相关背景引用，用于定位本文与序列模型路线的关系。"
+    },
+    {
+      "title": "Datacomp: In search of the next generation of multimodal datasets",
+      "role": "uses",
+      "note": "图像tokenizer训练使用DataComp-1B数据集以保证可复现与规模支撑。"
+    },
+    {
+      "title": "Microsoft coco: Common objects in context",
+      "role": "uses",
+      "note": "T2I评测FID-30K与I2T训练/评测（Karpathy split）均基于COCO数据集。"
+    },
+    {
+      "title": "Journeydb: A benchmark for generative image understanding",
+      "role": "uses",
+      "note": "作为高质量fine-tuning数据源之一，用于提升生成质量与美学表现。"
+    },
+    {
+      "title": "Dalle3 1 Million+ High Quality Captions",
+      "role": "uses",
+      "note": "fine-tuning阶段引入的高质量caption数据，用于提升文本描述质量与生成对齐。"
+    },
+    {
+      "title": "Playground v2.5: Three insights towards enhancing aesthetic quality in text-to-image generation",
+      "role": "uses",
+      "note": "使用其MJHQ-30K基准评测美学质量（FID on MJHQ-30K）。"
+    }
+  ]
+}

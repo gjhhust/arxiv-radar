@@ -1,0 +1,201 @@
+{
+  "cn_oneliner": "基于VQGAN分词器，引入冻结视觉基础模型作为编码器并结合区域自适应量化和语义重建目标，实现gFID 1.36的ImageNet生成效果且收敛速度提升3倍",
+  "cn_abstract": "本文提出基于冻结视觉基础模型的图像分词器VFMTok，通过区域自适应量化框架减少预训练特征在规则2D网格上的冗余，并引入语义重建目标使分词器输出与基础模型表示对齐。在ImageNet上实现gFID 1.36，自回归生成收敛速度提升3倍，且无需classifier-free guidance(CFG)即可实现高保真类别条件图像合成。使用256个token即可达到优于VQGAN(576 token)的重建和生成质量。",
+  "contribution_type": "significant",
+  "editorial_note": "本文探索了将冻结的视觉基础模型(DINOv2、CLIP、SigLIP2)直接作为图像分词器编码器的可行性，这是一个此前未被充分研究的领域。通过引入区域自适应量化策略和语义重建目标，显著提升了token效率并保留了语义信息。实验表明，该方法在ImageNet上达到gFID 1.36的最优性能，且无需CFG即可实现高质量生成，这对自回归图像生成的实际部署具有重要意义。",
+  "why_read": "计算机视觉和生成模型研究者和工程师可学习如何利用预训练视觉基础模型作为高效tokenizer，在减少token数量(256 vs 576)的同时提升生成质量并加速3倍收敛",
+  "method_variants": [
+    {
+      "tag": "vqgan:dinov2_encoder",
+      "note": "使用冻结DINOv2-L作为编码器提取多层级特征"
+    },
+    {
+      "tag": "vqgan:siglip2_encoder",
+      "note": "使用冻结SigLIP2作为编码器，支持无CFG生成"
+    },
+    {
+      "tag": "vqgan:region_adaptive",
+      "note": "通过可变形注意力进行区域自适应采样，减少特征冗余"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "arxiv_id": "2110.04627",
+      "role": "extends",
+      "note": "VQGAN是基础tokenizer框架，本工作在其基础上引入冻结VFM作为编码器"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "uses",
+      "note": "使用LlamaGen的自回归生成框架进行实验对比"
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "uses",
+      "note": "VAR的自回归生成范式作为对比基线"
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "arxiv_id": "2304.07193",
+      "role": "uses",
+      "note": "使用DINOv2-L作为冻结的视觉基础模型编码器"
+    },
+    {
+      "title": "Learning Transferable Visual Models From Natural Language Supervision",
+      "arxiv_id": "2103.00020",
+      "role": "uses",
+      "note": "CLIP模型作为VFM编码器选项之一"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "contrasts",
+      "note": "DiT作为扩散模型基线对比，本方法在AR框架下达到更好gFID"
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "arxiv_id": "2502.13967",
+      "role": "contrasts",
+      "note": "TiTok是1D tokenizer，本工作使用区域自适应2D tokenization"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "contrasts",
+      "note": "MaskGIT的masked prediction作为对比"
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "arxiv_id": "2409.04410",
+      "role": "uses",
+      "note": "MAGVIT2作为视频tokenizer参考"
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "arxiv_id": "2309.15505",
+      "role": "supports",
+      "note": "FSQ的量化技术作为参考"
+    },
+    {
+      "title": "TokenFlow: Unified Image Tokenizer for Multimodal Understanding and Generation",
+      "arxiv_id": "2412.03069",
+      "role": "supports",
+      "note": "TokenFlow的统一tokenizer设计理念相近"
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "arxiv_id": "2010.11929",
+      "role": "supports",
+      "note": "ViT是视觉基础模型的基石"
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "arxiv_id": "2111.06377",
+      "role": "supports",
+      "note": "MAE的自监督学习范式影响了DINOv2等VFM"
+    }
+  ],
+  "idea": [
+    {
+      "title": "冻结VFM直接作编码器",
+      "why": "预训练视觉基础模型已学习丰富语义特征，直接作为tokenizer编码器可继承其语义表示能力，避免从零训练语义丰富的latent space"
+    },
+    {
+      "title": "区域自适应量化策略",
+      "why": "通过可变形注意力对规则2D特征网格进行非规则区域采样，有效利用图像区域冗余，用更少token(256)达到更好效果"
+    },
+    {
+      "title": "语义重建目标",
+      "why": "引入VFM特征重建损失，使tokenizer输出与原始VFM表示对齐，保留语义保真度，同时支持无CFG的高保真生成"
+    }
+  ],
+  "_similarities": [
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "best_score": 1.0,
+      "best_match": "Vector-quantized Image Modeling with Improved VQGAN",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "best_score": 1.0,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "best_score": 1.0,
+      "best_match": "DINOv2: Learning Robust Visual Features without Supervision",
+      "pass": true
+    },
+    {
+      "title": "Learning Transferable Visual Models From Natural Language Supervision",
+      "best_score": 1.0,
+      "best_match": "Learning Transferable Visual Models From Natural Language Supervision",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "best_score": 1.0,
+      "best_match": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "best_score": 1.0,
+      "best_match": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "pass": true
+    },
+    {
+      "title": "TokenFlow: Unified Image Tokenizer for Multimodal Understanding and Generation",
+      "best_score": 1.0,
+      "best_match": "TokenFlow: Unified Image Tokenizer for Multimodal Understanding and Generation",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "pass": true
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "best_score": 1.0,
+      "best_match": "Masked Autoencoders Are Scalable Vision Learners",
+      "pass": true
+    }
+  ],
+  "_matched": 13,
+  "_total": 13,
+  "_pass_rate": 1.0,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14",
+  "_ref_count": 58
+}

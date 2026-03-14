@@ -1,0 +1,137 @@
+{
+  "arxiv_id": "2505.21473",
+  "model": "gpt52",
+  "timestamp": "2026-03-12T21:34:31.958417",
+  "latency_s": 102.5,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于VAR的next-scale引入1D next-detail有序token与并行自纠错解码实现少token更快更低FID\",\"cn_abstract\":\"DetailFlow提出一种coarse-to-fine的1D autoregressive图像生成框架，用next-detail prediction把图像表示为“分辨率感知”的1D token序列，并用progressively degraded images监督，使token天然按从全局结构到细节的语义顺序排列。相比VAR/VQGAN类需要大量2D/多尺度token的方案，DetailFlow在ImageNet 256×256上用128 tokens即可达到2.96 gFID，并在相近AR模型规模下优于VAR与FlexVAR（均约680 tokens）。此外，论文提出带self-correction的parallel inference：一次并行预测后续多token并通过训练时注入可控quantization error学习纠错，从而约8×加速并缓解teacher-forcing导致的误差累积。\",\"contribution_type\":\"significant\",\"editorial_note\":\"[前驱] 工作建立在VQ-VAE/VQGAN式tokenizer+decoder框架与Transformer AR next-token范式之上，并继承VAR的coarse-to-fine生成动机以及TiTok/FlexTok的1D压缩token思路。\\n[贡献] 核心新意是把“coarse-to-fine”从2D多尺度改成单一1D序列：用退化监督学出分辨率对应的有序token，并配套并行解码与训练期自纠错来对抗AR误差累积。\\n[判断] 这是面向AR图像生成效率瓶颈的实质性改造：token数与推理时延的下降很直接可复用；但仍属于在tokenization/decoding策略层面对既有AR路线的强化，而非改变生成建模范式。\",\"why_read\":\"想做“少token的AR图像生成/统一多分辨率tokenizer/并行AR解码”的读者值得精读其退化监督的1D有序token训练与自纠错并行推理细节。\",\"method_variants\":[{\"base_method\":\"visual autoregressive modeling (var)\",\"variant_tag\":\"var:next-detail-1d\",\"description\":\"VAR用next-scale在多尺度2D token上coarse-to-fine并行生成；本文改为单一1D序列的next-detail逐token细化，用更少token覆盖同分辨率。\"},{\"base_method\":\"vqgan\",\"variant_tag\":\"vqgan:non-raster-1d-ordering\",\"description\":\"VQGAN类方法把2D latent网格raster-scan成序列做next-token；本文用学习到的1D语义有序token替代固定空间扫描顺序，减少空间依赖带来的长序列。\"},{\"base_method\":\"titok\",\"variant_tag\":\"titok:ordered-resolution-aware\",\"description\":\"TiTok用attention把2D压到1D但token缺少天然顺序不利AR；本文用progressive degradation监督让token具备从粗到细的语义顺序并显式关联分辨率/长度。\"},{\"base_method\":\"flextok\",\"variant_tag\":\"flextok:degradation-supervision+dynamic-resolution\",\"description\":\"FlexTok用tail-drop促使信息前置形成粗到细顺序但在更长token时生成质量退化；本文改用退化图像监督的分辨率感知序列，并强调单tokenizer支持可变长度/多分辨率解码。\"},{\"base_method\":\"parallelized autoregressive visual generation\",\"variant_tag\":\"parallel-ar:self-correction\",\"description\":\"并行AR解码通过一次预测多个后续token加速但易误差扩散；本文加入self-correction训练（注入可控量化误差并要求后续token纠正）以降低teacher-forcing带来的累积采样误差。\"}],\"core_cite\":[{\"title\":\"Visual autoregressive modeling: Scalable image generation via next-scale prediction\",\"role\":\"extends\",\"note\":\"直接对标并改造其coarse-to-fine思想：从next-scale多尺度2D token转为next-detail的1D有序token序列，并在实验中作为主要baseline（VAR）。\"},{\"title\":\"FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction\",\"role\":\"contrasts\",\"note\":\"主要SOTA对比方法之一；论文强调其需要约680 tokens且速度更慢，DetailFlow用128 tokens达到更低gFID。\"},{\"title\":\"Taming Transformers for High-Resolution Image Synthesis\",\"role\":\"contrasts\",\"note\":\"VQGAN+Transformer raster-scan AR路线的代表；用于说明传统2D token栅格扫描的顺序不自然且token多。\"},{\"title\":\"Neural discrete representation learning\",\"role\":\"uses\",\"note\":\"VQ-VAE离散量化tokenizer范式的基础引用，支撑“tokenize-then-generate”的总体框架。\"},{\"title\":\"Generating diverse high-fidelity images with vq-vae-2\",\"role\":\"mentions\",\"note\":\"早期高保真离散tokenizer/分层VQ路线背景，用于定位本文与VQ系tokenization的关系。\"},{\"title\":\"An image is worth 32 tokens for reconstruction and generation\",\"role\":\"extends\",\"note\":\"TiTok的1D token压缩思路是本文1D tokenizer讨论的重要前驱；本文指出其token无序不利AR并提出有序训练。\"},{\"title\":\"FlexTok: Resampling Images into 1D Token Sequences of Flexible Length\",\"role\":\"extends\",\"note\":\"同为1D可变长度tokenizer；本文对其tail-drop排序与长token质量退化提出问题，并给出退化监督的替代方案。\"},{\"title\":\"Parallelized Autoregressive Visual Generation\",\"role\":\"extends\",\"note\":\"并行AR推理方向的直接相关工作；本文提出parallel inference并加入self-correction以缓解并行/AR误差累积。\"},{\"title\":\"Infinity: Scaling bitwise autoregressive modeling for high-resolution image synthesis\",\"role\":\"supports\",\"note\":\"用于论证VAR系多尺度/高分辨率下token数爆炸带来的训练与推理开销问题。\"},{\"title\":\"Autoregressive model beats diffusion: Llama for scalable image generation\",\"role\":\"supports\",\"note\":\"作为“AR可与diffusion竞争”的动机引用，支撑继续优化AR图像生成效率/质量的研究价值。\"},{\"title\":\"Maskgit: Masked generative image transformer\",\"role\":\"mentions\",\"note\":\"作为并行生成的非AR对照范式背景；本文强调自身仍是AR但通过并行后续token预测加速。\"},{\"title\":\"Muse: Text-to-image generation via masked generative transformers\",\"role\":\"mentions\",\"note\":\"补充masked-prediction在生成中的代表工作，用于相关工作定位。\"},{\"title\":\"High-resolution image synthesis with latent diffusion models\",\"role\":\"contrasts\",\"note\":\"扩散模型代表（LDM），用于大类方法对比背景，强调AR路线的可控性与统一建模潜力。\"},{\"title\":\"Scalable diffusion models with transformers\",\"role\":\"contrasts\",\"note\":\"DiT代表扩散SOTA背景，对照AR与diffusion两条路线的取舍。\"},{\"title\":\"Imagenet: A large-scale hierarchical image database\",\"role\":\"uses\",\"note\":\"主要评测数据集ImageNet 256×256来源。\"},{\"title\":\"Gans trained by a two time-scale update rule converge to a local nash equilibrium\",\"role\":\"uses\",\"note\":\"FID/gFID评测所依赖的统计距离与评估传统引用之一（与Inception特征相关的评测体系背景）。\"},{\"title\":\"Improved techniques for training gans\",\"role\":\"uses\",\"note\":\"FID评测常用引用之一，支撑实验指标的标准性。\"},{\"title\":\"Emu3: Next-token prediction is all you need\",\"role\":\"mentions\",\"note\":\"作为raster-scan AR与多模态统一AR的代表引用，说明本文与“next-token统一建模”路线的关系。\"},{\"title\":\"Cart: Compositional auto-regressive transformer for image generation\",\"role\":\"supports\",\"note\":\"同样提出next-detail/分解式细化的相关思路；本文将其作为概念近邻以支撑next-detail动机。\"}]}",
+  "cn_oneliner": "基于VAR的next-scale引入1D next-detail有序token与并行自纠错解码实现少token更快更低FID",
+  "cn_abstract": "DetailFlow提出一种coarse-to-fine的1D autoregressive图像生成框架，用next-detail prediction把图像表示为“分辨率感知”的1D token序列，并用progressively degraded images监督，使token天然按从全局结构到细节的语义顺序排列。相比VAR/VQGAN类需要大量2D/多尺度token的方案，DetailFlow在ImageNet 256×256上用128 tokens即可达到2.96 gFID，并在相近AR模型规模下优于VAR与FlexVAR（均约680 tokens）。此外，论文提出带self-correction的parallel inference：一次并行预测后续多token并通过训练时注入可控quantization error学习纠错，从而约8×加速并缓解teacher-forcing导致的误差累积。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱] 工作建立在VQ-VAE/VQGAN式tokenizer+decoder框架与Transformer AR next-token范式之上，并继承VAR的coarse-to-fine生成动机以及TiTok/FlexTok的1D压缩token思路。\n[贡献] 核心新意是把“coarse-to-fine”从2D多尺度改成单一1D序列：用退化监督学出分辨率对应的有序token，并配套并行解码与训练期自纠错来对抗AR误差累积。\n[判断] 这是面向AR图像生成效率瓶颈的实质性改造：token数与推理时延的下降很直接可复用；但仍属于在tokenization/decoding策略层面对既有AR路线的强化，而非改变生成建模范式。",
+  "why_read": "想做“少token的AR图像生成/统一多分辨率tokenizer/并行AR解码”的读者值得精读其退化监督的1D有序token训练与自纠错并行推理细节。",
+  "method_variants": [
+    {
+      "base_method": "visual autoregressive modeling (var)",
+      "variant_tag": "var:next-detail-1d",
+      "description": "VAR用next-scale在多尺度2D token上coarse-to-fine并行生成；本文改为单一1D序列的next-detail逐token细化，用更少token覆盖同分辨率。"
+    },
+    {
+      "base_method": "vqgan",
+      "variant_tag": "vqgan:non-raster-1d-ordering",
+      "description": "VQGAN类方法把2D latent网格raster-scan成序列做next-token；本文用学习到的1D语义有序token替代固定空间扫描顺序，减少空间依赖带来的长序列。"
+    },
+    {
+      "base_method": "titok",
+      "variant_tag": "titok:ordered-resolution-aware",
+      "description": "TiTok用attention把2D压到1D但token缺少天然顺序不利AR；本文用progressive degradation监督让token具备从粗到细的语义顺序并显式关联分辨率/长度。"
+    },
+    {
+      "base_method": "flextok",
+      "variant_tag": "flextok:degradation-supervision+dynamic-resolution",
+      "description": "FlexTok用tail-drop促使信息前置形成粗到细顺序但在更长token时生成质量退化；本文改用退化图像监督的分辨率感知序列，并强调单tokenizer支持可变长度/多分辨率解码。"
+    },
+    {
+      "base_method": "parallelized autoregressive visual generation",
+      "variant_tag": "parallel-ar:self-correction",
+      "description": "并行AR解码通过一次预测多个后续token加速但易误差扩散；本文加入self-correction训练（注入可控量化误差并要求后续token纠正）以降低teacher-forcing带来的累积采样误差。"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Visual autoregressive modeling: Scalable image generation via next-scale prediction",
+      "role": "extends",
+      "note": "直接对标并改造其coarse-to-fine思想：从next-scale多尺度2D token转为next-detail的1D有序token序列，并在实验中作为主要baseline（VAR）。"
+    },
+    {
+      "title": "FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction",
+      "role": "contrasts",
+      "note": "主要SOTA对比方法之一；论文强调其需要约680 tokens且速度更慢，DetailFlow用128 tokens达到更低gFID。"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "role": "contrasts",
+      "note": "VQGAN+Transformer raster-scan AR路线的代表；用于说明传统2D token栅格扫描的顺序不自然且token多。"
+    },
+    {
+      "title": "Neural discrete representation learning",
+      "role": "uses",
+      "note": "VQ-VAE离散量化tokenizer范式的基础引用，支撑“tokenize-then-generate”的总体框架。"
+    },
+    {
+      "title": "Generating diverse high-fidelity images with vq-vae-2",
+      "role": "mentions",
+      "note": "早期高保真离散tokenizer/分层VQ路线背景，用于定位本文与VQ系tokenization的关系。"
+    },
+    {
+      "title": "An image is worth 32 tokens for reconstruction and generation",
+      "role": "extends",
+      "note": "TiTok的1D token压缩思路是本文1D tokenizer讨论的重要前驱；本文指出其token无序不利AR并提出有序训练。"
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "role": "extends",
+      "note": "同为1D可变长度tokenizer；本文对其tail-drop排序与长token质量退化提出问题，并给出退化监督的替代方案。"
+    },
+    {
+      "title": "Parallelized Autoregressive Visual Generation",
+      "role": "extends",
+      "note": "并行AR推理方向的直接相关工作；本文提出parallel inference并加入self-correction以缓解并行/AR误差累积。"
+    },
+    {
+      "title": "Infinity: Scaling bitwise autoregressive modeling for high-resolution image synthesis",
+      "role": "supports",
+      "note": "用于论证VAR系多尺度/高分辨率下token数爆炸带来的训练与推理开销问题。"
+    },
+    {
+      "title": "Autoregressive model beats diffusion: Llama for scalable image generation",
+      "role": "supports",
+      "note": "作为“AR可与diffusion竞争”的动机引用，支撑继续优化AR图像生成效率/质量的研究价值。"
+    },
+    {
+      "title": "Maskgit: Masked generative image transformer",
+      "role": "mentions",
+      "note": "作为并行生成的非AR对照范式背景；本文强调自身仍是AR但通过并行后续token预测加速。"
+    },
+    {
+      "title": "Muse: Text-to-image generation via masked generative transformers",
+      "role": "mentions",
+      "note": "补充masked-prediction在生成中的代表工作，用于相关工作定位。"
+    },
+    {
+      "title": "High-resolution image synthesis with latent diffusion models",
+      "role": "contrasts",
+      "note": "扩散模型代表（LDM），用于大类方法对比背景，强调AR路线的可控性与统一建模潜力。"
+    },
+    {
+      "title": "Scalable diffusion models with transformers",
+      "role": "contrasts",
+      "note": "DiT代表扩散SOTA背景，对照AR与diffusion两条路线的取舍。"
+    },
+    {
+      "title": "Imagenet: A large-scale hierarchical image database",
+      "role": "uses",
+      "note": "主要评测数据集ImageNet 256×256来源。"
+    },
+    {
+      "title": "Gans trained by a two time-scale update rule converge to a local nash equilibrium",
+      "role": "uses",
+      "note": "FID/gFID评测所依赖的统计距离与评估传统引用之一（与Inception特征相关的评测体系背景）。"
+    },
+    {
+      "title": "Improved techniques for training gans",
+      "role": "uses",
+      "note": "FID评测常用引用之一，支撑实验指标的标准性。"
+    },
+    {
+      "title": "Emu3: Next-token prediction is all you need",
+      "role": "mentions",
+      "note": "作为raster-scan AR与多模态统一AR的代表引用，说明本文与“next-token统一建模”路线的关系。"
+    },
+    {
+      "title": "Cart: Compositional auto-regressive transformer for image generation",
+      "role": "supports",
+      "note": "同样提出next-detail/分解式细化的相关思路；本文将其作为概念近邻以支撑next-detail动机。"
+    }
+  ]
+}

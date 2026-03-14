@@ -1,0 +1,169 @@
+{
+  "cn_oneliner": "基于自回归图像生成中的视觉tokenizer，引入语义正则化（Semantic Regularization）约束latent space复杂度，实现30亿参数规模下同时提升重建、生成和表示质量",
+  "cn_abstract": "在自回归（AR）图像生成中，视觉tokenizer将图像压缩为紧凑的离散潜在标记，使下游AR模型能够通过next-token预测进行高效的视觉生成训练。虽然扩展视觉tokenizer可以改善图像重建质量，但通常会降低下游生成质量——这个问题在现有文献中没有得到充分解决。我们引入了GigaTok，这是第一种在扩展视觉tokenizer时同时改善图像重建、生成和表示学习的方法。通过将tokenizer扩展到30亿参数，GigaTok在重建、下游AR生成和下游AR表示质量方面实现了最先进的性能。",
+  "contribution_type": "significant",
+  "editorial_note": "前人工作中，扩展视觉tokenizer虽然提升了重建质量，但往往导致下游生成性能下降，核心原因是latent space复杂度随参数增加而不断上升。本文通过引入语义正则化技术，利用预训练视觉编码器（DINOv2）的特征来约束tokenizer的潜在表示，防止其过度复杂化。该方法首次成功在30亿参数规模上同时提升重建、生成和表示质量，是自回归图像生成领域的重要突破。",
+  "why_read": "面向计算机视觉和生成模型研究者，帮助理解tokenizer扩展的核心挑战与解决方案，获得可直接应用的语义正则化方法和scaling最佳实践",
+  "method_variants": [
+    {
+      "tag": "base_method:semantic_regularization",
+      "note": "核心创新：利用DINOv2预训练特征对齐tokenizer latent space，约束复杂度解决重建-生成困境"
+    },
+    {
+      "tag": "base_method:1D_tokenizer",
+      "note": "1D tokenizers采用Q-Former设计，移除2D inductive bias，比2D ViT设计具有更好的可扩展性"
+    },
+    {
+      "tag": "base_method:decoder_priority_scaling",
+      "note": "非对称扩展策略：优先扩展decoder而非encoder，在相同参数下获得更好的重建和生成效果"
+    },
+    {
+      "tag": "base_method:entropy_loss",
+      "note": "引入entropy loss作为codebook正则项，鼓励高codebook利用率，稳定十亿级tokenizer训练"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "arxiv_id": "2010.11929",
+      "role": "uses",
+      "note": "使用ViT架构作为2D tokenizer的encoder/decoder"
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "arxiv_id": "2304.07193",
+      "role": "uses",
+      "note": "使用DINOv2作为语义正则化的特征对齐目标"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "uses",
+      "note": "下游AR生成模型使用LlamaGen架构"
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "arxiv_id": "2110.04627",
+      "role": "uses",
+      "note": "基础VQ tokenizer框架"
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "contrasts",
+      "note": "VAR使用next-scale prediction，本文使用next-token prediction"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "uses",
+      "note": "基础VQGAN框架"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "mentions",
+      "note": "相关AR生成方法"
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "arxiv_id": "2111.06377",
+      "role": "mentions",
+      "note": "相关自监督学习工作"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "mentions",
+      "note": "DiT相关工作"
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "arxiv_id": "2409.04410",
+      "role": "uses",
+      "note": "使用Open-MAGVIT2的量化方法"
+    }
+  ],
+  "idea": [
+    {
+      "title": "语义正则化解决重建-生成困境",
+      "why": "通过DINOv2特征对齐来约束tokenizer latent space复杂度，防止大模型生成过于复杂的token分布，使AR模型能够更好地学习token依赖关系，从而同时提升重建和生成质量"
+    },
+    {
+      "title": "1D tokenizers更易扩展",
+      "why": "1D tokenizers移除2D inductive bias，采用Q-Former将2D特征映射到1D序列，在rFID、gFID和线性探测精度三个维度上都优于2D ViT设计，扩展性更强"
+    },
+    {
+      "title": "30亿参数tokenizer实现",
+      "why": "通过entropy loss解决大模型收敛问题，配合CNN-Transformer混合架构和非对称decoder优先扩展策略，首次实现30亿参数tokenizer，在ImageNet 256×256上用1.4B AR模型达到gFID 1.98的SOTA性能"
+    }
+  ],
+  "_similarities": [
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "pass": true
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "best_score": 1.0,
+      "best_match": "DINOv2: Learning Robust Visual Features without Supervision",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "best_score": 1.0,
+      "best_match": "Vector-quantized Image Modeling with Improved VQGAN",
+      "pass": true
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "best_score": 1.0,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "best_score": 1.0,
+      "best_match": "Masked Autoencoders Are Scalable Vision Learners",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "pass": true
+    }
+  ],
+  "_matched": 10,
+  "_total": 10,
+  "_pass_rate": 1.0,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14",
+  "_ref_count": 67
+}

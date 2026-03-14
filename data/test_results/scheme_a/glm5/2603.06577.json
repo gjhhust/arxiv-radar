@@ -1,0 +1,39 @@
+{
+  "paper_id": "2603.06577",
+  "scheme": "A",
+  "model": "wq/glm5",
+  "latency_s": 86.652,
+  "success": true,
+  "output": {
+    "cn_abstract": "现有的 Multimodal Large Language Models (MLLMs) 主要依赖自回归架构，本文则探索了离散扩散模型作为骨干网络的潜力。作者提出了 Omni-Diffusion，这是首个完全基于 mask-based discrete diffusion models 构建的 any-to-any 多模态语言模型。该方法在统一框架下实现了文本、语音和图像的理解与生成，展示了新型架构的有效性。",
+    "cn_oneliner": "首个全离散扩散多模态模型Omni-Diffusion，统一实现图文音的理解与生成。",
+    "contribution_type": "significant",
+    "editorial_note": "该论文挑战了多模态大模型以自回归为主流的架构现状，首次探索了完全基于掩码离散扩散的统一建模方案，具有显著的架构创新性。",
+    "why_read": "推荐阅读，因为它提供了一种摒弃传统LLM架构、完全基于离散扩散的“大一统”新范式，对多模态模型架构设计有重要参考价值。",
+    "method_variants": [
+      {
+        "base_method": "masked discrete diffusion",
+        "variant_tag": "masked-discrete-diffusion:any-to-any-unification",
+        "description": "将原本用于图像生成的掩码离散扩散模型泛化，构建统一处理文本、语音、图像理解与生成的单一Transformer架构。"
+      }
+    ],
+    "key_refs": [
+      {
+        "title": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+        "stance": "extends",
+        "note": "作为核心基础方法，将其从单一的图像生成任务扩展到全模态的理解与生成统一框架。"
+      },
+      {
+        "title": "Show-o: One Single Transformer to Unify Multimodal Understanding and Generation",
+        "stance": "contrasts",
+        "note": "作为近期代表性工作，Omni-Diffusion在架构选择上与之形成对比，展示了纯扩散架构相对于自回归或混合架构的潜力。"
+      },
+      {
+        "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+        "stance": "supports",
+        "note": "引用其观点支持离散化表示在生成任务中的有效性，为采用离散扩散提供理论依据。"
+      }
+    ]
+  },
+  "parse_error": null
+}

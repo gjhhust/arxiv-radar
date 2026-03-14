@@ -1,0 +1,235 @@
+{
+  "arxiv_id": "2507.08441",
+  "title": "Vision Foundation Models as Effective Visual Tokenizers for Autoregressive Image Generation",
+  "cn_oneliner": "基于 VQGAN 视觉分词框架，引入预训练视觉基础模型（DINOv2/SigLIP2）的特征空间作为量化目标，实现自回归图像生成质量与语义一致性的显著提升",
+  "cn_abstract": "本文提出 VFMTok，一种以视觉基础模型（Vision Foundation Models, VFMs）特征空间为核心监督信号的视觉分词器，用于自回归图像生成。传统 VQGAN 类方法依赖像素级重建损失与判别器，导致生成 token 缺乏高层语义结构；VFMTok 通过将量化特征对齐至 DINOv2、SigLIP2 等预训练模型的语义表示，同时保留必要的低层细节，在 ImageNet 256×256 类别条件生成任务上取得业界领先的 gFID，较同规模基线方法显著改善生成质量与语义连贯性。实验表明，VFMs 的强语义先验能有效降低自回归模型的预测难度，提升生成多样性与保真度，验证了将理解导向的视觉表示迁移至生成任务的可行性。",
+  "contribution_type": "significant",
+  "editorial_note": "VQGAN 系列方法通过向量量化将图像压缩为离散 token 序列，成为自回归图像生成的标准前端，但其优化目标以像素重建为主，缺乏高层语义约束。本文核心贡献在于系统性地将预训练视觉基础模型（DINOv2、SigLIP2）的特征空间引入量化训练目标，使 token 同时携带语义与外观信息，从而降低下游自回归模型的建模难度并提升生成质量。该思路与 REPA 在扩散模型中的对齐策略异曲同工，但聚焦于离散分词阶段，创新点清晰且具有实用价值，对视觉分词器设计范式有实质推进。",
+  "why_read": "研究自回归图像生成或视觉分词器设计的学者，可从中获得「以预训练VFM特征空间替代纯像素重建目标」的系统性方法论与实验洞见",
+  "method_variants": [
+    "tokenizer:VFM-feature-alignment",
+    "quantization:VQGAN-with-semantic-target",
+    "encoder:DINOv2-guided",
+    "encoder:SigLIP2-guided",
+    "autoregressive:next-token-prediction-on-VFMTok",
+    "training-objective:dual-loss-semantic-pixel"
+  ],
+  "core_cite": [
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "extends",
+      "note": "VFMTok 的基础框架，VQGAN 提供离散视觉分词的核心方法，本文在其量化目标上引入语义对齐"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "uses",
+      "note": "VQ-VAE 奠定向量量化离散表示学习基础，是视觉分词器的理论起点"
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "arxiv_id": "2304.07193",
+      "role": "uses",
+      "note": "作为核心视觉基础模型之一，其特征空间被直接用作 VFMTok 的语义量化目标"
+    },
+    {
+      "title": "SigLIP 2: Multilingual Vision-Language Encoders with Improved Semantic Understanding, Localization, and Dense Features",
+      "arxiv_id": "2502.14786",
+      "role": "uses",
+      "note": "另一视觉基础模型，其语言对齐的语义特征被用于引导分词器的量化过程"
+    },
+    {
+      "title": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "arxiv_id": "2410.06940",
+      "role": "contrasts",
+      "note": "REPA 在扩散模型训练阶段引入 VFM 表示对齐，本文则将对齐前置于分词阶段，两者形成互补对比"
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "contrasts",
+      "note": "VAR 提出 next-scale 自回归范式，与本文 next-token 方法形成对比，共同代表自回归生成主流路线"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "uses",
+      "note": "LlamaGen 作为下游自回归生成框架，VFMTok 的 token 被直接用于该框架以验证生成性能"
+    },
+    {
+      "title": "Scaling the Codebook Size of VQGAN to 100,000 with a Utilization Rate of 99%",
+      "arxiv_id": "2406.11837",
+      "role": "contrasts",
+      "note": "代表通过扩大码本规模提升 VQGAN 质量的方向，与本文通过语义对齐改进量化目标的路线形成对比"
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "arxiv_id": "2409.04410",
+      "role": "contrasts",
+      "note": "开源 MAGVIT2 复现，采用查找自由量化方案，作为强基线与 VFMTok 进行比较"
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "arxiv_id": "2111.06377",
+      "role": "supports",
+      "note": "MAE 证明掩码重建可学习强视觉表示，支持本文关于高质量视觉先验对生成任务价值的论点"
+    },
+    {
+      "title": "Emerging Properties in Self-Supervised Vision Transformers",
+      "arxiv_id": "2104.14294",
+      "role": "supports",
+      "note": "DINO 展示自监督 ViT 具备强语义特征，为使用 DINOv2 特征作为量化目标提供理论依据"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "contrasts",
+      "note": "TiTok 探索极致压缩的 1D token 序列分词，与本文在分词效率与语义质量权衡上形成对比"
+    },
+    {
+      "title": "ImageFolder: Autoregressive Image Generation with Folded Tokens",
+      "arxiv_id": "2410.01756",
+      "role": "contrasts",
+      "note": "通过折叠 token 结构改进自回归生成，代表分词结构创新方向，与本文语义目标改进路线互补"
+    },
+    {
+      "title": "TokenFlow: Unified Image Tokenizer for Multimodal Understanding and Generation",
+      "arxiv_id": "2412.03069",
+      "role": "contrasts",
+      "note": "致力于统一理解与生成的双流分词器，与本文将理解模型特征迁移至生成分词器的思路相关"
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "arxiv_id": "2309.15505",
+      "role": "uses",
+      "note": "FSQ 提供无码本的简化量化方案，作为 VFMTok 量化模块的技术选项之一"
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "arxiv_id": "2110.04627",
+      "role": "contrasts",
+      "note": "ViT-VQGAN 通过引入 ViT 架构改进量化质量，与本文从监督目标角度改进形成对比"
+    }
+  ],
+  "idea": [
+    {
+      "title": "分层语义-外观解耦分词：不同 VFM 层特征指导不同码本粒度",
+      "why": "VFMs 不同深度层捕获不同抽象层次的特征（低层纹理、高层语义），现有 VFMTok 统一使用末层特征作为目标。可探索将不同深度的 VFM 特征分别对齐至多粒度码本（粗粒度语义码本+细粒度外观码本），在自回归生成时分阶段解码，有望在语义一致性与细节保真之间取得更优平衡，且与 VAR 的多尺度范式天然兼容。"
+    },
+    {
+      "title": "面向理解-生成统一的 VFM 引导分词器：单一 token 序列同时服务两类任务",
+      "why": "TokenFlow、DualToken 等工作尝试统一理解与生成分词，但通常需要双流结构。VFMTok 已证明 VFM 特征对齐能提升生成质量，自然延伸方向是：在单一码本设计中通过 VFM 对齐使 token 同时具备判别能力，无需额外编码器即可用于下游分类/检索任务，减少多模态系统的架构复杂度。可在 VFMTok 框架上增加轻量线性探针评估验证可行性。"
+    },
+    {
+      "title": "动态 VFM 教师选择：根据图像内容自适应选择最优基础模型特征作为量化目标",
+      "why": "不同 VFM（DINOv2 擅长语义结构、SigLIP 擅长语言对齐语义、MAE 擅长纹理细节）在不同图像类型上具有互补优势。本文分别使用单一 VFM 作为固定目标，尚未探索混合或动态选择策略。可设计基于图像内容的软路由机制（如 MoE 风格），自适应加权不同 VFM 特征的对齐损失，在复杂场景（如人脸、场景、物体等不同域）获得更鲁棒的 token 质量。"
+    }
+  ],
+  "_scheme": "H",
+  "_model": "wq/minimaxm25",
+  "_verified_at": "2026-03-13",
+  "_s2_ref_count": 58,
+  "_similarities": [
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "best_score": 1.0,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "best_score": 1.0,
+      "best_match": "DINOv2: Learning Robust Visual Features without Supervision",
+      "pass": true
+    },
+    {
+      "title": "SigLIP 2: Multilingual Vision-Language Encoders with Improved Semantic Understanding, Localization, and Dense Features",
+      "best_score": 1.0,
+      "best_match": "SigLIP 2: Multilingual Vision-Language Encoders with Improved Semantic Understanding, Localization, and Dense Features",
+      "pass": true
+    },
+    {
+      "title": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "best_score": 1.0,
+      "best_match": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "pass": true
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "best_score": 1.0,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Scaling the Codebook Size of VQGAN to 100,000 with a Utilization Rate of 99%",
+      "best_score": 1.0,
+      "best_match": "Scaling the Codebook Size of VQGAN to 100,000 with a Utilization Rate of 99%",
+      "pass": true
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "best_score": 1.0,
+      "best_match": "Masked Autoencoders Are Scalable Vision Learners",
+      "pass": true
+    },
+    {
+      "title": "Emerging Properties in Self-Supervised Vision Transformers",
+      "best_score": 1.0,
+      "best_match": "Emerging Properties in Self-Supervised Vision Transformers",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    },
+    {
+      "title": "ImageFolder: Autoregressive Image Generation with Folded Tokens",
+      "best_score": 1.0,
+      "best_match": "ImageFolder: Autoregressive Image Generation with Folded Tokens",
+      "pass": true
+    },
+    {
+      "title": "TokenFlow: Unified Image Tokenizer for Multimodal Understanding and Generation",
+      "best_score": 1.0,
+      "best_match": "TokenFlow: Unified Image Tokenizer for Multimodal Understanding and Generation",
+      "pass": true
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "best_score": 1.0,
+      "best_match": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "pass": true
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "best_score": 1.0,
+      "best_match": "Vector-quantized Image Modeling with Improved VQGAN",
+      "pass": true
+    }
+  ],
+  "_matched": 16,
+  "_total": 16,
+  "_pass_rate": 1.0,
+  "_elapsed_s": 56.2
+}

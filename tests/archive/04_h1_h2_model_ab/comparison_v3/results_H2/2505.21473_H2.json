@@ -1,0 +1,214 @@
+{
+  "arxiv_id": "2505.21473",
+  "title": "DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction",
+  "cn_oneliner": "基于VAR的1D自回归生成，通过next-detail prediction和并行推理，在ImageNet 256×256用128 tokens达到2.96 gFID，优于VAR和FlexVAR",
+  "cn_abstract": "DetailFlow提出一种基于next-detail prediction的粗到细1D自回归图像生成方法。通过resolution-aware token sequence监督逐步退化的图像，使生成过程从全局结构开始逐步细化细节。该方法与自回归推理机制自然对齐，使用显著更少的token（128 vs 680）。在ImageNet 256×256上达到2.96 gFID，优于VAR（3.3 FID）和FlexVAR（3.05 FID），推理速度约快2倍。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱] 建立在VAR（Visual Autoregressive Modeling）和FlexVAR的工作基础上，这些方法使用多尺度token map进行next-scale prediction。 [贡献] 提出next-detail prediction策略，将图像建模为1D粗到细序列，使用resolution-aware token监督逐步退化的图像，并通过并行推理机制实现约8x加速和更少token（128 vs 680）。 [判断] 该工作在保持自回归框架的同时显著提升了效率和质量，是VAR系列的重要改进，但创新程度属于增量改进而非范式突破。",
+  "why_read": "对自回归图像生成和高效token建模感兴趣的研究者，通过本文可深入理解1D coarse-to-fine机制如何兼顾生成质量与推理效率，并获取并行推理self-correction设计的具体思路",
+  "method_variants": [
+    {
+      "variant_tag": "var:next-detail-prediction",
+      "description": "VAR使用next-scale prediction按从低到高分辨率顺序生成多尺度2D token map，DetailFlow改为1D next-detail prediction序列，从全局结构到细节逐步生成，通过resolution-aware token监督实现更细粒度的控制"
+    },
+    {
+      "variant_tag": "var:parallel-inference",
+      "description": "传统自回归模型逐token顺序生成，存在teacher-forcing导致的累积采样误差，DetailFlow提出带self-correction的并行推理机制，实现约8x加速同时减少累积误差"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "extends",
+      "note": "直接基线，DetailFlow改进其next-scale prediction为next-detail prediction，使用1D token序列替代2D token map"
+    },
+    {
+      "title": "FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction",
+      "arxiv_id": "2502.20313",
+      "role": "extends",
+      "note": "同期工作，DetailFlow对比基线，在128 tokens下达到2.96 gFID vs FlexVAR的3.05 FID(680 tokens)"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "contrasts",
+      "note": "证明了AR模型可与diffusion竞争，DetailFlow属于AR分支的改进"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "contrasts",
+      "note": "使用masked generation，DetailFlow使用自回归next-detail prediction"
+    },
+    {
+      "title": "Infinity∞: Scaling Bitwise AutoRegressive Modeling for High-Resolution Image Synthesis",
+      "arxiv_id": "2412.04431",
+      "role": "contrasts",
+      "note": "比特级自回归生成，与DetailFlow的token级AR不同"
+    },
+    {
+      "title": "ImageFolder: Autoregressive Image Generation with Folded Tokens",
+      "arxiv_id": "2410.01756",
+      "role": "uses",
+      "note": "使用folded tokens减少序列长度，DetailFlow使用更少的1D token"
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "arxiv_id": "2502.13967",
+      "role": "uses",
+      "note": "将图像转换为1D token序列，DetailFlow同样采用1D表示"
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "arxiv_id": "2406.11838",
+      "role": "mentions",
+      "note": "无VQ的AR生成，DetailFlow仍使用VQ tokenizer"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "mentions",
+      "note": "VQGAN tokenizer的经典工作，DetailFlow的tokenizer基础"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "mentions",
+      "note": "VAE的经典工作，为VQ-VAE系列奠定基础"
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "arxiv_id": "2110.04627",
+      "role": "mentions",
+      "note": "改进的VQGAN，DetailFlow使用类似的tokenizer架构"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "mentions",
+      "note": "使用极少的token表示图像，DetailFlow使用128 tokens"
+    }
+  ],
+  "idea": [
+    {
+      "title": "探究完全移除向量量化层以实现端到端AR生成",
+      "why": "当前方法仍依赖VQ tokenizer，存在信息损失和训练目标不一致的问题。软化VQ或使用连续token可能进一步提升生成质量。本文为何没做：需要更大的模型容量和更复杂的训练技巧，可能是下一步工作"
+    },
+    {
+      "title": "将next-detail prediction扩展到video生成",
+      "why": "该方法在图像上展示了粗到细生成的优势，video的时间维度可以自然地与detail维度结合，实现高效video生成"
+    },
+    {
+      "title": "借鉴diffusion的classifier-free guidance到AR框架",
+      "why": "CFguidance在diffusion中显著提升质量和多样性，AR模型也可引入类似机制。Self-correction已经是一个好的开始，但可以进一步探索无分类器引导"
+    }
+  ],
+  "_cite_sims": [
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "best_score": 1.0,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction",
+      "best_score": 1.0,
+      "best_match": "FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "Infinity∞: Scaling Bitwise AutoRegressive Modeling for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Infinity∞: Scaling Bitwise AutoRegressive Modeling for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "ImageFolder: Autoregressive Image Generation with Folded Tokens",
+      "best_score": 1.0,
+      "best_match": "ImageFolder: Autoregressive Image Generation with Folded Tokens",
+      "pass": true
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "best_score": 1.0,
+      "best_match": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Image Generation without Vector Quantization",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "best_score": 1.0,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "best_score": 1.0,
+      "best_match": "Vector-quantized Image Modeling with Improved VQGAN",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    }
+  ],
+  "_cite_matched": 12,
+  "_cite_total": 12,
+  "_cite_rate": 1.0,
+  "_ref_count": 43,
+  "_mv_count": 2,
+  "_mv_issues": [],
+  "_mv_ok": true,
+  "_idea_count": 3,
+  "_idea_analysis": [
+    {
+      "title": "探究完全移除向量量化层以实现端到端AR生成",
+      "why_len": 98,
+      "has_gap": false,
+      "restate": false
+    },
+    {
+      "title": "将next-detail prediction扩展到video生成",
+      "why_len": 57,
+      "has_gap": false,
+      "restate": false
+    },
+    {
+      "title": "借鉴diffusion的classifier-free guidance到AR框架",
+      "why_len": 84,
+      "has_gap": false,
+      "restate": false
+    }
+  ],
+  "_idea_restate": 0,
+  "_idea_gap": 0,
+  "_idea_quality": 0.0,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14"
+}

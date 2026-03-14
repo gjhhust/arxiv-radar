@@ -1,0 +1,127 @@
+{
+  "arxiv_id": "2601.01535",
+  "model": "gpt52",
+  "timestamp": "2026-03-12T21:55:42.644379",
+  "latency_s": 149.76,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于GigaTok+nested dropout引入冗余token padding与分层语义正则，实现尾token利用率提升并随长度稳定提升AR生成\",\"cn_abstract\":\"本文分析 flexible image tokenizers 采用 nested dropout 的“尾部截断”训练会把信息过度压缩到前缀 token，导致下游 autoregressive (AR) 生成在 token 变长时 gFID 不升反降且显著落后 fixed-length tokenizer。为此提出 ReTok：在训练时用 Redundant Token Padding 在序列尾部追加额外 query tokens，使原序列的尾 token 在 dropout 下更频繁被激活，从而缓解信息前置；同时用 Hierarchical Semantic Regularization 将短前缀解码特征对齐到预训练 DINOv2 语义特征，并随保留长度 k 线性衰减正则强度以保留后缀细节重建能力。实验在 ImageNet 256×256 上表明 ReTok 使 AR 生成质量随 token 长度更一致地提升，并在同等 token 预算下优于现有 flexible tokenizers，接近/达到强 fixed-length 1D tokenizer 的水平。\",\"contribution_type\":\"incremental\",\"editorial_note\":\"[前驱] 工作建立在 1D 离散 tokenizer（TiTok/GigaTok）与 flexible tokenizer 的 nested dropout（FlexTok/One-D-Piece/DetailFlow）之上，并沿用 tokenizer 训练中的 representation alignment/semantic regularization（REPA、GigaTok 对齐 DINOv2）。\\n[贡献] 核心新意是两条训练技巧：训练时在序列尾部加“冗余 padding tokens”改变 nested dropout 的激活分布；再把语义对齐权重做成随保留长度递减的分层正则，并额外做 decoder 微调。\\n[判断] 这是针对已知症状（尾 token 不工作）的一组直接修补，效果明确但方法学深度有限；更像把训练分布与正则日程调到更匹配 AR 需求。\",\"why_read\":\"如果你在做可变长度/1D tokenizer 给 AR 生成用，这篇提供了一个几乎不改架构、仅靠训练分布与正则日程就能让“长序列更有用”的可复现配方与消融路线图。\",\"method_variants\":[{\"base_method\":\"nested-dropout\",\"variant_tag\":\"nested-dropout:redundant-padding\",\"description\":\"原方法随机截断尾 token 迫使前缀重建，易导致信息前置；本文在训练时追加 M 个 padding query/token 后再做截断，使原序列尾 token 更常被保留与训练，推高尾 token 利用率。\"},{\"base_method\":\"gigatok\",\"variant_tag\":\"gigatok:flexible-nested-dropout-ft\",\"description\":\"原 GigaTok 是 fixed-length 1D tokenizer；本文先用 naive nested dropout 将其微调成 flexible 版本以暴露 AR 生成瓶颈，并作为对照。\"},{\"base_method\":\"representation-alignment\",\"variant_tag\":\"representation-alignment:hierarchical-lambda(k)\",\"description\":\"原对齐用固定权重将 tokenizer decoder 中间特征与 DINOv2 特征做 cosine 对齐；本文令正则权重 λ 随保留长度 k 线性衰减，短序列更偏语义、长序列更偏细节。\"},{\"base_method\":\"vit-decoder\",\"variant_tag\":\"vit-decoder:finetune-low-reg\",\"description\":\"原训练同时优化 encoder/quantizer/decoder 且短序列受强语义约束可能伤重建；本文冻结 encoder+quantizer，仅以较小常数 λ 微调 decoder，提升短 token 重建与短序列生成。\"}],\"core_cite\":[{\"title\":\"GigaTok: Scaling visual tokenizers to 3 billion parameters for autoregressive image generation | arxiv:2504.08736\",\"role\":\"extends/uses\",\"note\":\"ReTok 直接沿用其 1D tokenizer 架构与 DINOv2 语义正则形式，并从预训练 GigaTok 初始化；同时用其作为 fixed-length baseline 与 flexible 微调起点。\"},{\"title\":\"Learning ordered representations with nested dropout\",\"role\":\"extends/uses\",\"note\":\"将 nested dropout 作为 flexible tokenizer 的关键训练机制；本文指出其尾截断导致信息前置，并通过冗余 padding 改变其激活分布。\"},{\"title\":\"FlexTok: Resampling Images into 1D Token Sequences of Flexible Length\",\"role\":\"contrasts\",\"note\":\"作为 flexible tokenizer 代表方法对比；论文用其现象（更多 token 反而更差）支撑瓶颈动机，并在实验表中对比生成质量。\"},{\"title\":\"One-D-Piece: Image tokenizer meets quality-controllable compression | arxiv:2501.10064\",\"role\":\"contrasts\",\"note\":\"作为采用类似 nested dropout 的 flexible tokenizer baseline；实验中对比其下游 AR 生成在 256 tokens 的劣化。\"},{\"title\":\"DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction | arxiv:2505.21473\",\"role\":\"contrasts\",\"note\":\"作为另一类 flexible/分层重建 tokenizer+AR 方案对比；论文强调其早 token 只能重建低清/低频，削弱灵活性，并在 gFID 曲线与表格中对比。\"},{\"title\":\"Autoregressive model beats diffusion: Llama for scalable image generation | arxiv:2406.06525\",\"role\":\"uses\",\"note\":\"下游 AR 生成器采用 LlamaGen(B/L/XL) 训练与评测 ReTok 的 token 序列建模能力，并作为对比项（LlamaGen 自带 tokenizer）。\"},{\"title\":\"Dinov2: Learning robust visual features without supervision | arxiv:2304.07193\",\"role\":\"uses\",\"note\":\"作为 vision foundation model 提供语义特征；用于 semantic regularization/representation alignment 的目标特征。\"},{\"title\":\"Representation alignment for generation: Training diffusion transformers is easier than you think | arxiv:2410.06940\",\"role\":\"uses\",\"note\":\"作为“用 foundation model 特征对齐提升生成训练”的方法论来源；ReTok 的分层语义正则属于其在 tokenizer 训练中的变体。\"},{\"title\":\"An image is worth 32 tokens for reconstruction and generation\",\"role\":\"uses\",\"note\":\"作为 1D tokenizer（TiTok）背景与动机：高压缩 token 更偏语义；启发本文对短前缀施加强语义对齐。\"},{\"title\":\"Taming transformers for high-resolution image synthesis\",\"role\":\"uses\",\"note\":\"tokenizer 重建损失沿用 VQGAN 体系（像素/感知/对抗/VQ codebook），并作为离散 tokenizer 经典基线背景。\"},{\"title\":\"Neural discrete representation learning\",\"role\":\"supports\",\"note\":\"VQ-VAE 离散表征学习的基础引用，支撑离散 tokenizer 的总体框架。\"},{\"title\":\"An image is worth 16x16 words: Transformers for image recognition at scale | arxiv:2010.11929\",\"role\":\"supports\",\"note\":\"1D tokenizer 的 encoder/decoder 采用 ViT 作为核心骨干网络的基础引用。\"},{\"title\":\"Imagenet large scale visual recognition challenge\",\"role\":\"uses\",\"note\":\"训练与评测数据集为 ImageNet 256×256。\"},{\"title\":\"Gans trained by a two time-scale update rule converge to a local nash equilibrium\",\"role\":\"uses\",\"note\":\"FID 指标引用，用于生成质量评估。\"},{\"title\":\"Improved precision and recall metric for assessing generative models\",\"role\":\"uses\",\"note\":\"Precision/Recall 生成评估指标引用。\"},{\"title\":\"Improved techniques for training gans\",\"role\":\"uses\",\"note\":\"Inception Score (IS) 指标引用。\"},{\"title\":\"Image quality assessment: from error visibility to structural similarity\",\"role\":\"uses\",\"note\":\"SSIM 重建质量指标引用。\"},{\"title\":\"Improving Flexible Image Tokenizers for Autoregressive Image Generation\",\"role\":\"extends/uses\",\"note\":\"本文提出 ReTok：冗余 token padding + 分层语义正则 + decoder 微调，用于缓解 flexible tokenizer 的 AR 生成瓶颈。\"}]}",
+  "cn_oneliner": "基于GigaTok+nested dropout引入冗余token padding与分层语义正则，实现尾token利用率提升并随长度稳定提升AR生成",
+  "cn_abstract": "本文分析 flexible image tokenizers 采用 nested dropout 的“尾部截断”训练会把信息过度压缩到前缀 token，导致下游 autoregressive (AR) 生成在 token 变长时 gFID 不升反降且显著落后 fixed-length tokenizer。为此提出 ReTok：在训练时用 Redundant Token Padding 在序列尾部追加额外 query tokens，使原序列的尾 token 在 dropout 下更频繁被激活，从而缓解信息前置；同时用 Hierarchical Semantic Regularization 将短前缀解码特征对齐到预训练 DINOv2 语义特征，并随保留长度 k 线性衰减正则强度以保留后缀细节重建能力。实验在 ImageNet 256×256 上表明 ReTok 使 AR 生成质量随 token 长度更一致地提升，并在同等 token 预算下优于现有 flexible tokenizers，接近/达到强 fixed-length 1D tokenizer 的水平。",
+  "contribution_type": "incremental",
+  "editorial_note": "[前驱] 工作建立在 1D 离散 tokenizer（TiTok/GigaTok）与 flexible tokenizer 的 nested dropout（FlexTok/One-D-Piece/DetailFlow）之上，并沿用 tokenizer 训练中的 representation alignment/semantic regularization（REPA、GigaTok 对齐 DINOv2）。\n[贡献] 核心新意是两条训练技巧：训练时在序列尾部加“冗余 padding tokens”改变 nested dropout 的激活分布；再把语义对齐权重做成随保留长度递减的分层正则，并额外做 decoder 微调。\n[判断] 这是针对已知症状（尾 token 不工作）的一组直接修补，效果明确但方法学深度有限；更像把训练分布与正则日程调到更匹配 AR 需求。",
+  "why_read": "如果你在做可变长度/1D tokenizer 给 AR 生成用，这篇提供了一个几乎不改架构、仅靠训练分布与正则日程就能让“长序列更有用”的可复现配方与消融路线图。",
+  "method_variants": [
+    {
+      "base_method": "nested-dropout",
+      "variant_tag": "nested-dropout:redundant-padding",
+      "description": "原方法随机截断尾 token 迫使前缀重建，易导致信息前置；本文在训练时追加 M 个 padding query/token 后再做截断，使原序列尾 token 更常被保留与训练，推高尾 token 利用率。"
+    },
+    {
+      "base_method": "gigatok",
+      "variant_tag": "gigatok:flexible-nested-dropout-ft",
+      "description": "原 GigaTok 是 fixed-length 1D tokenizer；本文先用 naive nested dropout 将其微调成 flexible 版本以暴露 AR 生成瓶颈，并作为对照。"
+    },
+    {
+      "base_method": "representation-alignment",
+      "variant_tag": "representation-alignment:hierarchical-lambda(k)",
+      "description": "原对齐用固定权重将 tokenizer decoder 中间特征与 DINOv2 特征做 cosine 对齐；本文令正则权重 λ 随保留长度 k 线性衰减，短序列更偏语义、长序列更偏细节。"
+    },
+    {
+      "base_method": "vit-decoder",
+      "variant_tag": "vit-decoder:finetune-low-reg",
+      "description": "原训练同时优化 encoder/quantizer/decoder 且短序列受强语义约束可能伤重建；本文冻结 encoder+quantizer，仅以较小常数 λ 微调 decoder，提升短 token 重建与短序列生成。"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "GigaTok: Scaling visual tokenizers to 3 billion parameters for autoregressive image generation | arxiv:2504.08736",
+      "role": "extends/uses",
+      "note": "ReTok 直接沿用其 1D tokenizer 架构与 DINOv2 语义正则形式，并从预训练 GigaTok 初始化；同时用其作为 fixed-length baseline 与 flexible 微调起点。"
+    },
+    {
+      "title": "Learning ordered representations with nested dropout",
+      "role": "extends/uses",
+      "note": "将 nested dropout 作为 flexible tokenizer 的关键训练机制；本文指出其尾截断导致信息前置，并通过冗余 padding 改变其激活分布。"
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "role": "contrasts",
+      "note": "作为 flexible tokenizer 代表方法对比；论文用其现象（更多 token 反而更差）支撑瓶颈动机，并在实验表中对比生成质量。"
+    },
+    {
+      "title": "One-D-Piece: Image tokenizer meets quality-controllable compression | arxiv:2501.10064",
+      "role": "contrasts",
+      "note": "作为采用类似 nested dropout 的 flexible tokenizer baseline；实验中对比其下游 AR 生成在 256 tokens 的劣化。"
+    },
+    {
+      "title": "DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction | arxiv:2505.21473",
+      "role": "contrasts",
+      "note": "作为另一类 flexible/分层重建 tokenizer+AR 方案对比；论文强调其早 token 只能重建低清/低频，削弱灵活性，并在 gFID 曲线与表格中对比。"
+    },
+    {
+      "title": "Autoregressive model beats diffusion: Llama for scalable image generation | arxiv:2406.06525",
+      "role": "uses",
+      "note": "下游 AR 生成器采用 LlamaGen(B/L/XL) 训练与评测 ReTok 的 token 序列建模能力，并作为对比项（LlamaGen 自带 tokenizer）。"
+    },
+    {
+      "title": "Dinov2: Learning robust visual features without supervision | arxiv:2304.07193",
+      "role": "uses",
+      "note": "作为 vision foundation model 提供语义特征；用于 semantic regularization/representation alignment 的目标特征。"
+    },
+    {
+      "title": "Representation alignment for generation: Training diffusion transformers is easier than you think | arxiv:2410.06940",
+      "role": "uses",
+      "note": "作为“用 foundation model 特征对齐提升生成训练”的方法论来源；ReTok 的分层语义正则属于其在 tokenizer 训练中的变体。"
+    },
+    {
+      "title": "An image is worth 32 tokens for reconstruction and generation",
+      "role": "uses",
+      "note": "作为 1D tokenizer（TiTok）背景与动机：高压缩 token 更偏语义；启发本文对短前缀施加强语义对齐。"
+    },
+    {
+      "title": "Taming transformers for high-resolution image synthesis",
+      "role": "uses",
+      "note": "tokenizer 重建损失沿用 VQGAN 体系（像素/感知/对抗/VQ codebook），并作为离散 tokenizer 经典基线背景。"
+    },
+    {
+      "title": "Neural discrete representation learning",
+      "role": "supports",
+      "note": "VQ-VAE 离散表征学习的基础引用，支撑离散 tokenizer 的总体框架。"
+    },
+    {
+      "title": "An image is worth 16x16 words: Transformers for image recognition at scale | arxiv:2010.11929",
+      "role": "supports",
+      "note": "1D tokenizer 的 encoder/decoder 采用 ViT 作为核心骨干网络的基础引用。"
+    },
+    {
+      "title": "Imagenet large scale visual recognition challenge",
+      "role": "uses",
+      "note": "训练与评测数据集为 ImageNet 256×256。"
+    },
+    {
+      "title": "Gans trained by a two time-scale update rule converge to a local nash equilibrium",
+      "role": "uses",
+      "note": "FID 指标引用，用于生成质量评估。"
+    },
+    {
+      "title": "Improved precision and recall metric for assessing generative models",
+      "role": "uses",
+      "note": "Precision/Recall 生成评估指标引用。"
+    },
+    {
+      "title": "Improved techniques for training gans",
+      "role": "uses",
+      "note": "Inception Score (IS) 指标引用。"
+    },
+    {
+      "title": "Image quality assessment: from error visibility to structural similarity",
+      "role": "uses",
+      "note": "SSIM 重建质量指标引用。"
+    },
+    {
+      "title": "Improving Flexible Image Tokenizers for Autoregressive Image Generation",
+      "role": "extends/uses",
+      "note": "本文提出 ReTok：冗余 token padding + 分层语义正则 + decoder 微调，用于缓解 flexible tokenizer 的 AR 生成瓶颈。"
+    }
+  ]
+}

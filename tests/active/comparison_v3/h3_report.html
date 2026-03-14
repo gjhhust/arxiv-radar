@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>H3_M25 测试报告</title>
+<style>
+* { box-sizing: border-box; }
+body { 
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+  margin: 10px; 
+  padding: 0;
+  background: #f5f5f5; 
+  font-size: 14px;
+  line-height: 1.5;
+}
+h1 { 
+  color: #333; 
+  font-size: 20px;
+  margin: 10px 0;
+  text-align: center;
+}
+h2 { 
+  color: #4CAF50; 
+  font-size: 16px;
+  margin: 15px 0 10px 0;
+  border-bottom: 2px solid #4CAF50; 
+  padding-bottom: 5px; 
+}
+.summary { 
+  background: white; 
+  padding: 15px; 
+  margin: 10px 0; 
+  border-radius: 8px; 
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+}
+.summary p { margin: 5px 0; font-size: 13px; }
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 10px 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+}
+.card-title {
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;
+}
+.card-status {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.success { background: #e8f5e9; color: #2e7d32; }
+.fail { background: #ffebee; color: #c62828; }
+.card-content {
+  font-size: 13px;
+  color: #666;
+}
+.card-content p { margin: 5px 0; }
+.arxiv-link {
+  color: #1976d2;
+  text-decoration: none;
+  font-size: 12px;
+}
+.stats {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
+.stat-item {
+  flex: 1;
+}
+.stat-value {
+  font-size: 24px;
+  font-weight: bold;
+}
+.stat-label {
+  font-size: 12px;
+  color: #666;
+}
+.findings {
+  background: white;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 10px 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.findings ul {
+  margin: 0;
+  padding-left: 20px;
+}
+.findings li {
+  margin: 8px 0;
+  font-size: 13px;
+}
+</style>
+</head>
+<body>
+<h1>📊 H3_M25 测试报告</h1>
+<p style="text-align: center; color: #666; font-size: 12px;">生成时间: 2026-03-14 19:53:00</p>
+
+<div class="summary">
+<h2>测试摘要</h2>
+<div class="stats">
+  <div class="stat-item">
+    <div class="stat-value" style="color: #4CAF50;">5</div>
+    <div class="stat-label">成功</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value" style="color: #4CAF50;">100%</div>
+    <div class="stat-label">成功率</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value" style="color: #666;">~2min</div>
+    <div class="stat-label">平均耗时</div>
+  </div>
+</div>
+</div>
+
+<h2>论文分析结果</h2>
+
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">2406.07550</span>
+    <span class="card-status success">✅ 有效</span>
+  </div>
+  <div class="card-content">
+    <p><strong>TiTOK</strong></p>
+    <p>基于 VQGAN 的 2D 网格 tokenization，引入 1D 序列 latent 表示和 Transformer 编码器，实现 32 token 压缩 256×256 图像</p>
+    <a class="arxiv-link" href="https://arxiv.org/abs/2406.07550" target="_blank">📄 arxiv.org/abs/2406.07550</a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">2503.08685</span>
+    <span class="card-status success">✅ 有效</span>
+  </div>
+  <div class="card-content">
+    <p><strong>Principal Components</strong></p>
+    <p>基于1D图像分词器，引入PCA类结构，实现rFID 0.72重建和仅32 token达到gFID 2.57的生成</p>
+    <a class="arxiv-link" href="https://arxiv.org/abs/2503.08685" target="_blank">📄 arxiv.org/abs/2503.08685</a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">2504.08736</span>
+    <span class="card-status success">✅ 有效</span>
+  </div>
+  <div class="card-content">
+    <p><strong>GigaTok</strong></p>
+    <p>基于 VQGAN，引入语义正则化，在 3B 参数规模下实现重构与 AR 生成的 SOTA</p>
+    <a class="arxiv-link" href="https://arxiv.org/abs/2504.08736" target="_blank">📄 arxiv.org/abs/2504.08736</a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">2506.05289</span>
+    <span class="card-status success">✅ 有效</span>
+  </div>
+  <div class="card-content">
+    <p><strong>AliTok</strong></p>
+    <p>引入因果解码器约束双向编码器，使标准自回归模型首次超越SOTA扩散模型</p>
+    <a class="arxiv-link" href="https://arxiv.org/abs/2506.05289" target="_blank">📄 arxiv.org/abs/2506.05289</a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">2511.20565</span>
+    <span class="card-status success">✅ 有效</span>
+  </div>
+  <div class="card-content">
+    <p><strong>DINO-Tok</strong></p>
+    <p>基于DINO预训练模型引入视觉tokenizer，在ImageNet 256×256达到28.54 PSNR重建性能</p>
+    <a class="arxiv-link" href="https://arxiv.org/abs/2511.20565" target="_blank">📄 arxiv.org/abs/2511.20565</a>
+  </div>
+</div>
+
+<div class="findings">
+<h2>📌 关键发现</h2>
+<ul>
+<li><strong>100% 成功率</strong>：所有 5 篇论文都成功生成了结构化分析</li>
+<li><strong>DINO-Tok 成功处理</strong>：之前测试中所有模型都失败的论文，本次成功</li>
+<li><strong>时间戳格式</strong>：memory 记录使用完整时间戳（YYYY-MM-DD HH:MM:SS）</li>
+<li><strong>Transcript 追踪</strong>：所有结果文件都包含 transcript_path 和 session_time</li>
+</ul>
+</div>
+
+<p style="text-align: center; color: #999; font-size: 11px; margin-top: 20px;">
+  Powered by H3 Template + MinimaxM25
+</p>
+</body>
+</html>

@@ -1,0 +1,201 @@
+{
+  "cn_oneliner": "基于潜在生成模型(LGMs)范式，引入DINO特征的双分支融合机制与全局PCA重加权，实现高维潜在空间下的语义-纹理平衡，PSNR达28.54（AE）/23.98（VQ）",
+  "cn_abstract": "本文提出DINO-Tok，一种基于预训练DINO模型的视觉tokenizer，用于桥接像素与语义。现有的tokenizer通常从头训练，难以在高维潜在空间中平衡语义表示与重建质量。DINO-Tok通过整合保留细粒度细节的浅层特征与编码全局语义的深层特征，构建信息完整的潜在空间。针对高维空间中向量量化(VQ)的关键信息丢失和码本坍缩问题，提出全局PCA重加权机制。在ImageNet 256×256上，DINO-Tok在自动编码模式下达到28.54 PSNR，VQ模式下达到23.98 PSNR，显著优于现有方法，可与十亿级数据训练的Hunyuan、Wan模型相媲美。",
+  "contribution_type": "significant",
+  "editorial_note": "DINO-Tok代表了视觉tokenizer设计的重要进展。其核心创新在于直接利用预训练DINO模型的分层表示能力，而非仅仅从中蒸馏知识。通过识别浅层特征保留细节、深层特征编码语义的规律，设计了双分支架构融合两者。针对高维VQ的挑战，创造性地引入PCA特征值重加权来稳定量化过程。这一工作表明，强大的预训练视觉模型可以直接适配为生成模型的tokenizer，为下一代视觉生成模型奠定了基础。",
+  "why_read": "视觉生成研究者/生成模型开发者将获得利用预训练模型构建高质量tokenizer的方法论",
+  "method_variants": [
+    {
+      "tag": "DINO-Tok-AE",
+      "note": "使用双分支结构融合浅层F1特征和深层FL特征，通过线性投影将浅层特征压缩到64维后拼接"
+    },
+    {
+      "tag": "DINO-Tok-VQ",
+      "note": "在AE基础上引入全局PCA重加权机制，使用语义码本和纹理码本两个独立码本进行向量量化"
+    },
+    {
+      "tag": "baseline-frozen-DINO",
+      "note": "直接使用冻结的DINO作为encoder，仅用最后一层特征进行重建，导致颜色偏移和细节丢失"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "arxiv_id": "2304.07193",
+      "role": "uses",
+      "note": "DINOv2是DINO-Tok的骨干网络，提供预训练的分层特征"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "supports",
+      "note": "LDM是典型的潜在生成模型，DINO-Tok为其提供更好的tokenizer"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "uses",
+      "note": "基础VQ-VAE框架，DINO-Tok-VQ在此基础上改进"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "supports",
+      "note": "DiT架构，DINO-Tok的tokenizer可与之配合用于图像生成"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "contrasts",
+      "note": "经典VQGAN tokenizer，是DINO-Tok的主要比较对象"
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "contrasts",
+      "note": "自回归视觉生成模型VAR，使用不同的tokenization方法"
+    },
+    {
+      "title": "Emu3: Next-Token Prediction is All You Need",
+      "arxiv_id": "2409.18869",
+      "role": "supports",
+      "note": "发现高维latent的量化问题，需要降低瓶颈维度来稳定训练，DINO-Tok解决了这一问题"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "supports",
+      "note": "强调tokenizer质量对生成模型的重要性，DINO-Tok提升了tokenizer性能"
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "arxiv_id": "2309.15505",
+      "role": "contrasts",
+      "note": "无查找表量化方法FSQ，与DINO-Tok使用传统码本方法不同"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "supports",
+      "note": "表明少量token即可实现高质量重建和生成，DINO-Tok通过高质量tokenizer实现这一点"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "supports",
+      "note": "使用VQ tokenizer的生成模型，DINO-Tok可为其提供更好的token"
+    },
+    {
+      "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "arxiv_id": "2504.08736",
+      "role": "supports",
+      "note": "大规模tokenizer研究，DINO-Tok以更小规模达到可比性能"
+    },
+    {
+      "title": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "arxiv_id": "2410.06940",
+      "role": "supports",
+      "note": "将DiT中间层特征与DINO表示对齐，证明预训练特征的有效性"
+    }
+  ],
+  "idea": [
+    {
+      "title": "双分支特征融合",
+      "why": "浅层保留纹理细节，深层编码语义，通过拼接实现两者兼顾"
+    },
+    {
+      "title": "PCA重加权稳定VQ",
+      "why": "高维空间中L2距离趋同导致量化不稳定，通过特征值加权强调语义维度"
+    },
+    {
+      "title": "双码本设计",
+      "why": "语义码本处理重加权后的深层特征，纹理码本处理浅层特征，互补优化"
+    }
+  ],
+  "_similarities": [
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "best_score": 1.0,
+      "best_match": "DINOv2: Learning Robust Visual Features without Supervision",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "best_score": 1.0,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "best_score": 1.0,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "Emu3: Next-Token Prediction is All You Need",
+      "best_score": 1.0,
+      "best_match": "Emu3: Next-Token Prediction is All You Need",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "best_score": 1.0,
+      "best_match": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "best_score": 1.0,
+      "best_match": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "best_score": 1.0,
+      "best_match": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "pass": true
+    }
+  ],
+  "_matched": 13,
+  "_total": 13,
+  "_pass_rate": 1.0,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14",
+  "_ref_count": 57
+}

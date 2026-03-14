@@ -1,0 +1,226 @@
+{
+  "arxiv_id": "2406.07550",
+  "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+  "cn_oneliner": "基于 VQGAN 等2D图像tokenizer，引入1D紧凑token序列设计（TiTok），将图像表示压缩至32个离散token，同时实现高质量重建与自回归/掩码生成",
+  "cn_abstract": "本文提出TiTok（Transformer-based 1D Tokenizer），一种紧凑的1D图像tokenizer，通过打破传统2D网格约束并利用图像区域冗余，仅用32个离散token即可表示一张256×256图像。TiTok采用ViT架构将图像patch与可学习的1D latent token共同编码，再解码为像素，实现极高压缩比下的图像重建。在ImageNet 256×256基准上，使用32 token的TiTok搭配MaskGIT生成器达到FID 1.97，超越所有此前自回归与掩码生成方法，同时生成速度提升64倍以上。消融实验表明token数量可在32至128间灵活权衡重建质量与生成效率。",
+  "contribution_type": "significant",
+  "editorial_note": "以VQGAN/VQVAE为代表的2D图像tokenizer将图像划分为固定网格patch再量化，token数量随分辨率平方增长，严重制约下游生成模型的效率。本文提出TiTok，引入可学习1D latent token与图像patch联合编码的机制，彻底摆脱2D网格约束，将256×256图像压缩至最少32个token，同时在重建质量和生成FID上均超越现有方法。该设计思路新颖，不仅刷新了ImageNet生成基准，更从tokenizer层面为高效视觉生成提供了新范式，创新程度显著高于工程调优类工作。",
+  "why_read": "研究高效图像生成或视觉tokenizer设计的学者，可从中获得将2D token压缩为极短1D序列的架构思路及其对生成质量/速度权衡的系统分析",
+  "method_variants": [
+    "tokenizer:1D-latent-token",
+    "tokenizer:2D-grid-baseline",
+    "quantization:VQ",
+    "quantization:FSQ",
+    "generator:MaskGIT",
+    "generator:autoregressive",
+    "token_count:32",
+    "token_count:64",
+    "token_count:128"
+  ],
+  "core_cite": [
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "extends",
+      "note": "VQGAN是本文最直接的前驱2D tokenizer基线，TiTok在其基础上提出1D替代方案"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "uses",
+      "note": "VQ-VAE提供了向量量化离散表示的基础方法，TiTok的量化模块直接沿用其思路"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "uses",
+      "note": "本文将MaskGIT作为主要生成器与TiTok配合，验证在32 token下的生成效果"
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "arxiv_id": "2309.15505",
+      "role": "uses",
+      "note": "FSQ作为VQ的简化替代方案被本文采用，用于提升量化稳定性"
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "arxiv_id": "2010.11929",
+      "role": "uses",
+      "note": "ViT架构被TiTok用于编码器和解码器主干，是1D token设计的基础组件"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "contrasts",
+      "note": "MAGVIT-v2同样关注tokenizer对生成质量的关键作用，本文与其在压缩率与生成FID上进行比较"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "contrasts",
+      "note": "LDM代表连续latent空间生成路线，与本文离散1D token路线形成对比"
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "arxiv_id": "2110.04627",
+      "role": "contrasts",
+      "note": "ViT-VQGAN是改进的2D tokenizer基线，本文在重建与生成指标上与其直接比较"
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "arxiv_id": "2111.06377",
+      "role": "supports",
+      "note": "MAE证明图像存在大量冗余可被masked掉，支持本文用极少token表示图像的核心动机"
+    },
+    {
+      "title": "Generating Diverse High-Fidelity Images with VQ-VAE-2",
+      "arxiv_id": "1906.00446",
+      "role": "contrasts",
+      "note": "VQ-VAE-2的层次化2D量化方案是本文1D方案的重要对比基线"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "contrasts",
+      "note": "DiT代表基于Transformer的扩散生成路线，本文在ImageNet FID上与其比较"
+    },
+    {
+      "title": "Perceptual Losses for Real-Time Style Transfer and Super-Resolution",
+      "arxiv_id": "1603.08155",
+      "role": "uses",
+      "note": "感知损失被用于TiTok重建训练的目标函数之一"
+    },
+    {
+      "title": "The Unreasonable Effectiveness of Deep Features as a Perceptual Metric",
+      "arxiv_id": "1801.03924",
+      "role": "uses",
+      "note": "LPIPS用于评估TiTok图像重建质量的感知相似度指标"
+    },
+    {
+      "title": "Diffusion Models Beat GANs on Image Synthesis",
+      "arxiv_id": "2105.05233",
+      "role": "uses",
+      "note": "ADM提供了classifier guidance策略，本文在生成评估中参考其FID结果"
+    },
+    {
+      "title": "Classifier-Free Diffusion Guidance",
+      "arxiv_id": "2207.12598",
+      "role": "uses",
+      "note": "CFG策略被本文生成实验采用以提升生成质量"
+    }
+  ],
+  "idea": [
+    {
+      "title": "1D Token Tokenizer扩展至高分辨率与视频域",
+      "why": "TiTok在256×256图像上验证了1D token的高效性，但高分辨率图像（512×512及以上）或视频序列中冗余更大，1D latent token的压缩潜力理论上更强。可探索在TiTok框架下引入分辨率自适应token数量或时序1D token池，以极短序列表示视频片段，与MAGViT等视频生成模型结合。"
+    },
+    {
+      "title": "1D Visual Token与大语言模型的统一多模态表示",
+      "why": "现有多模态LLM（如LLaVA、SEED）使用2D视觉token导致序列过长。TiTok的32-128个1D token与文本token长度更匹配，可直接拼接送入LLM进行图文理解与生成统一建模，有望在保持视觉质量的前提下大幅降低多模态LLM的训练和推理开销。该方向与作者团队在ByteDance的多模态研究方向高度契合。"
+    },
+    {
+      "title": "基于1D Token的图像编辑与条件生成",
+      "why": "极短的1D token序列使得在token空间做精细操控成为可能：可研究在1D latent空间中进行语义插值、局部编辑或风格迁移，类似文本token的prompt engineering。由于token数量少，优化搜索空间小，基于梯度或强化学习的token-space编辑方法计算代价显著降低，且TiTok的latent token不对应固定空间位置，更适合全局语义操控。"
+    }
+  ],
+  "_scheme": "H",
+  "_model": "wq/minimaxm25",
+  "_verified_at": "2026-03-13",
+  "_s2_ref_count": 67,
+  "_similarities": [
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "best_score": 1.0,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "best_score": 1.0,
+      "best_match": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "best_score": 1.0,
+      "best_match": "Vector-quantized Image Modeling with Improved VQGAN",
+      "pass": true
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "best_score": 1.0,
+      "best_match": "Masked Autoencoders Are Scalable Vision Learners",
+      "pass": true
+    },
+    {
+      "title": "Generating Diverse High-Fidelity Images with VQ-VAE-2",
+      "best_score": 1.0,
+      "best_match": "Generating Diverse High-Fidelity Images with VQ-VAE-2",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "Perceptual Losses for Real-Time Style Transfer and Super-Resolution",
+      "best_score": 1.0,
+      "best_match": "Perceptual Losses for Real-Time Style Transfer and Super-Resolution",
+      "pass": true
+    },
+    {
+      "title": "The Unreasonable Effectiveness of Deep Features as a Perceptual Metric",
+      "best_score": 1.0,
+      "best_match": "The Unreasonable Effectiveness of Deep Features as a Perceptual Metric",
+      "pass": true
+    },
+    {
+      "title": "Diffusion Models Beat GANs on Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Diffusion Models Beat GANs on Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Classifier-Free Diffusion Guidance",
+      "best_score": 1.0,
+      "best_match": "Classifier-Free Diffusion Guidance",
+      "pass": true
+    }
+  ],
+  "_matched": 15,
+  "_total": 15,
+  "_pass_rate": 1.0,
+  "_elapsed_s": 44.5
+}

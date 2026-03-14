@@ -1,0 +1,205 @@
+{
+  "cn_oneliner": "基于FlexTok的nested dropout灵活tokenizer，引入冗余Token填充和分层语义正则化，实现所有token均匀参与生成并在ImageNet 256×256上达到gFID 2.27",
+  "cn_abstract": "灵活图像tokenizer旨在将图像表示为有序的1D变长token序列，通常通过nested dropout训练，尾部token会被随机截断。然而这种尾截断策略导致图像信息集中在早期token，限制了自回归生成的效率。本文提出ReToK方法，包含冗余Token填充和分层语义正则化两个核心组件：冗余Token填充通过追加额外token来增加尾部token的激活频率，缓解信息过度集中；分层语义正则化将早期token的解码特征与预训练视觉基础模型（DINOv2）对齐，并逐步降低对尾部token的正则化强度以保留细节重建能力。在ImageNet 256×256上的广泛实验表明，ReToK在灵活tokenizer中达到最优生成性能，gFID达到2.27（ReTok-S-B + LlamaGen-XL）。",
+  "contribution_type": "significant",
+  "editorial_note": "本文针对灵活图像tokenizer中nested dropout导致的信息过度集中在早期token的问题，提出了两个创新性训练策略。冗余Token Padding通过扩展序列长度使尾部token获得更多训练机会，而Hierarchical Semantic Regularization则利用DINOv2特征进行分层对齐。这一工作有效解决了灵活tokenizer在增加token数量时生成质量不升反降的核心瓶颈，为变长token的自回归图像生成提供了新的技术路径。实验表明该方法在ImageNet 256×256上超越了FlexTok、DetailFlow等灵活tokenizer，证明了方法的有效性。",
+  "why_read": "适用于从事自回归图像生成、视觉tokenizer研究的研究者和工程师，可学习如何通过训练策略改进灵活tokenizer的生成质量",
+  "method_variants": [
+    {
+      "tag": "FlexTok:nested_dropout",
+      "note": "使用naive nested dropout，尾部token被随机截断，信息集中在早期token"
+    },
+    {
+      "tag": "FlexTok:redundant_padding",
+      "note": "本文方法，追加冗余token使尾部token在训练时更频繁激活"
+    },
+    {
+      "tag": "DetailFlow:coarse_to_fine",
+      "note": "分层重建，早期token重建低分辨率或低频分量，尾部token补充细节"
+    },
+    {
+      "tag": "GigaTok:representation_alignment",
+      "note": "固定长度tokenizer，使用DINOv2特征对齐进行表示对齐"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "arxiv_id": "2502.13967",
+      "role": "extends",
+      "note": "前驱工作，提出使用nested dropout训练灵活tokenizer，是本文改进的基础"
+    },
+    {
+      "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "arxiv_id": "2504.08736",
+      "role": "uses",
+      "note": "使用其作为基础架构，采用相同的ViT encoder/decoder设计和表示对齐方法"
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "arxiv_id": "2304.07193",
+      "role": "uses",
+      "note": "提供预训练的视觉特征用于分层语义正则化"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "mentions",
+      "note": "说明tokenizer设计对自回归图像生成的重要性"
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "mentions",
+      "note": "VAR方法的1D tokenizer设计"
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "arxiv_id": "2406.11838",
+      "role": "mentions",
+      "note": "无向量量化的自回归生成方法"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "mentions",
+      "note": "MAR的tokenizer设计"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "uses",
+      "note": "使用LlamaGen作为下游AR生成模型"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "mentions",
+      "note": "VQ-VAE的离散表示学习基础"
+    },
+    {
+      "title": "DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction",
+      "arxiv_id": "2505.21473",
+      "role": "contrasts",
+      "note": "使用分层重建策略，与本文的灵活tokenizer对比"
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "arxiv_id": "2110.04627",
+      "role": "mentions",
+      "note": "VQGAN的改进版本"
+    },
+    {
+      "title": "One-D-Piece: Image Tokenizer Meets Quality-Controllable Compression",
+      "arxiv_id": "2501.10064",
+      "role": "contrasts",
+      "note": "另一个灵活tokenizer方法，但专注于图像重建而非下游AR生成"
+    },
+    {
+      "title": "Learning Ordered Representations with Nested Dropout",
+      "arxiv_id": "1402.0915",
+      "role": "uses",
+      "note": "nested dropout的原始论文，提供了有序表示学习理论基础"
+    }
+  ],
+  "idea": [
+    {
+      "title": "冗余Token填充策略",
+      "why": "通过在序列尾部追加额外的冗余query tokens，使得原始序列中的尾部token在nested dropout训练时获得更高的激活频率，从而缓解信息过度集中在早期token的问题"
+    },
+    {
+      "title": "分层语义正则化",
+      "why": "利用DINOv2预训练特征对tokenizer的解码器进行表示对齐，早期token强调语义级别对齐（高正则化权重），尾部token逐步降低约束以保留细节重建能力"
+    },
+    {
+      "title": "解码器微调策略",
+      "why": "冻结训练好的encoder和quantizer，降低语义约束权重对解码器进行微调，提升短token序列（如32、64）的重建质量和下游生成效果"
+    }
+  ],
+  "_similarities": [
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "best_score": 1.0,
+      "best_match": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "pass": true
+    },
+    {
+      "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "best_score": 1.0,
+      "best_match": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "pass": true
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "best_score": 1.0,
+      "best_match": "DINOv2: Learning Robust Visual Features without Supervision",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "best_score": 1.0,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Image Generation without Vector Quantization",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "best_score": 1.0,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction",
+      "best_score": 1.0,
+      "best_match": "DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction",
+      "pass": true
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "best_score": 1.0,
+      "best_match": "Vector-quantized Image Modeling with Improved VQGAN",
+      "pass": true
+    },
+    {
+      "title": "One-D-Piece: Image Tokenizer Meets Quality-Controllable Compression",
+      "best_score": 1.0,
+      "best_match": "One-D-Piece: Image Tokenizer Meets Quality-Controllable Compression",
+      "pass": true
+    },
+    {
+      "title": "Learning Ordered Representations with Nested Dropout",
+      "best_score": 1.0,
+      "best_match": "Learning Ordered Representations with Nested Dropout",
+      "pass": true
+    }
+  ],
+  "_matched": 13,
+  "_total": 13,
+  "_pass_rate": 1.0,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14",
+  "_ref_count": 53
+}

@@ -1,0 +1,199 @@
+{
+  "arxiv_id": "2507.08441",
+  "title": "Vision Foundation Models as Effective Visual Tokenizers for Autoregressive Image Generation",
+  "cn_oneliner": "基于自回归图像生成框架，引入视觉基础模型（如CLIP/DINOv2）作为视觉分词器的编码器骨干，实现更高质量的离散视觉token并显著提升生成性能",
+  "cn_abstract": "本文提出VFMTok，将视觉基础模型（Vision Foundation Models, VFMs）作为自回归图像生成中视觉分词器的有效编码器骨干。现有视觉分词器通常从头训练编码器，难以捕获丰富的语义与结构信息；本文通过冻结或微调预训练VFM编码器并配合轻量化量化模块，构建高质量离散视觉token。在ImageNet 256×256类别条件生成任务上，VFMTok在重建质量与生成质量两方面均取得显著提升，gFID达到较竞争基线更优的结果，验证了VFMs作为视觉分词器骨干的有效性与泛化能力。",
+  "contribution_type": "significant",
+  "editorial_note": "自回归图像生成依赖视觉分词器将图像压缩为离散token序列，现有方法多从头训练编码器，语义表征能力有限。本文系统性地探索将CLIP、DINOv2等预训练视觉基础模型作为分词器编码器骨干，通过冻结/微调策略与轻量量化头结合，大幅提升token语义质量与生成效果。该思路借鉴NLP中预训练迁移范式，将其引入视觉离散表征领域，具有方法论层面的新颖性，并在多个基准上取得扎实提升，对视觉生成tokenizer设计具有较强参考价值。",
+  "why_read": "研究自回归视觉生成或视觉分词器设计的学者，可从中获得利用预训练VFM提升离散token质量的系统性方法与实验洞见",
+  "method_variants": [
+    "tokenizer:vfm-encoder-frozen",
+    "tokenizer:vfm-encoder-finetuned",
+    "quantization:vq-with-vfm-backbone",
+    "backbone:clip-encoder",
+    "backbone:dinov2-encoder",
+    "generation:autoregressive-ar-with-vfmtok"
+  ],
+  "core_cite": [
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale (ViT)",
+      "arxiv_id": "2010.11929",
+      "role": "uses",
+      "note": "VFMTok使用ViT架构作为基础模型骨干的核心结构"
+    },
+    {
+      "title": "Learning Transferable Visual Models From Natural Language Supervision (CLIP)",
+      "arxiv_id": "2103.00020",
+      "role": "uses",
+      "note": "CLIP作为视觉基础模型之一被用于构建语义丰富的编码器骨干"
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "arxiv_id": "2304.07193",
+      "role": "uses",
+      "note": "DINOv2作为自监督预训练VFM被用于视觉分词器编码器"
+    },
+    {
+      "title": "Neural Discrete Representation Learning (VQ-VAE)",
+      "arxiv_id": "1711.00937",
+      "role": "extends",
+      "note": "VFMTok的离散量化机制基于VQ-VAE框架进行扩展"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis (VQGAN)",
+      "arxiv_id": "2012.09841",
+      "role": "extends",
+      "note": "VQGAN是视觉分词器的重要前驱，本文在其基础上引入VFM编码器"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation (LlamaGen)",
+      "arxiv_id": "2406.06525",
+      "role": "contrasts",
+      "note": "代表性自回归图像生成基线，用于对比VFMTok带来的生成质量提升"
+    },
+    {
+      "title": "Visual AutoRegressive Modeling: Scalable Image Generation via Next-Scale Prediction (VAR)",
+      "arxiv_id": "2404.02905",
+      "role": "contrasts",
+      "note": "多尺度自回归生成方法，作为重要对比基线"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models (LDM)",
+      "arxiv_id": "2112.10752",
+      "role": "contrasts",
+      "note": "潜在扩散模型作为图像生成对比参照，说明自回归生成的竞争背景"
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners (MAE)",
+      "arxiv_id": "2111.06377",
+      "role": "uses",
+      "note": "MAE预训练策略作为VFM预训练方法之一被考虑用于编码器骨干"
+    },
+    {
+      "title": "Scaling the Codebook Size of VQGAN to 100,000 with a Utilization Rate of 99% (Open-MAGVIT2)",
+      "arxiv_id": "2409.04913",
+      "role": "contrasts",
+      "note": "改进VQGAN码本扩展的竞争方法，用于对比分词器重建与生成性能"
+    },
+    {
+      "title": "ImageNet Large Scale Visual Recognition Challenge",
+      "arxiv_id": "1409.0575",
+      "role": "supports",
+      "note": "ImageNet作为类别条件图像生成的标准评测基准"
+    },
+    {
+      "title": "Better plain ViT baselines for ImageNet-1k (DeiT III)",
+      "arxiv_id": "2204.07118",
+      "role": "uses",
+      "note": "改进ViT训练策略，与VFM编码器设计相关"
+    },
+    {
+      "title": "Token Merging: Your ViT But Faster (ToMe)",
+      "arxiv_id": "2210.09461",
+      "role": "mentions",
+      "note": "token压缩相关工作，与视觉分词效率设计有关联"
+    }
+  ],
+  "idea": [
+    {
+      "title": "跨模态基础模型统一分词器：文本-视觉对齐感知的离散token学习",
+      "why": "VFMTok证明了视觉基础模型编码器对生成质量的提升，但现有方案仍将视觉token与语言空间割裂。可进一步探索将CLIP等多模态对齐模型的跨模态表征直接嵌入量化过程，使离散视觉token天然具备语义-文本对齐属性，从而在文本条件图像生成中减少条件注入的信息损失。"
+    },
+    {
+      "title": "动态粒度视觉分词：基于VFM注意力图的自适应token分配",
+      "why": "现有视觉分词器对所有图像区域使用均匀token密度，而VFM（如DINOv2）的注意力图可揭示图像中语义重要性的空间分布。可利用VFM注意力权重引导自适应token分配策略，对语义丰富区域分配更多token、背景区域压缩表示，在保持生成质量的同时降低自回归序列长度，提升生成效率。"
+    },
+    {
+      "title": "VFM分词器在视频自回归生成中的时序迁移",
+      "why": "图像域的VFMTok验证了VFM骨干的有效性，自然延伸方向是将其迁移至视频自回归生成。视频VFM（如VideoMAE、InternVideo）包含丰富的时空语义，可作为视频分词器编码器，捕获帧间运动与时序一致性，解决现有视频token方法中时序连贯性不足的问题，同时结合帧级量化与时序码本设计构建统一框架。"
+    }
+  ],
+  "_scheme": "G",
+  "_model": "wq/minimaxm25",
+  "_verified_at": "2026-03-13",
+  "_s2_ref_count": 58,
+  "_similarities": [
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale (ViT)",
+      "best_score": 0.961,
+      "best_match": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "pass": true
+    },
+    {
+      "title": "Learning Transferable Visual Models From Natural Language Supervision (CLIP)",
+      "best_score": 0.952,
+      "best_match": "Learning Transferable Visual Models From Natural Language Supervision",
+      "pass": true
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "best_score": 1.0,
+      "best_match": "DINOv2: Learning Robust Visual Features without Supervision",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning (VQ-VAE)",
+      "best_score": 0.897,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis (VQGAN)",
+      "best_score": 0.932,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation (LlamaGen)",
+      "best_score": 0.93,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Visual AutoRegressive Modeling: Scalable Image Generation via Next-Scale Prediction (VAR)",
+      "best_score": 0.965,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models (LDM)",
+      "best_score": 0.512,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": false
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners (MAE)",
+      "best_score": 0.941,
+      "best_match": "Masked Autoencoders Are Scalable Vision Learners",
+      "pass": true
+    },
+    {
+      "title": "Scaling the Codebook Size of VQGAN to 100,000 with a Utilization Rate of 99% (Open-MAGVIT2)",
+      "best_score": 0.91,
+      "best_match": "Scaling the Codebook Size of VQGAN to 100,000 with a Utilization Rate of 99%",
+      "pass": true
+    },
+    {
+      "title": "ImageNet Large Scale Visual Recognition Challenge",
+      "best_score": 0.557,
+      "best_match": "Masked Autoencoders Are Scalable Vision Learners",
+      "pass": false
+    },
+    {
+      "title": "Better plain ViT baselines for ImageNet-1k (DeiT III)",
+      "best_score": 0.454,
+      "best_match": "Deep Residual Learning for Image Recognition",
+      "pass": false
+    },
+    {
+      "title": "Token Merging: Your ViT But Faster (ToMe)",
+      "best_score": 0.42,
+      "best_match": "DINOv2: Learning Robust Visual Features without Supervision",
+      "pass": false
+    }
+  ],
+  "_matched": 9,
+  "_total": 13,
+  "_pass_rate": 0.692,
+  "_elapsed_s": 39.6
+}

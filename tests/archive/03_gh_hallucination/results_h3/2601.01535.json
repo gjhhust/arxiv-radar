@@ -1,0 +1,234 @@
+{
+  "arxiv_id": "2601.01535",
+  "title": "Improving Flexible Image Tokenizers for Autoregressive Image Generation",
+  "cn_oneliner": "基于嵌套Dropout柔性图像分词器，引入冗余Token填充与层次语义正则化，实现自回归图像生成性能随Token长度持续提升",
+  "cn_abstract": "现有柔性图像分词器通过嵌套Dropout截断尾部Token实现变长表示，但这导致图像信息过度集中于前置Token，随Token长度增加自回归生成效果提升有限。本文提出ReTok，包含冗余Token填充（Redundant Token Padding）和层次语义正则化（Hierarchical Semantic Regularization）两项核心设计：前者通过随机激活尾部Token更频繁地参与重建来缓解信息过集中问题；后者将早期Token的解码特征与预训练视觉基础模型对齐，同时向尾部Token逐步降低正则化强度以保留精细低级细节。在ImageNet 256×256基准上，ReTok在柔性与固定长度分词器中均取得优越的图像生成性能，验证了方法的有效性。",
+  "contribution_type": "incremental",
+  "editorial_note": "嵌套Dropout是实现变长有序Token序列的经典方法，但其尾部截断机制天然导致信息前置集中，制约了长Token序列下自回归生成的收益。本文针对该问题提出两项改进：冗余Token填充让尾部Token更频繁参与训练，层次语义正则化借助预训练视觉编码器（DINOv2/SigLIP）提供分层监督。改动属工程性增量创新，无架构范式突破，但问题定位清晰、实验充分，对柔性分词器方向有实用参考价值。",
+  "why_read": "研究变长/柔性视觉分词器或自回归图像生成的研究者，可借鉴冗余填充与层次语义正则化的组合设计思路",
+  "method_variants": [
+    "tokenizer:nested-dropout-baseline",
+    "tokenizer:redundant-token-padding",
+    "regularization:hierarchical-semantic",
+    "regularization:vision-foundation-alignment",
+    "generation:autoregressive-variable-length"
+  ],
+  "core_cite": [
+    {
+      "title": "Learning Ordered Representations with Nested Dropout",
+      "arxiv_id": "1402.0915",
+      "role": "extends",
+      "note": "ReTok的核心前驱方法，嵌套Dropout通过随机截断尾部Token实现有序变长表示，本文正是针对其信息过集中缺陷提出改进"
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "arxiv_id": "2502.13967",
+      "role": "contrasts",
+      "note": "代表性柔性图像分词器，与ReTok同属变长Token方向，用于对比生成性能"
+    },
+    {
+      "title": "ElasticTok: Adaptive Tokenization for Image and Video",
+      "arxiv_id": "2410.08368",
+      "role": "contrasts",
+      "note": "另一柔性自适应分词方法，通过条件掩码实现变长，与本文方法形成对比"
+    },
+    {
+      "title": "One-D-Piece: Image Tokenizer Meets Quality-Controllable Compression",
+      "arxiv_id": "2501.10064",
+      "role": "contrasts",
+      "note": "同类柔性分词器工作，支持质量可控压缩，作为基线对比方法"
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "arxiv_id": "2304.07193",
+      "role": "uses",
+      "note": "层次语义正则化中用作预训练视觉基础模型，提供语义对齐监督信号"
+    },
+    {
+      "title": "SigLIP 2: Multilingual Vision-Language Encoders with Improved Semantic Understanding, Localization, and Dense Features",
+      "arxiv_id": "2502.14786",
+      "role": "uses",
+      "note": "与DINOv2一同作为层次语义正则化的预训练视觉编码器选项"
+    },
+    {
+      "title": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "arxiv_id": "2410.06940",
+      "role": "supports",
+      "note": "支持将预训练视觉模型特征用于生成模型对齐的有效性，为本文语义正则化设计提供依据"
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "contrasts",
+      "note": "固定长度自回归图像生成代表方法VAR，用于对比生成质量"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "contrasts",
+      "note": "LlamaGen，基于VQGAN的自回归图像生成，作为固定长度分词器基线"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "uses",
+      "note": "VQGAN，提供图像分词与重建的基础框架，本文tokenizer训练沿用其对抗训练设计"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "uses",
+      "note": "VQ-VAE，向量量化图像表示的奠基工作，是离散图像分词器的基础"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "supports",
+      "note": "强调分词器质量对自回归生成的关键作用，为本文改进分词器的动机提供支撑"
+    },
+    {
+      "title": "Perceptual Losses for Real-Time Style Transfer and Super-Resolution",
+      "arxiv_id": "1603.08155",
+      "role": "uses",
+      "note": "感知损失被用于tokenizer重建训练中，与语义正则化协同约束解码特征"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "contrasts",
+      "note": "TiTok，将图像压缩为极少量1D Token的方法，作为固定长度高压缩比分词器对比"
+    },
+    {
+      "title": "ImageNet Large Scale Visual Recognition Challenge",
+      "arxiv_id": "1409.0575",
+      "role": "uses",
+      "note": "主要评测基准，所有实验在ImageNet 256×256上进行"
+    },
+    {
+      "title": "Improved Precision and Recall Metric for Assessing Generative Models",
+      "arxiv_id": "1904.06991",
+      "role": "uses",
+      "note": "生成质量评估指标Precision/Recall，用于衡量生成图像的保真度与多样性"
+    }
+  ],
+  "idea": [
+    {
+      "title": "动态层次正则化强度的自适应调度策略",
+      "why": "ReTok采用固定的线性衰减方式降低尾部Token的语义正则化强度，但不同图像内容（纹理丰富vs语义简单）所需的正则化分布可能不同。可探索基于内容复杂度或Token重要性分数自适应调整各位置正则化权重的方案，进一步提升细节重建与语义一致性的平衡，方法上可借鉴MAE的掩码采样策略或注意力权重引导。"
+    },
+    {
+      "title": "柔性Token长度感知的自回归生成模型联合训练",
+      "why": "当前ReTok将分词器训练与下游AR模型训练分离，AR模型需要独立适配不同Token长度。可研究端到端联合训练框架，在AR模型训练时同步反馈生成质量信号给分词器，使分词器的Token分配策略直接面向生成目标优化，而非仅优化重建质量，这与ElasticTok、FlexTok等工作的解耦范式形成对比，可能带来生成性能的进一步提升。"
+    },
+    {
+      "title": "将冗余Token填充思想迁移至视频柔性分词",
+      "why": "视频分词中时序冗余更为严重，嵌套Dropout的信息前置集中问题在时空维度会被放大。ReTok的冗余填充策略可扩展至视频场景，通过在时间/空间维度引入随机冗余帧/区域的重建任务，激活更多尾部Token参与有效学习。结合ElasticTok等视频柔性分词工作，该方向具备较强的实际价值和较低的技术迁移门槛。"
+    }
+  ],
+  "_scheme": "H",
+  "_model": "wq/minimaxm25",
+  "_verified_at": "2026-03-14",
+  "_s2_ref_count": 53,
+  "_similarities": [
+    {
+      "title": "Learning Ordered Representations with Nested Dropout",
+      "best_score": 1.0,
+      "best_match": "Learning Ordered Representations with Nested Dropout",
+      "pass": true
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "best_score": 1.0,
+      "best_match": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "pass": true
+    },
+    {
+      "title": "ElasticTok: Adaptive Tokenization for Image and Video",
+      "best_score": 1.0,
+      "best_match": "ElasticTok: Adaptive Tokenization for Image and Video",
+      "pass": true
+    },
+    {
+      "title": "One-D-Piece: Image Tokenizer Meets Quality-Controllable Compression",
+      "best_score": 1.0,
+      "best_match": "One-D-Piece: Image Tokenizer Meets Quality-Controllable Compression",
+      "pass": true
+    },
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "best_score": 1.0,
+      "best_match": "DINOv2: Learning Robust Visual Features without Supervision",
+      "pass": true
+    },
+    {
+      "title": "SigLIP 2: Multilingual Vision-Language Encoders with Improved Semantic Understanding, Localization, and Dense Features",
+      "best_score": 1.0,
+      "best_match": "SigLIP 2: Multilingual Vision-Language Encoders with Improved Semantic Understanding, Localization, and Dense Features",
+      "pass": true
+    },
+    {
+      "title": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "best_score": 1.0,
+      "best_match": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "pass": true
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "best_score": 1.0,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "best_score": 1.0,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Perceptual Losses for Real-Time Style Transfer and Super-Resolution",
+      "best_score": 1.0,
+      "best_match": "Perceptual Losses for Real-Time Style Transfer and Super-Resolution",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    },
+    {
+      "title": "ImageNet Large Scale Visual Recognition Challenge",
+      "best_score": 1.0,
+      "best_match": "ImageNet Large Scale Visual Recognition Challenge",
+      "pass": true
+    },
+    {
+      "title": "Improved Precision and Recall Metric for Assessing Generative Models",
+      "best_score": 1.0,
+      "best_match": "Improved Precision and Recall Metric for Assessing Generative Models",
+      "pass": true
+    }
+  ],
+  "_matched": 16,
+  "_total": 16,
+  "_pass_rate": 1.0,
+  "_elapsed_s": 43.7
+}

@@ -1,0 +1,217 @@
+你是一位 arxiv 论文分析专家。请对以下论文进行结构化分析，以 JSON 格式输出。
+
+**论文信息**
+- arxiv ID：2503.10772
+- 标题：FlowTok: Flowing Seamlessly Across Text and Image Tokens
+
+---
+
+**字段要求**
+
+cn_oneliner
+  一句话，严格格式：「基于[前驱方法/范式]，引入[核心改动]，实现[效果/指标]」
+  例1：「基于 Transformer 自注意力，引入局部窗口限制将复杂度从 O(n²) 降至 O(n)，实现长序列高效建模」
+  例2：「基于 DDPM 扩散过程，将噪声预测迁移至 VAE 潜空间，以 8× 压缩比实现高分辨率图像生成」
+
+cn_abstract
+  2-4 句完整中文摘要，保留核心数值结果，不截断
+  例：「本文提出 X，以解决 Y 问题。通过在 Z 上引入 W，模型在 COCO 上达到 FID=3.2，较基线下降 40%。
+  与 DALL-E 3 相比，训练成本降低 3×，推理速度提升 2×。」
+
+contribution_type
+  严格四选一：incremental / significant / story-heavy / foundational
+  incremental：在现有方法上微调/刷点，无范式级创新（最常见）
+  significant：引入新范式或新任务，对领域有明显推动（如 ViT 级别）
+  story-heavy：综述/技术报告/规模实验，贡献以广度和规模为主
+  foundational：奠基性工作，影响整个领域（极少）
+
+editorial_note
+  三段连续文字，80-150 字：
+  [段1：前驱方法的核心贡献与局限] → [段2：本文如何针对性解决] → [段3：编辑判断：创新程度、适用场景、潜在不足]
+  例：「VQGAN 通过向量量化将图像压缩为离散 token，但高压缩比下重建质量下降。本文引入扩散解码器替代
+  原始 CNN 解码器，在同等压缩比下显著提升重建细节。改动精准且有效，属于组件级创新；但扩散解码器引
+  入的推理开销是实际部署的主要障碍。」
+
+why_read
+  一句话：[目标读者群体] + [读后具体收获]
+  例：「研究图像生成质量-效率权衡的工程师，可借鉴其扩散解码器与量化器联合训练的技巧」
+
+method_variants
+  JSON 数组，记录本文对已有具体方法的实质性改造。每项三个字段：
+  - base_method：已有具体方法名（小写英文，如 vq-vae、ddpm、mae、clip、resnet）
+  - variant_tag：格式 "base_method:改动标签"（简洁）
+  - description：一句话，格式「[base_method] 原本做 X；本文将其改为 Y，以解决 Z」
+
+  例：[
+    {"base_method": "vq-vae",
+     "variant_tag": "vq-vae:ema-codebook",
+     "description": "VQ-VAE 用梯度估计更新 codebook，训练不稳定；本文改为 EMA 更新降低 collapse 风险"},
+    {"base_method": "ddpm",
+     "variant_tag": "ddpm:latent-space",
+     "description": "DDPM 在像素空间加噪计算开销大；本文将扩散过程迁移到 VAE latent 空间，训练速度提升 8×"},
+    {"base_method": "mae",
+     "variant_tag": "mae:target-tokenizer",
+     "description": "MAE 以像素值为重建目标，语义信息稀疏；本文改为重建 tokenizer 离散 code，提升表征语义质量"}
+  ]
+  ⚠️ 若本文无对已有方法的实质性改造（如纯应用/综述），返回空数组 []
+  ⚠️ 不要把论文自身的不同规模版本（Small/Base/Large）列为 variants
+
+core_cite
+  ≥10 条，按重要性排序（extends/uses > contrasts > supports > mentions），包含：
+  - title：论文标题（须来自文末参考列表，不得自行补充，找不到则删除）
+  - arxiv_id：来自参考列表中标注的 arxiv ID，否则留空字符串
+  - role：五选一 extends | contrasts | uses | supports | mentions
+  - note：一句话说明引用原因
+
+  role 定义（选唯一最准确的一个）：
+  extends   — 本文直接在此工作基础上扩展（最高权重，不可遗漏）
+  contrasts — 本文与此工作对比或批判（不可遗漏）
+  uses      — 本文直接使用其方法/代码/数据集
+  supports  — 作为背景支撑，引用以说明动机
+  mentions  — 简单提及，非核心
+
+  ⚠️ 所有 extends 类和 contrasts 类引用必须出现，不得遗漏
+
+idea
+  3 条研究方向，必须分别来自以下三类来源（每类至少一条，标注来源类别）：
+  A. 本文局限 — 作者在 Limitation / Future Work 章节明确说没做的事
+  B. 引用挖掘 — 参考列表中被本文用到但能力未充分挖掘的方法，其原本还能做什么？
+  C. 邻域借鉴 — 相邻子领域中有无解决类似问题的方法可迁移？大跨（NLP→视觉生成、音频→图像 tokenization）
+     和小跨（视频生成→表征学习、3D 重建→视频生成、image AR→video AR）都算，不必强求跨出 CV。
+
+  每条包含：
+  - title：研究方向标题（10-20 字）
+  - why：2-3 句。第一句说清楚 gap（本文为什么没做/做不了），后续说可行性依据。
+
+  ⚠️ 禁止：把本文已经做到的事情列为 idea（例：本文已用了语义对齐损失，则"引入语义对齐"不是 idea）
+  ⚠️ 避免：纯粹"换 backbone"、"加更多数据"、"扩展到更多任务"等无具体假设的拼凑型 idea
+
+---
+
+**输出格式**
+仅输出纯 JSON，不含任何其他文字：
+{
+  "arxiv_id": "2503.10772",
+  "title": "FlowTok: Flowing Seamlessly Across Text and Image Tokens",
+  "cn_oneliner": "...",
+  "cn_abstract": "...",
+  "contribution_type": "...",
+  "editorial_note": "...",
+  "why_read": "...",
+  "method_variants": [
+    {"base_method": "...", "variant_tag": "...", "description": "..."}
+  ],
+  "core_cite": [
+    {"title": "...", "arxiv_id": "...", "role": "...", "note": "..."}
+  ],
+  "idea": [
+    {"title": "...", "why": "..."}
+  ]
+}
+
+---
+
+**参考列表（core_cite 须来自其中，输出前逐条核查，列表中找不到则删除）：**
+- 1.58-bit FLUX | arxiv:2412.18653
+- A Simple Video Segmenter by Tracking Objects Along Axial Trajectories | arxiv:2311.18537
+- All are Worth Words: A ViT Backbone for Diffusion Models | arxiv:2209.12152
+- Alleviating Distortion in Image Generation via Multi-Resolution Diffusion Models | arxiv:2406.09416
+- An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale | arxiv:2010.11929
+- An Image is Worth 32 Tokens for Reconstruction and Generation | arxiv:2406.07550
+- Attention is All you Need | arxiv:1706.03762
+- Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation | arxiv:2406.06525
+- BLIP: Bootstrapping Language-Image Pre-training for Unified Vision-Language Understanding and Generation | arxiv:2201.12086
+- Beyond Next-Token: Next-X Prediction for Autoregressive Visual Generation | arxiv:2502.20388
+- Boosting Latent Diffusion with Flow Matching | arxiv:2312.07360
+- Bootstrap Your Own Latent: A New Approach to Self-Supervised Learning | arxiv:2006.07733
+- Building Normalizing Flows with Stochastic Interpolants | arxiv:2209.15571
+- CIDEr: Consensus-based image description evaluation | arxiv:1411.5726
+- COCONut-PanCap: Joint Panoptic Segmentation and Grounded Captions for Fine-Grained Understanding and Generation | arxiv:2502.02589
+- Classifier-Free Diffusion Guidance | arxiv:2207.12598
+- CogView3: Finer and Faster Text-to-Image Generation via Relay Diffusion | arxiv:2403.05121
+- Conceptual 12M: Pushing Web-Scale Image-Text Pre-Training To Recognize Long-Tail Visual Concepts | arxiv:2102.08981
+- DINOv2: Learning Robust Visual Features without Supervision | arxiv:2304.07193
+- DataComp: In search of the next generation of multimodal datasets | arxiv:2304.14108
+- Deep Residual Learning for Image Recognition | arxiv:1512.03385
+- Deep Unsupervised Learning using Nonequilibrium Thermodynamics | arxiv:1503.03585
+- Deep visual-semantic alignments for generating image descriptions | arxiv:1412.2306
+- Deeply Supervised Flow-Based Generative Models | arxiv:2503.14494
+- Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens | arxiv:2501.07730
+- Denoising Diffusion Bridge Models | arxiv:2309.16948
+- Denoising Diffusion Probabilistic Models | arxiv:2006.11239
+- Depth Anything: Unleashing the Power of Large-Scale Unlabeled Data | arxiv:2401.10891
+- Deterministic Non-Autoregressive Neural Sequence Modeling by Iterative Refinement | arxiv:1802.06901
+- Diffusion Schrödinger Bridge Matching | arxiv:2303.16852
+- Emu: Enhancing Image Generation Models Using Photogenic Needles in a Haystack | arxiv:2309.15807
+- Flamingo: a Visual Language Model for Few-Shot Learning | arxiv:2204.14198
+- Flow Matching for Generative Modeling | arxiv:2210.02747
+- Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow | arxiv:2209.03003
+- FlowAR: Scale-wise Autoregressive Image Generation Meets Flow Matching | arxiv:2412.15205
+- Fluid: Scaling Autoregressive Text-to-image Generative Models with Continuous Tokens | arxiv:2410.13863
+- GLIDE: Towards Photorealistic Image Generation and Editing with Text-Guided Diffusion Models | arxiv:2112.10741
+- GLU Variants Improve Transformer | arxiv:2002.05202
+- Generative Modeling by Estimating Gradients of the Data Distribution | arxiv:1907.05600
+- Goku: Flow Based Video Generative Foundation Models | arxiv:2502.04896
+- Grouping First, Attending Smartly: Training-Free Acceleration for Diffusion Transformers | arxiv:2505.14687
+- Hierarchical Text-Conditional Image Generation with CLIP Latents | arxiv:2204.06125
+- High-Resolution Image Synthesis with Latent Diffusion Models | arxiv:2112.10752
+- I2SB: Image-to-Image Schrödinger Bridge | arxiv:2302.05872
+- Improving and generalizing flow-based generative models with minibatch optimal transport | arxiv:2302.00482
+- JourneyDB: A Benchmark for Generative Image Understanding | arxiv:2307.00716
+- Learning Transferable Visual Models From Natural Language Supervision | arxiv:2103.00020
+- Make-A-Scene: Scene-Based Text-to-Image Generation with Human Priors | arxiv:2203.13131
+- MaskBit: Embedding-free Image Generation via Bit Tokens | arxiv:2409.16211
+- Masked Non-Autoregressive Image Captioning | arxiv:1906.00717
+- Microsoft COCO Captions: Data Collection and Evaluation Server | arxiv:1504.00325
+- Microsoft COCO: Common Objects in Context | arxiv:1405.0312
+- Minimizing Trajectory Curvature of ODE-based Generative Models | arxiv:2301.12003
+- Movie Gen: A Cast of Media Foundation Models | arxiv:2410.13720
+- Multisample Flow Matching: Straightening Flows with Minibatch Couplings | arxiv:2304.14772
+- Muse: Text-To-Image Generation via Masked Generative Transformers | arxiv:2301.00704
+- Non-Autoregressive Image Captioning with Counterfactuals-Critical Multi-Agent Learning | arxiv:2005.04690
+- PaLM-E: An Embodied Multimodal Language Model | arxiv:2303.03378
+- Perceiver: General Perception with Iterative Attention | arxiv:2103.03206
+- Photorealistic Text-to-Image Diffusion Models with Deep Language Understanding | arxiv:2205.11487
+- PixArt-Σ: Weak-to-Strong Training of Diffusion Transformer for 4K Text-to-Image Generation | arxiv:2403.04692
+- PixArt-α: Fast Training of Diffusion Transformer for Photorealistic Text-to-Image Synthesis | arxiv:2310.00426
+- Playground v2.5: Three Insights towards Enhancing Aesthetic Quality in Text-to-Image Generation | arxiv:2402.17245
+- Randomized Autoregressive Visual Generation | arxiv:2411.00776
+- ReVision: Refining Video Diffusion with Explicit 3D Motion Modeling | arxiv:2504.21855
+- Reconstruction vs. Generation: Taming Optimization Dilemma in Latent Diffusion Models | arxiv:2501.01423
+- Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think | arxiv:2410.06940
+- RoFormer: Enhanced Transformer with Rotary Position Embedding | arxiv:2104.09864
+- SDXL: Improving Latent Diffusion Models for High-Resolution Image Synthesis | arxiv:2307.01952
+- SPICE: Semantic Propositional Image Caption Evaluation | arxiv:1607.08822
+- Scalable Diffusion Models with Transformers | arxiv:2212.09748
+- Scaling Autoregressive Models for Content-Rich Text-to-Image Generation | arxiv:2206.10789
+- Scaling Rectified Flow Transformers for High-Resolution Image Synthesis | arxiv:2403.03206
+- Scaling Up Visual and Vision-Language Representation Learning With Noisy Text Supervision | arxiv:2102.05918
+- Semantic-Conditional Diffusion Networks for Image Captioning* | arxiv:2212.03099
+- Semi-Autoregressive Transformer for Image Captioning | arxiv:2106.09436
+- Show-o: One Single Transformer to Unify Multimodal Understanding and Generation | arxiv:2408.12528
+- SiT: Exploring Flow and Diffusion-based Generative Models with Scalable Interpolant Transformers | arxiv:2401.08740
+- SiT: Self-supervised vIsion Transformer | arxiv:2104.03602
+- SimVLM: Simple Visual Language Model Pretraining with Weak Supervision | arxiv:2108.10904
+- Unifying Vision-and-Language Tasks via Text Generation | arxiv:2102.02779
+- ViLBERT: Pretraining Task-Agnostic Visiolinguistic Representations for Vision-and-Language Tasks | arxiv:1908.02265
+- ViTamin: Designing Scalable Vision Models in the Vision-Language Era | arxiv:2404.02132
+- VisualBERT: A Simple and Performant Baseline for Vision and Language | arxiv:1908.03557
+
+---
+
+**保存要求（必须执行，不得跳过）**
+
+1. 将完整 JSON 写入以下文件（目录不存在则自动创建）：
+   `/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2503.10772/analyse-results/results_20260314_H1.json`
+
+3. 在写入 JSON 成功后，追加以下内容到 `memory/2026-03-14.md`（文件不存在则创建）：
+```
+## 2503.10772 | {title}
+- date: 2026-03-14
+- task_summary: H1 结构化分析
+- result: /Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2503.10772/analyse-results/results_20260314_H1.json
+```
+   （将 {title} 替换为实际论文标题）
+
+2. 写入成功后，**最后一行只输出该文件的绝对路径**，其他任何文字都不要：
+   示例：`/Users/lanlanlan/.openclaw/workspace-paper-analyst/papers/2503.10772/analyse-results/results_20260314_H1.json`

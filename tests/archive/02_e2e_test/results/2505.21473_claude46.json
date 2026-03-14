@@ -1,0 +1,117 @@
+{
+  "arxiv_id": "2505.21473",
+  "model": "claude46",
+  "timestamp": "2026-03-12T21:33:16.024201",
+  "latency_s": 41.39,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于1D tokenizer引入coarse-to-fine next-detail预测策略实现128 token达2.96 gFID并8×推理加速\",\"cn_abstract\":\"DetailFlow提出了一种新颖的coarse-to-fine 1D自回归图像生成方法，通过next-detail prediction策略建立token序列与图像分辨率之间的语义有序映射。tokenizer利用progressively degraded images监督递增长度的token序列，使得前向token携带全局结构、后续token编码细节信息，天然契合自回归推理机制。在ImageNet 256×256上，仅使用128个token即达到2.96 gFID，优于需要680个token的VAR（3.3 FID）和FlexVAR（3.05 FID）。此外，作者提出带self-correction的并行推理机制，在缓解teacher-forcing误差累积的同时实现约8×推理加速，整体推理速度相比VAR/FlexVAR提升近2×。\",\"contribution_type\":\"significant\",\"editorial_note\":\"[前驱] DetailFlow直接建立在VAR（next-scale prediction）、TiTok（1D query-based tokenizer）和FlexTok（tail-drop有序1D tokenizer）的基础上，借鉴了VQGAN的对抗训练框架及MaskGIT的并行解码思想，AR backbone沿用GPT风格decoder-only Transformer。\\n[贡献] 作者真正做了两件新事：①设计了用progressively degraded images分级监督的1D tokenizer，使token序列天然具有coarse-to-fine语义顺序，并支持单tokenizer多分辨率解码；②引入可控量化噪声的self-correction训练策略配合并行token预测，同时解决误差累积和推理效率问题。\\n[判断] 相比FlexTok的tail-drop方案，这套分级监督的有序化方法更系统、可解释性更强，token效率提升明显且FID数字可信。但本质上仍是tokenizer设计的精巧组合，AR模型本身无创新，属于解决已知问题的有效新方法。\",\"why_read\":\"做高效AR图像生成的研究者值得精读：作者给出了一套可复用的「分级监督→有序1D token→并行自回归」完整pipeline，self-correction量化噪声训练技巧对缓解teacher-forcing误差累积有直接参考价值。\",\"method_variants\":[{\"base_method\":\"titok\",\"variant_tag\":\"titok:coarse-to-fine-supervision\",\"description\":\"TiTok用query attention将2D图像压缩为无序1D token；DetailFlow改为用progressively degraded多分辨率图像分级监督递增长度的token序列，强制token具有coarse-to-fine语义顺序。\"},{\"base_method\":\"flextok\",\"variant_tag\":\"flextok:degraded-image-supervision\",\"description\":\"FlexTok用tail-drop策略迫使信息集中于前序token实现有序性；DetailFlow改用不同分辨率降质图像作为各长度token序列的重建目标，使有序性更具语义解释性且支持单模型多分辨率。\"},{\"base_method\":\"var\",\"variant_tag\":\"var:1d-next-detail\",\"description\":\"VAR采用next-scale prediction生成多尺度2D token map，token数随分辨率急剧增加；DetailFlow将其改为1D next-detail prediction，128 token完成VAR 680 token的任务。\"},{\"base_method\":\"vqgan\",\"variant_tag\":\"vqgan:self-correction-quantization\",\"description\":\"VQGAN在训练时使用标准向量量化；DetailFlow在量化阶段引入可控量化噪声，训练后续token纠正前序量化误差，形成具有self-correction能力的token序列。\"},{\"base_method\":\"maskgit\",\"variant_tag\":\"maskgit:parallel-ar-decoding\",\"description\":\"MaskGIT通过mask并行解码非自回归地生成图像；DetailFlow将并行解码引入AR框架，多个连续token同步预测，配合self-correction策略实现~8×推理加速。\"}],\"core_cite\":[{\"title\":\"Visual autoregressive modeling: Scalable image generation via next-scale prediction\",\"role\":\"extends\",\"note\":\"DetailFlow的核心对比和直接改进对象，next-scale prediction框架是本文next-detail prediction的出发点，实验中作为主要baseline（VAR 3.3 FID，680 tokens）\"},{\"title\":\"An image is worth 32 tokens for reconstruction and generation\",\"role\":\"extends\",\"note\":\"TiTok是DetailFlow 1D tokenizer设计的直接前驱，DetailFlow在其query-based 1D压缩框架上引入coarse-to-fine语义监督\"},{\"title\":\"FlexTok: Resampling Images into 1D Token Sequences of Flexible Length\",\"role\":\"extends\",\"note\":\"FlexTok的tail-drop有序化策略与DetailFlow的分级监督策略直接对比，是最近相关工作中最接近的方法\"},{\"title\":\"FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction\",\"role\":\"contrasts\",\"note\":\"实验主要baseline之一，FlexVAR 3.05 FID需680 tokens，DetailFlow以128 tokens达2.96 FID超越之\"},{\"title\":\"Taming Transformers for High-Resolution Image Synthesis\",\"role\":\"uses\",\"note\":\"VQGAN框架被DetailFlow tokenizer训练采用，提供对抗训练和感知损失的基础架构\"},{\"title\":\"Infinity: Scaling bitwise autoregressive modeling for high-resolution image synthesis\",\"role\":\"contrasts\",\"note\":\"高分辨率AR生成的对比方法，文中引用其1024×1024需10521 tokens说明VAR系方法的效率瓶颈\"},{\"title\":\"Autoregressive model beats diffusion: Llama for scalable image generation\",\"role\":\"contrasts\",\"note\":\"LlamaGen作为raster-scan 1D AR baseline在实验表格中对比\"},{\"title\":\"Scalable diffusion models with transformers\",\"role\":\"contrasts\",\"note\":\"DiT作为diffusion model baseline在ImageNet benchmark中对比\"},{\"title\":\"Maskgit: Masked generative image transformer\",\"role\":\"contrasts\",\"note\":\"MaskGIT并行解码思想被DetailFlow借鉴，同时作为masked prediction类方法的代表baseline\"},{\"title\":\"SoftVQ-VAE: Efficient 1-Dimensional Continuous Tokenizer\",\"role\":\"contrasts\",\"note\":\"SoftVQ-VAE作为1D连续tokenizer的对比方法出现在实验结果表中\"},{\"title\":\"Imagenet: A large-scale hierarchical image database\",\"role\":\"uses\",\"note\":\"主要评测数据集ImageNet 256×256，所有FID结果均在此benchmark上报告\"},{\"title\":\"Gans trained by a two time-scale update rule converge to a local nash equilibrium\",\"role\":\"uses\",\"note\":\"FID评测指标的原始论文，是衡量生成质量的核心度量\"},{\"title\":\"ImageFolder: Autoregressive Image Generation with Folded Tokens\",\"role\":\"contrasts\",\"note\":\"ImageFolder作为token压缩类AR生成方法在实验表格中对比\"},{\"title\":\"Taming scalable visual tokenizer for autoregressive image generation\",\"role\":\"contrasts\",\"note\":\"作为改进VQGAN tokenizer的工作在实验中对比\"},{\"title\":\"Parallelized Autoregressive Visual Generation\",\"role\":\"contrasts\",\"note\":\"并行AR生成的相关对比工作，与DetailFlow的并行推理机制直接相关\"}]}",
+  "cn_oneliner": "基于1D tokenizer引入coarse-to-fine next-detail预测策略实现128 token达2.96 gFID并8×推理加速",
+  "cn_abstract": "DetailFlow提出了一种新颖的coarse-to-fine 1D自回归图像生成方法，通过next-detail prediction策略建立token序列与图像分辨率之间的语义有序映射。tokenizer利用progressively degraded images监督递增长度的token序列，使得前向token携带全局结构、后续token编码细节信息，天然契合自回归推理机制。在ImageNet 256×256上，仅使用128个token即达到2.96 gFID，优于需要680个token的VAR（3.3 FID）和FlexVAR（3.05 FID）。此外，作者提出带self-correction的并行推理机制，在缓解teacher-forcing误差累积的同时实现约8×推理加速，整体推理速度相比VAR/FlexVAR提升近2×。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱] DetailFlow直接建立在VAR（next-scale prediction）、TiTok（1D query-based tokenizer）和FlexTok（tail-drop有序1D tokenizer）的基础上，借鉴了VQGAN的对抗训练框架及MaskGIT的并行解码思想，AR backbone沿用GPT风格decoder-only Transformer。\n[贡献] 作者真正做了两件新事：①设计了用progressively degraded images分级监督的1D tokenizer，使token序列天然具有coarse-to-fine语义顺序，并支持单tokenizer多分辨率解码；②引入可控量化噪声的self-correction训练策略配合并行token预测，同时解决误差累积和推理效率问题。\n[判断] 相比FlexTok的tail-drop方案，这套分级监督的有序化方法更系统、可解释性更强，token效率提升明显且FID数字可信。但本质上仍是tokenizer设计的精巧组合，AR模型本身无创新，属于解决已知问题的有效新方法。",
+  "why_read": "做高效AR图像生成的研究者值得精读：作者给出了一套可复用的「分级监督→有序1D token→并行自回归」完整pipeline，self-correction量化噪声训练技巧对缓解teacher-forcing误差累积有直接参考价值。",
+  "method_variants": [
+    {
+      "base_method": "titok",
+      "variant_tag": "titok:coarse-to-fine-supervision",
+      "description": "TiTok用query attention将2D图像压缩为无序1D token；DetailFlow改为用progressively degraded多分辨率图像分级监督递增长度的token序列，强制token具有coarse-to-fine语义顺序。"
+    },
+    {
+      "base_method": "flextok",
+      "variant_tag": "flextok:degraded-image-supervision",
+      "description": "FlexTok用tail-drop策略迫使信息集中于前序token实现有序性；DetailFlow改用不同分辨率降质图像作为各长度token序列的重建目标，使有序性更具语义解释性且支持单模型多分辨率。"
+    },
+    {
+      "base_method": "var",
+      "variant_tag": "var:1d-next-detail",
+      "description": "VAR采用next-scale prediction生成多尺度2D token map，token数随分辨率急剧增加；DetailFlow将其改为1D next-detail prediction，128 token完成VAR 680 token的任务。"
+    },
+    {
+      "base_method": "vqgan",
+      "variant_tag": "vqgan:self-correction-quantization",
+      "description": "VQGAN在训练时使用标准向量量化；DetailFlow在量化阶段引入可控量化噪声，训练后续token纠正前序量化误差，形成具有self-correction能力的token序列。"
+    },
+    {
+      "base_method": "maskgit",
+      "variant_tag": "maskgit:parallel-ar-decoding",
+      "description": "MaskGIT通过mask并行解码非自回归地生成图像；DetailFlow将并行解码引入AR框架，多个连续token同步预测，配合self-correction策略实现~8×推理加速。"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Visual autoregressive modeling: Scalable image generation via next-scale prediction",
+      "role": "extends",
+      "note": "DetailFlow的核心对比和直接改进对象，next-scale prediction框架是本文next-detail prediction的出发点，实验中作为主要baseline（VAR 3.3 FID，680 tokens）"
+    },
+    {
+      "title": "An image is worth 32 tokens for reconstruction and generation",
+      "role": "extends",
+      "note": "TiTok是DetailFlow 1D tokenizer设计的直接前驱，DetailFlow在其query-based 1D压缩框架上引入coarse-to-fine语义监督"
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "role": "extends",
+      "note": "FlexTok的tail-drop有序化策略与DetailFlow的分级监督策略直接对比，是最近相关工作中最接近的方法"
+    },
+    {
+      "title": "FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction",
+      "role": "contrasts",
+      "note": "实验主要baseline之一，FlexVAR 3.05 FID需680 tokens，DetailFlow以128 tokens达2.96 FID超越之"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "role": "uses",
+      "note": "VQGAN框架被DetailFlow tokenizer训练采用，提供对抗训练和感知损失的基础架构"
+    },
+    {
+      "title": "Infinity: Scaling bitwise autoregressive modeling for high-resolution image synthesis",
+      "role": "contrasts",
+      "note": "高分辨率AR生成的对比方法，文中引用其1024×1024需10521 tokens说明VAR系方法的效率瓶颈"
+    },
+    {
+      "title": "Autoregressive model beats diffusion: Llama for scalable image generation",
+      "role": "contrasts",
+      "note": "LlamaGen作为raster-scan 1D AR baseline在实验表格中对比"
+    },
+    {
+      "title": "Scalable diffusion models with transformers",
+      "role": "contrasts",
+      "note": "DiT作为diffusion model baseline在ImageNet benchmark中对比"
+    },
+    {
+      "title": "Maskgit: Masked generative image transformer",
+      "role": "contrasts",
+      "note": "MaskGIT并行解码思想被DetailFlow借鉴，同时作为masked prediction类方法的代表baseline"
+    },
+    {
+      "title": "SoftVQ-VAE: Efficient 1-Dimensional Continuous Tokenizer",
+      "role": "contrasts",
+      "note": "SoftVQ-VAE作为1D连续tokenizer的对比方法出现在实验结果表中"
+    },
+    {
+      "title": "Imagenet: A large-scale hierarchical image database",
+      "role": "uses",
+      "note": "主要评测数据集ImageNet 256×256，所有FID结果均在此benchmark上报告"
+    },
+    {
+      "title": "Gans trained by a two time-scale update rule converge to a local nash equilibrium",
+      "role": "uses",
+      "note": "FID评测指标的原始论文，是衡量生成质量的核心度量"
+    },
+    {
+      "title": "ImageFolder: Autoregressive Image Generation with Folded Tokens",
+      "role": "contrasts",
+      "note": "ImageFolder作为token压缩类AR生成方法在实验表格中对比"
+    },
+    {
+      "title": "Taming scalable visual tokenizer for autoregressive image generation",
+      "role": "contrasts",
+      "note": "作为改进VQGAN tokenizer的工作在实验中对比"
+    },
+    {
+      "title": "Parallelized Autoregressive Visual Generation",
+      "role": "contrasts",
+      "note": "并行AR生成的相关对比工作，与DetailFlow的并行推理机制直接相关"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "arxiv_id": "2501.07730",
+  "model": "minimaxm25",
+  "timestamp": "2026-03-12T23:46:04.659106",
+  "latency_s": 41.42,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于TiTok引入文本感知解码和单阶段训练实现高效文本到图像生成\",\"cn_abstract\":\"本文提出TA-TiTok（Text-Aware Transformer-based 1-Dimensional Tokenizer），一种高效的图像tokenizer，在de-tokenization阶段融入CLIP文本嵌入以增强语义对齐。TA-TiTok采用简化的单阶段训练流程，替代原本复杂的两阶段蒸馏，并同时支持离散（VQ）和连续（KL）token表示。基于TA-TiTok构建了MaskGen系列文本到图像masked生成模型，完全使用开放数据集训练，在MJHQ-30K上FID达到6.53，GenEval达到0.57，媲美私有数据训练的模型。\",\"contribution_type\":\"significant\",\"editorial_note\":\"[前驱]本文建立在TiTok（1D图像tokenizer）基础上，融合了MaskBit的训练技术（ResNet50 perceptual loss、改进的PatchGAN discriminator），并借鉴了MAR的连续token扩散损失设计。[贡献]核心创新是提出文本感知解码器，在tokenizer的decoder阶段接入CLIP文本嵌入；实现了一步训练流程替代两阶段蒸馏；同时支持离散和连续token两种表示。[判断]该工作有效解决了1D tokenizer难以扩展到大规模文本图像数据集的问题，文本感知解码确实提升了语义对齐，是有实质技术贡献的工作。\",\"why_read\":\"适合做高效text-to-image生成的研究者，特别是算力有限的团队；可从中获得1D tokenizer训练技巧、文本感知解码设计、以及如何用开放数据训练出高质量模型的完整pipeline。\",\"method_variants\":[{\"base_method\":\"titok\",\"variant_tag\":\"titok:one-stage-training\",\"description\":\"原TiTok使用复杂两阶段蒸馏；本文改为单阶段训练（使用ResNet50 perceptual loss和改进的PatchGAN discriminator），简化流程并可扩展到大规模数据集。\"},{\"base_method\":\"titok\",\"variant_tag\":\"titok:continuous-kl\",\"description\":\"原TiTok仅支持离散VQ token；本文扩展为连续VAE（KL散度正则化），保留1D效率同时消除量化损失。\"},{\"base_method\":\"titok\",\"variant_tag\":\"titok:text-aware-decoder\",\"description\":\"原TiTok仅重构图像细节；本文在decoder阶段加入CLIP文本嵌入进行文本感知解码，增强语义对齐。\"}],\"core_cite\":[{\"title\":\"An Image is Worth 32 Tokens for Reconstruction and Generation\",\"role\":\"extends\",\"note\":\"直接继承的1D tokenizer基础架构本文在其上做改进\"},{\"title\":\"MaskBit: Embedding-free Image Generation via Bit Tokens\",\"role\":\"uses\",\"note\":\"采用其训练技术（ResNet50 perceptual loss、改进的PatchGAN discriminator、LeCAM正则化）\"},{\"title\":\"High-resolution image synthesis with latent diffusion models\",\"role\":\"contrasts\",\"note\":\"MJHQ-30K对比的主要baseline之一\"},{\"title\":\"Make-a-scene: Scene-based text-to-image generation with human priors\",\"role\":\"contrasts\",\"note\":\"文本到图像生成对比实验baseline\"},{\"title\":\"Muse: Text-to-image generation via masked generative transformers\",\"role\":\"contrasts\",\"note\":\"masked生成模型直接对比，MaskGen同赛道方法\"},{\"title\":\"Sdxl: Improving latent diffusion models for high-resolution image synthesis\",\"role\":\"contrasts\",\"note\":\"MJHQ-30K和GenEval对比的主要baseline，SDXL为2.6B参数模型\"},{\"title\":\"Pixart-$\\\\backslash$sigma: Weak-to-strong training of diffusion transformer for 4k text-to-image generation\",\"role\":\"contrasts\",\"note\":\"MJHQ-30K对比的 diffusion transformer baseline\"},{\"title\":\"Show-o: One single transformer to unify multimodal understanding and generation\",\"role\":\"contrasts\",\"note\":\"MJHQ-30K对比的 autoregressive模型，FID 14.99\"},{\"title\":\"Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation\",\"role\":\"contrasts\",\"note\":\"GenEval和MJHQ-30K对比的autoregressive baseline，FID 25.59\"},{\"title\":\"MAR: Masked Autoencoders are Efficient Generative Encoders\",\"role\":\"uses\",\"note\":\"使用其连续token的diffusion loss设计到MaskGen中\"}]}",
+  "cn_oneliner": "基于TiTok引入文本感知解码和单阶段训练实现高效文本到图像生成",
+  "cn_abstract": "本文提出TA-TiTok（Text-Aware Transformer-based 1-Dimensional Tokenizer），一种高效的图像tokenizer，在de-tokenization阶段融入CLIP文本嵌入以增强语义对齐。TA-TiTok采用简化的单阶段训练流程，替代原本复杂的两阶段蒸馏，并同时支持离散（VQ）和连续（KL）token表示。基于TA-TiTok构建了MaskGen系列文本到图像masked生成模型，完全使用开放数据集训练，在MJHQ-30K上FID达到6.53，GenEval达到0.57，媲美私有数据训练的模型。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱]本文建立在TiTok（1D图像tokenizer）基础上，融合了MaskBit的训练技术（ResNet50 perceptual loss、改进的PatchGAN discriminator），并借鉴了MAR的连续token扩散损失设计。[贡献]核心创新是提出文本感知解码器，在tokenizer的decoder阶段接入CLIP文本嵌入；实现了一步训练流程替代两阶段蒸馏；同时支持离散和连续token两种表示。[判断]该工作有效解决了1D tokenizer难以扩展到大规模文本图像数据集的问题，文本感知解码确实提升了语义对齐，是有实质技术贡献的工作。",
+  "why_read": "适合做高效text-to-image生成的研究者，特别是算力有限的团队；可从中获得1D tokenizer训练技巧、文本感知解码设计、以及如何用开放数据训练出高质量模型的完整pipeline。",
+  "method_variants": [
+    {
+      "base_method": "titok",
+      "variant_tag": "titok:one-stage-training",
+      "description": "原TiTok使用复杂两阶段蒸馏；本文改为单阶段训练（使用ResNet50 perceptual loss和改进的PatchGAN discriminator），简化流程并可扩展到大规模数据集。"
+    },
+    {
+      "base_method": "titok",
+      "variant_tag": "titok:continuous-kl",
+      "description": "原TiTok仅支持离散VQ token；本文扩展为连续VAE（KL散度正则化），保留1D效率同时消除量化损失。"
+    },
+    {
+      "base_method": "titok",
+      "variant_tag": "titok:text-aware-decoder",
+      "description": "原TiTok仅重构图像细节；本文在decoder阶段加入CLIP文本嵌入进行文本感知解码，增强语义对齐。"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "role": "extends",
+      "note": "直接继承的1D tokenizer基础架构本文在其上做改进"
+    },
+    {
+      "title": "MaskBit: Embedding-free Image Generation via Bit Tokens",
+      "role": "uses",
+      "note": "采用其训练技术（ResNet50 perceptual loss、改进的PatchGAN discriminator、LeCAM正则化）"
+    },
+    {
+      "title": "High-resolution image synthesis with latent diffusion models",
+      "role": "contrasts",
+      "note": "MJHQ-30K对比的主要baseline之一"
+    },
+    {
+      "title": "Make-a-scene: Scene-based text-to-image generation with human priors",
+      "role": "contrasts",
+      "note": "文本到图像生成对比实验baseline"
+    },
+    {
+      "title": "Muse: Text-to-image generation via masked generative transformers",
+      "role": "contrasts",
+      "note": "masked生成模型直接对比，MaskGen同赛道方法"
+    },
+    {
+      "title": "Sdxl: Improving latent diffusion models for high-resolution image synthesis",
+      "role": "contrasts",
+      "note": "MJHQ-30K和GenEval对比的主要baseline，SDXL为2.6B参数模型"
+    },
+    {
+      "title": "Pixart-$\\backslash$sigma: Weak-to-strong training of diffusion transformer for 4k text-to-image generation",
+      "role": "contrasts",
+      "note": "MJHQ-30K对比的 diffusion transformer baseline"
+    },
+    {
+      "title": "Show-o: One single transformer to unify multimodal understanding and generation",
+      "role": "contrasts",
+      "note": "MJHQ-30K对比的 autoregressive模型，FID 14.99"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "role": "contrasts",
+      "note": "GenEval和MJHQ-30K对比的autoregressive baseline，FID 25.59"
+    },
+    {
+      "title": "MAR: Masked Autoencoders are Efficient Generative Encoders",
+      "role": "uses",
+      "note": "使用其连续token的diffusion loss设计到MaskGen中"
+    }
+  ]
+}

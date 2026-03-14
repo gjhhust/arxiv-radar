@@ -1,0 +1,97 @@
+{
+  "arxiv_id": "2505.21473",
+  "model": "minimaxm25",
+  "timestamp": "2026-03-12T23:48:36.087665",
+  "latency_s": 34.4,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于VAR引入next-detail预测和自校正机制，实现用128 tokens生成高质量图像\",\"cn_abstract\":\"DetailFlow是一种从粗到细的1D自回归图像生成方法，通过新颖的next-detail预测策略建模图像。通过学习分辨率感知的token序列并使用逐步降级的图像进行监督，DetailFlow使生成过程能够从全局结构开始并逐步细化细节。该方法仅使用128个token在ImageNet 256×256上达到2.96 gFID，显著优于VAR(3.3)和FlexVAR(3.05)，且推理速度提升约2倍。\",\"contribution_type\":\"significant\",\"editorial_note\":\"[前驱]论文核心思路继承自VAR的next-scale预测和FlexTok的1D粗到细token排序，同时借鉴TiTok的1D tokenization和CART的compositional生成框架。[贡献]DetailFlow提出了next-detail预测范式，通过分辨率感知的token序列和逐步降级图像监督来实现真正的1D粗到细生成；引入自校正训练策略缓解AR模型的误差累积；提出并行推理机制实现约8倍加速。[判断]这是一个真正解决了1D AR图像生成中token效率和生成质量权衡问题的贡献，显著超越已有方法，贡献是实质性的。\",\"why_read\":\"如果你是做自回归图像生成或tokenizer的研究者，这篇论文展示了如何通过设计良好的token排序和训练策略，用远少于VAR的token数量获得更好的生成质量，其中的自校正机制和并行推理设计也很有启发性。\",\"method_variants\":[{\"base_method\":\"var\",\"variant_tag\":\"var:next-detail-prediction\",\"description\":\"原VAR做法是next-scale预测（2D并行生成多尺度）；本文改为1D next-detail预测，让token序列本身编码粗到细的分辨率信息，实现真正的1D自回归逐步细化。\"},{\"base_method\":\"flextok\",\"variant_tag\":\"flextok:progressive-degradation\",\"description\":\"原FlexTok做法是用tail-drop策略强制信息集中在前部；本文改为用逐步降级图像监督训练tokenizer，让每个后续token自然编码更高分辨率信息。\"},{\"base_method\":\"titok\",\"variant_tag\":\"titok:self-correction-training\",\"description\":\"原TiTok只做tokenization没有误差校正；本文在tokenizer训练中引入受控量化误差，让后续token学习校正前面token的误差。\"}],\"core_cite\":[{\"title\":\"Visual autoregressive modeling: Scalable image generation via next-scale prediction\",\"role\":\"extends\",\"note\":\"DetailFlow的next-detail预测直接继承自VAR的next-scale预测框架，是从2D多尺度到1D粗到细的扩展。\"},{\"title\":\"FlexTok: Resampling Images into 1D Token Sequences of Flexible Length | arxiv:2502.13967\",\"role\":\"extends\",\"note\":\"DetailFlow的1D token排序方法借鉴了FlexTok的粗到细ordering思想，但用不同的渐进降级监督实现。\"},{\"title\":\"An image is worth 32 tokens for reconstruction and generation\",\"role\":\"uses\",\"note\":\"使用TiTok的1D tokenization方法作为基础tokenizer框架。\"},{\"title\":\"Taming Transformers for High-Resolution Image Synthesis\",\"role\":\"uses\",\"note\":\"使用VQGAN的tokenizer架构和训练范式。\"},{\"title\":\"Maskgit: Masked generative image transformer\",\"role\":\"supports\",\"note\":\"引用来支持masked prediction和并行解码的相关性。\"},{\"title\":\"Autoregressive image generation using residual quantization\",\"role\":\"mentions\",\"note\":\"背景引用RQ-VAE作为tokenizer的related work。\"},{\"title\":\"Movq: Modulating quantized vectors for high-fidelity image generation\",\"role\":\"mentions\",\"note\":\"背景引用MoVQ作为multi-codebook tokenizer的related work。\"},{\"title\":\"Autoregressive image generation without vector quantization\",\"role\":\"supports\",\"note\":\"引用支持AR图像生成可以不用VQ的论点。\"},{\"title\":\"Scalable diffusion models with transformers\",\"role\":\"mentions\",\"note\":\"背景引用DiT作为diffusion-based生成方法的对比。\"},{\"title\":\"Tokenflow: Unified image tokenizer for multimodal understanding and generation | arxiv:2412.03069\",\"role\":\"supports\",\"note\":\"引用支持统一的多模态tokenizer研究方向。\"},{\"title\":\"FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction | arxiv:2502.20313\",\"role\":\"contrasts\",\"note\":\"实验中的主要对比baseline，DetailFlow在128 tokens下超越FlexVAR的680 tokens设置。\"},{\"title\":\"Scaling autoregressive models for content-rich text-to-image generation | arxiv:2206.10789\",\"role\":\"mentions\",\"note\":\"背景引用Parti作为大规模AR图像生成的related work。\"},{\"title\":\"Chameleon: Mixed-modal early-fusion foundation models | arxiv:2405.09818\",\"role\":\"supports\",\"note\":\"引用支持AR模型在多模态生成中的优势。\"}]}",
+  "cn_oneliner": "基于VAR引入next-detail预测和自校正机制，实现用128 tokens生成高质量图像",
+  "cn_abstract": "DetailFlow是一种从粗到细的1D自回归图像生成方法，通过新颖的next-detail预测策略建模图像。通过学习分辨率感知的token序列并使用逐步降级的图像进行监督，DetailFlow使生成过程能够从全局结构开始并逐步细化细节。该方法仅使用128个token在ImageNet 256×256上达到2.96 gFID，显著优于VAR(3.3)和FlexVAR(3.05)，且推理速度提升约2倍。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱]论文核心思路继承自VAR的next-scale预测和FlexTok的1D粗到细token排序，同时借鉴TiTok的1D tokenization和CART的compositional生成框架。[贡献]DetailFlow提出了next-detail预测范式，通过分辨率感知的token序列和逐步降级图像监督来实现真正的1D粗到细生成；引入自校正训练策略缓解AR模型的误差累积；提出并行推理机制实现约8倍加速。[判断]这是一个真正解决了1D AR图像生成中token效率和生成质量权衡问题的贡献，显著超越已有方法，贡献是实质性的。",
+  "why_read": "如果你是做自回归图像生成或tokenizer的研究者，这篇论文展示了如何通过设计良好的token排序和训练策略，用远少于VAR的token数量获得更好的生成质量，其中的自校正机制和并行推理设计也很有启发性。",
+  "method_variants": [
+    {
+      "base_method": "var",
+      "variant_tag": "var:next-detail-prediction",
+      "description": "原VAR做法是next-scale预测（2D并行生成多尺度）；本文改为1D next-detail预测，让token序列本身编码粗到细的分辨率信息，实现真正的1D自回归逐步细化。"
+    },
+    {
+      "base_method": "flextok",
+      "variant_tag": "flextok:progressive-degradation",
+      "description": "原FlexTok做法是用tail-drop策略强制信息集中在前部；本文改为用逐步降级图像监督训练tokenizer，让每个后续token自然编码更高分辨率信息。"
+    },
+    {
+      "base_method": "titok",
+      "variant_tag": "titok:self-correction-training",
+      "description": "原TiTok只做tokenization没有误差校正；本文在tokenizer训练中引入受控量化误差，让后续token学习校正前面token的误差。"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Visual autoregressive modeling: Scalable image generation via next-scale prediction",
+      "role": "extends",
+      "note": "DetailFlow的next-detail预测直接继承自VAR的next-scale预测框架，是从2D多尺度到1D粗到细的扩展。"
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length | arxiv:2502.13967",
+      "role": "extends",
+      "note": "DetailFlow的1D token排序方法借鉴了FlexTok的粗到细ordering思想，但用不同的渐进降级监督实现。"
+    },
+    {
+      "title": "An image is worth 32 tokens for reconstruction and generation",
+      "role": "uses",
+      "note": "使用TiTok的1D tokenization方法作为基础tokenizer框架。"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "role": "uses",
+      "note": "使用VQGAN的tokenizer架构和训练范式。"
+    },
+    {
+      "title": "Maskgit: Masked generative image transformer",
+      "role": "supports",
+      "note": "引用来支持masked prediction和并行解码的相关性。"
+    },
+    {
+      "title": "Autoregressive image generation using residual quantization",
+      "role": "mentions",
+      "note": "背景引用RQ-VAE作为tokenizer的related work。"
+    },
+    {
+      "title": "Movq: Modulating quantized vectors for high-fidelity image generation",
+      "role": "mentions",
+      "note": "背景引用MoVQ作为multi-codebook tokenizer的related work。"
+    },
+    {
+      "title": "Autoregressive image generation without vector quantization",
+      "role": "supports",
+      "note": "引用支持AR图像生成可以不用VQ的论点。"
+    },
+    {
+      "title": "Scalable diffusion models with transformers",
+      "role": "mentions",
+      "note": "背景引用DiT作为diffusion-based生成方法的对比。"
+    },
+    {
+      "title": "Tokenflow: Unified image tokenizer for multimodal understanding and generation | arxiv:2412.03069",
+      "role": "supports",
+      "note": "引用支持统一的多模态tokenizer研究方向。"
+    },
+    {
+      "title": "FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction | arxiv:2502.20313",
+      "role": "contrasts",
+      "note": "实验中的主要对比baseline，DetailFlow在128 tokens下超越FlexVAR的680 tokens设置。"
+    },
+    {
+      "title": "Scaling autoregressive models for content-rich text-to-image generation | arxiv:2206.10789",
+      "role": "mentions",
+      "note": "背景引用Parti作为大规模AR图像生成的related work。"
+    },
+    {
+      "title": "Chameleon: Mixed-modal early-fusion foundation models | arxiv:2405.09818",
+      "role": "supports",
+      "note": "引用支持AR模型在多模态生成中的优势。"
+    }
+  ]
+}

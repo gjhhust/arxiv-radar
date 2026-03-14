@@ -1,0 +1,189 @@
+{
+  "cn_oneliner": "基于VAR的next-scale预测范式，引入1D粗到细tokenization和next-detail prediction策略，实现仅用128 tokens达到2.96 gFID，且推理速度提升约2倍",
+  "cn_abstract": "DetailFlow提出一种1D粗到细自回归图像生成方法，通过学习resolution-aware token sequence（由逐步降质的图像监督训练），实现从全局结构到细节的next-detail prediction生成。在ImageNet 256×256 benchmark上，仅用128 tokens达到2.96 gFID，优于VAR（3.3 FID，680 tokens）和FlexVAR（3.05 FID，680 tokens），推理速度几乎快2倍。同时引入并行推理机制与自校正训练策略，推理加速约8倍，有效降低自回归误差累积问题。",
+  "contribution_type": "significant",
+  "editorial_note": "前驱方法VAR和FlexVAR虽引入next-scale预测，但仍需大量tokens（680个）且缺乏高效推理加速机制。本文通过1D粗到细tokenization和next-detail prediction，在大幅减少token数量情况下达到更优FID指标，并创新引入并行推理和自校正机制。编辑判断本文在自回归图像生成领域做出了扎实的技术贡献，尤其在token效率与推理速度权衡上取得显著突破，具有实际应用价值。",
+  "why_read": "适合关注高效图像生成的研究者和工程师，通过学习DetailFlow的1D粗到细生成范式和并行推理优化思路，可在保持图像质量的同时大幅减少token开销并加速推理。",
+  "method_variants": [
+    {
+      "tag": "VAR:next-scale",
+      "note": "采用2D多尺度token，next-scale prediction并行生成不同分辨率的图像"
+    },
+    {
+      "tag": "TiTok:1d-token",
+      "note": "使用1D tokenization但缺乏内在顺序，不支持粗到细生成"
+    },
+    {
+      "tag": "FlexTok:tail-drop",
+      "note": "通过tail-drop策略强制信息集中在早期tokens，但高质量生成仅支持少量tokens"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "extends",
+      "note": "核心前驱方法，引入next-scale预测框架，是本文next-detail prediction的范式基础"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "uses",
+      "note": "采用LlamaGen架构作为AR生成器"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "uses",
+      "note": "VQGAN的经典方法，为tokenizer设计提供参考"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "uses",
+      "note": "VQ-VAE的离散表示学习，是tokenizer量化基础"
+    },
+    {
+      "title": "Autoregressive Image Generation using Residual Quantization",
+      "arxiv_id": "2203.01941",
+      "role": "uses",
+      "note": "RQ-VAE残差量化方法，为tokenizer提供技术参考"
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "arxiv_id": "2502.13967",
+      "role": "contrasts",
+      "note": "1D tokenization方法但用tail-drop策略，与本文的粗到细方法不同"
+    },
+    {
+      "title": "FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction",
+      "arxiv_id": "2502.20313",
+      "role": "contrasts",
+      "note": "主要对比方法，需要680 tokens达到3.05 FID"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "uses",
+      "note": "用于1D token的并行解码策略"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "contrasts",
+      "note": "LDM是扩散模型代表，本文在对比中展现AR模型优势"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "contrasts",
+      "note": "DiT用Transformer替代U-Net，与AR方法形成对比"
+    },
+    {
+      "title": "SoftVQ-VAE: Efficient 1-Dimensional Continuous Tokenizer",
+      "arxiv_id": "2412.10958",
+      "role": "uses",
+      "note": "1D tokenizer参考，使用类似的感知损失和对抗损失训练目标"
+    },
+    {
+      "title": "Scaling Autoregressive Models for Content-Rich Text-to-Image Generation",
+      "arxiv_id": "2206.10789",
+      "role": "uses",
+      "note": "Parti将图像生成为token序列的自回归方法"
+    }
+  ],
+  "idea": [
+    {
+      "title": "1D粗到细tokenization",
+      "why": "通过使用逐步降质的图像监督训练1D tokenizer，使早期token编码全局结构、后期token编码细节，实现了与自回归推理机制天然对齐的粗到细生成顺序。这解决了传统2D tokenizer需要大量tokens的问题。"
+    },
+    {
+      "title": "并行推理加速",
+      "why": "将1D token序列分组，组内并行预测、组间因果注意，在保证生成质量的同时大幅加速推理。实验表明可加速约8倍，同时引入自校正训练策略来缓解并行预测带来的误差累积问题。"
+    },
+    {
+      "title": "动态分辨率tokenizer",
+      "why": "单个1D tokenizer支持可变长度token序列输出不同分辨率图像，解决了传统1D tokenizer固定分辨率的问题。定义的R(n)映射函数建立了token数量与分辨率的对应关系，使模型能灵活生成多种分辨率图像。"
+    }
+  ],
+  "_similarities": [
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "best_score": 1.0,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "best_score": 1.0,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Image Generation using Residual Quantization",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Image Generation using Residual Quantization",
+      "pass": true
+    },
+    {
+      "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "best_score": 1.0,
+      "best_match": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+      "pass": true
+    },
+    {
+      "title": "FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction",
+      "best_score": 1.0,
+      "best_match": "FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction",
+      "pass": true
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "SoftVQ-VAE: Efficient 1-Dimensional Continuous Tokenizer",
+      "best_score": 1.0,
+      "best_match": "SoftVQ-VAE: Efficient 1-Dimensional Continuous Tokenizer",
+      "pass": true
+    },
+    {
+      "title": "Scaling Autoregressive Models for Content-Rich Text-to-Image Generation",
+      "best_score": 1.0,
+      "best_match": "Scaling Autoregressive Models for Content-Rich Text-to-Image Generation",
+      "pass": true
+    }
+  ],
+  "_matched": 12,
+  "_total": 12,
+  "_pass_rate": 1.0,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14",
+  "_ref_count": 43
+}

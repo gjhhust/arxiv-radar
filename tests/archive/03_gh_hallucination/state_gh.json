@@ -1,0 +1,87 @@
+{
+  "g1_rate": 58.65384615384615,
+  "g1_hall": {
+    "2406.07550": [
+      "Autoregressive Image Generation without Vector Quantization",
+      "Perceiver: General Perception with Iterative Attention"
+    ],
+    "2501.07730": [
+      "Transformer-based 1-Dimensional Tokenizer for Image Generation",
+      "MaskBit: Efficient Tokenization of Images for Autoregressive Generation",
+      "Show-o: One Single Tokenizer Autoregressive and Masked Generative Models Unified",
+      "LlamaGen: Autoregressive Model Beats Diffusion Model\",\"role\":\"contrasts",
+      "Democratizing Data Quality: Reproducible Benchmarks using DataComp"
+    ],
+    "2503.08685": [
+      "Tokenizer Scaled: What Works and What Doesn't in 1D Tokenizers for Autoregressive Generation",
+      "Scalar: Scalable Autoregressive Visual Generation",
+      "An Empirical Study of Scaling ViT-based Visual Tokenizers",
+      "Diffusion Models as Autoencoders",
+      "Scaling Autoregressive Models for Content-Rich Vector-Quantized Image Generation",
+      "Transformer is All You Need for Visual Generation",
+      "Global precedence effect in processing hierarchical stimuli",
+      "Stable and Controllable Image Generation with Diffusion Models: A Conditional Generative Approach"
+    ],
+    "2503.10772": [
+      "Tokenized Semantic Tokens (TiTok): A Unified Tokenizer for LLMs, VLMs, Diffusion Models and Beyond",
+      "CrossFlow: Cross-modal Flow Matching for Text-to-Image Generation",
+      "PixArt-α: Fast Diffusion-Based Text-to-Image Generation",
+      "Autoregressive Models",
+      "Masked Generative Models (Muse, MaskBit, Meissonic)",
+      "MDM: Mask Diffusion Models are Efficient Image Generators",
+      "1D Visual Tokenization"
+    ],
+    "2504.08736": [
+      "LlamaGen: Scalable Efficient Image Generation Training",
+      "ViT-VQGAN: Image Tokenization with Discrete Visual Tokens",
+      "TiTok: Tokenized Image Tokenization",
+      "VAR: Autoregressive Image Generation with Learned Visual Priors",
+      "Scaling Visual Tokenizers for Autoregressive Image Generation",
+      "REPA: Representation Alignment for Scalable Image Generation",
+      "ImageFolder: Towards Unified Visual Tokenizer and Text-to-Image Generation"
+    ],
+    "2505.12053": [
+      "TiTok: Tokenized Image Recognition",
+      "SoftVQ-VAE: Soft VQ-VAE for Efficient Image Encoding",
+      "MAETok: Mask-Autoencoder Tokenizer",
+      "Cosmos Tokenizer: Scalable and Efficient Video Tokenization",
+      "OmniTokenizer: Unified Image and Video Tokenization",
+      "LARP: Language-guided Autoregressive Video Tokenization"
+    ],
+    "2505.21473": [
+      "FlexVAR: Flexible Visual Autoregressive Modeling with Adaptive Tokenizer and Scalable Generation",
+      "TiTok: A Unified Tokenizer for Vision and Language",
+      "FlexTok: Demanding Flexibility for Visual Tokens",
+      "TokenFlow: Unified Image Generation via Parallel Flow",
+      "Improving Language Understanding by Generative Pre-Training"
+    ],
+    "2507.08441": [
+      "LlamaGen: Autoregressive Language Models Pretrain on Visual Knowledge",
+      "SigLIP2: Learning Visual Features from Language Annotations",
+      "VAR: Visual Autoregressive Modeling",
+      "Show-o: Single Transformer Unified Autoregressive and Diffusion Generation",
+      "REPA: Representation Alignment for Scalable Visual Generation",
+      "TokenFlow: Semantic Correspondence for Image Editing"
+    ],
+    "2511.20565": [
+      "VA-VAE: Leveraging Semantic Features for Visual Tokenization",
+      "VQ-GAN: Taming Transformers for Image Generation",
+      "LlamaGen: Autoregressive Generation meets Image Generation",
+      "Emu3: Generating Images with Multimodal Large Language Models",
+      "REPA: Representation Alignment for Autoregressive Image Generation",
+      "RAE: Reconstituting Images with Frozen Vision Encoders",
+      "Vector Quantization with PCA",
+      "Latent Diffusion Models"
+    ],
+    "2601.01535": [
+      "GigaTok: Scaling Tokenizers for Joint Image-Video Generation",
+      "FlexTok: Toward Flexible Tokenization for Visual Generation",
+      "TiTok: A Tokenizer for Conditional Generation of Images and Videos",
+      "One-D-Piece: Unified Image Tokenization via Latent Patterns",
+      "DetailFlow: Detail-Oriented Flow-based Image Tokenizer",
+      "Representation Alignment in Generative Models",
+      "Learning Hierarchical Text-Guided Image Compression"
+    ]
+  },
+  "h_rate": 59.43396226415094
+}

@@ -1,15 +1,22 @@
 """
-paper_analyst.py — Scheme B "Unified Analyst" for arxiv-radar v3.0 A/B test.
+paper_analyst.py — Production analyst for arxiv-radar v3.0.
 
-Single LLM call with full context:
-  Input:  paper title + abstract + top-15 references (title + first 150 chars of abstract)
+Variant F prompt: single unified LLM call with LaTeX full-text + bib mapping.
+  Input:  paper title + abstract + bib key→title mapping + LaTeX full text
   Output: cn_oneliner, cn_abstract, contribution_type, editorial_note,
-          why_read, method_variants, key_refs
+          why_read, method_variants, core_cite
 
-One larger, context-rich prompt vs Scheme A's two focused ones.
-Failure mode: all-or-nothing (no partial output on parse failure).
+Model config:
+  DEFAULT_MODEL  = "minimaxm25"  (fast, good quality)
+  FALLBACK_MODEL = "gpt52"       (strong citation/lineage analysis, slower)
 
-Uses urllib.request (stdlib only, no requests dependency).
+Prompt design decisions (validated 2026-03-12):
+  - editorial_note: E2 three-section [前驱][贡献][判断] structured format
+  - why_read:       E1 free critical style (specific who + what)
+  - method_variants: E1 free style (base_method, variant_tag, description)
+  - core_cite:      E2 structured (priority-ordered ≥10, must cover all contrasts+extends)
+
+Uses stdlib only (urllib.request). No third-party dependencies.
 """
 
 from __future__ import annotations
@@ -30,84 +37,107 @@ BASE_URL    = os.environ.get("OPENAI_BASE_URL", "http://localhost:4141")
 API_KEY     = os.environ.get("OPENAI_API_KEY", "test")
 ANTHROPIC_MODELS = {"claude46","claude45","glm5","katcoder","kimik25","minimaxm21","minimaxm25","glm47"}
 
-# ─────────────────── Unified prompt ───────────────────
+DEFAULT_MODEL  = "minimaxm25"
+FALLBACK_MODEL = "gpt52"
 
-UNIFIED_PROMPT_TEMPLATE = """\
-你是一名计算机视觉领域的资深论文评审人，同时也是面向研究者的技术编辑。
+# ─────────────────── Production prompt (Variant F) ───────────────────
 
-## 任务
-对下面这篇论文进行全面分析，**一次性**输出所有分析结果。
+SYSTEM_PROMPT = """\
+你是 CV 领域资深研究员，每周阅读 20+ 篇论文。分析给定论文，输出结构化 JSON。
 
-## 目标论文
-标题: {title}
-摘要: {abstract}
+分析要求：
 
-## Top-15 参考文献（标题 + 摘要前150字）
-{ref_block}
+cn_oneliner（≤45字）
+格式：「基于[X]引入[Y]实现[Z]」或「把[A]和[B]结合解决[C]」
+必须包含：具体的基础方法名 + 具体改动 + 具体效果。不要泛泛的"改进"。
 
----
+cn_abstract（2-4句中文技术摘要）
+完整。关键术语保留英文。必须完整，不得截断。
 
-## 输出要求
-严格返回以下 JSON 对象（不要输出任何其他文字）：
+contribution_type（严格四选一）
+- incremental: 在已有方法上做了有效但可预期的改进，"做了应该做的事"
+- significant: 解决了领域内已知的难题，或提供了其他人可以复用的新方法/新框架
+- story-heavy: 工程堆砌为主，叙事高于实质，"拿结果说话但说不清为什么 work"
+- foundational: 改变了领域做事方式，未来方法会引用这篇作为起点
+很多论文自称 novel 实为 incremental，从严判断。
 
-{{
-  "cn_oneliner": "<≤40字通俗说明，核心贡献，像发微博一样简明>",
-  "cn_abstract": "<2-4句中文技术摘要，保留关键术语英文>",
-  "contribution_type": "<incremental|significant|story-heavy|foundational>",
-  "editorial_note": "<1-2句编辑判断，评价方法创新性、跨域价值、潜在影响>",
-  "why_read": "<1句推荐理由，直接告诉读者这篇值不值得读以及为什么>",
-  "method_variants": [
-    {{
-      "base_method": "<基础方法名，小写，如 titok / dino / flow-matching>",
-      "variant_tag": "<base_method:variant-approach，如 titok:causal-rewrite>",
-      "description": "<一句话说明如何改造了基础方法>"
-    }}
-  ],
-  "key_refs": [
-    {{
-      "title": "<参考文献标题（与上方列表一致）>",
-      "stance": "<extends|contrasts|uses|supports|mentions>",
-      "note": "<一句话说明与本文的具体关系>"
-    }}
-  ]
-}}
+editorial_note（必须按三段结构写，总字数 80-150 字）
+[前驱] 这篇论文建立在哪些已有工作的基础上，核心模块各来自哪里。
+[贡献] 去掉包装之后，作者真正做了什么新事情（用最简单的话）。
+[判断] 这个贡献的实质价值：是真正解决了问题，还是有效但不深刻，或者夸大了困难/贡献。
 
-contribution_type 定义：
-- incremental   — 在已有方法上小幅改进，实验充分但创新有限
-- significant   — 有实质性方法创新或成功跨任务/跨模态推广
-- story-heavy   — 工程为主，叙事包装过度，方法贡献有限
-- foundational  — 开创性工作，方法范式改变，影响深远
+why_read（1句，自由但要有判断力）
+不要"如果你做这个领域可以看看"这种废话。说清楚谁值得读，具体会从中得到什么。
 
-stance 定义（key_refs）：
-- extends   — 本文在该引用基础上直接扩展/修改
-- contrasts — 本文拿该引用作对比 baseline
-- uses      — 本文使用该引用的技术/框架/数据
-- supports  — 该引用为本文提供理论/实验支撑
-- mentions  — 仅简单提及，关系较弱
+method_variants（方法变体列表）
+- base_method: 具体已有方法名（小写，如 flextok, gigatok, nested-dropout）
+- variant_tag: base_method:改动标签
+- description: 改动一句话，说清楚原方法做什么、本文如何改造
 
-只输出 JSON，不要 markdown 代码块，不要其他文字。
+core_cite（强制 ≥10 条，按重要性排序）
+权重排序：
+1. Method 章节直接构建在其上的工作（role=extends，最高权重）
+2. 用到其组件/backbone/预训练模型（role=uses）
+3. Experiments 中 baseline 对比（role=contrasts）
+4. Introduction 中支持动机的引用（role=supports）
+5. Related Work 背景引用（role=mentions）
+不可省略：所有 contrasts 类 + 所有 extends 类引用。
+
+role 选唯一最准确的值，五选一：extends | contrasts | uses | supports | mentions
+禁止组合写法（不得输出"extends/uses"等），若有歧义选最主要的。
+
+每条：title=原始英文标题（尽量从引用文献中提取完整标题）| role | note=具体关系
+
+输出格式：严格 JSON，不要 markdown 代码块，不要任何额外文字：
+{"cn_oneliner":"","cn_abstract":"","contribution_type":"","editorial_note":"","why_read":"","method_variants":[{"base_method":"","variant_tag":"","description":""}],"core_cite":[{"title":"","role":"","note":""}]}
 """
 
 
+def _build_user_message(paper: dict, bib_mapping: dict, paper_text: str) -> str:
+    """Build the user message with paper metadata + bib table + LaTeX text."""
+    title    = paper.get("title", "")
+    abstract = paper.get("abstract", "") or ""
+    arxiv_id = paper.get("arxiv_id") or paper.get("id", "")
+
+    bib_lines = []
+    for key, info in list(bib_mapping.items())[:80]:
+        arxiv = info.get("arxiv_id") or ""
+        suffix = f" | arxiv:{arxiv}" if arxiv else ""
+        bib_lines.append(f"  {key}: {info.get('title', '')}{suffix}")
+    bib_table = "\n".join(bib_lines) if bib_lines else "(bib not available)"
+
+    if len(paper_text) > 50000:
+        paper_text = paper_text[:50000] + "\n... [truncated]"
+
+    return (
+        f"分析以下论文：\n\n"
+        f"## 论文信息\n"
+        f"- arxiv ID: {arxiv_id}\n"
+        f"- 标题: {title}\n"
+        f"- 摘要: {abstract}\n\n"
+        f"## 引用映射表（bib key → 论文标题）\n"
+        f"{bib_table}\n\n"
+        f"## 论文正文（LaTeX）\n"
+        f"{paper_text}\n\n"
+        "只输出 JSON，不要其他文字。"
+    )
+
+
 def _format_ref_block(refs: list[dict], max_refs: int = 15) -> str:
-    """Format top-N references with title + 150-char abstract snippet."""
+    """Legacy: format top-N references for old-style prompts (kept for compat)."""
     lines = []
     for i, ref in enumerate(refs[:max_refs]):
-        title    = ref.get("title", "Unknown")
-        abstract = ref.get("abstract", "") or ""
-        snippet  = abstract[:150].strip()
-        if snippet:
-            lines.append(f"[{i+1}] {title}\n    {snippet}...")
-        else:
-            lines.append(f"[{i+1}] {title}")
+        title   = ref.get("title", "Unknown")
+        snippet = (ref.get("abstract", "") or "")[:150].strip()
+        lines.append(f"[{i+1}] {title}" + (f"\n    {snippet}..." if snippet else ""))
     return "\n".join(lines) if lines else "(no references available)"
 
 
-def _llm_call(messages: list[dict], model: str, timeout: int = 120) -> tuple[str, float]:
+def _llm_call(messages: list[dict], model: str, timeout: int = 300) -> tuple[str, float]:
     """
     Call wanqing-proxy at localhost:4141.
-    - Anthropic models (claude46, glm5, etc.) → POST /messages
-    - OpenAI models (gpt52, deepseekv32) → POST /oai/chat/completions
+    - Anthropic models (claude46, glm5, minimaxm25…) → POST /messages
+    - OpenAI models (gpt52, deepseekv32…)            → POST /oai/chat/completions
     Returns (content_str, latency_s).
     """
     model_id = model.split("/")[-1] if "/" in model else model
@@ -118,26 +148,25 @@ def _llm_call(messages: list[dict], model: str, timeout: int = 120) -> tuple[str
         payload = json.dumps({
             "model": model_id,
             "messages": messages,
-            "max_tokens": 8192,  # thinking models need high budget (thinking + response)
+            "max_tokens": 8192,
         }).encode("utf-8")
     else:
         url = BASE_URL.rstrip("/") + "/oai/chat/completions"
+        # system + user split for OAI
+        oai_messages = messages
+        if len(messages) == 1 and messages[0]["role"] == "user":
+            oai_messages = messages  # already correct
         payload = json.dumps({
             "model": model_id,
-            "messages": messages,
+            "messages": oai_messages,
             "temperature": 0.3,
-            "max_tokens": 3000,
+            "max_tokens": 8192,
         }).encode("utf-8")
 
     req = urllib.request.Request(
-        url,
-        data=payload,
-        headers={
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {API_KEY}",
-        },
+        url, data=payload,
+        headers={"Content-Type": "application/json", "Authorization": f"Bearer {API_KEY}"},
     )
-
     t0 = time.time()
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         raw = resp.read()
@@ -145,83 +174,144 @@ def _llm_call(messages: list[dict], model: str, timeout: int = 120) -> tuple[str
 
     data = json.loads(raw)
     if is_anthropic:
-        # Find the text block (skip thinking blocks if present)
-        content_blocks = data.get("content", [])
-        text_content = next(
-            (b["text"] for b in content_blocks if b.get("type") == "text"),
-            None
-        )
-        if text_content is None:
-            raise ValueError(f"No text block in response: {content_blocks[:1]}")
-        content = text_content.strip()
-    else:
-        content = data["choices"][0]["message"]["content"].strip()
-    return content, latency
+        blocks = data.get("content", [])
+        text = next((b["text"] for b in blocks if b.get("type") == "text"), None)
+        if text is None:
+            raise ValueError(f"No text block in response: {blocks[:1]}")
+        return text.strip(), latency
+    return data["choices"][0]["message"]["content"].strip(), latency
 
 
 def _parse_json_from_text(text: str) -> tuple[dict | None, str | None]:
-    """
-    Extract a JSON object from LLM output text.
-
-    Returns (parsed_dict, error_msg). error_msg is None on success.
-    """
+    """Extract a JSON object from LLM output. Returns (dict, error_or_None)."""
     text = text.strip()
-
-    # Strip markdown code fences if present
+    # Strip markdown fences
     fenced = re.search(r"```(?:json)?\s*\n(.*?)\n```", text, re.DOTALL)
     if fenced:
         text = fenced.group(1).strip()
 
-    # Direct parse
-    try:
-        return json.loads(text), None
-    except json.JSONDecodeError:
-        pass
+    def _try_fixes(s: str) -> dict | None:
+        # Pass 1: direct
+        try: return json.loads(s)
+        except json.JSONDecodeError: pass
+        # Pass 2: replace curly quotes with straight
+        s2 = s
+        for bad, good in [('\u201c','"'),('\u201d','"'),('\u2018',"'"),('\u2019',"'"),('\u300a',''),('\u300b','')]:
+            s2 = s2.replace(bad, good)
+        try: return json.loads(s2)
+        except json.JSONDecodeError: pass
+        # Pass 3: remove unescaped inner quotes in JSON string values
+        # Pattern: "...<quote>word<quote>..." → "...word..."
+        s3 = re.sub(r'(?<=[\u4e00-\u9fff\w\s])"(?=[\u4e00-\u9fff\w\s])', '', s2)
+        try: return json.loads(s3)
+        except json.JSONDecodeError: pass
+        # Pass 4: replace ALL inner embedded double quotes in string values
+        # Find positions where a " is NOT at start/end of a JSON string
+        def fix_inner_quotes(js: str) -> str:
+            result = []
+            in_str = False
+            escape = False
+            prev_structural = True  # whether last non-space char was structural
+            for i, ch in enumerate(js):
+                if escape:
+                    result.append(ch)
+                    escape = False
+                elif ch == '\\':
+                    result.append(ch)
+                    escape = True
+                elif ch == '"':
+                    if not in_str:
+                        in_str = True
+                        result.append(ch)
+                    else:
+                        # Check if this ends the string (next non-space is , : } ])
+                        rest = js[i+1:i+20].lstrip()
+                        if rest and rest[0] in ',:}]':
+                            in_str = False
+                            result.append(ch)
+                        else:
+                            # Inner quote: drop it
+                            result.append('')
+                else:
+                    result.append(ch)
+            return ''.join(result)
+        s4 = fix_inner_quotes(s2)
+        try: return json.loads(s4)
+        except json.JSONDecodeError: pass
+        return None
 
-    # Find outermost {...}
-    start = text.find("{")
-    end   = text.rfind("}")
+    # Try the full text first
+    parsed = _try_fixes(text)
+    if parsed: return parsed, None
+
+    # Extract JSON object
+    start, end = text.find("{"), text.rfind("}")
     if start >= 0 and end > start:
-        try:
-            return json.loads(text[start:end + 1]), None
-        except json.JSONDecodeError as e:
-            return None, f"JSONDecodeError after extraction: {e}"
-
-    return None, f"No JSON object found ({len(text)} chars)"
+        parsed = _try_fixes(text[start:end + 1])
+        if parsed: return parsed, None
+        return None, f"All parse strategies failed ({len(text)} chars)"
+    return None, f"No JSON found ({len(text)} chars)"
 
 
-def analyze_paper_scheme_b(paper: dict, refs: list, model: str = "wq/claude46") -> dict:
+def _verify_core_cite_titles(core_cite: list[dict], bib_mapping: dict) -> list[str]:
     """
-    Single unified LLM call for comprehensive paper analysis (Scheme B).
+    Check each core_cite title against the bib_mapping.
+    Returns list of suspicious (likely hallucinated) titles.
+    Uses word-set Jaccard similarity; threshold 0.35.
+    """
+    def normalize(s: str) -> set:
+        s = s.lower()
+        s = re.sub(r"[^a-z0-9\s]", " ", s)
+        return set(w for w in s.split() if len(w) > 2)
 
-    Combines Chinese summary, editorial analysis, method variants, and citation
-    stance classification into one large context-rich prompt.
+    bib_title_sets = [normalize(info.get("title", "")) for info in bib_mapping.values()]
+    suspicious = []
+    for entry in core_cite:
+        title = entry.get("title", "")
+        if not title:
+            continue
+        t_words = normalize(title)
+        if not t_words:
+            continue
+        max_sim = 0.0
+        for bib_words in bib_title_sets:
+            if not bib_words:
+                continue
+            inter = len(t_words & bib_words)
+            union = len(t_words | bib_words)
+            sim = inter / union if union else 0
+            if sim > max_sim:
+                max_sim = sim
+        if max_sim < 0.35:
+            suspicious.append(title)
+    return suspicious
+
+
+def analyze_paper(
+    paper: dict,
+    bib_mapping: dict,
+    paper_text: str,
+    model: str = DEFAULT_MODEL,
+    fallback_model: str = FALLBACK_MODEL,
+    retry_on_parse_fail: bool = True,
+    system_prompt_override: str | None = None,
+    hallucination_check: bool = False,   # disabled by default; enable for production
+) -> dict:
+    """
+    Production paper analysis — Variant F prompt.
 
     Args:
-        paper: paper dict with at least 'title' and 'abstract'
-        refs:  list of reference paper dicts (top-15 used; needs 'title', optionally 'abstract')
-        model: LLM model alias (e.g. "wq/claude46")
+        paper:        paper dict with 'title', 'abstract', 'arxiv_id' / 'id'
+        bib_mapping:  {bib_key: {title, arxiv_id, venue}} from parsed .bib file
+        paper_text:   LaTeX full text (concatenated sections, ≤50K chars used)
+        model:        primary model (default: minimaxm25)
+        fallback_model: used if primary parse fails (default: gpt52)
+        retry_on_parse_fail: if True, retry with fallback_model on parse failure
 
     Returns:
-        Dict with all analysis fields plus latency_s and parse_errors:
-          cn_oneliner, cn_abstract, contribution_type, editorial_note,
-          why_read, method_variants, key_refs, latency_s, parse_errors
+        Dict with keys: cn_oneliner, cn_abstract, contribution_type, editorial_note,
+        why_read, method_variants, core_cite, latency_s, model_used, parse_errors
     """
-    title    = paper.get("title", "")
-    abstract = paper.get("abstract", "")[:800]
-    abstract = abstract.replace('"', "'").replace('\u201c', "'").replace('\u201d', "'")
-
-    ref_block  = _format_ref_block(refs, max_refs=15)
-    prompt     = UNIFIED_PROMPT_TEMPLATE.format(
-        title=title,
-        abstract=abstract,
-        ref_block=ref_block,
-    )
-
-    parse_errors: list[str] = []
-    latency = 0.0
-
-    # Default empty values
     output: dict[str, Any] = {
         "cn_oneliner":       "",
         "cn_abstract":       "",
@@ -229,70 +319,152 @@ def analyze_paper_scheme_b(paper: dict, refs: list, model: str = "wq/claude46") 
         "editorial_note":    "",
         "why_read":          "",
         "method_variants":   [],
-        "key_refs":          [],
+        "core_cite":         [],
+        "latency_s":         0.0,
+        "model_used":        model,
+        "parse_errors":      [],
     }
 
-    try:
-        raw, latency = _llm_call(
-            [{"role": "user", "content": prompt}],
-            model=model,
-        )
-        parsed, err = _parse_json_from_text(raw)
-        if err:
-            parse_errors.append(f"parse: {err}")
-            logger.warning(f"[scheme_b] Parse error for {paper.get('id', '?')}: {err}")
+    def _attempt(m: str) -> tuple[dict | None, float, str | None]:
+        _sp = system_prompt_override or SYSTEM_PROMPT
+        is_anthropic = (m.split("/")[-1] if "/" in m else m) in ANTHROPIC_MODELS
+        user_msg = _build_user_message(paper, bib_mapping, paper_text)
+        if is_anthropic:
+            messages = [{"role": "user", "content": f"[System]\n{_sp}\n\n[Task]\n{user_msg}"}]
         else:
-            # Merge parsed fields into output (only expected keys)
-            for key in output:
-                if key in parsed:
-                    output[key] = parsed[key]
-    except Exception as e:
-        parse_errors.append(f"call_error: {e}")
-        logger.error(f"[scheme_b] LLM error for {paper.get('id', '?')}: {e}")
+            messages = [
+                {"role": "system", "content": _sp},
+                {"role": "user",   "content": user_msg},
+            ]
+        raw, lat = _llm_call(messages, model=m)
+        parsed, err = _parse_json_from_text(raw)
+        return parsed, lat, err
 
-    output["latency_s"]    = round(latency, 3)
-    output["parse_errors"] = parse_errors
+    # Primary attempt
+    try:
+        parsed, lat, err = _attempt(model)
+        output["latency_s"] = round(lat, 2)
+        if err:
+            output["parse_errors"].append(f"{model}: {err}")
+            logger.warning(f"[analyst] Parse error ({model}): {err}")
+            parsed = None
+    except Exception as e:
+        output["parse_errors"].append(f"{model}: call_error: {e}")
+        logger.error(f"[analyst] LLM error ({model}): {e}")
+        parsed = None
+
+    # Fallback attempt if primary failed
+    if parsed is None and retry_on_parse_fail and fallback_model and fallback_model != model:
+        logger.info(f"[analyst] Retrying with fallback {fallback_model}")
+        try:
+            parsed, lat, err = _attempt(fallback_model)
+            output["latency_s"] += round(lat, 2)
+            output["model_used"] = fallback_model
+            if err:
+                output["parse_errors"].append(f"{fallback_model}: {err}")
+                logger.warning(f"[analyst] Fallback parse error ({fallback_model}): {err}")
+                parsed = None
+        except Exception as e:
+            output["parse_errors"].append(f"{fallback_model}: call_error: {e}")
+            logger.error(f"[analyst] Fallback LLM error ({fallback_model}): {e}")
+
+    if parsed:
+        EXPECTED = ["cn_oneliner","cn_abstract","contribution_type","editorial_note",
+                    "why_read","method_variants","core_cite"]
+        for key in EXPECTED:
+            if key in parsed:
+                output[key] = parsed[key]
+
+    # ── core_cite title verification (opt-in) ────────────────────────
+    if hallucination_check and output["core_cite"] and bib_mapping:
+        suspicious = _verify_core_cite_titles(output["core_cite"], bib_mapping)
+        if suspicious:
+            logger.warning(f"[analyst] core_cite hallucination detected: {suspicious}")
+            output["parse_errors"].append(f"hallucinated_titles: {suspicious}")
+            # Build correction prompt and retry once
+            bad_list = "\n".join(f"  - {t}" for t in suspicious)
+            correction_model = output["model_used"]
+            is_anth = (correction_model.split("/")[-1] if "/" in correction_model else correction_model) in ANTHROPIC_MODELS
+            user_msg = _build_user_message(paper, bib_mapping, paper_text)
+            warning = (
+                f"⚠️ 上一次输出的 core_cite 包含以下无法在 bib 中验证的标题，"
+                f"这些很可能是幻觉，请修正：\n{bad_list}\n\n"
+                f"重要提示：core_cite 中每个 title 必须与上方 bib 映射表中的标题完全对应，"
+                f"不得引用 bib 表之外的论文。请重新输出完整 JSON。"
+            )
+            _sp = system_prompt_override or SYSTEM_PROMPT
+            if is_anth:
+                corr_messages = [{"role": "user", "content": f"[System]\n{_sp}\n\n[Task]\n{user_msg}\n\n{warning}"}]
+            else:
+                corr_messages = [
+                    {"role": "system", "content": _sp},
+                    {"role": "user",   "content": f"{user_msg}\n\n{warning}"},
+                ]
+            try:
+                corr_raw, corr_lat = _llm_call(corr_messages, model=correction_model)
+                output["latency_s"] += round(corr_lat, 2)
+                corr_parsed, corr_err = _parse_json_from_text(corr_raw)
+                if corr_parsed and not corr_err:
+                    corr_suspicious = _verify_core_cite_titles(
+                        corr_parsed.get("core_cite", []), bib_mapping)
+                    if len(corr_suspicious) < len(suspicious):
+                        logger.info(f"[analyst] Correction reduced hallucinations {len(suspicious)}→{len(corr_suspicious)}")
+                        for key in EXPECTED:
+                            if key in corr_parsed:
+                                output[key] = corr_parsed[key]
+                        output["parse_errors"].append(f"correction_applied: {len(suspicious)}→{len(corr_suspicious)} hallucinations")
+                    else:
+                        logger.warning(f"[analyst] Correction didn't help, keeping original")
+            except Exception as ce:
+                logger.warning(f"[analyst] Correction call failed: {ce}")
+
     return output
+
+
+# ── Legacy compat (used by older callers) ───────────────────────────
+
+def analyze_paper_scheme_b(paper: dict, refs: list, model: str = "wq/claude46") -> dict:
+    """Legacy wrapper. Prefer analyze_paper() for new code."""
+    bib = {str(i): {"title": r.get("title",""), "arxiv_id": None} for i, r in enumerate(refs)}
+    ref_text = _format_ref_block(refs)
+    return analyze_paper(paper, bib, f"[References]\n{ref_text}", model=model, retry_on_parse_fail=False)
 
 
 # ─────────────────── CLI test ───────────────────────
 
 if __name__ == "__main__":
+    import sys
     logging.basicConfig(level=logging.INFO, format="%(levelname)s — %(message)s")
 
-    paper = {
-        "id": "2603.06449",
-        "title": "CaTok: Taming Mean Flows for One-Dimensional Causal Image Tokenization",
-        "abstract": (
-            "We present CaTok, a novel approach that leverages mean flow matching "
-            "for causal 1D image tokenization. Unlike TiTok which uses bidirectional "
-            "attention, CaTok enables autoregressive generation by design. We compare "
-            "against VQGAN, TiTok, LlamaGen and achieve state-of-the-art FID on ImageNet."
-        ),
-    }
-    refs = [
-        {
-            "title": "TiTok: An Image is Worth 32 Tokens",
-            "abstract": "We propose TiTok, a compact 1D tokenizer for image reconstruction.",
-        },
-        {
-            "title": "VQGAN: Taming Transformers for High-Resolution Image Synthesis",
-            "abstract": "We use vector-quantized autoencoders and transformers for image generation.",
-        },
-        {
-            "title": "LlamaGen: Autoregressive Image Generation",
-            "abstract": "Scaling autoregressive models for class-conditional image generation.",
-        },
-        {
-            "title": "Flow Matching for Generative Modeling",
-            "abstract": "We propose flow matching, a simulation-free approach to generative modeling.",
-        },
-        {
-            "title": "MaskGIT: Masked Generative Image Transformer",
-            "abstract": "Bidirectional masked transformer for image generation.",
-        },
-    ]
+    arxiv_id = sys.argv[1] if len(sys.argv) > 1 else "2601.01535"
+    model    = sys.argv[2] if len(sys.argv) > 2 else DEFAULT_MODEL
 
-    print("=== Scheme B test (will call LLM) ===")
-    result = analyze_paper_scheme_b(paper, refs)
+    # Try to load from pre-downloaded source
+    source_dir = Path(f"/tmp/pa_test/{arxiv_id}")
+    paper_text = ""
+    bib_mapping = {}
+
+    if source_dir.exists():
+        txt = source_dir / "paper_text.txt"
+        if txt.exists():
+            paper_text = txt.read_text()
+            logger.info(f"Loaded paper_text: {len(paper_text)} chars")
+        bib = source_dir / "bib_parsed.json"
+        if bib.exists():
+            bib_mapping = json.loads(bib.read_text())
+            logger.info(f"Loaded bib: {len(bib_mapping)} entries")
+
+    # Load paper metadata from DB
+    try:
+        sys.path.insert(0, str(Path(__file__).parent))
+        from paper_db import PaperDB
+        db = PaperDB()
+        paper = db.get_paper(arxiv_id) or {"arxiv_id": arxiv_id, "title": arxiv_id, "abstract": ""}
+    except Exception:
+        paper = {"arxiv_id": arxiv_id, "title": arxiv_id, "abstract": ""}
+
+    logger.info(f"Paper: {paper.get('title','?')[:60]}")
+    logger.info(f"Model: {model}")
+
+    result = analyze_paper(paper, bib_mapping, paper_text, model=model)
     print(json.dumps(result, indent=2, ensure_ascii=False))

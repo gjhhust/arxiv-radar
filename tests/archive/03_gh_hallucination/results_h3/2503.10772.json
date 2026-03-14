@@ -1,0 +1,282 @@
+{
+  "arxiv_id": "2503.10772",
+  "title": "FlowTok: Flowing Seamlessly Across Text and Image Tokens",
+  "cn_oneliner": "基于 Flow Matching，引入紧凑 1D 图像 token（TA-TiTok）将文本与图像投影至统一潜空间，实现无需复杂条件机制的双向跨模态直接流匹配生成",
+  "cn_abstract": "本文提出 FlowTok，一种通过 Flow Matching 在文本与图像模态间直接演化的极简框架，以解决跨模态生成中模态表示异构的核心难题。关键设计是引入文本感知的紧凑 1D 图像 tokenizer（TA-TiTok），将图像编码为与文本 token 同构的 1D 序列，相比先前方法在 256 分辨率下将潜空间规模压缩 3.3 倍，无需复杂条件机制或噪声调度设计。FlowTok 在文生图和图生文两个方向下统一于同一公式，具备高内存效率、显著更低的训练开销和更快的采样速度，同时在主流基准上达到与最先进模型相当的性能。",
+  "contribution_type": "significant",
+  "editorial_note": "以 Flow Matching 和 TiTok 等紧凑图像 tokenizer 为前驱，现有文生图方法通常将文本作为条件信号逐步引导扩散过程，模态间存在结构性不对称。本文的核心贡献在于提出将图像编码为紧凑 1D token，使文本与图像落入同一潜空间，从而用一个极简的 Flow Matching 框架统一文生图与图生文，消除了复杂条件机制。该思路在概念上具有一定新颖性，架构高度简洁且双向可用，但图像 tokenizer 的创新程度以及与已有 1D token 方法（如 TiTok、MAGE）的边界尚需仔细甄别，整体贡献介于显著与增量之间，偏向显著。",
+  "why_read": "研究跨模态生成或高效图像 tokenizer 的学者，可借鉴其将图像压缩为紧凑 1D token 并与文本统一做 Flow Matching 的极简设计范式",
+  "method_variants": [
+    "tokenizer:TA-TiTok-1D-compact",
+    "flow_matching:text-to-image-direct",
+    "flow_matching:image-to-text-direct",
+    "latent_space:unified-1D-shared",
+    "conditioning:condition-free-flow"
+  ],
+  "core_cite": [
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "extends",
+      "note": "TiTok 提出将图像编码为紧凑 1D token，FlowTok 以此为基础进一步引入文本感知设计（TA-TiTok）以实现文本-图像模态对齐"
+    },
+    {
+      "title": "Flow Matching for Generative Modeling",
+      "arxiv_id": "2210.02747",
+      "role": "uses",
+      "note": "FlowTok 的核心生成框架，直接在统一 1D 潜空间上应用 Flow Matching 进行模态间演化"
+    },
+    {
+      "title": "Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow",
+      "arxiv_id": "2209.03003",
+      "role": "uses",
+      "note": "Rectified Flow 提供直线轨迹 ODE 训练目标，FlowTok 采用该方法作为流匹配的具体实现"
+    },
+    {
+      "title": "Improving and generalizing flow-based generative models with minibatch optimal transport",
+      "arxiv_id": "2302.00482",
+      "role": "uses",
+      "note": "Conditional Flow Matching 与最优传输耦合方法，FlowTok 训练中参考了该框架"
+    },
+    {
+      "title": "Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens",
+      "arxiv_id": "2501.07730",
+      "role": "contrasts",
+      "note": "同样使用紧凑 1D token 做文生图，但基于掩码生成范式；FlowTok 改为 Flow Matching 并实现双向生成，与之形成直接对比"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "contrasts",
+      "note": "DiT 是主流扩散 Transformer 基线，FlowTok 与之在文生图性能和资源消耗上进行对比"
+    },
+    {
+      "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2403.03206",
+      "role": "contrasts",
+      "note": "Stable Diffusion 3 / FLUX 的基础，代表最先进的大规模 Flow Matching 文生图方法，FlowTok 以其为上界参照"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "contrasts",
+      "note": "LDM/Stable Diffusion 将扩散迁移至 VAE 潜空间，FlowTok 指出其 2D 潜表示与文本 1D token 的异构性是本文要解决的核心问题"
+    },
+    {
+      "title": "SiT: Exploring Flow and Diffusion-based Generative Models with Scalable Interpolant Transformers",
+      "arxiv_id": "2401.08740",
+      "role": "contrasts",
+      "note": "SiT 是基于 Interpolant 的流匹配图像生成基线，FlowTok 在相同评估设置下与之比较"
+    },
+    {
+      "title": "Fluid: Scaling Autoregressive Text-to-image Generative Models with Continuous Tokens",
+      "arxiv_id": "2410.13863",
+      "role": "contrasts",
+      "note": "Fluid 用连续 token 做自回归文生图，与 FlowTok 在统一潜空间生成的思路有关联，论文将其作为对比方法"
+    },
+    {
+      "title": "Learning Transferable Visual Models From Natural Language Supervision",
+      "arxiv_id": "2103.00020",
+      "role": "uses",
+      "note": "CLIP 文本编码器被 FlowTok 用于提取文本语义特征作为流匹配的源端表示"
+    },
+    {
+      "title": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "arxiv_id": "2301.00704",
+      "role": "contrasts",
+      "note": "Muse 是基于掩码生成 Transformer 的文生图代表方法，FlowTok 与之在效率和性能上进行对比"
+    },
+    {
+      "title": "Classifier-Free Diffusion Guidance",
+      "arxiv_id": "2207.12598",
+      "role": "uses",
+      "note": "FlowTok 采用无分类器引导策略在推理时提升生成质量"
+    },
+    {
+      "title": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "arxiv_id": "2410.06940",
+      "role": "contrasts",
+      "note": "REPA 通过表示对齐加速扩散 Transformer 训练，FlowTok 与之比较训练效率和最终性能"
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "contrasts",
+      "note": "LlamaGen 将自回归语言模型用于图像生成，FlowTok 在统一框架对比中将其列为基线"
+    },
+    {
+      "title": "Microsoft COCO: Common Objects in Context",
+      "arxiv_id": "1405.0312",
+      "role": "uses",
+      "note": "COCO 数据集用于 FlowTok 图生文任务的训练与评估"
+    },
+    {
+      "title": "Microsoft COCO Captions: Data Collection and Evaluation Server",
+      "arxiv_id": "1504.00325",
+      "role": "uses",
+      "note": "COCO Captions 基准用于评估 FlowTok 图像描述生成的性能"
+    },
+    {
+      "title": "Attention is All you Need",
+      "arxiv_id": "1706.03762",
+      "role": "uses",
+      "note": "Transformer 架构是 FlowTok 骨干网络的基础"
+    },
+    {
+      "title": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
+      "arxiv_id": "2104.09864",
+      "role": "uses",
+      "note": "FlowTok 采用 RoPE 位置编码处理 1D token 序列"
+    },
+    {
+      "title": "Show-o: One Single Transformer to Unify Multimodal Understanding and Generation",
+      "arxiv_id": "2408.12528",
+      "role": "contrasts",
+      "note": "Show-o 用单一 Transformer 统一多模态理解与生成，与 FlowTok 的统一双向生成目标相关，论文将其作为对比参照"
+    }
+  ],
+  "idea": [
+    {
+      "title": "面向视频生成的紧凑 1D 时空 Token Flow Matching",
+      "why": "FlowTok 在静态图像上验证了紧凑 1D token 与 Flow Matching 结合的有效性，自然的延伸方向是将时间维度纳入 tokenizer，构建紧凑 1D 时空 token 并在文本-视频间做直接流匹配。参考团队相关工作 Goku（视频流匹配基础模型），该路径技术可行且可显著降低视频生成的计算开销。"
+    },
+    {
+      "title": "多模态统一生成：在同一 1D 潜空间中联合流匹配图像、文本与其他模态",
+      "why": "FlowTok 目前只处理文本和图像两种模态。若将音频、深度图、分割图等也编码为紧凑 1D token 并投影至同一潜空间，可用同一 Flow Matching 框架实现任意模态对之间的直接转换，无需针对每对模态设计独立条件机制。这与 Show-o、PaLM-E 等统一多模态模型的目标一致，但 FlowTok 的极简设计提供了更轻量的实现路径。"
+    },
+    {
+      "title": "基于文本感知 1D Token 的高效图像编辑与受控生成",
+      "why": "FlowTok 的 TA-TiTok 将图像语义压缩进紧凑 1D token，这一表示天然适合插值编辑：在两段文本描述对应的 1D token 之间做流匹配插值，即可实现语义受控的图像编辑，无需 inversion 或额外掩码机制。结合 FlowTok 已有的双向生成能力，可进一步探索基于流轨迹的图像属性解耦与细粒度编辑方法。"
+    }
+  ],
+  "_scheme": "H",
+  "_model": "wq/minimaxm25",
+  "_verified_at": "2026-03-13",
+  "_s2_ref_count": 84,
+  "_similarities": [
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    },
+    {
+      "title": "Flow Matching for Generative Modeling",
+      "best_score": 1.0,
+      "best_match": "Flow Matching for Generative Modeling",
+      "pass": true
+    },
+    {
+      "title": "Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow",
+      "best_score": 1.0,
+      "best_match": "Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow",
+      "pass": true
+    },
+    {
+      "title": "Improving and generalizing flow-based generative models with minibatch optimal transport",
+      "best_score": 1.0,
+      "best_match": "Improving and generalizing flow-based generative models with minibatch optimal transport",
+      "pass": true
+    },
+    {
+      "title": "Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens",
+      "best_score": 1.0,
+      "best_match": "Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "SiT: Exploring Flow and Diffusion-based Generative Models with Scalable Interpolant Transformers",
+      "best_score": 1.0,
+      "best_match": "SiT: Exploring Flow and Diffusion-based Generative Models with Scalable Interpolant Transformers",
+      "pass": true
+    },
+    {
+      "title": "Fluid: Scaling Autoregressive Text-to-image Generative Models with Continuous Tokens",
+      "best_score": 1.0,
+      "best_match": "Fluid: Scaling Autoregressive Text-to-image Generative Models with Continuous Tokens",
+      "pass": true
+    },
+    {
+      "title": "Learning Transferable Visual Models From Natural Language Supervision",
+      "best_score": 1.0,
+      "best_match": "Learning Transferable Visual Models From Natural Language Supervision",
+      "pass": true
+    },
+    {
+      "title": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "best_score": 1.0,
+      "best_match": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "pass": true
+    },
+    {
+      "title": "Classifier-Free Diffusion Guidance",
+      "best_score": 1.0,
+      "best_match": "Classifier-Free Diffusion Guidance",
+      "pass": true
+    },
+    {
+      "title": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "best_score": 1.0,
+      "best_match": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Microsoft COCO: Common Objects in Context",
+      "best_score": 1.0,
+      "best_match": "Microsoft COCO: Common Objects in Context",
+      "pass": true
+    },
+    {
+      "title": "Microsoft COCO Captions: Data Collection and Evaluation Server",
+      "best_score": 1.0,
+      "best_match": "Microsoft COCO Captions: Data Collection and Evaluation Server",
+      "pass": true
+    },
+    {
+      "title": "Attention is All you Need",
+      "best_score": 1.0,
+      "best_match": "Attention is All you Need",
+      "pass": true
+    },
+    {
+      "title": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
+      "best_score": 1.0,
+      "best_match": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
+      "pass": true
+    },
+    {
+      "title": "Show-o: One Single Transformer to Unify Multimodal Understanding and Generation",
+      "best_score": 1.0,
+      "best_match": "Show-o: One Single Transformer to Unify Multimodal Understanding and Generation",
+      "pass": true
+    }
+  ],
+  "_matched": 20,
+  "_total": 20,
+  "_pass_rate": 1.0,
+  "_elapsed_s": 52.8
+}

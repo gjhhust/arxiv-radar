@@ -1,0 +1,186 @@
+{
+  "arxiv_id": "2601.01535",
+  "title": "Improving Flexible Image Tokenizers for Autoregressive Image Generation",
+  "cn_oneliner": "基于嵌套Dropout灵活图像分词器，引入冗余Token填充与层次语义正则化，缓解早期Token信息过度集中问题，提升自回归图像生成质量",
+  "cn_abstract": "灵活图像分词器通过有序一维变长Token序列表示图像，现有方法依赖嵌套Dropout截断尾部Token，导致图像信息过度集中于早期Token，限制了自回归生成随Token长度增加的效果。本文提出ReTok，引入冗余Token填充（Redundant Token Padding）以更频繁激活尾部Token，并通过层次语义正则化（Hierarchical Semantic Regularization）将早期Token的解码特征与预训练视觉基础模型对齐，同时对尾部Token逐步降低正则化强度以恢复细节。在ImageNet 256×256基准上，ReTok在生成性能上超越灵活和固定长度分词器，验证了所提方法的有效性。",
+  "contribution_type": "incremental",
+  "editorial_note": "嵌套Dropout（Nested Dropout）是实现灵活Token长度的主流训练策略，但其尾部截断机制天然造成信息向前堆积，削弱长Token序列的表达能力。本文针对此问题提出两项改进：冗余Token填充通过随机引入重复Token激活尾部位置，层次语义正则化借助预训练视觉模型对早期Token施加语义约束并向尾部递减。改动属于训练技巧与辅助损失的组合优化，缺乏架构层面的根本性突破，但问题定位清晰、实验充分，对灵活分词器与AR生成结合的研究方向有实际参考价值。",
+  "why_read": "研究自回归图像生成或可变长度视觉分词器的研究者，可借鉴其分析嵌套Dropout信息集中问题的视角及冗余填充与层次正则化的具体实现方案",
+  "method_variants": [
+    "tokenizer:nested-dropout-baseline",
+    "tokenizer:redundant-token-padding",
+    "regularization:hierarchical-semantic",
+    "tokenizer:flexible-length-AR",
+    "regularization:vision-foundation-alignment"
+  ],
+  "core_cite": [
+    {
+      "title": "Nested Dropout for Learning Ordered Representations",
+      "arxiv_id": "1402.0915",
+      "role": "extends",
+      "note": "本文直接基于嵌套Dropout机制构建灵活分词器，并针对其尾部截断导致信息集中的缺陷提出改进"
+    },
+    {
+      "title": "Auto-Regressive Image Generation without Vector Quantization",
+      "arxiv_id": "2406.11838",
+      "role": "uses",
+      "note": "采用连续值自回归图像生成框架，ReTok的下游AR生成实验参考此类范式"
+    },
+    {
+      "title": "Visual AutoRegressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "contrasts",
+      "note": "代表固定长度自回归生成的先进方法，作为对比基线"
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "arxiv_id": "2010.11929",
+      "role": "uses",
+      "note": "ViT架构被用作视觉基础模型提供层次语义监督信号"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "uses",
+      "note": "VQGAN提供图像分词与重建的基础框架参考"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "contrasts",
+      "note": "扩散模型在图像生成领域的代表性工作，作为比较背景"
+    },
+    {
+      "title": "MAGE: MAsked Generative Encoder to Unify Representation Learning and Image Synthesis",
+      "arxiv_id": "2211.09117",
+      "role": "contrasts",
+      "note": "掩码生成方法，与灵活分词器形成对比"
+    },
+    {
+      "title": "Efficient Image Tokenizer for Autoregressive Image Generation with Dynamic Resolution",
+      "arxiv_id": "2503.01023",
+      "role": "contrasts",
+      "note": "灵活分词器相关工作，直接竞争方法"
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "arxiv_id": "2409.04410",
+      "role": "contrasts",
+      "note": "改进的VQGAN分词器，作为固定长度分词器基线对比"
+    },
+    {
+      "title": "DINO: Self-Supervised Vision Transformers",
+      "arxiv_id": "2104.14294",
+      "role": "uses",
+      "note": "自监督预训练视觉模型，用于层次语义正则化的特征对齐目标"
+    },
+    {
+      "title": "LlamaGen: Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "arxiv_id": "2406.06525",
+      "role": "uses",
+      "note": "基于LLaMA的自回归图像生成框架，ReTok下游AR实验所用生成模型"
+    },
+    {
+      "title": "FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction",
+      "arxiv_id": "2502.12369",
+      "role": "contrasts",
+      "note": "灵活自回归视觉建模的竞争方法"
+    }
+  ],
+  "idea": [
+    {
+      "title": "自适应Token重要性加权的灵活分词器训练策略",
+      "why": "ReTok通过固定的冗余填充比例激活尾部Token，但不同图像的语义复杂度不同，所需Token数量存在差异。可探索基于图像内容自适应分配Token重要性权重的训练策略，利用注意力图或梯度信号动态调整各位置Token的激活频率，有望在保持灵活性的同时进一步优化Token利用效率。"
+    },
+    {
+      "title": "面向多模态大语言模型的灵活视觉Token压缩与生成统一框架",
+      "why": "灵活长度Token序列天然契合多模态LLM中视觉Token动态压缩的需求（如理解任务用短序列、生成任务用长序列）。可基于ReTok的层次语义正则化思路，设计兼顾图像理解与生成的统一分词器，使同一编码器在不同Token预算下均能与语言模型高效对接，填补当前理解与生成分词器分离的空白。"
+    },
+    {
+      "title": "层次语义正则化中视觉基础模型特征层级的最优选取研究",
+      "why": "ReTok将早期Token对齐至预训练视觉模型特征，但不同层次特征（浅层纹理vs深层语义）与Token位置的最优匹配关系尚未充分探索。可系统研究ViT/DINO不同层特征作为正则化目标时对生成质量与重建细节的影响，并探索可学习的特征层级选择机制，为层次正则化设计提供更坚实的理论依据。"
+    }
+  ],
+  "_scheme": "G",
+  "_model": "wq/minimaxm25",
+  "_verified_at": "2026-03-14",
+  "_s2_ref_count": 53,
+  "_similarities": [
+    {
+      "title": "Nested Dropout for Learning Ordered Representations",
+      "best_score": 0.621,
+      "best_match": "Learning Ordered Representations with Nested Dropout",
+      "pass": false
+    },
+    {
+      "title": "Auto-Regressive Image Generation without Vector Quantization",
+      "best_score": 0.992,
+      "best_match": "Autoregressive Image Generation without Vector Quantization",
+      "pass": true
+    },
+    {
+      "title": "Visual AutoRegressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "best_score": 1.0,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "MAGE: MAsked Generative Encoder to Unify Representation Learning and Image Synthesis",
+      "best_score": 0.489,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": false
+    },
+    {
+      "title": "Efficient Image Tokenizer for Autoregressive Image Generation with Dynamic Resolution",
+      "best_score": 0.703,
+      "best_match": "ImageFolder: Autoregressive Image Generation with Folded Tokens",
+      "pass": false
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "best_score": 0.611,
+      "best_match": "SpectralAR: Spectral Autoregressive Visual Generation",
+      "pass": false
+    },
+    {
+      "title": "DINO: Self-Supervised Vision Transformers",
+      "best_score": 0.5,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": false
+    },
+    {
+      "title": "LlamaGen: Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "best_score": 0.936,
+      "best_match": "Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation",
+      "pass": true
+    },
+    {
+      "title": "FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction",
+      "best_score": 0.629,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": false
+    }
+  ],
+  "_matched": 6,
+  "_total": 12,
+  "_pass_rate": 0.5,
+  "_elapsed_s": 38.0
+}

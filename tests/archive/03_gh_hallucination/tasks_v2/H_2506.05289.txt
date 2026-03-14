@@ -1,0 +1,147 @@
+你是一位 arxiv 论文分析专家。请对以下论文进行结构化分析，以 JSON 格式输出。
+
+**论文信息**
+- arxiv ID：2506.05289
+- 标题：AliTok: Towards Sequence Modeling Alignment between Tokenizer and Autoregressive Model
+
+---
+
+**字段要求**
+
+cn_oneliner
+  一句话，严格格式：「基于[前驱方法/范式]，引入[核心改动]，实现[效果/指标]」
+  例1：「基于 Transformer 自注意力，引入局部窗口限制将复杂度从 O(n²) 降至 O(n)，实现长序列高效建模」
+  例2：「基于 DDPM 扩散过程，将噪声预测迁移至 VAE 潜空间，以 8× 压缩比实现高分辨率图像生成」
+
+cn_abstract
+  2-4 句完整中文摘要，保留核心数值结果，不截断
+  例：「本文提出 X，以解决 Y 问题。通过在 Z 上引入 W，模型在 COCO 上达到 FID=3.2，较基线下降 40%。
+  与 DALL-E 3 相比，训练成本降低 3×，推理速度提升 2×。」
+
+contribution_type
+  严格四选一：incremental / significant / story-heavy / foundational
+  incremental：在现有方法上微调/刷点，无范式级创新（最常见）
+  significant：引入新范式或新任务，对领域有明显推动（如 ViT 级别）
+  story-heavy：综述/技术报告/规模实验，贡献以广度和规模为主
+  foundational：奠基性工作，影响整个领域（极少）
+
+editorial_note
+  三段连续文字，80-150 字：
+  [段1：前驱方法的核心贡献与局限] → [段2：本文如何针对性解决] → [段3：编辑判断：创新程度、适用场景、潜在不足]
+  例：「VQGAN 通过向量量化将图像压缩为离散 token，但高压缩比下重建质量下降。本文引入扩散解码器
+  替代原始 CNN 解码器，在同等压缩比下显著提升重建细节。改动精准且有效，属于组件级创新；但
+  扩散解码器引入的推理开销是实际部署的主要障碍。」
+
+why_read
+  一句话：[目标读者群体] + [读后具体收获]
+  例：「研究图像生成质量-效率权衡的工程师，可借鉴其扩散解码器与量化器联合训练的技巧」
+
+method_variants
+  JSON 数组，每项包含：
+  - tag：格式 "base_method:variant_tag"，标识本文对该方法的具体变体
+  - note：一句话说明该变体与原方法的核心区别
+  例：[
+    {"tag": "attention:sliding-window", "note": "将全局自注意力限制在固定大小局部窗口内，复杂度从 O(n²) 降至 O(nW)"},
+    {"tag": "vq:ema-codebook",          "note": "用指数移动平均替代梯度更新稳定码本训练，降低 codebook collapse 风险"},
+    {"tag": "diffusion:v-prediction",   "note": "预测速度场 v 替代噪声 ε，提升训练稳定性和样本质量"}
+  ]
+  若无明显变体则返回空数组 []
+
+core_cite
+  ≥10 条，每条包含：
+  - title：论文标题（须来自文末参考列表，输出前逐条核查，列表中找不到则删除）
+  - arxiv_id：如有则填写，否则留空字符串
+  - role：五选一 extends | contrasts | uses | supports | mentions
+  - note：一句话说明引用原因
+
+  role 定义：
+  extends   — 本文直接在此工作基础上扩展
+  contrasts — 本文与此工作对比或批判
+  uses      — 本文直接使用其方法/代码/数据集
+  supports  — 作为背景支撑，引用以说明动机
+  mentions  — 简单提及，非核心
+
+idea
+  3 条研究想法，来源：本文局限/未来工作 + 未充分利用的引用方法 + 跨域类比
+  每条包含：
+  - title：研究方向标题（10-20 字）
+  - why：1-3 句，说明依据和可行性
+
+---
+
+**输出格式**
+仅输出纯 JSON，不含任何其他文字：
+{
+  "arxiv_id": "2506.05289",
+  "title": "AliTok: Towards Sequence Modeling Alignment between Tokenizer and Autoregressive Model",
+  "cn_oneliner": "...",
+  "cn_abstract": "...",
+  "contribution_type": "...",
+  "editorial_note": "...",
+  "why_read": "...",
+  "method_variants": [
+    {"tag": "...", "note": "..."}
+  ],
+  "core_cite": [
+    {"title": "...", "arxiv_id": "...", "role": "...", "note": "..."}
+  ],
+  "idea": [
+    {"title": "...", "why": "..."}
+  ]
+}
+
+---
+
+**参考列表（core_cite 须来自其中，输出前逐条核查，列表中找不到则删除）：**
+- An Image is Worth 32 Tokens for Reconstruction and Generation | arxiv:2406.07550
+- Autoregressive Image Generation using Residual Quantization | arxiv:2203.01941
+- Autoregressive Image Generation without Vector Quantization | arxiv:2406.11838
+- Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation | arxiv:2406.06525
+- Chameleon: Mixed-Modal Early-Fusion Foundation Models | arxiv:2405.09818
+- Classifier-Free Diffusion Guidance | arxiv:2207.12598
+- Conceptual 12M: Pushing Web-Scale Image-Text Pre-Training To Recognize Long-Tail Visual Concepts | arxiv:2102.08981
+- Customize Your Visual Autoregressive Recipe with Set Autoregressive Modeling | arxiv:2410.10511
+- Democratizing Text-to-Image Masked Generative Models with Compact Text-Aware One-Dimensional Tokens | arxiv:2501.07730
+- Dream Video: Composing Your Dream Videos with Customized Subject and Motion | arxiv:2312.04433
+- Emerging Properties in Self-Supervised Vision Transformers | arxiv:2104.14294
+- Emu3: Next-Token Prediction is All You Need | arxiv:2409.18869
+- Exploiting Discriminative Codebook Prior for Autoregressive Image Generation | arxiv:2508.10719
+- Finite Scalar Quantization: VQ-VAE Made Simple | arxiv:2309.15505
+- FlexTok: Resampling Images into 1D Token Sequences of Flexible Length | arxiv:2502.13967
+- Fluid: Scaling Autoregressive Text-to-image Generative Models with Continuous Tokens | arxiv:2410.13863
+- GPT-4 Technical Report | arxiv:2303.08774
+- GPT-4o System Card | arxiv:2410.21276
+- GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation | arxiv:2504.08736
+- Going deeper with convolutions | arxiv:1409.4842
+- HART: Efficient Visual Generation with Hybrid Autoregressive Transformer | arxiv:2410.10812
+- ImageNet Large Scale Visual Recognition Challenge | arxiv:1409.0575
+- Improved Techniques for Training GANs | arxiv:1606.03498
+- Improved Video VAE for Latent Video Diffusion Model | arxiv:2411.06449
+- Infinity∞: Scaling Bitwise AutoRegressive Modeling for High-Resolution Image Synthesis | arxiv:2412.04431
+- Janus-Pro: Unified Multimodal Understanding and Generation with Data and Model Scaling | arxiv:2501.17811
+- Janus: Decoupling Visual Encoding for Unified Multimodal Understanding and Generation | arxiv:2410.13848
+- LLaMA: Open and Efficient Foundation Language Models | arxiv:2302.13971
+- LLaVA-OneVision: Easy Visual Task Transfer | arxiv:2408.03326
+- Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation | arxiv:2310.05737
+- Llama 2: Open Foundation and Fine-Tuned Chat Models | arxiv:2307.09288
+- MaskGIT: Masked Generative Image Transformer | arxiv:2202.04200
+- Neural Discrete Representation Learning | arxiv:1711.00937
+- NextStep-1: Toward Autoregressive Image Generation with Continuous Tokens at Scale | arxiv:2508.10711
+- Online Clustered Codebook | arxiv:2307.15139
+- Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation | arxiv:2409.04410
+- Pixel Recurrent Neural Networks | arxiv:1601.06759
+- RandAR: Decoder-only Autoregressive Visual Generation in Random Orders | arxiv:2412.01827
+- Randomized Autoregressive Visual Generation | arxiv:2411.00776
+- Reconstruction vs. Generation: Taming Optimization Dilemma in Latent Diffusion Models | arxiv:2501.01423
+- Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think | arxiv:2410.06940
+- RoFormer: Enhanced Transformer with Rotary Position Embedding | arxiv:2104.09864
+- Root Mean Square Layer Normalization | arxiv:1910.07467
+- Routing Matters in MoE: Scaling Diffusion Transformers with Explicit Routing Guidance | arxiv:2510.24711
+- SDXL: Improving Latent Diffusion Models for High-Resolution Image Synthesis | arxiv:2307.01952
+- Scalable Diffusion Models with Transformers | arxiv:2212.09748
+- Show-o: One Single Transformer to Unify Multimodal Understanding and Generation | arxiv:2408.12528
+- SiT: Exploring Flow and Diffusion-based Generative Models with Scalable Interpolant Transformers | arxiv:2401.08740
+- Taming Transformers for High-Resolution Image Synthesis | arxiv:2012.09841
+- Token-Shuffle: Towards High-Resolution Image Generation with Autoregressive Models | arxiv:2504.17789
+- Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction | arxiv:2404.02905
+- Wan: Open and Advanced Large-Scale Video Generative Models | arxiv:2503.20314

@@ -1,0 +1,198 @@
+{
+  "arxiv_id": "2406.07550",
+  "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+  "cn_oneliner": "TiTok用1D Transformer将256×256图像压缩为32个token，压缩率比2D VQ方法高8-32倍，ImageNet生成质量超越DiT-XL/2且速度快74-410倍",
+  "cn_abstract": "现有方法如VQGAN使用2D latent grids，存在图像固有冗余问题（相邻区域常显示相似性）。本文提出Transformer-based 1-Dimensional Tokenizer (TiTok)，将图像标记为1D潜在序列，提供更紧凑的潜在表示。例如256×256×3图像可压缩至仅32个离散token，远优于之前的256或1024个token。尽管紧凑，TiTok在ImageNet 256×256上达到1.97 gFID，比MaskGIT好4.21；在512×512上超越DiT-XL/2（gFID 2.74 vs 3.04），生成速度快410倍，最佳变体达gFID 2.13且快74倍。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱]本文建立在VQGAN（arxiv:1906.00446, arxiv:2110.04627）、MaskGIT（arxiv:2202.04200）、DiT（arxiv:2212.09748）等图像tokenization和生成工作之上，借鉴了ViT（arxiv:2010.11929）的Transformer架构和MAE（arxiv:2111.06377）的掩码训练思路。[贡献]提出1D tokenization范式，将图像从传统的2D latent grids转变为1D序列表示，用仅32个token表示256×256图像，大幅压缩的同时保持甚至提升生成质量。[判断]这是一项具有原创性的显著工作，挑战了图像tokenization的2D惯性，为自回归图像生成提供了更高效紧凑的表示方式，在质量和速度上均超越了之前的 diffusion 模型。",
+  "why_read": "从事图像生成、tokenization 或自回归模型研究的学生和工程师会从本文学到1D表示的独特价值，以及如何通过极致的token压缩实现数量级的加速同时保持甚至提升生成质量。",
+  "method_variants": [
+    {
+      "variant_tag": "vq-vae:1d-tokenization",
+      "description": "传统VQ-VAE使用2D latent grids（如16×16=256 token），存在图像空间冗余；TiTok将图像展平为1D序列，用Transformer编码器学习紧凑的32个离散token，消除2D结构假设，利用率更高"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "arxiv_id": "2202.04200",
+      "role": "extends",
+      "note": "TiTok使用与MaskGIT相同的生成框架（Transformer解码器），在相同设置下对比验证1D tokenization的优势，1.97 gFID比MaskGIT baseline提升4.21"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "contrasts",
+      "note": "DiT是 diffusion 模型的代表，TiTok在ImageNet 512×512上以2.74 gFID超越DiT-XL/2的3.04，且速度快410倍，证明自回归+紧凑token可匹敌甚至超越扩散模型"
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "arxiv_id": "2110.04627",
+      "role": "extends",
+      "note": "VQGAN是2D tokenization的典型代表，TiTok继承其离散tokenize思路但改为1D序列表示，解决2D grid的结构冗余问题"
+    },
+    {
+      "title": "Generating Diverse High-Fidelity Images with VQ-VAE-2",
+      "arxiv_id": "1906.00446",
+      "role": "extends",
+      "note": "VQ-VAE-2的多尺度层级VQ思想启发了后续工作，TiTok聚焦于单层级但更紧凑的1D表示"
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "arxiv_id": "2111.06377",
+      "role": "uses",
+      "note": "MAE的掩码训练策略被TiTok借鉴，用于训练1D tokenization的编码器，提高样本效率"
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "arxiv_id": "2010.11929",
+      "role": "uses",
+      "note": "ViT将图像划分为patch序列的思路被TiTok继承，但TiTok进一步将patch序列压缩为极简的32 token序列"
+    },
+    {
+      "title": "Autoregressive Image Generation using Residual Quantization",
+      "arxiv_id": "2203.01941",
+      "role": "uses",
+      "note": "RQ使用残差量化提升token表示能力，TiTok可视为单级量化但追求极致压缩的方案"
+    },
+    {
+      "title": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "arxiv_id": "2301.00704",
+      "role": "supports",
+      "note": "Muse证明masked生成Transformer在图像生成的有效性，TiTok采用类似的自回归masked生成范式"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "supports",
+      "note": "Taming Transformers展示了Transformer在高清图像合成中的潜力，TiTok进一步优化了token表示效率"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "contrasts",
+      "note": "LDM是latent diffusion的代表性工作，TiTok通过极致的token压缩在自回归框架下达到类似或更好的质量"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "supports",
+      "note": "本文强调tokenizer是视觉生成的关键，TiTok通过1D tokenizer进一步验证了紧凑token表示的价值"
+    }
+  ],
+  "idea": [
+    {
+      "title": "扩展1D tokenization到视频生成",
+      "why": "TiTok的1D表示天然适合视频这种时序数据，可将视频帧视为连续token序列。Gap：本文只验证了图像重建和生成，未探索视频；本文未做是因为视频需要额外时序建模和更大token容量；成功会不平凡，因为视频tokenization比图像更具挑战但潜力更大。"
+    },
+    {
+      "title": "将32 token作为VLM视觉编码器",
+      "why": "32个token的极简表示非常适合作为多模态大模型的视觉输入，可大幅降低Attention计算成本。Gap：本文聚焦图像重建和生成质量，未讨论作为视觉编码器的可行性；本文未做是因为需要额外训练视觉-语言对齐；成功会不平凡，因为当前VLM多使用大量visual tokens，压缩到32个可显著提升效率。"
+    },
+    {
+      "title": "探索可变长度tokenization",
+      "why": "可根据图像复杂度动态调整token数量，简单图像用更少token，复杂图像用更多token。Gap：本文使用固定32 token，未探索自适应长度；本文未做是因为需要设计复杂度度量指标和可变长度训练策略；成功会不平凡，可在保持质量的同时进一步提升平均效率。"
+    }
+  ],
+  "_cite_sims": [
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "best_score": 1.0,
+      "best_match": "MaskGIT: Masked Generative Image Transformer",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "Vector-quantized Image Modeling with Improved VQGAN",
+      "best_score": 1.0,
+      "best_match": "Vector-quantized Image Modeling with Improved VQGAN",
+      "pass": true
+    },
+    {
+      "title": "Generating Diverse High-Fidelity Images with VQ-VAE-2",
+      "best_score": 1.0,
+      "best_match": "Generating Diverse High-Fidelity Images with VQ-VAE-2",
+      "pass": true
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "best_score": 1.0,
+      "best_match": "Masked Autoencoders Are Scalable Vision Learners",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "pass": true
+    },
+    {
+      "title": "Autoregressive Image Generation using Residual Quantization",
+      "best_score": 1.0,
+      "best_match": "Autoregressive Image Generation using Residual Quantization",
+      "pass": true
+    },
+    {
+      "title": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "best_score": 1.0,
+      "best_match": "Muse: Text-To-Image Generation via Masked Generative Transformers",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    }
+  ],
+  "_cite_matched": 11,
+  "_cite_total": 11,
+  "_cite_rate": 1.0,
+  "_ref_count": 67,
+  "_mv_count": 1,
+  "_mv_issues": [],
+  "_mv_ok": true,
+  "_idea_count": 3,
+  "_idea_analysis": [
+    {
+      "title": "扩展1D tokenization到视频生成",
+      "why_len": 128,
+      "has_gap": true,
+      "restate": false
+    },
+    {
+      "title": "将32 token作为VLM视觉编码器",
+      "why_len": 151,
+      "has_gap": true,
+      "restate": false
+    },
+    {
+      "title": "探索可变长度tokenization",
+      "why_len": 128,
+      "has_gap": true,
+      "restate": false
+    }
+  ],
+  "_idea_restate": 0,
+  "_idea_gap": 3,
+  "_idea_quality": 1.0,
+  "_verified_by": "Mox",
+  "_verified_at": "2026-03-14"
+}

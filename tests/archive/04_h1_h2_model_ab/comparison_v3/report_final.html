@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Model A/B Test Final Report</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 20px; background: #f5f5f5; }
+        h1 { color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        h2 { color: #555; margin-top: 30px; }
+        h3 { color: #666; }
+        .summary { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .paper-card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .setting-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .setting-box { padding: 15px; border-radius: 6px; border: 1px solid #ddd; }
+        .setting-box.h1 { background: #e3f2fd; }
+        .setting-box.h2 { background: #f3e5f5; }
+        .score { font-weight: bold; font-size: 1.2em; }
+        .score.high { color: #28a745; }
+        .score.medium { color: #ffc107; }
+        .score.low { color: #dc3545; }
+        .issue { color: #dc3545; font-size: 0.9em; }
+        .highlight { background: #fff3cd; padding: 2px 5px; border-radius: 3px; }
+        .best { background: #d4edda; padding: 10px; border-radius: 6px; margin: 10px 0; }
+        .worst { background: #f8d7da; padding: 10px; border-radius: 6px; margin: 10px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #f8f9fa; }
+        .field-label { font-weight: bold; color: #555; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 0.85em; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Model A/B Test Final Report</h1>
+    <p>生成时间: 2026-03-14 | 测试论文: 5篇 | 设置: 4种 (H1_M25, H1_M21, H2_M25, H2_M21)</p>
+    
+    <div class="summary">
+        <h2>📊 测试概述</h2>
+        <p><strong>模板类型:</strong></p>
+        <ul>
+            <li><strong>H1 (清单型):</strong> 3-field method_variants, A/B/C checklist idea</li>
+            <li><strong>H2 (判断型):</strong> 2-field method_variants with insight framing, solid检验 3-question filter</li>
+        </ul>
+        <p><strong>模型:</strong> M25 (minimaxm25, ~2min/paper) vs M21 (minimaxm21, ~1.5min/paper)</p>
+    </div>
+
+    <div class="paper-card">
+        <h2>📄 TiTok: 1D Tokenization</h2>
+        <p><code>2406.07550</code></p>
+        
+        <div class="setting-grid">
+
+            <div class="setting-box h1">
+                <h3>H1_M25</h3>
+                <p class="score high">总分: 27/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>3/5 ⚠️</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>5/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>字数超限 (92字)</li><li>字数过多 (263字)</li><li>缺少关键判断词</li></ul></details></div>
+            <div class="setting-box h1">
+                <h3>H1_M21</h3>
+                <p class="score high">总分: 28/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>5/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>字数超限 (144字)</li><li>句子过多 (6句)</li></ul></details></div>
+            <div class="setting-box h2">
+                <h3>H2_M25</h3>
+                <p class="score high">总分: 26/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>3/5 ⚠️</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>5/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>字数超限 (86字)</li><li>字数过多 (440字)</li><li>缺少字段: ?</li><li>缺少字段: ?</li></ul></details></div>
+            <div class="setting-box h2">
+                <h3>H2_M21</h3>
+                <p class="score high">总分: 25/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>2/5 ⚠️</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>5/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>字数超限 (78字)</li><li>字数过多 (504字)</li><li>缺少字段: ?</li><li>缺少字段: ?</li><li>缺少字段: ?</li></ul></details></div></div></div>
+    <div class="paper-card">
+        <h2>📄 Semanticist: PCA-like Tokens</h2>
+        <p><code>2503.08685</code></p>
+        
+        <div class="setting-grid">
+
+            <div class="setting-box h1">
+                <h3>H1_M25</h3>
+                <p class="score high">总分: 27/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>5/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>字数超限 (127字)</li><li>缺少数值指标</li><li>字数过多 (350字)</li></ul></details></div>
+            <div class="setting-box h1">
+                <h3>H1_M21</h3>
+                <p class="score high">总分: 27/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>5/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>字数超限 (68字)</li><li>句子过多 (6句)</li><li>字数过多 (249字)</li></ul></details></div>
+            <div class="setting-box h2">
+                <h3>H2_M25</h3>
+                <p class="score medium">总分: 24/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>2/5 ⚠️</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>5/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>字数超限 (66字)</li><li>句子过多 (6句)</li><li>字数过多 (353字)</li><li>缺少字段: ?</li><li>缺少字段: ?</li></ul></details></div>
+            <div class="setting-box h2">
+                <h3>H2_M21</h3>
+                <p class="score medium">总分: 24/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>2/5 ⚠️</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>5/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>字数超限 (72字)</li><li>句子过多 (6句)</li><li>字数过多 (355字)</li><li>缺少字段: ?</li><li>缺少字段: ?</li></ul></details></div></div></div>
+    <div class="paper-card">
+        <h2>📄 GigaTok: 3B Tokenizer</h2>
+        <p><code>2504.08736</code></p>
+        
+        <div class="setting-grid">
+
+            <div class="setting-box h1">
+                <h3>H1_M25</h3>
+                <p class="score high">总分: 28/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>5/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>字数超限 (86字)</li><li>字数过多 (233字)</li></ul></details></div>
+            <div class="setting-box h1">
+                <h3>H1_M21</h3>
+                <p class="score high">总分: 26/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>3/5 ⚠️</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>5/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>缺少「实现」效果指标</li><li>字数超限 (90字)</li><li>字数过多 (221字)</li><li>缺少 contrasts 类引用</li></ul></details></div>
+            <div class="setting-box h2">
+                <h3>H2_M25</h3>
+                <p class="score medium">总分: 24/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>1/5 ⚠️</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>5/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>缺少「实现」效果指标</li><li>字数过多 (380字)</li><li>缺少字段: ?</li><li>缺少字段: ?</li><li>缺少字段: ?</li></ul></details></div>
+            <div class="setting-box h2">
+                <h3>H2_M21</h3>
+                <p class="score medium">总分: 24/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>1/5 ⚠️</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>5/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>字数超限 (67字)</li><li>字数过多 (399字)</li><li>缺少字段: ?</li><li>缺少字段: ?</li><li>缺少字段: ?</li></ul></details></div></div></div>
+    <div class="paper-card">
+        <h2>📄 AliTok: Aligned Tokenizer</h2>
+        <p><code>2506.05289</code></p>
+        
+        <div class="setting-grid">
+
+            <div class="setting-box h1">
+                <h3>H1_M25</h3>
+                <p class="score high">总分: 27/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>5/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>字数超限 (109字)</li><li>句子过多 (6句)</li><li>字数过多 (253字)</li></ul></details></div>
+            <div class="setting-box h1">
+                <h3>H1_M21</h3>
+                <p class="score high">总分: 27/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>3/5 ⚠️</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>5/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>字数超限 (87字)</li><li>字数过多 (201字)</li><li>缺少关键判断词</li></ul></details></div>
+            <div class="setting-box h2">
+                <h3>H2_M25</h3>
+                <p class="score medium">总分: 24/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>3/5 ⚠️</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>2/5 ⚠️</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>5/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>缺少「实现」效果指标</li><li>字数超限 (66字)</li><li>字数过多 (221字)</li><li>缺少字段: ?</li><li>缺少字段: ?</li></ul></details></div>
+            <div class="setting-box h2">
+                <h3>H2_M21</h3>
+                <p class="score high">总分: 25/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>2/5 ⚠️</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>5/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>字数超限 (71字)</li><li>字数过多 (318字)</li><li>缺少字段: ?</li><li>缺少字段: ?</li><li>缺少字段: ?</li></ul></details></div></div></div>
+    <div class="paper-card">
+        <h2>📄 DINO-Tok: DINO for Tokenizers</h2>
+        <p><code>2511.20565</code></p>
+        
+        <div class="setting-grid">
+
+            <div class="setting-box h1">
+                <h3>H1_M25</h3>
+                <p class="score high">总分: 27/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>4/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>字数超限 (122字)</li><li>字数过多 (248字)</li><li>idea 数量应为3条 (4条)</li></ul></details></div>
+            <div class="setting-box h1">
+                <h3>H1_M21</h3>
+                <p class="score high">总分: 28/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>5/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>字数超限 (61字)</li><li>字数过多 (300字)</li></ul></details></div>
+            <div class="setting-box h2">
+                <h3>H2_M25</h3>
+                <p class="score high">总分: 26/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>3/5 ⚠️</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>5/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>字数过多 (294字)</li><li>缺少字段: ?</li><li>缺少字段: ?</li><li>缺少 contrasts 类引用</li></ul></details></div>
+            <div class="setting-box h2">
+                <h3>H2_M21</h3>
+                <p class="score high">总分: 25/30</p>
+                <table style="font-size: 0.85em;">
+                    <tr><td class="field-label">cn_oneliner</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">cn_abstract</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">editorial_note</td><td>4/5 ✅</td></tr>
+                    <tr><td class="field-label">method_variants</td><td>2/5 ⚠️</td></tr>
+                    <tr><td class="field-label">core_cite</td><td>5/5 ✅</td></tr>
+                    <tr><td class="field-label">idea</td><td>4/5 ✅</td></tr>
+                </table>
+<details><summary style="cursor: pointer; color: #666;">查看问题详情</summary><ul style="font-size: 0.8em; color: #666;"><li>字数过多 (240字)</li><li>缺少字段: ?</li><li>缺少字段: ?</li><li>缺少字段: ?</li><li>idea 数量应为3条 (4条)</li></ul></details></div></div></div>
+    <div class="summary">
+        <h2>📈 汇总对比</h2>
+        <table>
+            <tr>
+                <th>设置</th>
+                <th>H1 vs H2 特点</th>
+                <th>建议</th>
+            </tr>
+            <tr>
+                <td><strong>H1_M25</strong></td>
+                <td>清单型模板，minimaxm25模型</td>
+                <td>稳定输出，格式规范</td>
+            </tr>
+            <tr>
+                <td><strong>H1_M21</strong></td>
+                <td>清单型模板，minimaxm21模型</td>
+                <td>速度快，但可能略简化</td>
+            </tr>
+            <tr>
+                <td><strong>H2_M25</strong></td>
+                <td>判断型模板，minimaxm25模型</td>
+                <td>idea深度更好</td>
+            </tr>
+            <tr>
+                <td><strong>H2_M21</strong></td>
+                <td>判断型模板，minimaxm21模型</td>
+                <td>速度与质量的平衡</td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>

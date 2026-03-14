@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>G/H Hallucination Test v2 — 2026-03-14</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d27;--surface2:#22263a;--border:#2e3350;
+    --accent:#6c8ef7;--accent2:#a78bfa;--green:#4ade80;--yellow:#facc15;
+    --red:#f87171;--text:#e2e8f0;--muted:#94a3b8}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:14px;padding:32px 24px}
+  .container{max-width:1200px;margin:0 auto}
+  h1{font-size:24px;color:var(--accent);margin-bottom:8px}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:32px}
+  .stat-row{display:flex;gap:16px;margin-bottom:32px;flex-wrap:wrap}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;text-align:center;min-width:160px}
+  .stat-value{font-size:36px;font-weight:800}
+  .stat-label{color:var(--muted);font-size:12px;margin-top:4px}
+  .section-title{font-size:17px;font-weight:700;margin:24px 0 14px;color:var(--accent2)}
+  .paper-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px}
+  .paper-header{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .arxiv-id{font-family:monospace;font-size:13px;color:var(--accent);font-weight:700}
+  .scheme-badge{padding:4px 12px;border-radius:8px;font-size:12px}
+  .expand-btn{margin-left:auto;background:var(--surface2);border:1px solid var(--border);
+    color:var(--muted);padding:4px 12px;border-radius:6px;cursor:pointer;font-size:12px}
+  .expand-btn:hover{color:var(--text)}
+  .cite-table{width:100%;border-collapse:collapse;font-size:11px}
+  .cite-table th{background:var(--surface2);color:var(--muted);padding:6px 8px;text-align:left;border-bottom:1px solid var(--border)}
+  .cite-table td{padding:5px 8px;border-bottom:1px solid var(--border);vertical-align:top}
+  .conclusion{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-top:24px}
+  .hl{border-left:3px solid;padding:10px 14px;border-radius:0 8px 8px 0;margin:10px 0;font-size:13px}
+  .hl-g{border-color:var(--green);background:rgba(74,222,128,.08)}
+  .hl-y{border-color:var(--yellow);background:rgba(250,204,21,.08)}
+  .hl-b{border-color:var(--accent);background:rgba(108,142,247,.08)}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>📊 G/H Hallucination Test v2</h1>
+<div class="sub">model: wq/minimaxm25 · 11 papers · threshold: 0.8 · 2026-03-14</div>
+
+<div class="stat-row">
+  <div class="stat">
+    <div class="stat-value" style="color:#facc15">68.9%</div>
+    <div class="stat-label">Scheme G avg pass rate<br>(无参考列表)</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value" style="color:#4ade80">100.0%</div>
+    <div class="stat-label">Scheme H avg pass rate<br>(有参考列表+核查)</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value" style="color:#4ade80">
+      +31.1%
+    </div>
+    <div class="stat-label">H vs G 差值</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value" style="color:var(--accent)">11</div>
+    <div class="stat-label">papers tested</div>
+  </div>
+</div>
+
+<div class="conclusion">
+  <div class="hl hl-g"><strong>G（无锚点）：</strong>模型完全依赖训练记忆生成 core_cite，pass rate = 68.9%</div>
+  <div class="hl hl-b"><strong>H（有锚点）：</strong>S2 列表 + 逐条核查指令，pass rate = 100.0%</div>
+  <div class="hl hl-y"><strong>结论：</strong>H 显著优于 G，S2 锚点对幻觉抑制有实质效果</div>
+</div>
+
+<div class="section-title">📋 每篇论文详情</div>
+
+<div class="paper-card">
+  <div class="paper-header">
+    <span class="arxiv-id">2406.07550</span>
+    <span class="scheme-badge" style="background:rgba(108,142,247,.15);color:#6c8ef7">
+      G: <strong style="color:#facc15">9/12 (75%)</strong>
+    </span>
+    <span class="scheme-badge" style="background:rgba(167,139,250,.15);color:#a78bfa">
+      H: <strong style="color:#4ade80">15/15 (100%)</strong>
+    </span>
+    <button onclick="toggle('2406.07550')" class="expand-btn">展开 cite 详情</button>
+  </div>
+  <div id="detail-2406.07550" style="display:none;margin-top:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <div style="color:#6c8ef7;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme G — 9/12 matched (无参考列表)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr>
+              <td style="color:#e2e8f0;font-size:11px">Taming Transformers for High-Resolution Image Synthesis (VQG</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.93</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Taming Transformers for High-Resolution Image Synt</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">MaskGIT: Masked Generative Image Transformer</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">MaskGIT: Masked Generative Image Transformer</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">An Image is Worth 16x16 Words: Transformers for Image Recogn</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.96</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">An Image is Worth 16x16 Words: Transformers for Im</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Neural Discrete Representation Learning (VQ-VAE)</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.90</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Neural Discrete Representation Learning</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Language Model Beats Diffusion -- Tokenizer is Key to Visual</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.85</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Language Model Beats Diffusion -- Tokenizer is Key</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Autoregressive Image Generation using Residual Quantization </td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.93</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Autoregressive Image Generation using Residual Qua</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Scalable Diffusion Models with Transformers (DiT)</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.94</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Scalable Diffusion Models with Transformers</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">High-Resolution Image Synthesis with Latent Diffusion Models</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.84</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">High-Resolution Image Synthesis with Latent Diffus</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">MAGVIT: Masked Generative Video Transformer</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">MAGVIT: Masked Generative Video Transformer</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Perceiver: General Perception with Iterative Attention</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.53</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Autoregressive Image Generation using Residual Qua</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Improved VQGAN with MaskGIT (LlamaGen / Open-MAGVIT2)</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.47</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Improved Masked Image Generation with Token-Critic</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Vector Quantized Diffusion Model for Text-to-Image Synthesis</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.60</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Diffusion Models Beat GANs on Image Synthesis</td>
+            </tr>
+        </table>
+      </div>
+      <div>
+        <div style="color:#a78bfa;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme H — 15/15 matched (有参考列表+核查)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr>
+              <td style="color:#e2e8f0;font-size:11px">Taming Transformers for High-Resolution Image Synthesis</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Taming Transformers for High-Resolution Image Synt</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Neural Discrete Representation Learning</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Neural Discrete Representation Learning</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">MaskGIT: Masked Generative Image Transformer</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">MaskGIT: Masked Generative Image Transformer</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Finite Scalar Quantization: VQ-VAE Made Simple</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Finite Scalar Quantization: VQ-VAE Made Simple</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">An Image is Worth 16x16 Words: Transformers for Image Recogn</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">An Image is Worth 16x16 Words: Transformers for Im</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Language Model Beats Diffusion -- Tokenizer is Key to Visual</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Language Model Beats Diffusion -- Tokenizer is Key</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">High-Resolution Image Synthesis with Latent Diffusion Models</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">High-Resolution Image Synthesis with Latent Diffus</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Vector-quantized Image Modeling with Improved VQGAN</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Vector-quantized Image Modeling with Improved VQGA</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Masked Autoencoders Are Scalable Vision Learners</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Masked Autoencoders Are Scalable Vision Learners</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Generating Diverse High-Fidelity Images with VQ-VAE-2</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Generating Diverse High-Fidelity Images with VQ-VA</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Scalable Diffusion Models with Transformers</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Scalable Diffusion Models with Transformers</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Perceptual Losses for Real-Time Style Transfer and Super-Res</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Perceptual Losses for Real-Time Style Transfer and</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">The Unreasonable Effectiveness of Deep Features as a Percept</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">The Unreasonable Effectiveness of Deep Features as</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Diffusion Models Beat GANs on Image Synthesis</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Diffusion Models Beat GANs on Image Synthesis</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Classifier-Free Diffusion Guidance</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Classifier-Free Diffusion Guidance</td>
+            </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="paper-card">
+  <div class="paper-header">
+    <span class="arxiv-id">2501.07730</span>
+    <span class="scheme-badge" style="background:rgba(108,142,247,.15);color:#6c8ef7">
+      G: <strong style="color:#94a3b8">?/? (ERR)</strong>
+    </span>
+    <span class="scheme-badge" style="background:rgba(167,139,250,.15);color:#a78bfa">
+      H: <strong style="color:#4ade80">20/20 (100%)</strong>
+    </span>
+    <button onclick="toggle('2501.07730')" class="expand-btn">展开 cite 详情</button>
+  </div>
+  <div id="detail-2501.07730" style="display:none;margin-top:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <div style="color:#6c8ef7;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme G — ?/? matched (无参考列表)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr><td colspan="4" style="color:#94a3b8;text-align:center">no data</td></tr>
+        </table>
+      </div>
+      <div>
+        <div style="color:#a78bfa;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme H — 20/20 matched (有参考列表+核查)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr>
+              <td style="color:#e2e8f0;font-size:11px">An Image is Worth 32 Tokens for Reconstruction and Generatio</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">An Image is Worth 32 Tokens for Reconstruction and</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">MaskGIT: Masked Generative Image Transformer</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">MaskGIT: Masked Generative Image Transformer</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Muse: Text-To-Image Generation via Masked Generative Transfo</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Muse: Text-To-Image Generation via Masked Generati</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Neural Discrete Representation Learning</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Neural Discrete Representation Learning</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Taming Transformers for High-Resolution Image Synthesis</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Taming Transformers for High-Resolution Image Synt</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">High-Resolution Image Synthesis with Latent Diffusion Models</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">High-Resolution Image Synthesis with Latent Diffus</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Scaling Rectified Flow Transformers for High-Resolution Imag</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Scaling Rectified Flow Transformers for High-Resol</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">GenEval: An Object-Focused Framework for Evaluating Text-to-</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">GenEval: An Object-Focused Framework for Evaluatin</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Learning Transferable Visual Models From Natural Language Su</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Learning Transferable Visual Models From Natural L</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Exploring the Limits of Transfer Learning with a Unified Tex</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Exploring the Limits of Transfer Learning with a U</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Conceptual 12M: Pushing Web-Scale Image-Text Pre-Training To</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Conceptual 12M: Pushing Web-Scale Image-Text Pre-T</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">LAION-5B: An open large-scale dataset for training next gene</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">LAION-5B: An open large-scale dataset for training</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Language Model Beats Diffusion -- Tokenizer is Key to Visual</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Language Model Beats Diffusion -- Tokenizer is Key</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Classifier-Free Diffusion Guidance</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Classifier-Free Diffusion Guidance</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Scalable Diffusion Models with Transformers</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Scalable Diffusion Models with Transformers</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">PixArt-α: Fast Training of Diffusion Transformer for Photore</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">PixArt-α: Fast Training of Diffusion Transformer f</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Scaling Autoregressive Models for Content-Rich Text-to-Image</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Scaling Autoregressive Models for Content-Rich Tex</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">MaskBit: Embedding-free Image Generation via Bit Tokens</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">MaskBit: Embedding-free Image Generation via Bit T</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">An Image is Worth 16x16 Words: Transformers for Image Recogn</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">An Image is Worth 16x16 Words: Transformers for Im</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">BERT: Pre-training of Deep Bidirectional Transformers for La</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">BERT: Pre-training of Deep Bidirectional Transform</td>
+            </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="paper-card">
+  <div class="paper-header">
+    <span class="arxiv-id">2503.08685</span>
+    <span class="scheme-badge" style="background:rgba(108,142,247,.15);color:#6c8ef7">
+      G: <strong style="color:#facc15">9/12 (75%)</strong>
+    </span>
+    <span class="scheme-badge" style="background:rgba(167,139,250,.15);color:#a78bfa">
+      H: <strong style="color:#94a3b8">?/? (ERR)</strong>
+    </span>
+    <button onclick="toggle('2503.08685')" class="expand-btn">展开 cite 详情</button>
+  </div>
+  <div id="detail-2503.08685" style="display:none;margin-top:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <div style="color:#6c8ef7;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme G — 9/12 matched (无参考列表)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr>
+              <td style="color:#e2e8f0;font-size:11px">Scaling the Codebook Size of VQGAN to 100,000 with a Utiliza</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.41</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Hierarchical Text-Conditional Image Generation wit</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">An Image is Worth 32 Tokens for Reconstruction and Generatio</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">An Image is Worth 32 Tokens for Reconstruction and</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Autoregressive Model Beats Diffusion: Llama for Scalable Ima</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Autoregressive Model Beats Diffusion: Llama for Sc</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Neural Discrete Representation Learning</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Neural Discrete Representation Learning</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">High-Resolution Image Synthesis with Latent Diffusion Models</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">High-Resolution Image Synthesis with Latent Diffus</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Denoising Diffusion Probabilistic Models</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Denoising Diffusion Probabilistic Models</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Taming Transformers for High-Resolution Image Synthesis</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Taming Transformers for High-Resolution Image Synt</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">A Tutorial on Principal Component Analysis</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">A Tutorial on Principal Component Analysis</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Eigenfaces for Recognition</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.46</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Learning Deep Transformer Models for Machine Trans</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Reducing the Dimensionality of Data with Neural Networks</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.51</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Pixel Recurrent Neural Networks</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Scalable Diffusion Models with Transformers</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Scalable Diffusion Models with Transformers</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Visual Autoregressive Modeling: Scalable Image Generation vi</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Visual Autoregressive Modeling: Scalable Image Gen</td>
+            </tr>
+        </table>
+      </div>
+      <div>
+        <div style="color:#a78bfa;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme H — ?/? matched (有参考列表+核查)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr><td colspan="4" style="color:#94a3b8;text-align:center">no data</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="paper-card">
+  <div class="paper-header">
+    <span class="arxiv-id">2503.10772</span>
+    <span class="scheme-badge" style="background:rgba(108,142,247,.15);color:#6c8ef7">
+      G: <strong style="color:#facc15">8/13 (62%)</strong>
+    </span>
+    <span class="scheme-badge" style="background:rgba(167,139,250,.15);color:#a78bfa">
+      H: <strong style="color:#4ade80">20/20 (100%)</strong>
+    </span>
+    <button onclick="toggle('2503.10772')" class="expand-btn">展开 cite 详情</button>
+  </div>
+  <div id="detail-2503.10772" style="display:none;margin-top:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <div style="color:#6c8ef7;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme G — 8/13 matched (无参考列表)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr>
+              <td style="color:#e2e8f0;font-size:11px">An Image is Worth 32 Tokens for Reconstruction and Generatio</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">An Image is Worth 32 Tokens for Reconstruction and</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Flow Matching for Generative Modeling</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Flow Matching for Generative Modeling</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Scalable Flow Matching for Text-to-Image Generation (Flux)</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.59</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Flow Matching for Generative Modeling</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">High-Resolution Image Synthesis with Latent Diffusion Models</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">High-Resolution Image Synthesis with Latent Diffus</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Scalable Diffusion Models with Transformers (DiT)</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.94</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Scalable Diffusion Models with Transformers</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Denoising Diffusion Probabilistic Models</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Denoising Diffusion Probabilistic Models</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Autoregressive Model Beats Diffusion: Llama for Scalable Ima</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.93</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Autoregressive Model Beats Diffusion: Llama for Sc</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Transfusion: Predict the Next Token and Diffuse Images with </td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.49</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">DataComp: In search of the next generation of mult</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Multimodal Understanding and Generation via the MLLM (Show-o</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.56</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Show-o: One Single Transformer to Unify Multimodal</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">BLIP-2: Bootstrapping Language-Image Pre-training with Froze</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.64</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">BLIP: Bootstrapping Language-Image Pre-training fo</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Classifier-Free Diffusion Guidance</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Classifier-Free Diffusion Guidance</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Vector Quantized Image Generation (VQ-VAE / VQ-GAN)</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.52</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Hierarchical Text-Conditional Image Generation wit</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Imagen: Photorealistic Text-to-Image Diffusion Models with D</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.95</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Photorealistic Text-to-Image Diffusion Models with</td>
+            </tr>
+        </table>
+      </div>
+      <div>
+        <div style="color:#a78bfa;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme H — 20/20 matched (有参考列表+核查)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr>
+              <td style="color:#e2e8f0;font-size:11px">An Image is Worth 32 Tokens for Reconstruction and Generatio</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">An Image is Worth 32 Tokens for Reconstruction and</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Flow Matching for Generative Modeling</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Flow Matching for Generative Modeling</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Flow Straight and Fast: Learning to Generate and Transfer Da</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Flow Straight and Fast: Learning to Generate and T</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Improving and generalizing flow-based generative models with</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Improving and generalizing flow-based generative m</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Democratizing Text-to-Image Masked Generative Models with Co</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Democratizing Text-to-Image Masked Generative Mode</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Scalable Diffusion Models with Transformers</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Scalable Diffusion Models with Transformers</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Scaling Rectified Flow Transformers for High-Resolution Imag</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Scaling Rectified Flow Transformers for High-Resol</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">High-Resolution Image Synthesis with Latent Diffusion Models</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">High-Resolution Image Synthesis with Latent Diffus</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">SiT: Exploring Flow and Diffusion-based Generative Models wi</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">SiT: Exploring Flow and Diffusion-based Generative</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Fluid: Scaling Autoregressive Text-to-image Generative Model</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Fluid: Scaling Autoregressive Text-to-image Genera</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Learning Transferable Visual Models From Natural Language Su</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Learning Transferable Visual Models From Natural L</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Muse: Text-To-Image Generation via Masked Generative Transfo</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Muse: Text-To-Image Generation via Masked Generati</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Classifier-Free Diffusion Guidance</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Classifier-Free Diffusion Guidance</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Representation Alignment for Generation: Training Diffusion </td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Representation Alignment for Generation: Training </td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Autoregressive Model Beats Diffusion: Llama for Scalable Ima</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Autoregressive Model Beats Diffusion: Llama for Sc</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Microsoft COCO: Common Objects in Context</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Microsoft COCO: Common Objects in Context</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Microsoft COCO Captions: Data Collection and Evaluation Serv</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Microsoft COCO Captions: Data Collection and Evalu</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Attention is All you Need</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Attention is All you Need</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">RoFormer: Enhanced Transformer with Rotary Position Embeddin</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">RoFormer: Enhanced Transformer with Rotary Positio</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Show-o: One Single Transformer to Unify Multimodal Understan</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Show-o: One Single Transformer to Unify Multimodal</td>
+            </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="paper-card">
+  <div class="paper-header">
+    <span class="arxiv-id">2504.08736</span>
+    <span class="scheme-badge" style="background:rgba(108,142,247,.15);color:#6c8ef7">
+      G: <strong style="color:#4ade80">11/13 (85%)</strong>
+    </span>
+    <span class="scheme-badge" style="background:rgba(167,139,250,.15);color:#a78bfa">
+      H: <strong style="color:#94a3b8">?/? (ERR)</strong>
+    </span>
+    <button onclick="toggle('2504.08736')" class="expand-btn">展开 cite 详情</button>
+  </div>
+  <div id="detail-2504.08736" style="display:none;margin-top:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <div style="color:#6c8ef7;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme G — 11/13 matched (无参考列表)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr>
+              <td style="color:#e2e8f0;font-size:11px">Taming Transformers for High-Resolution Image Synthesis (VQG</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.93</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Taming Transformers for High-Resolution Image Synt</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Neural Discrete Representation Learning (VQ-VAE)</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.90</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Neural Discrete Representation Learning</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Autoregressive Model Beats Diffusion: Llama for Scalable Ima</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.93</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Autoregressive Model Beats Diffusion: Llama for Sc</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">An Image is Worth 32 Tokens for Reconstruction and Generatio</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.94</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">An Image is Worth 32 Tokens for Reconstruction and</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Open-MAGVIT2: An Open-Source Project Toward Democratizing Au</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Open-MAGVIT2: An Open-Source Project Toward Democr</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Scaling the Codebook Size of VQGAN to 100,000 with a Utiliza</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.96</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Scaling the Codebook Size of VQGAN to 100,000 with</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">ImageNet Large Scale Visual Recognition Challenge</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">ImageNet Large Scale Visual Recognition Challenge</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Masked Autoencoders Are Scalable Vision Learners (MAE)</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.94</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Masked Autoencoders Are Scalable Vision Learners</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Dinov2: Learning Robust Visual Features without Supervision</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">DINOv2: Learning Robust Visual Features without Su</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Scaling Laws for Neural Language Models</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.55</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Planting a SEED of Vision in Large Language Model</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Language Model Beats Diffusion: Tokenizer is Key to Visual G</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.91</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Language Model Beats Diffusion -- Tokenizer is Key</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Vector-quantized Image Modeling with Improved VQGAN (ViT-VQG</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.90</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Vector-quantized Image Modeling with Improved VQGA</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Finite Scalar Quantization: VQ-VAE Made Simple (FSQ)</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.44</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Restructuring Vector Quantization with the Rotatio</td>
+            </tr>
+        </table>
+      </div>
+      <div>
+        <div style="color:#a78bfa;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme H — ?/? matched (有参考列表+核查)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr><td colspan="4" style="color:#94a3b8;text-align:center">no data</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="paper-card">
+  <div class="paper-header">
+    <span class="arxiv-id">2505.21473</span>
+    <span class="scheme-badge" style="background:rgba(108,142,247,.15);color:#6c8ef7">
+      G: <strong style="color:#facc15">8/11 (73%)</strong>
+    </span>
+    <span class="scheme-badge" style="background:rgba(167,139,250,.15);color:#a78bfa">
+      H: <strong style="color:#4ade80">15/15 (100%)</strong>
+    </span>
+    <button onclick="toggle('2505.21473')" class="expand-btn">展开 cite 详情</button>
+  </div>
+  <div id="detail-2505.21473" style="display:none;margin-top:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <div style="color:#6c8ef7;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme G — 8/11 matched (无参考列表)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr>
+              <td style="color:#e2e8f0;font-size:11px">Visual Autoregressive Modeling: Scalable Image Generation vi</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Visual Autoregressive Modeling: Scalable Image Gen</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Taming Transformers for High-Resolution Image Synthesis</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Taming Transformers for High-Resolution Image Synt</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">FlexVAR: Flexible Visual Autoregressive Modeling</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.77</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">FlexVAR: Flexible Visual Autoregressive Modeling w</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Language Models are Unsupervised Multitask Learners</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.70</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Language Models are Few-Shot Learners</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Scaling Autoregressive Models for Content-Rich Text-to-Image</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Scaling Autoregressive Models for Content-Rich Tex</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Emu3: Next-Token Prediction is All You Need</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Emu3: Next-Token Prediction is All You Need</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">TokenFlow: Unified Image Tokenizer for Multimodal Understand</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">TokenFlow: Unified Image Tokenizer for Multimodal </td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Chameleon: Mixed-Modal Early-Fusion Foundation Models</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Chameleon: Mixed-Modal Early-Fusion Foundation Mod</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Denoising Diffusion Probabilistic Models</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.45</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Chameleon: Mixed-Modal Early-Fusion Foundation Mod</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">LlamaGen: Autoregressive Model Beats Diffusion: Llama for Sc</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.94</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Autoregressive Model Beats Diffusion: Llama for Sc</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Show-o: One Single Transformer to Unify Multimodal Understan</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Show-o: One Single Transformer to Unify Multimodal</td>
+            </tr>
+        </table>
+      </div>
+      <div>
+        <div style="color:#a78bfa;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme H — 15/15 matched (有参考列表+核查)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr>
+              <td style="color:#e2e8f0;font-size:11px">Visual Autoregressive Modeling: Scalable Image Generation vi</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Visual Autoregressive Modeling: Scalable Image Gen</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">FlexVAR: Flexible Visual Autoregressive Modeling without Res</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">FlexVAR: Flexible Visual Autoregressive Modeling w</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Taming Transformers for High-Resolution Image Synthesis</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Taming Transformers for High-Resolution Image Synt</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">An Image is Worth 32 Tokens for Reconstruction and Generatio</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">An Image is Worth 32 Tokens for Reconstruction and</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">SoftVQ-VAE: Efficient 1-Dimensional Continuous Tokenizer</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">SoftVQ-VAE: Efficient 1-Dimensional Continuous Tok</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">FlexTok: Resampling Images into 1D Token Sequences of Flexib</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">FlexTok: Resampling Images into 1D Token Sequences</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Autoregressive Image Generation without Vector Quantization</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Autoregressive Image Generation without Vector Qua</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Parallelized Autoregressive Visual Generation</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Parallelized Autoregressive Visual Generation</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">TokenFlow: Unified Image Tokenizer for Multimodal Understand</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">TokenFlow: Unified Image Tokenizer for Multimodal </td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Emu3: Next-Token Prediction is All You Need</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Emu3: Next-Token Prediction is All You Need</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Infinity∞: Scaling Bitwise AutoRegressive Modeling for High-</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Infinity∞: Scaling Bitwise AutoRegressive Modeling</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Autoregressive Model Beats Diffusion: Llama for Scalable Ima</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Autoregressive Model Beats Diffusion: Llama for Sc</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">MaskGIT: Masked Generative Image Transformer</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">MaskGIT: Masked Generative Image Transformer</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">High-Resolution Image Synthesis with Latent Diffusion Models</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">High-Resolution Image Synthesis with Latent Diffus</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Neural Discrete Representation Learning</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Neural Discrete Representation Learning</td>
+            </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="paper-card">
+  <div class="paper-header">
+    <span class="arxiv-id">2505.12053</span>
+    <span class="scheme-badge" style="background:rgba(108,142,247,.15);color:#6c8ef7">
+      G: <strong style="color:#94a3b8">?/? (ERR)</strong>
+    </span>
+    <span class="scheme-badge" style="background:rgba(167,139,250,.15);color:#a78bfa">
+      H: <strong style="color:#94a3b8">?/? (ERR)</strong>
+    </span>
+    <button onclick="toggle('2505.12053')" class="expand-btn">展开 cite 详情</button>
+  </div>
+  <div id="detail-2505.12053" style="display:none;margin-top:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <div style="color:#6c8ef7;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme G — ?/? matched (无参考列表)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr><td colspan="4" style="color:#94a3b8;text-align:center">no data</td></tr>
+        </table>
+      </div>
+      <div>
+        <div style="color:#a78bfa;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme H — ?/? matched (有参考列表+核查)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr><td colspan="4" style="color:#94a3b8;text-align:center">no data</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="paper-card">
+  <div class="paper-header">
+    <span class="arxiv-id">2506.05289</span>
+    <span class="scheme-badge" style="background:rgba(108,142,247,.15);color:#6c8ef7">
+      G: <strong style="color:#facc15">9/12 (75%)</strong>
+    </span>
+    <span class="scheme-badge" style="background:rgba(167,139,250,.15);color:#a78bfa">
+      H: <strong style="color:#94a3b8">?/? (ERR)</strong>
+    </span>
+    <button onclick="toggle('2506.05289')" class="expand-btn">展开 cite 详情</button>
+  </div>
+  <div id="detail-2506.05289" style="display:none;margin-top:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <div style="color:#6c8ef7;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme G — 9/12 matched (无参考列表)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr>
+              <td style="color:#e2e8f0;font-size:11px">Taming Transformers for High-Resolution Image Synthesis (VQG</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.93</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Taming Transformers for High-Resolution Image Synt</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Neural Discrete Representation Learning (VQ-VAE)</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.90</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Neural Discrete Representation Learning</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Autoregressive Model Beats Diffusion: Llama for Scalable Ima</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.93</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Autoregressive Model Beats Diffusion: Llama for Sc</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">An Image is Worth 32 Tokens for Reconstruction and Generatio</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.84</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">An Image is Worth 32 Tokens for Reconstruction and</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Visual AutoRegressive Modeling: Scalable Image Generation vi</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.96</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Visual Autoregressive Modeling: Scalable Image Gen</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Language Models are Unsupervised Multitask Learners (GPT-2)</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.43</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Language Model Beats Diffusion -- Tokenizer is Key</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Scalable Diffusion Models with Transformers (DiT)</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.94</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Scalable Diffusion Models with Transformers</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">High-Resolution Image Synthesis with Latent Diffusion Models</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.52</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Token-Shuffle: Towards High-Resolution Image Gener</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Finite Scalar Quantization: VQ-VAE Made Simple (FSQ)</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.94</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Finite Scalar Quantization: VQ-VAE Made Simple</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Open-MAGVIT2: An Open-Source Project Toward Democratizing Au</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Open-MAGVIT2: An Open-Source Project Toward Democr</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">ImageNet Large Scale Visual Recognition Challenge</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">ImageNet Large Scale Visual Recognition Challenge</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Generating Diverse High-Fidelity Images with VQ-VAE-2</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.46</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Taming Transformers for High-Resolution Image Synt</td>
+            </tr>
+        </table>
+      </div>
+      <div>
+        <div style="color:#a78bfa;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme H — ?/? matched (有参考列表+核查)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr><td colspan="4" style="color:#94a3b8;text-align:center">no data</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="paper-card">
+  <div class="paper-header">
+    <span class="arxiv-id">2507.08441</span>
+    <span class="scheme-badge" style="background:rgba(108,142,247,.15);color:#6c8ef7">
+      G: <strong style="color:#facc15">9/13 (69%)</strong>
+    </span>
+    <span class="scheme-badge" style="background:rgba(167,139,250,.15);color:#a78bfa">
+      H: <strong style="color:#4ade80">16/16 (100%)</strong>
+    </span>
+    <button onclick="toggle('2507.08441')" class="expand-btn">展开 cite 详情</button>
+  </div>
+  <div id="detail-2507.08441" style="display:none;margin-top:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <div style="color:#6c8ef7;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme G — 9/13 matched (无参考列表)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr>
+              <td style="color:#e2e8f0;font-size:11px">An Image is Worth 16x16 Words: Transformers for Image Recogn</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.96</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">An Image is Worth 16x16 Words: Transformers for Im</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Learning Transferable Visual Models From Natural Language Su</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.95</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Learning Transferable Visual Models From Natural L</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">DINOv2: Learning Robust Visual Features without Supervision</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">DINOv2: Learning Robust Visual Features without Su</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Neural Discrete Representation Learning (VQ-VAE)</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.90</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Neural Discrete Representation Learning</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Taming Transformers for High-Resolution Image Synthesis (VQG</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.93</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Taming Transformers for High-Resolution Image Synt</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Autoregressive Model Beats Diffusion: Llama for Scalable Ima</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.93</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Autoregressive Model Beats Diffusion: Llama for Sc</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Visual AutoRegressive Modeling: Scalable Image Generation vi</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.96</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Visual Autoregressive Modeling: Scalable Image Gen</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">High-Resolution Image Synthesis with Latent Diffusion Models</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.51</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Taming Transformers for High-Resolution Image Synt</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Masked Autoencoders Are Scalable Vision Learners (MAE)</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.94</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Masked Autoencoders Are Scalable Vision Learners</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Scaling the Codebook Size of VQGAN to 100,000 with a Utiliza</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.91</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Scaling the Codebook Size of VQGAN to 100,000 with</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">ImageNet Large Scale Visual Recognition Challenge</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.56</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Masked Autoencoders Are Scalable Vision Learners</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Better plain ViT baselines for ImageNet-1k (DeiT III)</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.45</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Deep Residual Learning for Image Recognition</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Token Merging: Your ViT But Faster (ToMe)</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.42</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">DINOv2: Learning Robust Visual Features without Su</td>
+            </tr>
+        </table>
+      </div>
+      <div>
+        <div style="color:#a78bfa;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme H — 16/16 matched (有参考列表+核查)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr>
+              <td style="color:#e2e8f0;font-size:11px">Taming Transformers for High-Resolution Image Synthesis</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Taming Transformers for High-Resolution Image Synt</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Neural Discrete Representation Learning</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Neural Discrete Representation Learning</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">DINOv2: Learning Robust Visual Features without Supervision</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">DINOv2: Learning Robust Visual Features without Su</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">SigLIP 2: Multilingual Vision-Language Encoders with Improve</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">SigLIP 2: Multilingual Vision-Language Encoders wi</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Representation Alignment for Generation: Training Diffusion </td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Representation Alignment for Generation: Training </td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Visual Autoregressive Modeling: Scalable Image Generation vi</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Visual Autoregressive Modeling: Scalable Image Gen</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Autoregressive Model Beats Diffusion: Llama for Scalable Ima</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Autoregressive Model Beats Diffusion: Llama for Sc</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Scaling the Codebook Size of VQGAN to 100,000 with a Utiliza</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Scaling the Codebook Size of VQGAN to 100,000 with</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Open-MAGVIT2: An Open-Source Project Toward Democratizing Au</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Open-MAGVIT2: An Open-Source Project Toward Democr</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Masked Autoencoders Are Scalable Vision Learners</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Masked Autoencoders Are Scalable Vision Learners</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Emerging Properties in Self-Supervised Vision Transformers</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Emerging Properties in Self-Supervised Vision Tran</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">An Image is Worth 32 Tokens for Reconstruction and Generatio</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">An Image is Worth 32 Tokens for Reconstruction and</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">ImageFolder: Autoregressive Image Generation with Folded Tok</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">ImageFolder: Autoregressive Image Generation with </td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">TokenFlow: Unified Image Tokenizer for Multimodal Understand</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">TokenFlow: Unified Image Tokenizer for Multimodal </td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Finite Scalar Quantization: VQ-VAE Made Simple</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Finite Scalar Quantization: VQ-VAE Made Simple</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Vector-quantized Image Modeling with Improved VQGAN</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Vector-quantized Image Modeling with Improved VQGA</td>
+            </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="paper-card">
+  <div class="paper-header">
+    <span class="arxiv-id">2511.20565</span>
+    <span class="scheme-badge" style="background:rgba(108,142,247,.15);color:#6c8ef7">
+      G: <strong style="color:#facc15">8/14 (57%)</strong>
+    </span>
+    <span class="scheme-badge" style="background:rgba(167,139,250,.15);color:#a78bfa">
+      H: <strong style="color:#4ade80">18/18 (100%)</strong>
+    </span>
+    <button onclick="toggle('2511.20565')" class="expand-btn">展开 cite 详情</button>
+  </div>
+  <div id="detail-2511.20565" style="display:none;margin-top:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <div style="color:#6c8ef7;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme G — 8/14 matched (无参考列表)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr>
+              <td style="color:#e2e8f0;font-size:11px">An Image is Worth 16x16 Words: Transformers for Image Recogn</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.57</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">An Image is Worth 32 Tokens for Reconstruction and</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Emerging Properties in Self-Supervised Vision Transformers (</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.46</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Scaling Rectified Flow Transformers for High-Resol</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">DINOv2: Learning Robust Visual Features without Supervision</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">DINOv2: Learning Robust Visual Features without Su</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Neural Discrete Representation Learning (VQ-VAE)</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.90</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Neural Discrete Representation Learning</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Taming Transformers for High-Resolution Image Synthesis (VQG</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.93</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Taming Transformers for High-Resolution Image Synt</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">High-Resolution Image Synthesis with Latent Diffusion Models</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.84</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">High-Resolution Image Synthesis with Latent Diffus</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">VA-VAE: Visual Alignment VAE for Efficient High-Resolution I</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.65</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Taming Transformers for High-Resolution Image Synt</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">VFM-Tok: Visual Foundation Models as Effective Tokenizers fo</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.76</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Vision Foundation Models as Effective Visual Token</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Scaling Rectified Flow Transformers for High-Resolution Imag</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.87</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Scaling Rectified Flow Transformers for High-Resol</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Open-MAGVIT2: An Open-Source Project Toward Democratizing Au</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Open-MAGVIT2: An Open-Source Project Toward Democr</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Wan: Open and Advanced Large-Scale Video Generative Models</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.56</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">HunyuanVideo: A Systematic Framework For Large Vid</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">HunyuanVideo: A Systematic Framework For Large Video Generat</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">HunyuanVideo: A Systematic Framework For Large Vid</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Autoregressive Model Beats Diffusion: Llama for Scalable Ima</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.93</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Autoregressive Model Beats Diffusion: Llama for Sc</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">ImageNet Large Scale Visual Recognition Challenge</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.56</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Masked Autoencoders Are Scalable Vision Learners</td>
+            </tr>
+        </table>
+      </div>
+      <div>
+        <div style="color:#a78bfa;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme H — 18/18 matched (有参考列表+核查)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr>
+              <td style="color:#e2e8f0;font-size:11px">DINOv2: Learning Robust Visual Features without Supervision</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">DINOv2: Learning Robust Visual Features without Su</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Neural Discrete Representation Learning</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Neural Discrete Representation Learning</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Taming Transformers for High-Resolution Image Synthesis</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Taming Transformers for High-Resolution Image Synt</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">High-Resolution Image Synthesis with Latent Diffusion Models</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">High-Resolution Image Synthesis with Latent Diffus</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Language Model Beats Diffusion -- Tokenizer is Key to Visual</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Language Model Beats Diffusion -- Tokenizer is Key</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Vision Foundation Models as Effective Visual Tokenizers for </td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Vision Foundation Models as Effective Visual Token</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Reconstruction vs. Generation: Taming Optimization Dilemma i</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Reconstruction vs. Generation: Taming Optimization</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Representation Alignment for Generation: Training Diffusion </td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Representation Alignment for Generation: Training </td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Scalable Diffusion Models with Transformers</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Scalable Diffusion Models with Transformers</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Visual Autoregressive Modeling: Scalable Image Generation vi</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Visual Autoregressive Modeling: Scalable Image Gen</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Interpreting the Curse of Dimensionality from Distance Conce</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Interpreting the Curse of Dimensionality from Dist</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Finite Scalar Quantization: VQ-VAE Made Simple</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Finite Scalar Quantization: VQ-VAE Made Simple</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">An Image is Worth 32 Tokens for Reconstruction and Generatio</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">An Image is Worth 32 Tokens for Reconstruction and</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">HunyuanVideo: A Systematic Framework For Large Video Generat</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">HunyuanVideo: A Systematic Framework For Large Vid</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Masked Autoencoders Are Scalable Vision Learners</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Masked Autoencoders Are Scalable Vision Learners</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Diffusion Transformers with Representation Autoencoders</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Diffusion Transformers with Representation Autoenc</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Open-MAGVIT2: An Open-Source Project Toward Democratizing Au</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Open-MAGVIT2: An Open-Source Project Toward Democr</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters f</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">GigaTok: Scaling Visual Tokenizers to 3 Billion Pa</td>
+            </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="paper-card">
+  <div class="paper-header">
+    <span class="arxiv-id">2601.01535</span>
+    <span class="scheme-badge" style="background:rgba(108,142,247,.15);color:#6c8ef7">
+      G: <strong style="color:#facc15">6/12 (50%)</strong>
+    </span>
+    <span class="scheme-badge" style="background:rgba(167,139,250,.15);color:#a78bfa">
+      H: <strong style="color:#4ade80">16/16 (100%)</strong>
+    </span>
+    <button onclick="toggle('2601.01535')" class="expand-btn">展开 cite 详情</button>
+  </div>
+  <div id="detail-2601.01535" style="display:none;margin-top:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <div style="color:#6c8ef7;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme G — 6/12 matched (无参考列表)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr>
+              <td style="color:#e2e8f0;font-size:11px">Nested Dropout for Learning Ordered Representations</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.62</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Learning Ordered Representations with Nested Dropo</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Auto-Regressive Image Generation without Vector Quantization</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.99</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Autoregressive Image Generation without Vector Qua</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Visual AutoRegressive Modeling: Scalable Image Generation vi</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Visual Autoregressive Modeling: Scalable Image Gen</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">An Image is Worth 16x16 Words: Transformers for Image Recogn</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">An Image is Worth 16x16 Words: Transformers for Im</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Taming Transformers for High-Resolution Image Synthesis</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Taming Transformers for High-Resolution Image Synt</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">High-Resolution Image Synthesis with Latent Diffusion Models</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">High-Resolution Image Synthesis with Latent Diffus</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">MAGE: MAsked Generative Encoder to Unify Representation Lear</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.49</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Taming Transformers for High-Resolution Image Synt</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Efficient Image Tokenizer for Autoregressive Image Generatio</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.70</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">ImageFolder: Autoregressive Image Generation with </td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Open-MAGVIT2: An Open-Source Project Toward Democratizing Au</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.61</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">SpectralAR: Spectral Autoregressive Visual Generat</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">DINO: Self-Supervised Vision Transformers</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.50</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Scalable Diffusion Models with Transformers</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">LlamaGen: Autoregressive Model Beats Diffusion: Llama for Sc</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">0.94</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Autoregressive Model Beats Diffusion: Llama for Sc</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">FlexVAR: Flexible Visual Autoregressive Modeling without Res</td>
+              <td style="color:#f87171;font-weight:600;text-align:center">0.63</td>
+              <td style="color:#f87171;text-align:center">✗</td>
+              <td style="color:#94a3b8;font-size:10px">Visual Autoregressive Modeling: Scalable Image Gen</td>
+            </tr>
+        </table>
+      </div>
+      <div>
+        <div style="color:#a78bfa;font-weight:700;font-size:12px;margin-bottom:8px">
+          Scheme H — 16/16 matched (有参考列表+核查)
+        </div>
+        <table class="cite-table">
+          <tr><th>title</th><th>score</th><th>pass</th><th>best match</th></tr>
+          <tr>
+              <td style="color:#e2e8f0;font-size:11px">Learning Ordered Representations with Nested Dropout</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Learning Ordered Representations with Nested Dropo</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">FlexTok: Resampling Images into 1D Token Sequences of Flexib</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">FlexTok: Resampling Images into 1D Token Sequences</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">ElasticTok: Adaptive Tokenization for Image and Video</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">ElasticTok: Adaptive Tokenization for Image and Vi</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">One-D-Piece: Image Tokenizer Meets Quality-Controllable Comp</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">One-D-Piece: Image Tokenizer Meets Quality-Control</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">DINOv2: Learning Robust Visual Features without Supervision</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">DINOv2: Learning Robust Visual Features without Su</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">SigLIP 2: Multilingual Vision-Language Encoders with Improve</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">SigLIP 2: Multilingual Vision-Language Encoders wi</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Representation Alignment for Generation: Training Diffusion </td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Representation Alignment for Generation: Training </td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Visual Autoregressive Modeling: Scalable Image Generation vi</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Visual Autoregressive Modeling: Scalable Image Gen</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Autoregressive Model Beats Diffusion: Llama for Scalable Ima</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Autoregressive Model Beats Diffusion: Llama for Sc</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Taming Transformers for High-Resolution Image Synthesis</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Taming Transformers for High-Resolution Image Synt</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Neural Discrete Representation Learning</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Neural Discrete Representation Learning</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Language Model Beats Diffusion -- Tokenizer is Key to Visual</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Language Model Beats Diffusion -- Tokenizer is Key</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Perceptual Losses for Real-Time Style Transfer and Super-Res</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Perceptual Losses for Real-Time Style Transfer and</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">An Image is Worth 32 Tokens for Reconstruction and Generatio</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">An Image is Worth 32 Tokens for Reconstruction and</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">ImageNet Large Scale Visual Recognition Challenge</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">ImageNet Large Scale Visual Recognition Challenge</td>
+            </tr><tr>
+              <td style="color:#e2e8f0;font-size:11px">Improved Precision and Recall Metric for Assessing Generativ</td>
+              <td style="color:#4ade80;font-weight:600;text-align:center">1.00</td>
+              <td style="color:#4ade80;text-align:center">✓</td>
+              <td style="color:#94a3b8;font-size:10px">Improved Precision and Recall Metric for Assessing</td>
+            </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+function toggle(id) {
+  const el = document.getElementById('detail-' + id);
+  const btn = event.target;
+  if (el.style.display === 'none') {
+    el.style.display = 'block';
+    btn.textContent = '收起';
+  } else {
+    el.style.display = 'none';
+    btn.textContent = '展开 cite 详情';
+  }
+}
+</script>
+</body></html>

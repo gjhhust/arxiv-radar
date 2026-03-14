@@ -1,0 +1,122 @@
+{
+  "arxiv_id": "2505.12053",
+  "model": "gpt52",
+  "timestamp": "2026-03-12T21:38:05.115520",
+  "latency_s": 165.59,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于TiTok式query tokenizer引入编解码异帧率训练+Partial RoPE实现变帧率视频用1/8 tokens仍保持SOTA生成\",\"cn_abstract\":\"VFRTok针对现有视频tokenizer遵循Frame-Proportional Information Assumption导致token数随FPS线性增长的问题，提出Duration-Proportional Information Assumption：视频信息容量上界更应与duration而非frame count成正比。方法上采用TiTok/MAETok一类query-based Transformer AutoEncoder，将任意帧率视频编码为固定长度latent，并通过encoder/decoder asymmetric frame-rate training学习连续spatio-temporal表示，从而支持任意FPS解码与原生frame interpolation。为缓解RoPE带来的强位置先验导致latent呈网格化注意模式，提出Partial RoPE仅在部分attention heads上施加RoPE以解耦position与content建模，提升content-awareness与生成质量。实验显示在重建质量具竞争力的同时，VFRTok以仅1/8 tokens达到更高的视频生成fidelity与更低计算开销。\",\"contribution_type\":\"significant\",\"editorial_note\":\"[前驱] 建立在LDM/DiT视频生成范式与AE式video tokenizer之上，并借鉴TiTok/SoftVQ-VAE/MAETok的query-based固定长度latent思想；位置编码沿用RoPE体系。\\n[贡献] 核心新意是用“duration而非帧数决定信息上界”的假设驱动设计：通过编解码异帧率训练把不同FPS映射到同长度latent，并用Partial RoPE削弱位置先验、增强内容聚合。\\n[判断] 变帧率下token数不随FPS涨是实打实的系统性收益，且训练策略可复用；但信息假设更多是合理动机而非严格理论保证，整体仍属于在query-tokenizer框架上的关键工程化突破。\",\"why_read\":\"如果你在做视频LDM/DiT的tokenizer或想把同一扩散模型覆盖多FPS与插帧，本文给出可落地的“固定token长度+异帧率编解码训练”配方与Partial RoPE细节。\",\"method_variants\":[{\"base_method\":\"titok\",\"variant_tag\":\"titok:video-query-ae\",\"description\":\"TiTok用learnable latent queries从2D patch tokens提取固定长度表示；VFRTok将其扩展到3D video patchify/unpatchify并用于视频AE重建。\"},{\"base_method\":\"maetok\",\"variant_tag\":\"maetok:fixed-length-latents-for-diffusion\",\"description\":\"MAETok证明query/MAE式tokenizer对扩散更友好；VFRTok沿用固定长度latent思路并面向视频生成场景优化时空表示。\"},{\"base_method\":\"rope\",\"variant_tag\":\"rope:partial-head-application\",\"description\":\"标准RoPE对所有heads注入强位置先验；VFRTok提出Partial RoPE仅对部分heads使用RoPE以分离位置/内容建模并促使token按内容聚合。\"},{\"base_method\":\"omnitokenizer\",\"variant_tag\":\"omnitokenizer:contrast-variable-fps\",\"description\":\"Omnitokenizer提供固定时域压缩率的image-video tokenizer；VFRTok对比其token数随FPS线性增长并以异帧率训练实现变帧率固定token长度。\"},{\"base_method\":\"cosmos-tokenizer\",\"variant_tag\":\"cosmos-tokenizer:contrast-high-compression-fixed-fps\",\"description\":\"Cosmos tokenizer用wavelet等实现多档固定压缩率但仍绑定固定FPS；VFRTok在更少tokens下支持任意FPS解码与插帧。\"},{\"base_method\":\"ltx-video-vae\",\"variant_tag\":\"ltx-video-vae:contrast-cascaded-downsample\",\"description\":\"LTX-VAE通过级联下采样提升压缩率但仍是帧率成比例token；VFRTok用duration驱动的固定长度latent避免高FPS成本膨胀。\"}],\"core_cite\":[{\"title\":\"An image is worth 32 tokens for reconstruction and generation\",\"role\":\"extends\",\"note\":\"VFRTok采用同类query-based learnable latent tokens从patch tokens聚合信息的核心范式，并将其扩展到视频与变帧率设定。\"},{\"title\":\"SoftVQ-VAE: Efficient 1-Dimensional Continuous Tokenizer\",\"role\":\"extends\",\"note\":\"作为query/1D连续latent tokenizer代表工作，支撑VFRTok选择连续、紧凑latent空间而非传统网格latent。\"},{\"title\":\"Masked Autoencoders Are Effective Tokenizers for Diffusion Models\",\"role\":\"extends\",\"note\":\"同属Transformer tokenizer路线，支持“tokenizer需兼顾reconstruction与generation/diffusibility”的设计取向。\"},{\"title\":\"Roformer: Enhanced transformer with rotary position embedding\",\"role\":\"extends\",\"note\":\"VFRTok的Partial RoPE直接改造RoPE的使用方式（仅部分heads施加）以减弱位置先验。\"},{\"title\":\"Omnitokenizer: A joint image-video tokenizer for visual generation\",\"role\":\"contrasts\",\"note\":\"作为主流固定时域压缩视频tokenizer对比对象；本文强调其token数随FPS线性增长并在重建/生成上做效率对比。\"},{\"title\":\"Cosmos world foundation model platform for physical ai\",\"role\":\"contrasts\",\"note\":\"对比其多档压缩率但固定FPS的tokenizer设定；VFRTok以duration驱动固定token长度实现更高效率。\"},{\"title\":\"Ltx-video: Realtime video latent diffusion\",\"role\":\"contrasts\",\"note\":\"对比其通过额外下采样获得高压缩但仍固定帧率tokenization；VFRTok主打变帧率与更少tokens。\"},{\"title\":\"Hunyuan-dit: A powerful multi-resolution diffusion transformer with fine-grained chinese understanding\",\"role\":\"contrasts\",\"note\":\"作为视频生成系统/视频tokenizer相关baseline引用，代表固定压缩率视频LDM路线。\"},{\"title\":\"Cogvideox: Text-to-video diffusion models with an expert transformer\",\"role\":\"contrasts\",\"note\":\"作为视频扩散生成baseline体系引用，用于说明现有框架依赖固定帧率tokenizer并做生成质量对比语境。\"},{\"title\":\"Open-sora: Democratizing efficient video production for all\",\"role\":\"contrasts\",\"note\":\"代表开源视频生成系统与其固定tokenization设定的对比背景。\"},{\"title\":\"Latte: Latent diffusion transformer for video generation\",\"role\":\"supports\",\"note\":\"用于说明早期视频LDM常逐帧使用图像tokenizer、缺乏时域联合压缩，构成本文动机背景。\"},{\"title\":\"High-resolution image synthesis with latent diffusion models\",\"role\":\"supports\",\"note\":\"LDM两段式（tokenizer+diffusion）框架的基础引用，本文问题定义与收益（token减少→DiT成本下降）建立其上。\"},{\"title\":\"An image is worth 16x16 words: Transformers for image recognition at scale\",\"role\":\"uses\",\"note\":\"VFRTok编码器/解码器骨干采用ViT式patchify+Transformer结构。\"},{\"title\":\"FVD: A new metric for video generation\",\"role\":\"uses\",\"note\":\"用于视频生成fidelity评测的常用指标引用。\"},{\"title\":\"The unreasonable effectiveness of deep features as a perceptual metric\",\"role\":\"uses\",\"note\":\"用于重建/感知质量评测（LPIPS）相关引用。\"}]}",
+  "cn_oneliner": "基于TiTok式query tokenizer引入编解码异帧率训练+Partial RoPE实现变帧率视频用1/8 tokens仍保持SOTA生成",
+  "cn_abstract": "VFRTok针对现有视频tokenizer遵循Frame-Proportional Information Assumption导致token数随FPS线性增长的问题，提出Duration-Proportional Information Assumption：视频信息容量上界更应与duration而非frame count成正比。方法上采用TiTok/MAETok一类query-based Transformer AutoEncoder，将任意帧率视频编码为固定长度latent，并通过encoder/decoder asymmetric frame-rate training学习连续spatio-temporal表示，从而支持任意FPS解码与原生frame interpolation。为缓解RoPE带来的强位置先验导致latent呈网格化注意模式，提出Partial RoPE仅在部分attention heads上施加RoPE以解耦position与content建模，提升content-awareness与生成质量。实验显示在重建质量具竞争力的同时，VFRTok以仅1/8 tokens达到更高的视频生成fidelity与更低计算开销。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱] 建立在LDM/DiT视频生成范式与AE式video tokenizer之上，并借鉴TiTok/SoftVQ-VAE/MAETok的query-based固定长度latent思想；位置编码沿用RoPE体系。\n[贡献] 核心新意是用“duration而非帧数决定信息上界”的假设驱动设计：通过编解码异帧率训练把不同FPS映射到同长度latent，并用Partial RoPE削弱位置先验、增强内容聚合。\n[判断] 变帧率下token数不随FPS涨是实打实的系统性收益，且训练策略可复用；但信息假设更多是合理动机而非严格理论保证，整体仍属于在query-tokenizer框架上的关键工程化突破。",
+  "why_read": "如果你在做视频LDM/DiT的tokenizer或想把同一扩散模型覆盖多FPS与插帧，本文给出可落地的“固定token长度+异帧率编解码训练”配方与Partial RoPE细节。",
+  "method_variants": [
+    {
+      "base_method": "titok",
+      "variant_tag": "titok:video-query-ae",
+      "description": "TiTok用learnable latent queries从2D patch tokens提取固定长度表示；VFRTok将其扩展到3D video patchify/unpatchify并用于视频AE重建。"
+    },
+    {
+      "base_method": "maetok",
+      "variant_tag": "maetok:fixed-length-latents-for-diffusion",
+      "description": "MAETok证明query/MAE式tokenizer对扩散更友好；VFRTok沿用固定长度latent思路并面向视频生成场景优化时空表示。"
+    },
+    {
+      "base_method": "rope",
+      "variant_tag": "rope:partial-head-application",
+      "description": "标准RoPE对所有heads注入强位置先验；VFRTok提出Partial RoPE仅对部分heads使用RoPE以分离位置/内容建模并促使token按内容聚合。"
+    },
+    {
+      "base_method": "omnitokenizer",
+      "variant_tag": "omnitokenizer:contrast-variable-fps",
+      "description": "Omnitokenizer提供固定时域压缩率的image-video tokenizer；VFRTok对比其token数随FPS线性增长并以异帧率训练实现变帧率固定token长度。"
+    },
+    {
+      "base_method": "cosmos-tokenizer",
+      "variant_tag": "cosmos-tokenizer:contrast-high-compression-fixed-fps",
+      "description": "Cosmos tokenizer用wavelet等实现多档固定压缩率但仍绑定固定FPS；VFRTok在更少tokens下支持任意FPS解码与插帧。"
+    },
+    {
+      "base_method": "ltx-video-vae",
+      "variant_tag": "ltx-video-vae:contrast-cascaded-downsample",
+      "description": "LTX-VAE通过级联下采样提升压缩率但仍是帧率成比例token；VFRTok用duration驱动的固定长度latent避免高FPS成本膨胀。"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "An image is worth 32 tokens for reconstruction and generation",
+      "role": "extends",
+      "note": "VFRTok采用同类query-based learnable latent tokens从patch tokens聚合信息的核心范式，并将其扩展到视频与变帧率设定。"
+    },
+    {
+      "title": "SoftVQ-VAE: Efficient 1-Dimensional Continuous Tokenizer",
+      "role": "extends",
+      "note": "作为query/1D连续latent tokenizer代表工作，支撑VFRTok选择连续、紧凑latent空间而非传统网格latent。"
+    },
+    {
+      "title": "Masked Autoencoders Are Effective Tokenizers for Diffusion Models",
+      "role": "extends",
+      "note": "同属Transformer tokenizer路线，支持“tokenizer需兼顾reconstruction与generation/diffusibility”的设计取向。"
+    },
+    {
+      "title": "Roformer: Enhanced transformer with rotary position embedding",
+      "role": "extends",
+      "note": "VFRTok的Partial RoPE直接改造RoPE的使用方式（仅部分heads施加）以减弱位置先验。"
+    },
+    {
+      "title": "Omnitokenizer: A joint image-video tokenizer for visual generation",
+      "role": "contrasts",
+      "note": "作为主流固定时域压缩视频tokenizer对比对象；本文强调其token数随FPS线性增长并在重建/生成上做效率对比。"
+    },
+    {
+      "title": "Cosmos world foundation model platform for physical ai",
+      "role": "contrasts",
+      "note": "对比其多档压缩率但固定FPS的tokenizer设定；VFRTok以duration驱动固定token长度实现更高效率。"
+    },
+    {
+      "title": "Ltx-video: Realtime video latent diffusion",
+      "role": "contrasts",
+      "note": "对比其通过额外下采样获得高压缩但仍固定帧率tokenization；VFRTok主打变帧率与更少tokens。"
+    },
+    {
+      "title": "Hunyuan-dit: A powerful multi-resolution diffusion transformer with fine-grained chinese understanding",
+      "role": "contrasts",
+      "note": "作为视频生成系统/视频tokenizer相关baseline引用，代表固定压缩率视频LDM路线。"
+    },
+    {
+      "title": "Cogvideox: Text-to-video diffusion models with an expert transformer",
+      "role": "contrasts",
+      "note": "作为视频扩散生成baseline体系引用，用于说明现有框架依赖固定帧率tokenizer并做生成质量对比语境。"
+    },
+    {
+      "title": "Open-sora: Democratizing efficient video production for all",
+      "role": "contrasts",
+      "note": "代表开源视频生成系统与其固定tokenization设定的对比背景。"
+    },
+    {
+      "title": "Latte: Latent diffusion transformer for video generation",
+      "role": "supports",
+      "note": "用于说明早期视频LDM常逐帧使用图像tokenizer、缺乏时域联合压缩，构成本文动机背景。"
+    },
+    {
+      "title": "High-resolution image synthesis with latent diffusion models",
+      "role": "supports",
+      "note": "LDM两段式（tokenizer+diffusion）框架的基础引用，本文问题定义与收益（token减少→DiT成本下降）建立其上。"
+    },
+    {
+      "title": "An image is worth 16x16 words: Transformers for image recognition at scale",
+      "role": "uses",
+      "note": "VFRTok编码器/解码器骨干采用ViT式patchify+Transformer结构。"
+    },
+    {
+      "title": "FVD: A new metric for video generation",
+      "role": "uses",
+      "note": "用于视频生成fidelity评测的常用指标引用。"
+    },
+    {
+      "title": "The unreasonable effectiveness of deep features as a perceptual metric",
+      "role": "uses",
+      "note": "用于重建/感知质量评测（LPIPS）相关引用。"
+    }
+  ]
+}

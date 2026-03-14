@@ -1,0 +1,87 @@
+{
+  "arxiv_id": "2503.08685",
+  "model": "minimaxm25",
+  "timestamp": "2026-03-12T23:47:30.809832",
+  "latency_s": 23.94,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于1D tokenizer引入nested CFG实现PCA-like结构，解决semantic-spectrum耦合问题\",\"cn_abstract\":\"本文提出Semanticist，一个将PCA类结构嵌入潜空间的视觉tokenizer。现有的1D tokenizer缺乏结构约束，导致语义与光谱信息耦合。本文方法通过nested classifier-free guidance诱导token的orthogonality和orderliness，确保每个token贡献非重叠信息且方差递减。此外，利用spectral autoregressive diffusion decoder解耦语义与低频细节。实验表明该方法在ImageNet上取得SOTA重建性能，且自回归模型只需32 tokens即可达到可比性能。\",\"contribution_type\":\"significant\",\"editorial_note\":\"[前驱] 本工作建立在1D tokenizer（TiTok、ALIT）和diffusion-based decoder（DiT、diffusion autoencoder）的基础上。核心创新点一是将PCA的orthogonality和orderliness引入tokenization，二是识别并解决了semantic-spectrum coupling问题。 [贡献] 作者提出了nested CFG训练策略来诱导PCA-like结构，并设计了spectral autoregressive diffusion decoder来解耦语义与光谱信息。这使得token具有coarse-to-fine的层次结构，每个token捕获不同粒度的信息。 [判断] 该工作解决了tokenizer中语义与细节耦合的已知问题，提供了可证明的PCA-like理论保证，是有实质价值的贡献。\",\"why_read\":\"如果你在做visual tokenization或 autoregressive image generation，这篇论文提供了如何构建结构化、可解释latent space的新思路，实验显示可大幅减少生成所需的token数量。\",\"method_variants\":[{\"base_method\":\"titok\",\"variant_tag\":\"titok:pca-like-structure\",\"description\":\"原titok做法是生成1D因果token但缺乏结构约束；本文通过nested CFG引入PCA-like结构，强制token的orthogonality和orderliness，使每个token贡献递减的方差\"},{\"base_method\":\"diffusion-decoder\",\"variant_tag\":\"diffusion-decoder:spectral-autoregressive\",\"description\":\"原diffusion decoder直接重构图像；本文采用spectral autoregressive过程，从低频到高频逐步重建，解耦语义与光谱信息的耦合\"}],\"core_cite\":[{\"title\":\"An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale\",\"role\":\"uses\",\"note\":\"使用ViT作为encoder backbone\"},{\"title\":\"Scalable Diffusion Models with Transformers\",\"role\":\"uses\",\"note\":\"使用DiT作为decoder架构\"},{\"title\":\"Tokenized Tokenizers for Autoregressive Models\",\"role\":\"extends\",\"note\":\"本文直接继承的1D tokenizer基础方法\"},{\"title\":\"Autoregressive Image Generation without Vector Quantization\",\"role\":\"uses\",\"note\":\"使用continuous token的AR生成方法\"},{\"title\":\"RQ-VAE: Learning Discrete Latent Codes via Hierarchical Labeling\",\"role\":\"uses\",\"note\":\"使用vector quantization技术\"},{\"title\":\"MAGVIT: Masked Generative Video Transformer\",\"role\":\"uses\",\"note\":\"使用LFQ技术\"},{\"title\":\"Diffusion Autoencoders: Toward a Meaningful and Decodable Representation\",\"role\":\"extends\",\"note\":\"diffusion-based decoder基础方法\"},{\"title\":\"MaskGIT: Masked Generative Image Transformer\",\"role\":\"contrasts\",\"note\":\"实验对比的baseline tokenizer\"},{\"title\":\"VAR: Visual Autoregressive Modeling\",\"role\":\"contrasts\",\"note\":\"实验对比的AR生成方法\"},{\"title\":\"LlamaGen: Open Language Models for Image Generation\",\"role\":\"contrasts\",\"note\":\"实验对比的SOTA tokenizer和生成模型\"},{\"title\":\"SEED: Efficient Semantic Diffusion Model\",\"role\":\"supports\",\"note\":\"支持1D tokenization的动机\"},{\"title\":\"ALIT: Adaptive Length Tokenization\",\"role\":\"extends\",\"note\":\"另一个1D tokenizer基础方法\"}]}",
+  "cn_oneliner": "基于1D tokenizer引入nested CFG实现PCA-like结构，解决semantic-spectrum耦合问题",
+  "cn_abstract": "本文提出Semanticist，一个将PCA类结构嵌入潜空间的视觉tokenizer。现有的1D tokenizer缺乏结构约束，导致语义与光谱信息耦合。本文方法通过nested classifier-free guidance诱导token的orthogonality和orderliness，确保每个token贡献非重叠信息且方差递减。此外，利用spectral autoregressive diffusion decoder解耦语义与低频细节。实验表明该方法在ImageNet上取得SOTA重建性能，且自回归模型只需32 tokens即可达到可比性能。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱] 本工作建立在1D tokenizer（TiTok、ALIT）和diffusion-based decoder（DiT、diffusion autoencoder）的基础上。核心创新点一是将PCA的orthogonality和orderliness引入tokenization，二是识别并解决了semantic-spectrum coupling问题。 [贡献] 作者提出了nested CFG训练策略来诱导PCA-like结构，并设计了spectral autoregressive diffusion decoder来解耦语义与光谱信息。这使得token具有coarse-to-fine的层次结构，每个token捕获不同粒度的信息。 [判断] 该工作解决了tokenizer中语义与细节耦合的已知问题，提供了可证明的PCA-like理论保证，是有实质价值的贡献。",
+  "why_read": "如果你在做visual tokenization或 autoregressive image generation，这篇论文提供了如何构建结构化、可解释latent space的新思路，实验显示可大幅减少生成所需的token数量。",
+  "method_variants": [
+    {
+      "base_method": "titok",
+      "variant_tag": "titok:pca-like-structure",
+      "description": "原titok做法是生成1D因果token但缺乏结构约束；本文通过nested CFG引入PCA-like结构，强制token的orthogonality和orderliness，使每个token贡献递减的方差"
+    },
+    {
+      "base_method": "diffusion-decoder",
+      "variant_tag": "diffusion-decoder:spectral-autoregressive",
+      "description": "原diffusion decoder直接重构图像；本文采用spectral autoregressive过程，从低频到高频逐步重建，解耦语义与光谱信息的耦合"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "role": "uses",
+      "note": "使用ViT作为encoder backbone"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "role": "uses",
+      "note": "使用DiT作为decoder架构"
+    },
+    {
+      "title": "Tokenized Tokenizers for Autoregressive Models",
+      "role": "extends",
+      "note": "本文直接继承的1D tokenizer基础方法"
+    },
+    {
+      "title": "Autoregressive Image Generation without Vector Quantization",
+      "role": "uses",
+      "note": "使用continuous token的AR生成方法"
+    },
+    {
+      "title": "RQ-VAE: Learning Discrete Latent Codes via Hierarchical Labeling",
+      "role": "uses",
+      "note": "使用vector quantization技术"
+    },
+    {
+      "title": "MAGVIT: Masked Generative Video Transformer",
+      "role": "uses",
+      "note": "使用LFQ技术"
+    },
+    {
+      "title": "Diffusion Autoencoders: Toward a Meaningful and Decodable Representation",
+      "role": "extends",
+      "note": "diffusion-based decoder基础方法"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "role": "contrasts",
+      "note": "实验对比的baseline tokenizer"
+    },
+    {
+      "title": "VAR: Visual Autoregressive Modeling",
+      "role": "contrasts",
+      "note": "实验对比的AR生成方法"
+    },
+    {
+      "title": "LlamaGen: Open Language Models for Image Generation",
+      "role": "contrasts",
+      "note": "实验对比的SOTA tokenizer和生成模型"
+    },
+    {
+      "title": "SEED: Efficient Semantic Diffusion Model",
+      "role": "supports",
+      "note": "支持1D tokenization的动机"
+    },
+    {
+      "title": "ALIT: Adaptive Length Tokenization",
+      "role": "extends",
+      "note": "另一个1D tokenizer基础方法"
+    }
+  ]
+}

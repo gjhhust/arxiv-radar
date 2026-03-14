@@ -1,0 +1,128 @@
+{
+  "variant": "e1",
+  "model": "claude46",
+  "timestamp": "2026-03-12T19:45:10.260133",
+  "latency_s": 48.88,
+  "parse_success": true,
+  "error": null,
+  "raw_output": "```json\n{\n  \"cn_oneliner\": \"基于GigaTok引入冗余token填充与层次语义正则化解决flexible tokenizer的AR生成质量随序列长度不增反降问题\",\n  \"cn_abstract\": \"现有flexible image tokenizer通过nested dropout训练，导致图像信息过度集中于早期token，使得下游AR模型生成质量随序列长度增加无法持续提升，甚至退化。本文提出ReTok，引入Redundant Token Padding（在序列尾部附加冗余query token后再执行nested dropout，迫使原始序列尾部token得到更多激活）和Hierarchical Semantic Regularization（对早期token施加强DINOv2语义对齐约束，随序列长度增加线性衰减以允许尾部token学习细节重建），并配合decoder fine-tuning进一步改善短序列生成质量。在ImageNet 256×256上，ReTok-S-B+LlamaGen-XL达到gFID 2.27，在flexible tokenizer中达到最优，并与同规模固定长度tokenizer持平。\",\n  \"contribution_type\": \"incremental\",\n  \"editorial_note\": \"本文核心贡献是识别并量化了flexible tokenizer（nested dropout训练）在下游AR生成中的'尾部信息集中'问题，并提出两个补丁：冗余padding是一个训练技巧（通过扩展序列长度让原始尾部token变成'早期token'），层次语义正则化则直接沿用GigaTok的representation alignment思路加了一个线性decay权重。两个组件均为已有方法（GigaTok的语义正则化 + nested dropout的变体）的直接组合，方法上几乎没有新原语；真正有价值的是对flexible tokenizer AR生成瓶颈的系统性诊断，但这一发现的新颖性也有限，FlexTok论文中已有类似现象的观察。\",\n  \"why_read\": \"正在设计variable-length visual tokenizer并需要理解为何AR生成质量不随token数增加的研究者，可从本文的系统性瓶颈分析（Finding 1/2）和冗余padding这一简单有效的训练技巧中获得直接参考。\",\n  \"method_variants\": [\n    {\n      \"base_method\": \"nested dropout\",\n      \"variant_tag\": \"nested_dropout:redundant_token_padding\",\n      \"description\": \"在原始N个query token后附加M个冗余padding token，对N+M长度序列执行nested dropout，使原始序列尾部token在训练中充当'早期token'被更频繁激活，推理时丢弃padding token\"\n    },\n    {\n      \"base_method\": \"representation alignment\",\n      \"variant_tag\": \"representation_alignment:hierarchical_semantic_regularization\",\n      \"description\": \"将GigaTok的固定权重DINOv2语义对齐损失改为随retained序列长度k线性衰减的权重λ(k)，早期token强语义约束、尾部token弱约束以保留细节重建能力\"\n    },\n    {\n      \"base_method\": \"vit decoder\",\n      \"variant_tag\": \"vit_decoder:semantic_constrained_finetuning\",\n      \"description\": \"冻结encoder和quantizer，以小常数λ(k)=0.5对decoder进行额外50 epoch微调，改善短序列（32/64 token）的重建与生成质量\"\n    }\n  ],\n  \"core_cite\": [\n    {\n      \"title\": \"Gigatok: Scaling visual tokenizers to 3 billion parameters for autoregressive image generation\",\n      \"role\": \"extends\",\n      \"note\": \"ReTok直接基于GigaTok架构初始化权重，沿用其representation alignment训练策略，并以GigaTok-S-S作为baseline tokenizer进行所有对比实验\"\n    },\n    {\n      \"title\": \"Learning ordered representations with nested dropout\",\n      \"role\": \"extends\",\n      \"note\": \"flexible tokenizer训练的核心机制，本文所有改进均围绕克服naive nested dropout的信息集中缺陷展开\"\n    },\n    {\n      \"title\": \"Autoregressive model beats diffusion: Llama for scalable image generation\",\n      \"role\": \"uses\",\n      \"note\": \"下游AR生成模型LlamaGen（B/L/XL变体）的来源，用于评估tokenizer质量的生成FID\"\n    },\n    {\n      \"title\": \"Dinov2: Learning robust visual features without supervision\",\n      \"role\": \"uses\",\n      \"note\": \"Hierarchical Semantic Regularization中语义对齐的目标特征提供者，使用DINOv2-B的encoder输出作为监督信号\"\n    },\n    {\n      \"title\": \"FlexTok: Resampling Images into 1D Token Sequences of Flexible Length\",\n      \"role\": \"contrasts\",\n      \"note\": \"最直接的flexible tokenizer竞品，同样使用nested dropout，但在256 token时gFID约2.5劣于32 token的1.86，验证了本文指出的生成瓶颈问题\"\n    },\n    {\n      \"title\": \"One-d-piece: Image tokenizer meets quality-controllable compression\",\n      \"role\": \"contrasts\",\n      \"note\": \"另一flexible tokenizer竞品，实验对比中ReTok在128-256 token段显著优于One-D-Piece（gFID从6.49降至2.66 vs 3.86）\"\n    },\n    {\n      \"title\": \"DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction\",\n      \"role\": \"contrasts\",\n      \"note\": \"flexible tokenizer竞品，采用分层分辨率重建策略，ReTok在相近参数量下256 token gFID（2.66）优于其2.75，且短序列下优势更明显\"\n    },\n    {\n      \"title\": \"SpectralAR: Spectral Autoregressive Visual Generation\",\n      \"role\": \"contrasts\",\n      \"note\": \"flexible tokenizer竞品，使用频谱域分层重建，在主表格中作为对比baseline\"\n    },\n    {\n      \"title\": \"Representation alignment for generation: Training diffusion transformers is easier than you think\",\n      \"role\": \"supports\",\n      \"note\": \"representation alignment技术的原始来源，本文层次语义正则化直接基于此思路，GigaTok也沿用了该方法\"\n    },\n    {\n      \"title\": \"An image is worth 32 tokens for reconstruction and generation\",\n      \"role\": \"contrasts\",\n      \"note\": \"TiTok固定长度1D tokenizer，在主表格中作为固定长度方法对比基准，同时其高压缩比下的语义表示发现启发了本文的层次语义正则化设计\"\n    },\n    {\n      \"title\": \"Taming transformers for high-resolution image synthesis\",\n      \"role\": \"uses\",\n      \"note\": \"VQGAN，本文重建损失定义来源（pixel重建损失+perceptual loss+adversarial loss+VQ codebook loss）\"\n    },\n    {\n      \"title\": \"Reconstruction vs. generation: Taming optimization dilemma in latent diffusion models\",\n      \"role\": \"contrasts\",\n      \"note\": \"VA-VAE，在连续建模类方法中作为对比baseline，其LightningDiT达到gFID 1.35\"\n    },\n    {\n      \"title\": \"Vision foundation models as effective visual tokenizers for autoregressive image generation\",\n      \"role\": \"contrasts\",\n      \"note\": \"VFMTok，1D tokenizer竞品，在主表格中作为对比，336×336分辨率下LlamaGen-L达到gFID 2.11\"\n    },\n    {\n      \"title\": \"Imagenet large scale visual recognition challenge\",\n      \"role\": \"uses\",\n      \"note\": \"所有tokenizer训练和评估的数据集，ImageNet 256×256类别条件生成\"\n    },\n    {\n      \"title\": \"Gans trained by a two time-scale update rule converge to a local nash equilibrium\",\n      \"role\": \"uses\",\n      \"note\": \"FID（Fréchet Inception Distance）指标的来源，用于评估生成质量的主要指标gFID和rFID\"\n    },\n    {\n      \"title\": \"Masked autoencoders are effective tokenizers for diffusion models\",\n      \"role\": \"supports\",\n      \"note\": \"MAETok，同样使用representation alignment训练tokenizer，在related work中作为语义正则化方法的支持引用\"\n    },\n    {\n      \"title\": \"Imagefolder: Autoregressive image generation with folded tokens\",\n      \"role\": \"supports\",\n      \"note\": \"同样在tokenizer训练中注入语义引导，在related work和方法部分作为representation alignment应用的支持引用\"\n    },\n    {\n      \"title\": \"Highly Compressed Tokenizer Can Generate Without Training\",\n      \"role\": \"supports\",\n      \"note\": \"发现高压缩比1D tokenizer有效学习语义表示，启发了本文对早期token施加强语义约束的层次正则化设计\"\n    }\n  ]\n}\n```",
+  "parsed": {
+    "cn_oneliner": "基于GigaTok引入冗余token填充与层次语义正则化解决flexible tokenizer的AR生成质量随序列长度不增反降问题",
+    "cn_abstract": "现有flexible image tokenizer通过nested dropout训练，导致图像信息过度集中于早期token，使得下游AR模型生成质量随序列长度增加无法持续提升，甚至退化。本文提出ReTok，引入Redundant Token Padding（在序列尾部附加冗余query token后再执行nested dropout，迫使原始序列尾部token得到更多激活）和Hierarchical Semantic Regularization（对早期token施加强DINOv2语义对齐约束，随序列长度增加线性衰减以允许尾部token学习细节重建），并配合decoder fine-tuning进一步改善短序列生成质量。在ImageNet 256×256上，ReTok-S-B+LlamaGen-XL达到gFID 2.27，在flexible tokenizer中达到最优，并与同规模固定长度tokenizer持平。",
+    "contribution_type": "incremental",
+    "editorial_note": "本文核心贡献是识别并量化了flexible tokenizer（nested dropout训练）在下游AR生成中的'尾部信息集中'问题，并提出两个补丁：冗余padding是一个训练技巧（通过扩展序列长度让原始尾部token变成'早期token'），层次语义正则化则直接沿用GigaTok的representation alignment思路加了一个线性decay权重。两个组件均为已有方法（GigaTok的语义正则化 + nested dropout的变体）的直接组合，方法上几乎没有新原语；真正有价值的是对flexible tokenizer AR生成瓶颈的系统性诊断，但这一发现的新颖性也有限，FlexTok论文中已有类似现象的观察。",
+    "why_read": "正在设计variable-length visual tokenizer并需要理解为何AR生成质量不随token数增加的研究者，可从本文的系统性瓶颈分析（Finding 1/2）和冗余padding这一简单有效的训练技巧中获得直接参考。",
+    "method_variants": [
+      {
+        "base_method": "nested dropout",
+        "variant_tag": "nested_dropout:redundant_token_padding",
+        "description": "在原始N个query token后附加M个冗余padding token，对N+M长度序列执行nested dropout，使原始序列尾部token在训练中充当'早期token'被更频繁激活，推理时丢弃padding token"
+      },
+      {
+        "base_method": "representation alignment",
+        "variant_tag": "representation_alignment:hierarchical_semantic_regularization",
+        "description": "将GigaTok的固定权重DINOv2语义对齐损失改为随retained序列长度k线性衰减的权重λ(k)，早期token强语义约束、尾部token弱约束以保留细节重建能力"
+      },
+      {
+        "base_method": "vit decoder",
+        "variant_tag": "vit_decoder:semantic_constrained_finetuning",
+        "description": "冻结encoder和quantizer，以小常数λ(k)=0.5对decoder进行额外50 epoch微调，改善短序列（32/64 token）的重建与生成质量"
+      }
+    ],
+    "core_cite": [
+      {
+        "title": "Gigatok: Scaling visual tokenizers to 3 billion parameters for autoregressive image generation",
+        "role": "extends",
+        "note": "ReTok直接基于GigaTok架构初始化权重，沿用其representation alignment训练策略，并以GigaTok-S-S作为baseline tokenizer进行所有对比实验"
+      },
+      {
+        "title": "Learning ordered representations with nested dropout",
+        "role": "extends",
+        "note": "flexible tokenizer训练的核心机制，本文所有改进均围绕克服naive nested dropout的信息集中缺陷展开"
+      },
+      {
+        "title": "Autoregressive model beats diffusion: Llama for scalable image generation",
+        "role": "uses",
+        "note": "下游AR生成模型LlamaGen（B/L/XL变体）的来源，用于评估tokenizer质量的生成FID"
+      },
+      {
+        "title": "Dinov2: Learning robust visual features without supervision",
+        "role": "uses",
+        "note": "Hierarchical Semantic Regularization中语义对齐的目标特征提供者，使用DINOv2-B的encoder输出作为监督信号"
+      },
+      {
+        "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+        "role": "contrasts",
+        "note": "最直接的flexible tokenizer竞品，同样使用nested dropout，但在256 token时gFID约2.5劣于32 token的1.86，验证了本文指出的生成瓶颈问题"
+      },
+      {
+        "title": "One-d-piece: Image tokenizer meets quality-controllable compression",
+        "role": "contrasts",
+        "note": "另一flexible tokenizer竞品，实验对比中ReTok在128-256 token段显著优于One-D-Piece（gFID从6.49降至2.66 vs 3.86）"
+      },
+      {
+        "title": "DetailFlow: 1D Coarse-to-Fine Autoregressive Image Generation via Next-Detail Prediction",
+        "role": "contrasts",
+        "note": "flexible tokenizer竞品，采用分层分辨率重建策略，ReTok在相近参数量下256 token gFID（2.66）优于其2.75，且短序列下优势更明显"
+      },
+      {
+        "title": "SpectralAR: Spectral Autoregressive Visual Generation",
+        "role": "contrasts",
+        "note": "flexible tokenizer竞品，使用频谱域分层重建，在主表格中作为对比baseline"
+      },
+      {
+        "title": "Representation alignment for generation: Training diffusion transformers is easier than you think",
+        "role": "supports",
+        "note": "representation alignment技术的原始来源，本文层次语义正则化直接基于此思路，GigaTok也沿用了该方法"
+      },
+      {
+        "title": "An image is worth 32 tokens for reconstruction and generation",
+        "role": "contrasts",
+        "note": "TiTok固定长度1D tokenizer，在主表格中作为固定长度方法对比基准，同时其高压缩比下的语义表示发现启发了本文的层次语义正则化设计"
+      },
+      {
+        "title": "Taming transformers for high-resolution image synthesis",
+        "role": "uses",
+        "note": "VQGAN，本文重建损失定义来源（pixel重建损失+perceptual loss+adversarial loss+VQ codebook loss）"
+      },
+      {
+        "title": "Reconstruction vs. generation: Taming optimization dilemma in latent diffusion models",
+        "role": "contrasts",
+        "note": "VA-VAE，在连续建模类方法中作为对比baseline，其LightningDiT达到gFID 1.35"
+      },
+      {
+        "title": "Vision foundation models as effective visual tokenizers for autoregressive image generation",
+        "role": "contrasts",
+        "note": "VFMTok，1D tokenizer竞品，在主表格中作为对比，336×336分辨率下LlamaGen-L达到gFID 2.11"
+      },
+      {
+        "title": "Imagenet large scale visual recognition challenge",
+        "role": "uses",
+        "note": "所有tokenizer训练和评估的数据集，ImageNet 256×256类别条件生成"
+      },
+      {
+        "title": "Gans trained by a two time-scale update rule converge to a local nash equilibrium",
+        "role": "uses",
+        "note": "FID（Fréchet Inception Distance）指标的来源，用于评估生成质量的主要指标gFID和rFID"
+      },
+      {
+        "title": "Masked autoencoders are effective tokenizers for diffusion models",
+        "role": "supports",
+        "note": "MAETok，同样使用representation alignment训练tokenizer，在related work中作为语义正则化方法的支持引用"
+      },
+      {
+        "title": "Imagefolder: Autoregressive image generation with folded tokens",
+        "role": "supports",
+        "note": "同样在tokenizer训练中注入语义引导，在related work和方法部分作为representation alignment应用的支持引用"
+      },
+      {
+        "title": "Highly Compressed Tokenizer Can Generate Without Training",
+        "role": "supports",
+        "note": "发现高压缩比1D tokenizer有效学习语义表示，启发了本文对早期token施加强语义约束的层次正则化设计"
+      }
+    ]
+  },
+  "fill_rate": 1.0,
+  "core_cite_count": 18,
+  "method_variant_count": 3
+}

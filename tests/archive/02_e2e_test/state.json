@@ -1,0 +1,202 @@
+{
+  "cells": {
+    "2406.07550_claude46": {
+      "ok": true,
+      "latency_s": 50.39,
+      "core_cite_count": 15,
+      "parse_errors": []
+    },
+    "2406.07550_gpt52": {
+      "ok": true,
+      "latency_s": 111.62,
+      "core_cite_count": 17,
+      "parse_errors": []
+    },
+    "2501.07730_claude46": {
+      "ok": true,
+      "latency_s": 55.2,
+      "core_cite_count": 20,
+      "parse_errors": []
+    },
+    "2501.07730_gpt52": {
+      "ok": true,
+      "latency_s": 107.45,
+      "core_cite_count": 22,
+      "parse_errors": []
+    },
+    "2503.10772_claude46": {
+      "ok": true,
+      "latency_s": 48.44,
+      "core_cite_count": 15,
+      "parse_errors": []
+    },
+    "2503.10772_gpt52": {
+      "ok": true,
+      "latency_s": 106.23,
+      "core_cite_count": 18,
+      "parse_errors": []
+    },
+    "2503.08685_claude46": {
+      "ok": true,
+      "latency_s": 45.92,
+      "core_cite_count": 15,
+      "parse_errors": []
+    },
+    "2503.08685_gpt52": {
+      "ok": true,
+      "latency_s": 159.35,
+      "core_cite_count": 18,
+      "parse_errors": []
+    },
+    "2504.08736_claude46": {
+      "ok": true,
+      "latency_s": 60.96,
+      "core_cite_count": 15,
+      "parse_errors": []
+    },
+    "2504.08736_gpt52": {
+      "ok": true,
+      "latency_s": 203.83,
+      "core_cite_count": 18,
+      "parse_errors": []
+    },
+    "2505.21473_claude46": {
+      "ok": true,
+      "latency_s": 41.39,
+      "core_cite_count": 15,
+      "parse_errors": []
+    },
+    "2505.21473_gpt52": {
+      "ok": true,
+      "latency_s": 102.5,
+      "core_cite_count": 19,
+      "parse_errors": []
+    },
+    "2505.12053_claude46": {
+      "ok": true,
+      "latency_s": 41.07,
+      "core_cite_count": 15,
+      "parse_errors": []
+    },
+    "2505.12053_gpt52": {
+      "ok": true,
+      "latency_s": 165.59,
+      "core_cite_count": 15,
+      "parse_errors": []
+    },
+    "2506.05289_claude46": {
+      "ok": true,
+      "latency_s": 40.34,
+      "core_cite_count": 15,
+      "parse_errors": []
+    },
+    "2506.05289_gpt52": {
+      "ok": true,
+      "latency_s": 152.1,
+      "core_cite_count": 20,
+      "parse_errors": []
+    },
+    "2507.08441_claude46": {
+      "ok": true,
+      "latency_s": 41.63,
+      "core_cite_count": 15,
+      "parse_errors": []
+    },
+    "2507.08441_gpt52": {
+      "ok": true,
+      "latency_s": 108.13,
+      "core_cite_count": 17,
+      "parse_errors": []
+    },
+    "2511.20565_claude46": {
+      "ok": true,
+      "latency_s": 45.68,
+      "core_cite_count": 16,
+      "parse_errors": []
+    },
+    "2511.20565_gpt52": {
+      "ok": true,
+      "latency_s": 133.68,
+      "core_cite_count": 18,
+      "parse_errors": []
+    },
+    "2601.01535_claude46": {
+      "ok": true,
+      "latency_s": 69.43,
+      "core_cite_count": 15,
+      "parse_errors": []
+    },
+    "2601.01535_gpt52": {
+      "ok": true,
+      "latency_s": 149.76,
+      "core_cite_count": 18,
+      "parse_errors": []
+    },
+    "2406.07550_minimaxm25": {
+      "ok": true,
+      "latency_s": 46.33,
+      "core_cite_count": 11,
+      "parse_errors": []
+    },
+    "2501.07730_minimaxm25": {
+      "ok": true,
+      "latency_s": 41.42,
+      "core_cite_count": 10,
+      "parse_errors": []
+    },
+    "2503.10772_minimaxm25": {
+      "ok": true,
+      "latency_s": 29.36,
+      "core_cite_count": 10,
+      "parse_errors": []
+    },
+    "2503.08685_minimaxm25": {
+      "ok": true,
+      "latency_s": 23.94,
+      "core_cite_count": 12,
+      "parse_errors": []
+    },
+    "2504.08736_minimaxm25": {
+      "ok": true,
+      "latency_s": 28.89,
+      "core_cite_count": 10,
+      "parse_errors": []
+    },
+    "2505.21473_minimaxm25": {
+      "ok": true,
+      "latency_s": 34.4,
+      "core_cite_count": 13,
+      "parse_errors": []
+    },
+    "2505.12053_minimaxm25": {
+      "ok": true,
+      "latency_s": 28.89,
+      "core_cite_count": 10,
+      "parse_errors": []
+    },
+    "2506.05289_minimaxm25": {
+      "ok": true,
+      "latency_s": 26.03,
+      "core_cite_count": 25,
+      "parse_errors": []
+    },
+    "2507.08441_minimaxm25": {
+      "ok": true,
+      "latency_s": 26.58,
+      "core_cite_count": 10,
+      "parse_errors": []
+    },
+    "2511.20565_minimaxm25": {
+      "ok": true,
+      "latency_s": 25.12,
+      "core_cite_count": 10,
+      "parse_errors": []
+    },
+    "2601.01535_minimaxm25": {
+      "ok": true,
+      "latency_s": 48.72,
+      "core_cite_count": 10,
+      "parse_errors": []
+    }
+  }
+}

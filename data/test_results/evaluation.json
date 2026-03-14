@@ -1,0 +1,34 @@
+{
+  "scheme_a": {
+    "wq/claude46": {
+      "total": 2,
+      "parse_success_rate": 0.5,
+      "fill_rate": 0.5,
+      "avg_latency_s": 16.4,
+      "enum_valid_rate": 0.5
+    },
+    "wq/glm5": {
+      "total": 2,
+      "parse_success_rate": 1.0,
+      "fill_rate": 1.0,
+      "avg_latency_s": 71.6,
+      "enum_valid_rate": 1.0
+    }
+  },
+  "scheme_b": {
+    "wq/claude46": {
+      "total": 2,
+      "parse_success_rate": 1.0,
+      "fill_rate": 1.0,
+      "avg_latency_s": 30.6,
+      "enum_valid_rate": 1.0
+    },
+    "wq/glm5": {
+      "total": 2,
+      "parse_success_rate": 1.0,
+      "fill_rate": 1.0,
+      "avg_latency_s": 73.84,
+      "enum_valid_rate": 1.0
+    }
+  }
+}

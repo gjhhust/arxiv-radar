@@ -1,0 +1,142 @@
+```json
+{
+  "arxiv_id": "2505.12053",
+  "title": "VFRTok: Variable Frame Rates Video Tokenizer with Duration-Proportional Information Assumption",
+  "cn_oneliner": "基于 Transformer 视频 VAE，引入时长比例信息假设与不对称帧率训练及 Partial RoPE，实现仅用 1/8 token 数量达到同等重建质量与最优生成保真度",
+  "cn_abstract": "现有基于潜扩散模型的视频生成框架采用"帧比例信息假设"，导致 tokenizer 的 token 数量随帧率线性增长，计算开销极大。本文提出"时长比例信息假设"——视频信息容量上限与视频时长而非帧数成正比——并据此设计 VFRTok：一种基于 Transformer 的视频 tokenizer，通过编解码器间的不对称帧率训练实现可变帧率编解码。同时提出 Partial RoPE，将位置建模与内容建模解耦，将相关 patch 聚合为统一 token，提升内容感知能力。在重建与生成评估中，VFRTok 仅使用现有 tokenizer 1/8 的 token 数量，即可实现有竞争力的重建质量和最先进的生成保真度。",
+  "contribution_type": "significant",
+  "editorial_note": "现有视频 tokenizer 均基于固定时间压缩率的帧比例假设，导致高帧率视频的 token 序列过长，DiT 的计算量随帧率线性乃至平方级增长。本文从信息论视角重新定义了视频信息容量的上界，提出时长比例信息假设，并配合编解码器不对称帧率训练与 Partial RoPE 设计，系统性地将 token 数量压缩至 1/8。该工作不只是工程调优，其核心假设重新界定了视频压缩的理论基础，架构设计与假设高度自洽，实验结果有说服力，对视频生成基础设施有实质性影响。",
+  "why_read": "研究视频生成或视频 tokenizer 的学者，可系统学习如何通过重新定义信息假设、不对称训练与 Partial RoPE 将 token 数量降低 8 倍同时保持生成质量。",
+  "method_variants": [
+    "tokenizer:asymmetric-framerate-training",
+    "positional_embedding:partial-rope",
+    "compression:duration-proportional",
+    "architecture:transformer-vae",
+    "training:variable-frame-rate"
+  ],
+  "core_cite": [
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "extends",
+      "note": "LDM 是本文所在框架的基础，VFRTok 作为其视频 tokenizer 组件解决帧比例假设的低效问题"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "uses",
+      "note": "DiT 作为 VFRTok 下游生成模型的代表架构，验证 tokenizer 效率提升对扩散模型计算量的降低效果"
+    },
+    {
+      "title": "Cosmos World Foundation Model Platform for Physical AI",
+      "arxiv_id": "2501.03575",
+      "role": "contrasts",
+      "note": "Cosmos tokenizer 基于帧比例假设，是本文对比的主要基线之一"
+    },
+    {
+      "title": "LTX-Video: Realtime Video Latent Diffusion",
+      "arxiv_id": "2501.00103",
+      "role": "contrasts",
+      "note": "LTX-Video 的 tokenizer 同样采用固定时间压缩率，作为重建与生成质量对比基线"
+    },
+    {
+      "title": "CogVideoX: Text-to-Video Diffusion Models with An Expert Transformer",
+      "arxiv_id": "2408.06072",
+      "role": "contrasts",
+      "note": "CogVideoX 视频 tokenizer 基于帧比例假设，被用于效率-质量权衡比较"
+    },
+    {
+      "title": "HunyuanVideo: A Systematic Framework For Large Video Generative Models",
+      "arxiv_id": "2412.03603",
+      "role": "contrasts",
+      "note": "HunyuanVideo tokenizer 作为帧比例假设的典型代表，在 token 数与生成质量上作为对比基线"
+    },
+    {
+      "title": "OmniTokenizer: A Joint Image-Video Tokenizer for Visual Generation",
+      "arxiv_id": "2406.09399",
+      "role": "contrasts",
+      "note": "联合图像-视频 tokenizer，代表现有固定压缩率设计，与 VFRTok 进行重建质量对比"
+    },
+    {
+      "title": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
+      "arxiv_id": "2104.09864",
+      "role": "extends",
+      "note": "RoPE 是本文 Partial RoPE 的基础，VFRTok 对其进行部分解耦改造以分离位置与内容建模"
+    },
+    {
+      "title": "Reconstruction vs. Generation: Taming Optimization Dilemma in Latent Diffusion Models",
+      "arxiv_id": "2501.01423",
+      "role": "supports",
+      "note": "指出重建与生成质量之间的优化困境，为本文在 tokenizer 设计上兼顾两者提供理论依据"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "contrasts",
+      "note": "TiTok 将图像压缩为极少 token，与 VFRTok 在高效 token 表示思路上形成对比参考"
+    },
+    {
+      "title": "Latte: Latent Diffusion Transformer for Video Generation",
+      "arxiv_id": "2401.03048",
+      "role": "uses",
+      "note": "Latte 作为视频生成 DiT 架构，用于验证 VFRTok 紧凑表示在生成任务上的效果"
+    },
+    {
+      "title": "Open-Sora: Democratizing Efficient Video Production for All",
+      "arxiv_id": "2412.20404",
+      "role": "contrasts",
+      "note": "Open-Sora 基于帧比例假设的视频 tokenizer，作为效率与质量的对比基线"
+    },
+    {
+      "title": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "arxiv_id": "2410.06940",
+      "role": "uses",
+      "note": "REPA 对齐训练策略被用于提升 VFRTok 配套 DiT 的生成质量"
+    },
+    {
+      "title": "Perceptual Losses for Real-Time Style Transfer and Super-Resolution",
+      "arxiv_id": "1603.08155",
+      "role": "uses",
+      "note": "感知损失被用于 VFRTok 的重建训练目标，提升视觉质量"
+    },
+    {
+      "title": "The Unreasonable Effectiveness of Deep Features as a Perceptual Metric",
+      "arxiv_id": "1801.03924",
+      "role": "uses",
+      "note": "LPIPS 作为重建质量评估指标之一，用于量化 VFRTok 的感知重建效果"
+    },
+    {
+      "title": "VideoRoPE: What Makes for Good Video Rotary Position Embedding?",
+      "arxiv_id": "2502.05173",
+      "role": "contrasts",
+      "note": "VideoRoPE 探讨视频 LLM 中 RoPE 的设计，与本文 Partial RoPE 在位置编码解耦思路上形成对比"
+    },
+    {
+      "title": "SoftVQ-VAE: Efficient 1-Dimensional Continuous Tokenizer",
+      "arxiv_id": "2412.10958",
+      "role": "contrasts",
+      "note": "1D 连续 tokenizer 的代表工作，与 VFRTok 在 token 压缩维度上形成对比参考"
+    },
+    {
+      "title": "UCF101: A Dataset of 101 Human Actions Classes From Videos in The Wild",
+      "arxiv_id": "1212.0402",
+      "role": "uses",
+      "note": "UCF-101 作为视频生成质量评估基准数据集，用于计算 FVD 等指标"
+    }
+  ],
+  "idea": [
+    {
+      "title": "自适应时长感知的动态 token 预算分配",
+      "why": "VFRTok 假设信息容量与时长成正比，但不同内容类型（动作密集 vs 静态场景）的实际信息密度差异显著。可进一步研究基于内容复杂度动态分配 token 预算的方案——在时长比例约束内，对高运动区段分配更多 token、对静态区段压缩更多，从而在保证生成质量的前提下进一步提升效率，结合 Partial RoPE 的内容感知特性具有可行性。"
+    },
+    {
+      "title": "Partial RoPE 在视频 LLM 中的位置-内容解耦迁移",
+      "why": "本文提出的 Partial RoPE 将部分维度用于位置编码、其余维度保留内容信息，有效提升了 tokenizer 的内容感知能力。VideoRoPE 等工作已在视频 LLM 中探讨 RoPE 设计，但尚未引入位置-内容解耦机制。将 Partial RoPE 迁移至视频理解 LLM，有望改善长视频中的时序推理与细粒度内容检索，且架构改动轻量、易于在现有模型上验证。"
+    },
+    {
+      "title": "不对称编解码率训练范式在音频-视频联合生成中的扩展",
+      "why": "VFRTok 的核心训练策略是编解码器采用不同帧率，使模型学会在更稀疏的表示中编码完整时序信息。音频-视频联合生成面临类似的多模态采样率不匹配问题（音频 22kHz vs 视频 24fps）。将不对称采样率训练推广至音视频联合 tokenizer，可以统一时序对齐表示，同时降低联合扩散模型的序列长度，Kuaishou Kling 团队在多模态生成方向的积累为该方向提供了工程基础。"
+    }
+  ]
+}
+```

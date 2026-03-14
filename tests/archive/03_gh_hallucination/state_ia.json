@@ -1,0 +1,70 @@
+{
+  "results": {
+    "2406.07550": {
+      "matched": 10,
+      "total": 10,
+      "rate": 1.0,
+      "path": "/Users/lanlanlan/.openclaw/workspace/papers/2406.07550/results_20260314_I.json"
+    },
+    "2501.07730": {
+      "matched": 7,
+      "total": 12,
+      "rate": 0.583,
+      "path": "/Users/lanlanlan/workspace/papers/2501.07730/results_20260314_I.json"
+    },
+    "2503.08685": {
+      "matched": 12,
+      "total": 12,
+      "rate": 1.0,
+      "path": "/Users/lanlanlan/.Meg-Agent/workspace/papers/2503.08685/results_20260314_I.json"
+    },
+    "2503.10772": {
+      "matched": 12,
+      "total": 12,
+      "rate": 1.0,
+      "path": "/Users/lanlanlan/.openclaw/workspace/papers/2503.10772/results_20260314_I.json"
+    },
+    "2504.08736": {
+      "matched": 12,
+      "total": 12,
+      "rate": 1.0,
+      "path": "/Users/lanlanlan/.Meg-Agent/workspace/papers/2504.08736/results_20260314_I.json"
+    },
+    "2505.21473": {
+      "matched": 14,
+      "total": 14,
+      "rate": 1.0,
+      "path": "/Users/lanlanlan/.Meg-Agent/workspace/papers/2505.21473/results_20260314_I.json"
+    },
+    "2505.12053": {
+      "matched": 16,
+      "total": 16,
+      "rate": 1.0,
+      "path": "/Users/lanlanlan/.Meg-Agent/workspace/papers/2505.12053/results_20260314_I.json"
+    },
+    "2506.05289": {
+      "matched": 10,
+      "total": 12,
+      "rate": 0.833,
+      "path": "/Users/lanlanlan/.Meg-Agent/workspace/papers/2506.05289/results_20260314_I.json"
+    },
+    "2507.08441": {
+      "matched": 6,
+      "total": 12,
+      "rate": 0.5,
+      "path": "/Users/lanlanlan/.Meg-Agent/workspace/papers/2507.08441/results_20260314_I.json"
+    },
+    "2511.20565": {
+      "matched": 6,
+      "total": 12,
+      "rate": 0.5,
+      "path": "/Users/lanlanlan/.Meg-Agent/workspace/papers/2511.20565/results_20260314_I.json"
+    },
+    "2601.01535": {
+      "matched": 0,
+      "total": 0,
+      "rate": 0.0,
+      "path": "/Users/lanlanlan/.Meg-Agent/workspace/papers/2601.01535/results_20260314_I.json"
+    }
+  }
+}

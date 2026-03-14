@@ -1,0 +1,112 @@
+{
+  "arxiv_id": "2406.07550",
+  "model": "claude46",
+  "timestamp": "2026-03-12T21:04:14.893638",
+  "latency_s": 50.39,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于ViT将VQGAN的2D网格latent替换为1D离散序列，用32 token表示256×256图像，生成速度超DiT-XL/2达410倍\",\"cn_abstract\":\"现有图像tokenizer（如VQGAN）将图像压缩为2D网格latent，固定的空间对应关系限制了对图像冗余的利用。本文提出TiTok（Transformer-based 1-Dimensional Tokenizer），将图像patchify后与可学习的1D latent tokens拼接输入ViT encoder，仅保留latent tokens作为图像表示，再通过ViT decoder结合mask tokens重建图像，彻底解耦latent尺寸与图像分辨率。为绕开复杂GAN训练配方，提出两阶段训练：先用现成MaskGIT-VQGAN生成proxy codes进行warm-up，再fine-tune decoder至像素空间。TiTok-L-32仅用32个token即在ImageNet 256×256达到rFID 2.21，配合MaskGIT生成框架取得gFID 1.97；在512×512上以410倍速度超越DiT-XL/2（gFID 2.74 vs 3.04）。\",\"contribution_type\":\"significant\",\"editorial_note\":\"[前驱] TiTok建立在VQ-VAE/VQGAN的离散量化框架上，encoder/decoder采用ViT（dosovitskiy2020image），生成阶段直接复用MaskGIT框架（chang2022maskgit），proxy codes来自开源MaskGIT-VQGAN，mask token解码思路借鉴BERT/MAE。\\n[贡献] 去掉包装后，核心新事情是：把2D网格latent替换为固定数量的1D learnable latent tokens（类似DETR object queries），用ViT的全局注意力让这些tokens自由聚合图像信息，从而把256/1024个token压缩到32个；并配套设计了proxy codes两阶段训练绕开GAN训练难题。\\n[判断] 这个想法简洁且有实质价值：1D latent tokens的思路在理解侧早有先例（DETR、Flamingo），迁移到生成侧并系统验证是真正的贡献；压缩比和速度收益是实质性的，不是刷榜。但方法本身不够深刻，工程依赖（proxy codes依赖现有VQGAN）较重，属于\"有效且重要的新方向开拓\"而非范式革命。\",\"why_read\":\"做图像tokenizer或高效生成的研究者必读：本文给出了第一个系统验证1D latent sequence可替代2D grid用于图像重建与生成的方法，32 token的极端压缩比和410x加速是可直接复现的强基线。\",\"method_variants\":[{\"base_method\":\"vqgan\",\"variant_tag\":\"vqgan:1d-latent-tokens\",\"description\":\"原VQGAN将图像patch直接映射为2D网格latent；TiTok改为将image patches与K个可学习latent tokens拼接输入ViT encoder，只保留latent tokens做VQ，彻底解耦latent尺寸与图像分辨率。\"},{\"base_method\":\"vq-vae\",\"variant_tag\":\"vq-vae:vit-encoder-decoder\",\"description\":\"原VQ-VAE用CNN encoder/decoder；TiTok用ViT作为encoder和decoder，decoder端引入mask tokens（复制单个mask token填充空间位置）与量化后的1D latent拼接重建图像。\"},{\"base_method\":\"maskgit\",\"variant_tag\":\"maskgit:titok-tokenizer\",\"description\":\"原MaskGIT使用VQGAN的2D 256-token表示；本文直接替换tokenizer为TiTok（32/64/128 tokens），生成序列长度大幅缩短，训练和推理吞吐量显著提升，并发现arccos/linear masking schedule优于原始cosine schedule。\"},{\"base_method\":\"vqgan\",\"variant_tag\":\"vqgan:proxy-codes-two-stage\",\"description\":\"原VQGAN单阶段端到端训练像素空间，需要复杂perceptual loss+adversarial loss；TiTok第一阶段用现成MaskGIT-VQGAN的离散code作为proxy codes监督信号（交叉熵损失）warm-up，第二阶段冻结encoder+quantizer只fine-tune decoder至像素空间，规避GAN训练不稳定性。\"}],\"core_cite\":[{\"title\":\"Taming transformers for high-resolution image synthesis\",\"role\":\"extends\",\"note\":\"TiTok直接沿用VQGAN的VQ框架、codebook设计和训练配方（perceptual+adversarial loss）作为基础，proxy codes由开源MaskGIT-VQGAN提供，ablation中也与Taming-VQGAN直接对比。\"},{\"title\":\"Maskgit: Masked generative image transformer\",\"role\":\"extends\",\"note\":\"生成阶段完全采用MaskGIT框架（bidirectional transformer+masked token prediction），TiTok仅替换其tokenizer；proxy codes训练阶段使用MaskGIT的开源VQGAN权重；实验中作为主要baseline对比。\"},{\"title\":\"An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale\",\"role\":\"extends\",\"note\":\"TiTok的encoder和decoder均采用ViT架构，1D latent tokens的设计直接类比ViT的token处理方式。\"},{\"title\":\"Scalable diffusion models with transformers\",\"role\":\"contrasts\",\"note\":\"主要对比baseline之一（DiT-XL/2），TiTok在ImageNet 256和512上均与其对比gFID和生成速度，声称410x加速。\"},{\"title\":\"Neural discrete representation learning\",\"role\":\"extends\",\"note\":\"VQ-VAE提出向量量化的核心公式（argmin codebook lookup），TiTok直接继承该量化机制。\"},{\"title\":\"High-resolution image synthesis with latent diffusion models\",\"role\":\"contrasts\",\"note\":\"LDM-4作为diffusion baseline在ImageNet 256对比（gFID 3.60 vs TiTok 2.77），同时TiTok的设计动机（latent space压缩）与LDM一脉相承。\"},{\"title\":\"Bert: Pre-training of deep bidirectional transformers for language understanding\",\"role\":\"extends\",\"note\":\"TiTok decoder中mask token设计直接借鉴BERT的masked token预测，ablation中关于masking ratio的分析也引用BERT的15% masking ratio作为语义信号的参照。\"},{\"title\":\"Masked Autoencoders Are Scalable Vision Learners\",\"role\":\"extends\",\"note\":\"de-tokenization阶段mask tokens的使用方式借鉴MAE，linear probing评估也遵循MAE设定。\"},{\"title\":\"Vector-quantized image modeling with improved vqgan\",\"role\":\"contrasts\",\"note\":\"ViT-VQGAN作为transformer-based 2D tokenizer的代表性工作，在related work和实验表格中作为对比方法。\"},{\"title\":\"Language Model Beats Diffusion--Tokenizer is Key to Visual Generation\",\"role\":\"contrasts\",\"note\":\"MAGVIT-v2作为sota tokenizer baseline在实验表格中对比，论文脚注明确排除lookup-free quantization以聚焦1D tokenization本身。\"},{\"title\":\"Gans trained by a two time-scale update rule converge to a local nash equilibrium\",\"role\":\"uses\",\"note\":\"FID计算标准方法，rFID和gFID均采用此指标评估重建和生成质量。\"},{\"title\":\"A Pytorch Reproduction of Masked Generative Image Transformer\",\"role\":\"uses\",\"note\":\"生成实验中采用该开源复现的arccos masking schedule，消融实验验证其优于原始cosine schedule。\"},{\"title\":\"Flamingo: a visual language model for few-shot learning\",\"role\":\"supports\",\"note\":\"Flamingo的Perceiver Resampler将图像压缩为固定数量1D tokens用于理解任务，直接启发TiTok将类似思路迁移到生成重建任务。\"},{\"title\":\"End-to-end object detection with transformers\",\"role\":\"supports\",\"note\":\"DETR的object queries（固定数量1D tokens聚合图像信息）是TiTok latent tokens设计的重要先例，introduction中明确引用作为动机。\"},{\"title\":\"Sdxl: Improving latent diffusion models for high-resolution image synthesis\",\"role\":\"supports\",\"note\":\"两阶段训练中decoder fine-tuning策略的灵感来源之一（与Muse共同引用），启发先训练codebook再精调decoder的流程。\"}]}",
+  "cn_oneliner": "基于ViT将VQGAN的2D网格latent替换为1D离散序列，用32 token表示256×256图像，生成速度超DiT-XL/2达410倍",
+  "cn_abstract": "现有图像tokenizer（如VQGAN）将图像压缩为2D网格latent，固定的空间对应关系限制了对图像冗余的利用。本文提出TiTok（Transformer-based 1-Dimensional Tokenizer），将图像patchify后与可学习的1D latent tokens拼接输入ViT encoder，仅保留latent tokens作为图像表示，再通过ViT decoder结合mask tokens重建图像，彻底解耦latent尺寸与图像分辨率。为绕开复杂GAN训练配方，提出两阶段训练：先用现成MaskGIT-VQGAN生成proxy codes进行warm-up，再fine-tune decoder至像素空间。TiTok-L-32仅用32个token即在ImageNet 256×256达到rFID 2.21，配合MaskGIT生成框架取得gFID 1.97；在512×512上以410倍速度超越DiT-XL/2（gFID 2.74 vs 3.04）。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱] TiTok建立在VQ-VAE/VQGAN的离散量化框架上，encoder/decoder采用ViT（dosovitskiy2020image），生成阶段直接复用MaskGIT框架（chang2022maskgit），proxy codes来自开源MaskGIT-VQGAN，mask token解码思路借鉴BERT/MAE。\n[贡献] 去掉包装后，核心新事情是：把2D网格latent替换为固定数量的1D learnable latent tokens（类似DETR object queries），用ViT的全局注意力让这些tokens自由聚合图像信息，从而把256/1024个token压缩到32个；并配套设计了proxy codes两阶段训练绕开GAN训练难题。\n[判断] 这个想法简洁且有实质价值：1D latent tokens的思路在理解侧早有先例（DETR、Flamingo），迁移到生成侧并系统验证是真正的贡献；压缩比和速度收益是实质性的，不是刷榜。但方法本身不够深刻，工程依赖（proxy codes依赖现有VQGAN）较重，属于有效且重要的新方向开拓而非范式革命。",
+  "why_read": "做图像tokenizer或高效生成的研究者必读：本文给出了第一个系统验证1D latent sequence可替代2D grid用于图像重建与生成的方法，32 token的极端压缩比和410x加速是可直接复现的强基线。",
+  "method_variants": [
+    {
+      "base_method": "vqgan",
+      "variant_tag": "vqgan:1d-latent-tokens",
+      "description": "原VQGAN将图像patch直接映射为2D网格latent；TiTok改为将image patches与K个可学习latent tokens拼接输入ViT encoder，只保留latent tokens做VQ，彻底解耦latent尺寸与图像分辨率。"
+    },
+    {
+      "base_method": "vq-vae",
+      "variant_tag": "vq-vae:vit-encoder-decoder",
+      "description": "原VQ-VAE用CNN encoder/decoder；TiTok用ViT作为encoder和decoder，decoder端引入mask tokens（复制单个mask token填充空间位置）与量化后的1D latent拼接重建图像。"
+    },
+    {
+      "base_method": "maskgit",
+      "variant_tag": "maskgit:titok-tokenizer",
+      "description": "原MaskGIT使用VQGAN的2D 256-token表示；本文直接替换tokenizer为TiTok（32/64/128 tokens），生成序列长度大幅缩短，训练和推理吞吐量显著提升，并发现arccos/linear masking schedule优于原始cosine schedule。"
+    },
+    {
+      "base_method": "vqgan",
+      "variant_tag": "vqgan:proxy-codes-two-stage",
+      "description": "原VQGAN单阶段端到端训练像素空间，需要复杂perceptual loss+adversarial loss；TiTok第一阶段用现成MaskGIT-VQGAN的离散code作为proxy codes监督信号（交叉熵损失）warm-up，第二阶段冻结encoder+quantizer只fine-tune decoder至像素空间，规避GAN训练不稳定性。"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Taming transformers for high-resolution image synthesis",
+      "role": "extends",
+      "note": "TiTok直接沿用VQGAN的VQ框架、codebook设计和训练配方（perceptual+adversarial loss）作为基础，proxy codes由开源MaskGIT-VQGAN提供，ablation中也与Taming-VQGAN直接对比。"
+    },
+    {
+      "title": "Maskgit: Masked generative image transformer",
+      "role": "extends",
+      "note": "生成阶段完全采用MaskGIT框架（bidirectional transformer+masked token prediction），TiTok仅替换其tokenizer；proxy codes训练阶段使用MaskGIT的开源VQGAN权重；实验中作为主要baseline对比。"
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "role": "extends",
+      "note": "TiTok的encoder和decoder均采用ViT架构，1D latent tokens的设计直接类比ViT的token处理方式。"
+    },
+    {
+      "title": "Scalable diffusion models with transformers",
+      "role": "contrasts",
+      "note": "主要对比baseline之一（DiT-XL/2），TiTok在ImageNet 256和512上均与其对比gFID和生成速度，声称410x加速。"
+    },
+    {
+      "title": "Neural discrete representation learning",
+      "role": "extends",
+      "note": "VQ-VAE提出向量量化的核心公式（argmin codebook lookup），TiTok直接继承该量化机制。"
+    },
+    {
+      "title": "High-resolution image synthesis with latent diffusion models",
+      "role": "contrasts",
+      "note": "LDM-4作为diffusion baseline在ImageNet 256对比（gFID 3.60 vs TiTok 2.77），同时TiTok的设计动机（latent space压缩）与LDM一脉相承。"
+    },
+    {
+      "title": "Bert: Pre-training of deep bidirectional transformers for language understanding",
+      "role": "extends",
+      "note": "TiTok decoder中mask token设计直接借鉴BERT的masked token预测，ablation中关于masking ratio的分析也引用BERT的15% masking ratio作为语义信号的参照。"
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "role": "extends",
+      "note": "de-tokenization阶段mask tokens的使用方式借鉴MAE，linear probing评估也遵循MAE设定。"
+    },
+    {
+      "title": "Vector-quantized image modeling with improved vqgan",
+      "role": "contrasts",
+      "note": "ViT-VQGAN作为transformer-based 2D tokenizer的代表性工作，在related work和实验表格中作为对比方法。"
+    },
+    {
+      "title": "Language Model Beats Diffusion--Tokenizer is Key to Visual Generation",
+      "role": "contrasts",
+      "note": "MAGVIT-v2作为sota tokenizer baseline在实验表格中对比，论文脚注明确排除lookup-free quantization以聚焦1D tokenization本身。"
+    },
+    {
+      "title": "Gans trained by a two time-scale update rule converge to a local nash equilibrium",
+      "role": "uses",
+      "note": "FID计算标准方法，rFID和gFID均采用此指标评估重建和生成质量。"
+    },
+    {
+      "title": "A Pytorch Reproduction of Masked Generative Image Transformer",
+      "role": "uses",
+      "note": "生成实验中采用该开源复现的arccos masking schedule，消融实验验证其优于原始cosine schedule。"
+    },
+    {
+      "title": "Flamingo: a visual language model for few-shot learning",
+      "role": "supports",
+      "note": "Flamingo的Perceiver Resampler将图像压缩为固定数量1D tokens用于理解任务，直接启发TiTok将类似思路迁移到生成重建任务。"
+    },
+    {
+      "title": "End-to-end object detection with transformers",
+      "role": "supports",
+      "note": "DETR的object queries（固定数量1D tokens聚合图像信息）是TiTok latent tokens设计的重要先例，introduction中明确引用作为动机。"
+    },
+    {
+      "title": "Sdxl: Improving latent diffusion models for high-resolution image synthesis",
+      "role": "supports",
+      "note": "两阶段训练中decoder fine-tuning策略的灵感来源之一（与Muse共同引用），启发先训练codebook再精调decoder的流程。"
+    }
+  ]
+}

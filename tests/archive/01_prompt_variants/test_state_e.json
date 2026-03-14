@@ -1,0 +1,40 @@
+{
+  "cells": {
+    "e1_claude46": {
+      "status": "done",
+      "latency_s": 48.88,
+      "parse_success": true,
+      "core_cite_count": 18
+    },
+    "e1_gpt52": {
+      "status": "done",
+      "latency_s": 139.82,
+      "parse_success": true,
+      "core_cite_count": 27
+    },
+    "e1_minimaxm25": {
+      "status": "done",
+      "latency_s": 52.69,
+      "parse_success": true,
+      "core_cite_count": 12
+    },
+    "e2_claude46": {
+      "status": "done",
+      "latency_s": 43.67,
+      "parse_success": true,
+      "core_cite_count": 15
+    },
+    "e2_gpt52": {
+      "status": "done",
+      "latency_s": 213.95,
+      "parse_success": true,
+      "core_cite_count": 20
+    },
+    "e2_minimaxm25": {
+      "status": "done",
+      "latency_s": 65.97,
+      "parse_success": true,
+      "core_cite_count": 13
+    }
+  }
+}

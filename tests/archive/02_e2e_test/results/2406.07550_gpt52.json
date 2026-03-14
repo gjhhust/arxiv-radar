@@ -1,0 +1,132 @@
+{
+  "arxiv_id": "2406.07550",
+  "model": "gpt52",
+  "timestamp": "2026-03-12T21:13:47.060584",
+  "latency_s": 111.62,
+  "parse_errors": [],
+  "raw_output": "{\"cn_oneliner\":\"基于VQGAN引入ViT潜在token+mask解码实现32个1D离散token高效生成\",\"cn_abstract\":\"本文提出Transformer-based 1-Dimensional Tokenizer（TiTok），将传统VQGAN/VQ-VAE的2D latent grid改为可变长度的1D latent sequence：在ViT encoder中把patch tokens与K个learnable latent tokens拼接，仅保留latent tokens并做vector quantization，再在ViT decoder端将quantized latents与复制的mask tokens拼接以重建图像。为避免VQGAN训练配方（perceptual+GAN loss等）难以复现带来的不稳定，作者提出两阶段训练：先用开源MaskGIT-VQGAN产生的proxy codes监督训练TiTok（输出proxy code序列并接原VQGAN decoder出RGB），再冻结encoder/quantizer对decoder做像素域fine-tuning。作为MaskGIT的替换tokenizer，TiTok在ImageNet 256/512上以32~128 tokens获得与SOTA相当或更优的rFID/gFID，并因token数大幅减少带来显著训练/采样加速（最高报告410×）。\",\"contribution_type\":\"significant\",\"editorial_note\":\"[前驱] 建立在VQ-VAE/VQGAN离散码本tokenizer与MaskGIT的masked token生成范式上，编码/解码骨架采用ViT，并借鉴BERT/BEiT/MAE的mask token重建思路。\\n[贡献] 把“必须是2D网格latent”的假设拿掉：用少量learnable latent tokens在ViT里汇聚全图信息形成1D离散序列，并用proxy codes两阶段训练让极低token数下仍可稳定重建与供生成器学习。\\n[判断] 1D latent本身概念不复杂，但在可重建的离散tokenizer里做到32 tokens且显著提升MaskGIT训练/采样效率，属于可复用的tokenization范式变化；主要风险在于依赖proxy teacher与评测集中于ImageNet。\",\"why_read\":\"想把MaskGIT/AR图像生成的计算瓶颈从“token数”上直接砍掉的人值得读：它给出可落地的1D离散tokenizer设计与训练配方，并展示低token数对生成质量/速度的系统性权衡。\",\"method_variants\":[{\"base_method\":\"vqgan\",\"variant_tag\":\"vqgan:1d-latent-tokens\",\"description\":\"原VQGAN将图像编码为固定2D latent grid并逐位置量化；本文在ViT encoder中引入K个learnable latent tokens与patch tokens交互，仅保留latent tokens并量化为1D离散序列，从而将token数与分辨率解耦。\"},{\"base_method\":\"vit\",\"variant_tag\":\"vit:latent-token-bottleneck\",\"description\":\"原ViT用于分类/表征学习通常输出patch序列或[CLS]；本文用少量latent tokens作为信息瓶颈汇聚全图，并作为可量化的生成token。\"},{\"base_method\":\"bert\",\"variant_tag\":\"bert:mask-token-decoding\",\"description\":\"原BERT/BEiT用mask token做重建式训练；本文在解码端复制mask tokens补齐patch位置，与quantized latent tokens拼接输入ViT decoder以重建图像。\"},{\"base_method\":\"maskgit\",\"variant_tag\":\"maskgit:swap-tokenizer-to-titok\",\"description\":\"原MaskGIT基于VQGAN 2D tokens进行masked预测与迭代采样；本文不改生成器结构，仅替换为TiTok的1D离散tokens，并采用arccos等mask schedule以适配更语义化/更紧凑的token。\"},{\"base_method\":\"knowledge-distillation\",\"variant_tag\":\"knowledge-distillation:proxy-codes-warmup\",\"description\":\"传统蒸馏直接拟合teacher输出分布/特征；本文用开源MaskGIT-VQGAN产生的离散proxy codes监督TiTok先学“码空间重建”，并通过teacher的VQGAN decoder出RGB以绕开复杂GAN/perceptual训练配方。\"},{\"base_method\":\"vqvae\",\"variant_tag\":\"vqvae:two-stage-decoder-finetune\",\"description\":\"原VQ-VAE常端到端联合训练encoder/quantizer/decoder；本文第二阶段冻结encoder与quantizer，仅对decoder做像素域fine-tuning以提升rFID与稳定性。\"}],\"core_cite\":[{\"title\":\"Taming Transformers for High-Resolution Image Synthesis\",\"role\":\"extends\",\"note\":\"以VQGAN式离散tokenizer为直接对照与方法基础（VQ模块、重建/生成管线），TiTok在此框架上改为1D latent并复用其训练配方用于stage-2 decoder fine-tuning。\"},{\"title\":\"Neural Discrete Representation Learning\",\"role\":\"extends\",\"note\":\"VQ-VAE向量量化与codebook最近邻映射是TiTok Quant模块的核心定义。\"},{\"title\":\"MaskGIT: Masked Generative Image Transformer\",\"role\":\"extends\",\"note\":\"生成实验完全采用MaskGIT训练/采样流程，仅替换tokenizer为TiTok；同时用其开源VQGAN产生proxy codes作为两阶段训练teacher。\"},{\"title\":\"An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale\",\"role\":\"uses\",\"note\":\"TiTok的encoder/decoder均以ViT实现，patchify与Transformer编码/解码结构来自ViT范式。\"},{\"title\":\"BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding\",\"role\":\"uses\",\"note\":\"解码端引入mask tokens并做重建式训练的思想来源之一（与BEiT/MAE同类）。\"},{\"title\":\"Masked Autoencoders Are Scalable Vision Learners\",\"role\":\"uses\",\"note\":\"用于线性探测评估协议的参照，并支撑“高mask率适合冗余图像信号”的讨论。\"},{\"title\":\"Beit: Bert pre-training of image transformers\",\"role\":\"uses\",\"note\":\"作为图像token/重建式预训练的mask token设计参考，TiTok解码端拼接mask tokens的动机来源。\"},{\"title\":\"Scalable diffusion models with transformers\",\"role\":\"contrasts\",\"note\":\"以DiT-XL/2作为高分辨率生成SOTA对比，论文主张TiTok+MaskGIT在512上更快且gFID更优/相当。\"},{\"title\":\"High-resolution image synthesis with latent diffusion models\",\"role\":\"contrasts\",\"note\":\"以LDM作为扩散系baseline对比生成质量与采样速度，强调tokenizer带来的吞吐优势。\"},{\"title\":\"Diffusion Models Beat GANs on Image Synthesis\",\"role\":\"contrasts\",\"note\":\"作为扩散模型代表性baseline/背景对比，支撑“非扩散也可高质且更快”的实验叙事。\"},{\"title\":\"A Pytorch Reproduction of Masked Generative Image Transformer\",\"role\":\"uses\",\"note\":\"采用其中的arccos masking schedule实现细节，用于证明TiTok下MaskGIT的schedule偏好变化。\"},{\"title\":\"Gans trained by a two time-scale update rule converge to a local nash equilibrium\",\"role\":\"uses\",\"note\":\"FID/rFID/gFID评估依赖GAN文献中的FID度量与实现惯例（论文中以FID指标为核心）。\"},{\"title\":\"The unreasonable effectiveness of deep features as a perceptual metric\",\"role\":\"uses\",\"note\":\"stage-2 decoder fine-tuning沿用VQGAN常用perceptual loss体系（LPIPS）以提升重建质量。\"},{\"title\":\"Perceptual losses for real-time style transfer and super-resolution\",\"role\":\"uses\",\"note\":\"与LPIPS一起构成VQGAN类重建训练的关键损失来源，被TiTok的decoder fine-tuning复用。\"},{\"title\":\"Generating diverse high-fidelity images with vq-vae-2\",\"role\":\"mentions\",\"note\":\"作为离散tokenizer谱系中的重要前作，用于定位TiTok相对VQ-VAE家族的差异（2D grid vs 1D sequence）。\"},{\"title\":\"Zero-Shot Text-to-Image Generation\",\"role\":\"mentions\",\"note\":\"dVAE/DALL·E tokenizer作为VQGAN改进对照背景，支撑“训练配方影响巨大”的动机。\"},{\"title\":\"Language Model Beats Diffusion--Tokenizer is Key to Visual Generation\",\"role\":\"supports\",\"note\":\"用于支持“tokenizer质量/设计决定生成上限”的总体动机，并与本文强调tokenization阶段的贡献呼应。\"}]}",
+  "cn_oneliner": "基于VQGAN引入ViT潜在token+mask解码实现32个1D离散token高效生成",
+  "cn_abstract": "本文提出Transformer-based 1-Dimensional Tokenizer（TiTok），将传统VQGAN/VQ-VAE的2D latent grid改为可变长度的1D latent sequence：在ViT encoder中把patch tokens与K个learnable latent tokens拼接，仅保留latent tokens并做vector quantization，再在ViT decoder端将quantized latents与复制的mask tokens拼接以重建图像。为避免VQGAN训练配方（perceptual+GAN loss等）难以复现带来的不稳定，作者提出两阶段训练：先用开源MaskGIT-VQGAN产生的proxy codes监督训练TiTok（输出proxy code序列并接原VQGAN decoder出RGB），再冻结encoder/quantizer对decoder做像素域fine-tuning。作为MaskGIT的替换tokenizer，TiTok在ImageNet 256/512上以32~128 tokens获得与SOTA相当或更优的rFID/gFID，并因token数大幅减少带来显著训练/采样加速（最高报告410×）。",
+  "contribution_type": "significant",
+  "editorial_note": "[前驱] 建立在VQ-VAE/VQGAN离散码本tokenizer与MaskGIT的masked token生成范式上，编码/解码骨架采用ViT，并借鉴BERT/BEiT/MAE的mask token重建思路。\n[贡献] 把“必须是2D网格latent”的假设拿掉：用少量learnable latent tokens在ViT里汇聚全图信息形成1D离散序列，并用proxy codes两阶段训练让极低token数下仍可稳定重建与供生成器学习。\n[判断] 1D latent本身概念不复杂，但在可重建的离散tokenizer里做到32 tokens且显著提升MaskGIT训练/采样效率，属于可复用的tokenization范式变化；主要风险在于依赖proxy teacher与评测集中于ImageNet。",
+  "why_read": "想把MaskGIT/AR图像生成的计算瓶颈从“token数”上直接砍掉的人值得读：它给出可落地的1D离散tokenizer设计与训练配方，并展示低token数对生成质量/速度的系统性权衡。",
+  "method_variants": [
+    {
+      "base_method": "vqgan",
+      "variant_tag": "vqgan:1d-latent-tokens",
+      "description": "原VQGAN将图像编码为固定2D latent grid并逐位置量化；本文在ViT encoder中引入K个learnable latent tokens与patch tokens交互，仅保留latent tokens并量化为1D离散序列，从而将token数与分辨率解耦。"
+    },
+    {
+      "base_method": "vit",
+      "variant_tag": "vit:latent-token-bottleneck",
+      "description": "原ViT用于分类/表征学习通常输出patch序列或[CLS]；本文用少量latent tokens作为信息瓶颈汇聚全图，并作为可量化的生成token。"
+    },
+    {
+      "base_method": "bert",
+      "variant_tag": "bert:mask-token-decoding",
+      "description": "原BERT/BEiT用mask token做重建式训练；本文在解码端复制mask tokens补齐patch位置，与quantized latent tokens拼接输入ViT decoder以重建图像。"
+    },
+    {
+      "base_method": "maskgit",
+      "variant_tag": "maskgit:swap-tokenizer-to-titok",
+      "description": "原MaskGIT基于VQGAN 2D tokens进行masked预测与迭代采样；本文不改生成器结构，仅替换为TiTok的1D离散tokens，并采用arccos等mask schedule以适配更语义化/更紧凑的token。"
+    },
+    {
+      "base_method": "knowledge-distillation",
+      "variant_tag": "knowledge-distillation:proxy-codes-warmup",
+      "description": "传统蒸馏直接拟合teacher输出分布/特征；本文用开源MaskGIT-VQGAN产生的离散proxy codes监督TiTok先学“码空间重建”，并通过teacher的VQGAN decoder出RGB以绕开复杂GAN/perceptual训练配方。"
+    },
+    {
+      "base_method": "vqvae",
+      "variant_tag": "vqvae:two-stage-decoder-finetune",
+      "description": "原VQ-VAE常端到端联合训练encoder/quantizer/decoder；本文第二阶段冻结encoder与quantizer，仅对decoder做像素域fine-tuning以提升rFID与稳定性。"
+    }
+  ],
+  "core_cite": [
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "role": "extends",
+      "note": "以VQGAN式离散tokenizer为直接对照与方法基础（VQ模块、重建/生成管线），TiTok在此框架上改为1D latent并复用其训练配方用于stage-2 decoder fine-tuning。"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "role": "extends",
+      "note": "VQ-VAE向量量化与codebook最近邻映射是TiTok Quant模块的核心定义。"
+    },
+    {
+      "title": "MaskGIT: Masked Generative Image Transformer",
+      "role": "extends",
+      "note": "生成实验完全采用MaskGIT训练/采样流程，仅替换tokenizer为TiTok；同时用其开源VQGAN产生proxy codes作为两阶段训练teacher。"
+    },
+    {
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "role": "uses",
+      "note": "TiTok的encoder/decoder均以ViT实现，patchify与Transformer编码/解码结构来自ViT范式。"
+    },
+    {
+      "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+      "role": "uses",
+      "note": "解码端引入mask tokens并做重建式训练的思想来源之一（与BEiT/MAE同类）。"
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "role": "uses",
+      "note": "用于线性探测评估协议的参照，并支撑“高mask率适合冗余图像信号”的讨论。"
+    },
+    {
+      "title": "Beit: Bert pre-training of image transformers",
+      "role": "uses",
+      "note": "作为图像token/重建式预训练的mask token设计参考，TiTok解码端拼接mask tokens的动机来源。"
+    },
+    {
+      "title": "Scalable diffusion models with transformers",
+      "role": "contrasts",
+      "note": "以DiT-XL/2作为高分辨率生成SOTA对比，论文主张TiTok+MaskGIT在512上更快且gFID更优/相当。"
+    },
+    {
+      "title": "High-resolution image synthesis with latent diffusion models",
+      "role": "contrasts",
+      "note": "以LDM作为扩散系baseline对比生成质量与采样速度，强调tokenizer带来的吞吐优势。"
+    },
+    {
+      "title": "Diffusion Models Beat GANs on Image Synthesis",
+      "role": "contrasts",
+      "note": "作为扩散模型代表性baseline/背景对比，支撑“非扩散也可高质且更快”的实验叙事。"
+    },
+    {
+      "title": "A Pytorch Reproduction of Masked Generative Image Transformer",
+      "role": "uses",
+      "note": "采用其中的arccos masking schedule实现细节，用于证明TiTok下MaskGIT的schedule偏好变化。"
+    },
+    {
+      "title": "Gans trained by a two time-scale update rule converge to a local nash equilibrium",
+      "role": "uses",
+      "note": "FID/rFID/gFID评估依赖GAN文献中的FID度量与实现惯例（论文中以FID指标为核心）。"
+    },
+    {
+      "title": "The unreasonable effectiveness of deep features as a perceptual metric",
+      "role": "uses",
+      "note": "stage-2 decoder fine-tuning沿用VQGAN常用perceptual loss体系（LPIPS）以提升重建质量。"
+    },
+    {
+      "title": "Perceptual losses for real-time style transfer and super-resolution",
+      "role": "uses",
+      "note": "与LPIPS一起构成VQGAN类重建训练的关键损失来源，被TiTok的decoder fine-tuning复用。"
+    },
+    {
+      "title": "Generating diverse high-fidelity images with vq-vae-2",
+      "role": "mentions",
+      "note": "作为离散tokenizer谱系中的重要前作，用于定位TiTok相对VQ-VAE家族的差异（2D grid vs 1D sequence）。"
+    },
+    {
+      "title": "Zero-Shot Text-to-Image Generation",
+      "role": "mentions",
+      "note": "dVAE/DALL·E tokenizer作为VQGAN改进对照背景，支撑“训练配方影响巨大”的动机。"
+    },
+    {
+      "title": "Language Model Beats Diffusion--Tokenizer is Key to Visual Generation",
+      "role": "supports",
+      "note": "用于支持“tokenizer质量/设计决定生成上限”的总体动机，并与本文强调tokenization阶段的贡献呼应。"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "model": "gpt52",
+  "timestamp": "2026-03-12T19:23:50.308371",
+  "latency_s": 78.79,
+  "parse_success": true,
+  "error": null,
+  "raw_output": "{\n  \"cn_oneliner\": \"基于GigaTok引入冗余token填充和层次语义正则化，实现灵活tokenizer尾部token充分利用并提升AR生成质量\",\n  \"cn_abstract\": \"灵活图像tokenizer通常用nested dropout随机截断尾部token训练，但会迫使信息过度集中在前缀token，导致AR生成在token变长时质量不升反降且落后于同预算固定长度tokenizer。本文提出ReToK：用Redundant Token Padding在训练时向序列尾部追加冗余query/token并在更长序列上做nested dropout，从而提高原序列尾部token被激活的频率；再用Hierarchical Semantic Regularization将decoder中间特征与预训练视觉基础模型DINOv2对齐，并随保留长度k增大线性衰减正则强度以保留细节重建能力。ImageNet 256×256上，ReToK在不同token长度下实现更一致的gFID改善，且在256 tokens时优于现有flexible tokenizers并接近/达到强固定长度1D tokenizer的下游AR生成表现。\",\n  \"contribution_type\": \"incremental\",\n  \"editorial_note\": \"工作本质是在FlexTok/One-D-Piece式nested dropout灵活tokenization框架上，借鉴GigaTok的representation alignment，把“尾部token不常被训练”这一分布偏置用冗余padding重采样来纠正，并把语义对齐做成随长度衰减的层次权重。核心改动工程上直接有效，但方法创新主要是训练策略组合与调度设计，属于对既有1D tokenizer+语义正则路线的针对性补丁式增强。\",\n  \"why_read\": \"如果你在做可变长度AR图像生成，ReToK提供了一个几乎不改架构、仅改训练分布与正则调度就能缓解“长序列不增益”的实用方案与系统性诊断。\",\n  \"method_variants\": [\n    {\n      \"base_method\": \"gigaTok\",\n      \"variant_tag\": \"gigatok:retok-redundant-padding\",\n      \"description\": \"在GigaTok式1D离散tokenizer训练中追加冗余query/token到序列尾部，并在(N+M)长度上做nested dropout以提升原序列尾部token的激活与学习频率，推理时丢弃padding tokens。\"\n    },\n    {\n      \"base_method\": \"nested-dropout\",\n      \"variant_tag\": \"nested-dropout:tail-activation-via-padding\",\n      \"description\": \"把原本只截断尾部的nested dropout改为在更长的“原序列+冗余尾巴”上截断，使原序列的后段在统计上更像“中段”从而被更充分训练。\"\n    },\n    {\n      \"base_method\": \"representation-alignment\",\n      \"variant_tag\": \"representation-alignment:hierarchical-semantic-decay\",\n      \"description\": \"将对齐DINOv2特征的语义正则权重从常数λ改为随保留长度k线性衰减的λ(k)，让短序列更偏语义、长序列更偏细节。\"\n    },\n    {\n      \"base_method\": \"gigatok\",\n      \"variant_tag\": \"gigatok:decoder-finetune-low-reg\",\n      \"description\": \"冻结encoder与quantizer，仅以较小且固定的语义正则权重微调decoder，提升短token长度下的重建与生成表现。\"\n    }\n  ],\n  \"core_cite\": [\n    {\n      \"title\": \"GigaTok: Scaling visual tokenizers to 3 billion parameters for autoregressive image generation | arxiv:2504.08736\",\n      \"role\": \"extends\",\n      \"note\": \"ReToK沿用其1D tokenizer架构与训练范式，并直接采用其DINOv2语义正则/对齐思路作为基础，再提出padding与层次λ(k)来修复flexible训练下的token利用问题。\"\n    },\n    {\n      \"title\": \"FlexTok: Resampling Images into 1D Token Sequences of Flexible Length\",\n      \"role\": \"contrasts\",\n      \"note\": \"作为flexible tokenizer代表，采用nested dropout训练；本文指出其尾部token利用不足导致生成随token变长不稳定，并以ReToK在多长度gFID上对比改进。\"\n    },\n    {\n      \"title\": \"Learning ordered representations with nested dropout\",\n      \"role\": \"supports\",\n      \"note\": \"提供nested dropout形成有序/可截断表示的理论与训练机制来源；本文的瓶颈分析与“在更长序列上截断”的改造都建立在该机制之上。\"\n    },\n    {\n      \"title\": \"Dinov2: Learning robust visual features without supervision | arxiv:2304.07193\",\n      \"role\": \"uses\",\n      \"note\": \"作为预训练视觉基础模型输出语义特征，ReToK用其对decoder中间特征做cosine对齐，并提出随k衰减的层次语义正则。\"\n    },\n    {\n      \"title\": \"Representation alignment for generation: Training diffusion transformers is easier than you think | arxiv:2410.06940\",\n      \"role\": \"supports\",\n      \"note\": \"为“用foundation model特征对齐来提升生成/收敛”的方法论依据；ReToK将该思想迁移到flexible tokenizer并做层次化权重调度。\"\n    },\n    {\n      \"title\": \"Autoregressive model beats diffusion: Llama for scalable image generation | arxiv:2406.06525\",\n      \"role\": \"uses\",\n      \"note\": \"作为下游AR生成器与评测平台（LlamaGen-B/L/XL），用于验证不同token长度下ReToK对gFID等指标的提升与稳定性。\"\n    },\n    {\n      \"title\": \"An image is worth 32 tokens for reconstruction and generation\",\n      \"role\": \"supports\",\n      \"note\": \"提供1D query-token tokenizer（TiTok）背景与“少token可承载高层语义”的经验启发，支撑ReToK把更强语义约束施加在短/早期token上的设计。\"\n    },\n    {\n      \"title\": \"Taming transformers for high-resolution image synthesis\",\n      \"role\": \"uses\",\n      \"note\": \"ReToK的重建训练目标沿用VQGAN式组合损失（像素/感知/对抗/码本），作为tokenizer训练的关键实现基座。\"\n    }\n  ]\n}",
+  "parsed": {
+    "cn_oneliner": "基于GigaTok引入冗余token填充和层次语义正则化，实现灵活tokenizer尾部token充分利用并提升AR生成质量",
+    "cn_abstract": "灵活图像tokenizer通常用nested dropout随机截断尾部token训练，但会迫使信息过度集中在前缀token，导致AR生成在token变长时质量不升反降且落后于同预算固定长度tokenizer。本文提出ReToK：用Redundant Token Padding在训练时向序列尾部追加冗余query/token并在更长序列上做nested dropout，从而提高原序列尾部token被激活的频率；再用Hierarchical Semantic Regularization将decoder中间特征与预训练视觉基础模型DINOv2对齐，并随保留长度k增大线性衰减正则强度以保留细节重建能力。ImageNet 256×256上，ReToK在不同token长度下实现更一致的gFID改善，且在256 tokens时优于现有flexible tokenizers并接近/达到强固定长度1D tokenizer的下游AR生成表现。",
+    "contribution_type": "incremental",
+    "editorial_note": "工作本质是在FlexTok/One-D-Piece式nested dropout灵活tokenization框架上，借鉴GigaTok的representation alignment，把“尾部token不常被训练”这一分布偏置用冗余padding重采样来纠正，并把语义对齐做成随长度衰减的层次权重。核心改动工程上直接有效，但方法创新主要是训练策略组合与调度设计，属于对既有1D tokenizer+语义正则路线的针对性补丁式增强。",
+    "why_read": "如果你在做可变长度AR图像生成，ReToK提供了一个几乎不改架构、仅改训练分布与正则调度就能缓解“长序列不增益”的实用方案与系统性诊断。",
+    "method_variants": [
+      {
+        "base_method": "gigaTok",
+        "variant_tag": "gigatok:retok-redundant-padding",
+        "description": "在GigaTok式1D离散tokenizer训练中追加冗余query/token到序列尾部，并在(N+M)长度上做nested dropout以提升原序列尾部token的激活与学习频率，推理时丢弃padding tokens。"
+      },
+      {
+        "base_method": "nested-dropout",
+        "variant_tag": "nested-dropout:tail-activation-via-padding",
+        "description": "把原本只截断尾部的nested dropout改为在更长的“原序列+冗余尾巴”上截断，使原序列的后段在统计上更像“中段”从而被更充分训练。"
+      },
+      {
+        "base_method": "representation-alignment",
+        "variant_tag": "representation-alignment:hierarchical-semantic-decay",
+        "description": "将对齐DINOv2特征的语义正则权重从常数λ改为随保留长度k线性衰减的λ(k)，让短序列更偏语义、长序列更偏细节。"
+      },
+      {
+        "base_method": "gigatok",
+        "variant_tag": "gigatok:decoder-finetune-low-reg",
+        "description": "冻结encoder与quantizer，仅以较小且固定的语义正则权重微调decoder，提升短token长度下的重建与生成表现。"
+      }
+    ],
+    "core_cite": [
+      {
+        "title": "GigaTok: Scaling visual tokenizers to 3 billion parameters for autoregressive image generation | arxiv:2504.08736",
+        "role": "extends",
+        "note": "ReToK沿用其1D tokenizer架构与训练范式，并直接采用其DINOv2语义正则/对齐思路作为基础，再提出padding与层次λ(k)来修复flexible训练下的token利用问题。"
+      },
+      {
+        "title": "FlexTok: Resampling Images into 1D Token Sequences of Flexible Length",
+        "role": "contrasts",
+        "note": "作为flexible tokenizer代表，采用nested dropout训练；本文指出其尾部token利用不足导致生成随token变长不稳定，并以ReToK在多长度gFID上对比改进。"
+      },
+      {
+        "title": "Learning ordered representations with nested dropout",
+        "role": "supports",
+        "note": "提供nested dropout形成有序/可截断表示的理论与训练机制来源；本文的瓶颈分析与“在更长序列上截断”的改造都建立在该机制之上。"
+      },
+      {
+        "title": "Dinov2: Learning robust visual features without supervision | arxiv:2304.07193",
+        "role": "uses",
+        "note": "作为预训练视觉基础模型输出语义特征，ReToK用其对decoder中间特征做cosine对齐，并提出随k衰减的层次语义正则。"
+      },
+      {
+        "title": "Representation alignment for generation: Training diffusion transformers is easier than you think | arxiv:2410.06940",
+        "role": "supports",
+        "note": "为“用foundation model特征对齐来提升生成/收敛”的方法论依据；ReToK将该思想迁移到flexible tokenizer并做层次化权重调度。"
+      },
+      {
+        "title": "Autoregressive model beats diffusion: Llama for scalable image generation | arxiv:2406.06525",
+        "role": "uses",
+        "note": "作为下游AR生成器与评测平台（LlamaGen-B/L/XL），用于验证不同token长度下ReToK对gFID等指标的提升与稳定性。"
+      },
+      {
+        "title": "An image is worth 32 tokens for reconstruction and generation",
+        "role": "supports",
+        "note": "提供1D query-token tokenizer（TiTok）背景与“少token可承载高层语义”的经验启发，支撑ReToK把更强语义约束施加在短/早期token上的设计。"
+      },
+      {
+        "title": "Taming transformers for high-resolution image synthesis",
+        "role": "uses",
+        "note": "ReToK的重建训练目标沿用VQGAN式组合损失（像素/感知/对抗/码本），作为tokenizer训练的关键实现基座。"
+      }
+    ]
+  },
+  "fill_rate": 1.0,
+  "core_cite_count": 8,
+  "method_variant_count": 4
+}

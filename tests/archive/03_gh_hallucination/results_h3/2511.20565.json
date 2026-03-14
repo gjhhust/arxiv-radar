@@ -1,0 +1,258 @@
+{
+  "arxiv_id": "2511.20565",
+  "title": "DINO-Tok: Adapting DINO for Visual Tokenizers",
+  "cn_oneliner": "基于预训练DINOv2，引入双分支分层特征融合与全局PCA重加权向量量化机制，实现语义对齐与高保真度视觉潜空间表示",
+  "cn_abstract": "本文提出DINO-Tok，一种基于预训练DINO的视觉分词器，旨在解决现有分词器在高维潜空间中语义表示与重建保真度难以兼顾的问题。通过融合浅层细粒度特征与深层全局语义特征，DINO-Tok构建了信息完备的潜空间表示；针对高维向量量化（VQ）中信息丢失与码本崩溃问题，进一步提出全局PCA重加权机制以稳定量化过程并保留关键维度信息。在ImageNet 256×256基准上，DINO-Tok自编码达到28.54 PSNR，VQ建模达到23.98 PSNR，显著优于此前分词器，并可与十亿级数据训练模型（如Hunyuan、Wan）相媲美。",
+  "contribution_type": "incremental",
+  "editorial_note": "以DINOv2为代表的视觉基础模型已在特征表示领域展现强大能力，但如何将其适配为视觉生成的分词器仍是开放问题——直接蒸馏或冻结编码器均会引入颜色偏移或语义替换等伪影。本文通过双分支融合浅深层特征并提出PCA重加权VQ，系统解决了高维量化的稳定性问题，在ImageNet重建指标上取得显著提升。方法思路清晰但整体属于工程性适配创新，核心贡献为预训练特征复用与量化稳定化的组合改进，缺乏对生成任务的深度验证，适合作为实用基线参考。",
+  "why_read": "研究视觉生成tokenizer设计的学者，可借鉴其将预训练DINO特征引入分词器的双分支架构及PCA重加权VQ稳定化方案",
+  "method_variants": [
+    "encoder:dual-branch-shallow-deep-fusion",
+    "quantization:global-pca-reweighting-vq",
+    "tokenizer:dino-frozen-encoder",
+    "tokenizer:dino-distillation-baseline",
+    "latent-space:high-dimensional-vq"
+  ],
+  "core_cite": [
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "arxiv_id": "2304.07193",
+      "role": "extends",
+      "note": "DINO-Tok的核心骨干，直接复用DINOv2预训练编码器提取多层次语义特征"
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "arxiv_id": "1711.00937",
+      "role": "extends",
+      "note": "VQ-VAE原始工作，DINO-Tok的向量量化模块直接基于此框架并针对高维问题提出改进"
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "arxiv_id": "2012.09841",
+      "role": "contrasts",
+      "note": "VQGAN基线，DINO-Tok在重建PSNR上显著超越其量化建模性能"
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "arxiv_id": "2112.10752",
+      "role": "contrasts",
+      "note": "LDM/SD-VAE代表性tokenizer，作为连续自编码基线与DINO-Tok对比"
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "arxiv_id": "2310.05737",
+      "role": "contrasts",
+      "note": "MAGVIT-v2，强调tokenizer对生成质量的关键作用，是本文高维VQ方向的重要对比工作"
+    },
+    {
+      "title": "Vision Foundation Models as Effective Visual Tokenizers for Autoregressive Image Generation",
+      "arxiv_id": "2507.08441",
+      "role": "contrasts",
+      "note": "VFM-Tok，同样探索将视觉基础模型用于分词，通过蒸馏方式但存在语义退化问题，本文直接对比并分析其局限"
+    },
+    {
+      "title": "Reconstruction vs. Generation: Taming Optimization Dilemma in Latent Diffusion Models",
+      "arxiv_id": "2501.01423",
+      "role": "contrasts",
+      "note": "VA-VAE，引入视觉对齐损失的tokenizer，本文对比指出其蒸馏方式会降低语义表示质量"
+    },
+    {
+      "title": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "arxiv_id": "2410.06940",
+      "role": "supports",
+      "note": "REPA，通过表示对齐提升扩散模型训练效率，支持本文语义对齐latent space的重要性论点"
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "arxiv_id": "2212.09748",
+      "role": "uses",
+      "note": "DiT架构，DINO-Tok作为下游生成模型的tokenizer被用于与DiT结合的实验验证"
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "arxiv_id": "2404.02905",
+      "role": "contrasts",
+      "note": "VAR，next-scale自回归生成范式，与DINO-Tok在离散tokenizer性能上进行对比"
+    },
+    {
+      "title": "Interpreting the Curse of Dimensionality from Distance Concentration and Manifold Effect",
+      "arxiv_id": "2401.00422",
+      "role": "supports",
+      "note": "维度灾难理论支撑，为DINO-Tok分析高维VQ中码本崩溃和信息损失问题提供理论依据"
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "arxiv_id": "2309.15505",
+      "role": "contrasts",
+      "note": "FSQ，简化VQ的替代量化方案，作为量化方法对比基线"
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "arxiv_id": "2406.07550",
+      "role": "contrasts",
+      "note": "TiTok，极端压缩token数的tokenizer，作为高效重建基线与DINO-Tok对比"
+    },
+    {
+      "title": "HunyuanVideo: A Systematic Framework For Large Video Generative Models",
+      "arxiv_id": "2412.03603",
+      "role": "contrasts",
+      "note": "Hunyuan视频生成模型，使用十亿级数据训练的tokenizer，DINO-Tok声称重建性能与其相当"
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "arxiv_id": "2111.06377",
+      "role": "contrasts",
+      "note": "MAE预训练方法，作为视觉预训练baseline与DINOv2的特征表示能力进行对比分析"
+    },
+    {
+      "title": "Diffusion Transformers with Representation Autoencoders",
+      "arxiv_id": "2510.11690",
+      "role": "contrasts",
+      "note": "RAE，表示自编码器用于扩散模型，与DINO-Tok在高维连续latent space设计上形成对比"
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "arxiv_id": "2409.04410",
+      "role": "contrasts",
+      "note": "开源MAGVIT-v2实现，VQ tokenizer重要对比基线"
+    },
+    {
+      "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "arxiv_id": "2504.08736",
+      "role": "contrasts",
+      "note": "超大规模tokenizer，通过参数扩展提升性能，与DINO-Tok的预训练复用策略形成对比"
+    }
+  ],
+  "idea": [
+    {
+      "title": "跨模态预训练特征的统一视频分词器",
+      "why": "DINO-Tok验证了图像预训练特征对tokenizer的有效性，但视频生成需要时序一致的latent表示。可探索将DINOv2的空间层次特征与时序建模（如视频MAE）结合，构建支持时空一致量化的统一视频分词器，在CV-VAE、OmniTokenizer等工作基础上引入预训练特征对齐损失以减少时序伪影。"
+    },
+    {
+      "title": "自适应维度感知的向量量化方法",
+      "why": "DINO-Tok的PCA重加权VQ通过全局统计缓解维度灾难，但PCA基底是静态的，无法适应不同图像内容的维度重要性分布。可设计基于内容感知的动态重加权机制，结合Finite Scalar Quantization和残差量化（RQ-VAE）思路，针对高维latent中各维度的信息密度自适应分配量化精度，进一步减少码本崩溃。"
+    },
+    {
+      "title": "预训练视觉基础模型的分词器迁移评估基准",
+      "why": "目前对tokenizer语义质量的评估主要依赖FID、PSNR等像素级或感知指标，难以直接度量语义保真度。结合本文对latent PCA可视化的分析思路，可建立系统性评估框架，涵盖语义聚类一致性、下游理解任务迁移性及生成多样性，为不同预训练骨干（DINO、CLIP、SAM）适配tokenizer提供统一比较平台。"
+    }
+  ],
+  "_scheme": "H",
+  "_model": "wq/minimaxm25",
+  "_verified_at": "2026-03-14",
+  "_s2_ref_count": 57,
+  "_similarities": [
+    {
+      "title": "DINOv2: Learning Robust Visual Features without Supervision",
+      "best_score": 1.0,
+      "best_match": "DINOv2: Learning Robust Visual Features without Supervision",
+      "pass": true
+    },
+    {
+      "title": "Neural Discrete Representation Learning",
+      "best_score": 1.0,
+      "best_match": "Neural Discrete Representation Learning",
+      "pass": true
+    },
+    {
+      "title": "Taming Transformers for High-Resolution Image Synthesis",
+      "best_score": 1.0,
+      "best_match": "Taming Transformers for High-Resolution Image Synthesis",
+      "pass": true
+    },
+    {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "Vision Foundation Models as Effective Visual Tokenizers for Autoregressive Image Generation",
+      "best_score": 1.0,
+      "best_match": "Vision Foundation Models as Effective Visual Tokenizers for Autoregressive Image Generation",
+      "pass": true
+    },
+    {
+      "title": "Reconstruction vs. Generation: Taming Optimization Dilemma in Latent Diffusion Models",
+      "best_score": 1.0,
+      "best_match": "Reconstruction vs. Generation: Taming Optimization Dilemma in Latent Diffusion Models",
+      "pass": true
+    },
+    {
+      "title": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "best_score": 1.0,
+      "best_match": "Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think",
+      "pass": true
+    },
+    {
+      "title": "Scalable Diffusion Models with Transformers",
+      "best_score": 1.0,
+      "best_match": "Scalable Diffusion Models with Transformers",
+      "pass": true
+    },
+    {
+      "title": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "best_score": 1.0,
+      "best_match": "Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction",
+      "pass": true
+    },
+    {
+      "title": "Interpreting the Curse of Dimensionality from Distance Concentration and Manifold Effect",
+      "best_score": 1.0,
+      "best_match": "Interpreting the Curse of Dimensionality from Distance Concentration and Manifold Effect",
+      "pass": true
+    },
+    {
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "best_score": 1.0,
+      "best_match": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "pass": true
+    },
+    {
+      "title": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "best_score": 1.0,
+      "best_match": "An Image is Worth 32 Tokens for Reconstruction and Generation",
+      "pass": true
+    },
+    {
+      "title": "HunyuanVideo: A Systematic Framework For Large Video Generative Models",
+      "best_score": 1.0,
+      "best_match": "HunyuanVideo: A Systematic Framework For Large Video Generative Models",
+      "pass": true
+    },
+    {
+      "title": "Masked Autoencoders Are Scalable Vision Learners",
+      "best_score": 1.0,
+      "best_match": "Masked Autoencoders Are Scalable Vision Learners",
+      "pass": true
+    },
+    {
+      "title": "Diffusion Transformers with Representation Autoencoders",
+      "best_score": 1.0,
+      "best_match": "Diffusion Transformers with Representation Autoencoders",
+      "pass": true
+    },
+    {
+      "title": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "best_score": 1.0,
+      "best_match": "Open-MAGVIT2: An Open-Source Project Toward Democratizing Auto-regressive Visual Generation",
+      "pass": true
+    },
+    {
+      "title": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "best_score": 1.0,
+      "best_match": "GigaTok: Scaling Visual Tokenizers to 3 Billion Parameters for Autoregressive Image Generation",
+      "pass": true
+    }
+  ],
+  "_matched": 18,
+  "_total": 18,
+  "_pass_rate": 1.0,
+  "_elapsed_s": 52.5
+}
