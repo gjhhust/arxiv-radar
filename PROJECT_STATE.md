@@ -19,20 +19,20 @@
 
 ## 当前阶段
 
-**Phase 1: 队列 Schema 与调度骨架**
+**Phase 2: Fetch Queue Worker**
 
 状态: `🟡 进行中`
 
-### Phase 1 任务清单
+### Phase 2 任务清单
 
-- [ ] 在 `scripts/paper_db.py` 中新增 `queue_jobs` / `queue_runs` 表
-- [ ] 提供 schema migration 脚本 (`scripts/migrate_v3.py`)
-- [ ] 在 `scripts/paper_db.py` 中扩展队列 CRUD 方法（或新建 `scripts/queue_repo.py`）
-- [ ] 实现 lease / ack / retry / dead-letter 逻辑
-- [ ] 崩溃恢复脚本：回收超时 `leased` 任务
-- [ ] 单元测试：幂等入队、去重、lease、重试、dead-letter (`tests/unit/test_queue_repo.py`)
-- [ ] 集成测试：重启后任务恢复
-- [ ] Git commit: `feat(db): add persistent queue tables for v3 pipeline`
+- [ ] 新建 `scripts/fetch_queue.py`：Fetch Queue worker 实现
+- [ ] Semantic Scholar API 集成（使用已有 `scripts/semantic_scholar.py`）
+- [ ] upsert_paper()：论文 metadata 写入 DB
+- [ ] 写 CITES 边：src_id → dst_id 双向关系
+- [ ] 衍生 analyse jobs：fetch 完成后自动入 analyse 队列
+- [ ] 处理 429、空结果、重复任务
+- [ ] 单元测试 `tests/unit/test_fetch_queue.py`（mock S2 响应）
+- [ ] Git commit: `feat(fetch): add semantic scholar fetch worker`
 
 ---
 
@@ -42,6 +42,7 @@
 |-------|------|----------|------------|
 | Phase 0: 对齐现状 | ✅ 完成 | 2026-03-15 | `paper_analyst_v3.py` 已存在 |
 | 架构文档 v3.1 | ✅ 完成 | 2026-03-15 | `docs/ARCHITECTURE_v3.md` |
+| Phase 1: 队列 Schema | ✅ 完成 | 2026-03-15 02:30 | `d1e5dcb` |
 
 ---
 
@@ -114,7 +115,7 @@ CREATE INDEX idx_queue_runs_job ON queue_runs(job_id, started_at);
 
 > Codex 每次完成里程碑后在此追加记录（时间 + 做了什么 + commit hash）
 
-_（待 Codex 填写）_
+- **Phase 1**: 由 Mox 独立完成（模块化代码，Codex token 留给更大任务）
 
 ---
 
@@ -123,3 +124,4 @@ _（待 Codex 填写）_
 > Mox 每次 cron 唤醒后在此追加记录
 
 - **2026-03-15 01:56**: 初始化项目状态，spawn Codex session，Phase 1 开始
+- **2026-03-15 02:30**: [cron 触发] Phase 1 完成 —— 实现 queue_jobs/queue_runs 表、6个队列CRUD方法、23个单元测试全绿。commit: d1e5dcb。进入 Phase 2（Fetch Queue Worker）。
