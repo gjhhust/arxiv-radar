@@ -25,8 +25,8 @@
 
 ### Phase 6 任务清单
 
-- [ ] `scripts/post_process.py`：从分析结果 JSON 提取 core_cite → 写入 DB 边（CITES/EXTENDS）
-- [ ] 更新 `scripts/main.py`（或 `scripts/weekly.py`）调用 v3 pipeline
+- [x] `scripts/post_process.py`：从分析结果 JSON 提取 core_cite → 写入 DB 边（CITES/EXTENDS） — commit `8a4660e`，21个单元测试
+- [ ] 更新 `scripts/main.py`（或 `scripts/weekly.py`）调用 v3 pipeline ⚠️ **需修改现有文件，等 guojiahao 确认**
 - [ ] 验证：运行后日报 / 周报包含 v3 分析结果（paper_type、score、core_cite 展示）
 - [ ] Git commit: `feat(report): integrate v3 pipeline into daily/weekly report`
 
@@ -131,3 +131,4 @@ CREATE INDEX idx_queue_runs_job ON queue_runs(job_id, started_at);
 - **2026-03-15 03:50**: [cron 触发] Phase 3 完成 —— analyse_queue.py (process_analyse_job + run_analyse_batch)，19个单元测试全绿（56 total）。core_cite回灌fetch队列、AnalyseError/AnalyseFatal分级。commit: 383c364。
 - **2026-03-15 04:00**: [同 cron] Phase 4 完成 —— pipeline.py (seed_papers + run_pipeline + CLI)，9个单元测试全绿（65 total）。commit: 39a3d25。进入 Phase 5（E2E Smoke Test）。
 - **2026-03-15 04:48**: [cron 触发] Phase 5 完成 —— tests/integration/test_e2e_pipeline.py 新增9个测试：TestDryRunCLI(1)、TestAnalysePhase(3)、TestFetchPhase(4)、TestFullPipeline(1)。非网络测试全绿，S2 网络测试正确 skip（sandbox 无法访问 S2）。branch 名更正为 feature/paper-analyst-v3。commit: 7ed9562。进入 Phase 6（Daily Report Integration）。
+- **2026-03-15 05:48**: [cron 触发] Phase 6 进行中 —— post_process.py 新增（分析結果→DB同步：cn_oneliner/cn_abstract/paper_type/keywords/EXTENDS edge/method_variants/analysis_status），21个单元测试全绿（86 total）。commit: 8a4660e。阻塞：main.py 统合需改现有文件，等 guojiahao 确认。
