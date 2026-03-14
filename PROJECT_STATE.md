@@ -1,0 +1,125 @@
+# PROJECT_STATE.md — arxiv-radar v3 协作状态文件
+
+> 本文件是 Mox（主 agent）和 Codex（持久编码 session）的共享状态锚点。
+> 每次 Codex 完成一个里程碑，必须更新本文件。
+> Mox 每次被 cron 唤醒，读本文件重建上下文。
+
+---
+
+## 基本信息
+
+- **项目**: arxiv-radar v3
+- **仓库路径**: `/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar`
+- **分支**: `feat/v3-llm-schema-test`
+- **架构文档**: `docs/ARCHITECTURE_v3.md`（v3.1，设计冻结）
+- **DB 路径**: `data/paper_network.db`
+- **启动时间**: 2026-03-15 01:56 CST
+
+---
+
+## 当前阶段
+
+**Phase 1: 队列 Schema 与调度骨架**
+
+状态: `🟡 进行中`
+
+### Phase 1 任务清单
+
+- [ ] 在 `scripts/paper_db.py` 中新增 `queue_jobs` / `queue_runs` 表
+- [ ] 提供 schema migration 脚本 (`scripts/migrate_v3.py`)
+- [ ] 在 `scripts/paper_db.py` 中扩展队列 CRUD 方法（或新建 `scripts/queue_repo.py`）
+- [ ] 实现 lease / ack / retry / dead-letter 逻辑
+- [ ] 崩溃恢复脚本：回收超时 `leased` 任务
+- [ ] 单元测试：幂等入队、去重、lease、重试、dead-letter (`tests/unit/test_queue_repo.py`)
+- [ ] 集成测试：重启后任务恢复
+- [ ] Git commit: `feat(db): add persistent queue tables for v3 pipeline`
+
+---
+
+## 已完成阶段
+
+| Phase | 状态 | 完成时间 | 关键 commit |
+|-------|------|----------|------------|
+| Phase 0: 对齐现状 | ✅ 完成 | 2026-03-15 | `paper_analyst_v3.py` 已存在 |
+| 架构文档 v3.1 | ✅ 完成 | 2026-03-15 | `docs/ARCHITECTURE_v3.md` |
+
+---
+
+## 架构关键约束（Codex 必须遵守）
+
+1. **分析入口唯一**: `scripts/paper_analyst_v3.py` 是唯一 LLM 分析入口，不要重写
+2. **DB 唯一实例**: 所有 DB 操作通过 `scripts/paper_db.py` 的 `PaperDB` 类
+3. **LLM 模型**: 默认 `wq/minimaxm25`，fallback `wq/glm5`；禁用 `gpt52`/`gemini31pro`
+4. **JSON 容错**: 使用 `fix_json_llm_output()` + `safe_load_json()`（已在 run_h3_test.py 中）
+5. **S2 API 限速**: 间隔 8.0s，每 12 次请求冷却 15s
+6. **无第三方依赖**: 只用 Python stdlib（除了已有的依赖）
+7. **分析结果存储**: JSON 文件为真源 (`data/cache/analysis_v3/`)，DB 存路径
+8. **边类型**: 主要用 `CITES`，其他边类型预留接口即可
+9. **队列调度**: `priority + FIFO`（manual=5 > seed=10 > incremental=30 > core_cite=50）
+10. **错误隔离**: fetch 失败、LLM 失败、校验失败分别处理，不互相污染
+
+---
+
+## 队列表设计（Phase 1 目标）
+
+### `queue_jobs` 表
+```sql
+CREATE TABLE queue_jobs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    queue_type TEXT NOT NULL,              -- fetch / analyse / cited_by
+    paper_id TEXT NOT NULL,
+    priority INTEGER DEFAULT 100,
+    not_before TEXT,
+    status TEXT NOT NULL DEFAULT 'pending',-- pending / leased / done / failed / dead
+    source TEXT NOT NULL,                  -- seed / incremental / core_cite / manual
+    payload TEXT,
+    dedupe_key TEXT NOT NULL,              -- "fetch:2501.00001"
+    retry_count INTEGER DEFAULT 0,
+    max_retries INTEGER DEFAULT 3,
+    last_error TEXT,
+    leased_by TEXT,
+    leased_at TEXT,
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now')),
+    UNIQUE(dedupe_key)
+);
+```
+
+### `queue_runs` 表
+```sql
+CREATE TABLE queue_runs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    job_id INTEGER NOT NULL,
+    queue_type TEXT NOT NULL,
+    worker_id TEXT NOT NULL,
+    started_at TEXT DEFAULT (datetime('now')),
+    finished_at TEXT,
+    outcome TEXT,                          -- success / retry / failed / dead
+    error_type TEXT,
+    error_message TEXT,
+    metrics TEXT                           -- JSON: latency_ms / api_calls / token_usage
+);
+```
+
+### 建议索引
+```sql
+CREATE INDEX idx_queue_jobs_pick ON queue_jobs(queue_type, status, priority, not_before, created_at);
+CREATE INDEX idx_queue_jobs_paper ON queue_jobs(paper_id, queue_type);
+CREATE INDEX idx_queue_runs_job ON queue_runs(job_id, started_at);
+```
+
+---
+
+## Codex 工作日志
+
+> Codex 每次完成里程碑后在此追加记录（时间 + 做了什么 + commit hash）
+
+_（待 Codex 填写）_
+
+---
+
+## Mox 协调日志
+
+> Mox 每次 cron 唤醒后在此追加记录
+
+- **2026-03-15 01:56**: 初始化项目状态，spawn Codex session，Phase 1 开始

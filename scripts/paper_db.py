@@ -130,6 +130,50 @@ CREATE INDEX IF NOT EXISTS idx_papers_domain ON papers(domain);
 CREATE INDEX IF NOT EXISTS idx_papers_date ON papers(date);
 CREATE INDEX IF NOT EXISTS idx_papers_s2id ON papers(s2_id);
 CREATE INDEX IF NOT EXISTS idx_baselines_name ON baselines(canonical_name);
+
+-- ─────────────────────── Queue Tables (v3) ───────────────────────
+
+-- Persistent job queue: one row per task, deduplicated by dedupe_key
+CREATE TABLE IF NOT EXISTS queue_jobs (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    queue_type  TEXT NOT NULL,               -- fetch / analyse / cited_by
+    paper_id    TEXT NOT NULL,
+    priority    INTEGER DEFAULT 100,         -- lower = higher priority
+    not_before  TEXT,                        -- ISO datetime; NULL = immediately eligible
+    status      TEXT NOT NULL DEFAULT 'pending', -- pending / leased / done / failed / dead
+    source      TEXT NOT NULL,               -- seed / incremental / core_cite / manual
+    payload     TEXT,                        -- JSON extra context
+    dedupe_key  TEXT NOT NULL,               -- e.g. "fetch:2501.00001"
+    retry_count INTEGER DEFAULT 0,
+    max_retries INTEGER DEFAULT 3,
+    last_error  TEXT,
+    leased_by   TEXT,                        -- worker_id that holds the lease
+    leased_at   TEXT,                        -- ISO datetime when lease was acquired
+    created_at  TEXT DEFAULT (datetime('now')),
+    updated_at  TEXT DEFAULT (datetime('now')),
+    UNIQUE(dedupe_key)
+);
+
+-- Run history: one row per attempt (success or failure)
+CREATE TABLE IF NOT EXISTS queue_runs (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    job_id      INTEGER NOT NULL,
+    queue_type  TEXT NOT NULL,
+    worker_id   TEXT NOT NULL,
+    started_at  TEXT DEFAULT (datetime('now')),
+    finished_at TEXT,
+    outcome     TEXT,           -- success / retry / failed / dead
+    error_type  TEXT,
+    error_message TEXT,
+    metrics     TEXT            -- JSON: latency_ms, api_calls, token_usage, etc.
+);
+
+CREATE INDEX IF NOT EXISTS idx_queue_jobs_pick
+    ON queue_jobs(queue_type, status, priority, not_before, created_at);
+CREATE INDEX IF NOT EXISTS idx_queue_jobs_paper
+    ON queue_jobs(paper_id, queue_type);
+CREATE INDEX IF NOT EXISTS idx_queue_runs_job
+    ON queue_runs(job_id, started_at);
 """
 
 
@@ -599,6 +643,245 @@ class PaperDB:
                     ],
                 })
             return branches
+        finally:
+            conn.close()
+
+
+# ─────────────────────── Queue CRUD (v3) ───────────────────────
+
+    def enqueue_job(
+        self,
+        queue_type: str,
+        paper_id: str,
+        source: str,
+        priority: int = 100,
+        dedupe_key: Optional[str] = None,
+        payload: Optional[dict] = None,
+        max_retries: int = 3,
+    ) -> Optional[int]:
+        """Idempotent enqueue. Returns job id (existing or new), or None on error.
+
+        If a job with the same dedupe_key already exists (any status),
+        this is a no-op and returns the existing job's id.
+        """
+        if dedupe_key is None:
+            dedupe_key = f"{queue_type}:{paper_id}"
+        conn = self._connect()
+        try:
+            conn.execute(
+                """
+                INSERT OR IGNORE INTO queue_jobs
+                    (queue_type, paper_id, source, priority, dedupe_key, payload, max_retries)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                [
+                    queue_type, paper_id, source, priority, dedupe_key,
+                    json.dumps(payload) if payload else None, max_retries,
+                ],
+            )
+            conn.commit()
+            row = conn.execute(
+                "SELECT id FROM queue_jobs WHERE dedupe_key = ?", [dedupe_key]
+            ).fetchone()
+            return row["id"] if row else None
+        finally:
+            conn.close()
+
+    def lease_job(
+        self,
+        queue_type: str,
+        worker_id: str,
+        lease_timeout_sec: int = 1800,
+    ) -> Optional[dict]:
+        """Atomically lease the next eligible pending job.
+
+        Returns the job dict (all columns), or None if queue is empty.
+        Priority ordering: priority ASC, then created_at ASC (FIFO within priority).
+        """
+        now = datetime.utcnow().isoformat()
+        conn = self._connect()
+        try:
+            row = conn.execute(
+                """
+                SELECT * FROM queue_jobs
+                WHERE queue_type = ?
+                  AND status = 'pending'
+                  AND (not_before IS NULL OR not_before <= ?)
+                ORDER BY priority ASC, created_at ASC
+                LIMIT 1
+                """,
+                [queue_type, now],
+            ).fetchone()
+            if not row:
+                return None
+
+            affected = conn.execute(
+                """
+                UPDATE queue_jobs
+                SET status = 'leased', leased_by = ?, leased_at = ?, updated_at = ?
+                WHERE id = ? AND status = 'pending'
+                """,
+                [worker_id, now, now, row["id"]],
+            ).rowcount
+            conn.commit()
+
+            if affected == 0:
+                # Another worker raced us; caller should retry
+                return None
+            updated = conn.execute(
+                "SELECT * FROM queue_jobs WHERE id = ?", [row["id"]]
+            ).fetchone()
+            return dict(updated) if updated else None
+        finally:
+            conn.close()
+
+    def ack_job(self, job_id: int, run_metrics: Optional[dict] = None) -> None:
+        """Mark a leased job as done and record a successful run."""
+        now = datetime.utcnow().isoformat()
+        conn = self._connect()
+        try:
+            job = conn.execute(
+                "SELECT * FROM queue_jobs WHERE id = ?", [job_id]
+            ).fetchone()
+            if not job:
+                logger.warning(f"ack_job: job {job_id} not found")
+                return
+            conn.execute(
+                "UPDATE queue_jobs SET status = 'done', updated_at = ? WHERE id = ?",
+                [now, job_id],
+            )
+            conn.execute(
+                """
+                INSERT INTO queue_runs
+                    (job_id, queue_type, worker_id, started_at, finished_at, outcome, metrics)
+                VALUES (?, ?, ?, ?, ?, 'success', ?)
+                """,
+                [
+                    job_id, job["queue_type"],
+                    job["leased_by"] or "unknown",
+                    job["leased_at"] or now, now,
+                    json.dumps(run_metrics) if run_metrics else None,
+                ],
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def nack_job(
+        self,
+        job_id: int,
+        error: str,
+        error_type: str = "Error",
+        max_retries: Optional[int] = None,
+        backoff_minutes: Optional[list] = None,
+    ) -> str:
+        """Fail a leased job: schedule retry or move to dead-letter.
+
+        Returns the new status: 'pending' (retry scheduled) or 'dead'.
+        """
+        if backoff_minutes is None:
+            backoff_minutes = [1, 5, 15, 60]
+        now = datetime.utcnow().isoformat()
+        conn = self._connect()
+        try:
+            job = conn.execute(
+                "SELECT * FROM queue_jobs WHERE id = ?", [job_id]
+            ).fetchone()
+            if not job:
+                logger.warning(f"nack_job: job {job_id} not found")
+                return "not_found"
+
+            effective_max = max_retries if max_retries is not None else job["max_retries"]
+            retry_count = job["retry_count"] + 1
+
+            if retry_count > effective_max:
+                new_status = "dead"
+                not_before = None
+            else:
+                from datetime import timedelta
+                new_status = "pending"
+                delay = backoff_minutes[min(retry_count - 1, len(backoff_minutes) - 1)]
+                not_before = (
+                    datetime.utcnow() + timedelta(minutes=delay)
+                ).isoformat()
+
+            conn.execute(
+                """
+                UPDATE queue_jobs
+                SET status = ?, retry_count = ?, last_error = ?,
+                    not_before = ?, leased_by = NULL, leased_at = NULL, updated_at = ?
+                WHERE id = ?
+                """,
+                [new_status, retry_count, f"{error_type}: {error}", not_before, now, job_id],
+            )
+            conn.execute(
+                """
+                INSERT INTO queue_runs
+                    (job_id, queue_type, worker_id, started_at, finished_at,
+                     outcome, error_type, error_message)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                [
+                    job_id, job["queue_type"],
+                    job["leased_by"] or "unknown",
+                    job["leased_at"] or now, now,
+                    "dead" if new_status == "dead" else "retry",
+                    error_type, error,
+                ],
+            )
+            conn.commit()
+            return new_status
+        finally:
+            conn.close()
+
+    def recover_leased(self, lease_timeout_sec: int = 1800) -> int:
+        """Reset stale leased jobs back to pending (crash recovery).
+
+        Returns the number of jobs recovered.
+        """
+        from datetime import timedelta
+        cutoff = (datetime.utcnow() - timedelta(seconds=lease_timeout_sec)).isoformat()
+        conn = self._connect()
+        try:
+            result = conn.execute(
+                """
+                UPDATE queue_jobs
+                SET status = 'pending', leased_by = NULL, leased_at = NULL,
+                    updated_at = datetime('now')
+                WHERE status = 'leased' AND leased_at < ?
+                """,
+                [cutoff],
+            )
+            conn.commit()
+            recovered = result.rowcount
+            if recovered:
+                logger.info(f"recover_leased: reset {recovered} stale leased jobs")
+            return recovered
+        finally:
+            conn.close()
+
+    def get_queue_stats(self) -> dict:
+        """Return counts by queue_type × status.
+
+        Example: {"fetch": {"pending": 5, "done": 12}, "analyse": {"pending": 2}}
+        """
+        conn = self._connect()
+        try:
+            rows = conn.execute(
+                """
+                SELECT queue_type, status, COUNT(*) AS cnt
+                FROM queue_jobs
+                GROUP BY queue_type, status
+                ORDER BY queue_type, status
+                """
+            ).fetchall()
+            result: dict[str, dict[str, int]] = {}
+            for row in rows:
+                qt = row["queue_type"]
+                if qt not in result:
+                    result[qt] = {}
+                result[qt][row["status"]] = row["cnt"]
+            return result
         finally:
             conn.close()
 
