@@ -19,20 +19,22 @@
 
 ## 当前阶段
 
-**Phase 2: Fetch Queue Worker**
+**Phase 3: Analyse Queue Worker**
 
 状态: `🟡 进行中`
 
-### Phase 2 任务清单
+### Phase 3 任务清单
 
-- [ ] 新建 `scripts/fetch_queue.py`：Fetch Queue worker 实现
-- [ ] Semantic Scholar API 集成（使用已有 `scripts/semantic_scholar.py`）
-- [ ] upsert_paper()：论文 metadata 写入 DB
-- [ ] 写 CITES 边：src_id → dst_id 双向关系
-- [ ] 衍生 analyse jobs：fetch 完成后自动入 analyse 队列
-- [ ] 处理 429、空结果、重复任务
-- [ ] 单元测试 `tests/unit/test_fetch_queue.py`（mock S2 响应）
-- [ ] Git commit: `feat(fetch): add semantic scholar fetch worker`
+- [ ] 新建 `scripts/analyse_queue.py`：Analyse Queue worker 实现
+- [ ] 集成 `paper_analyst_v3.py`（唯一 LLM 分析入口）
+- [ ] 解析分析结果中的 `core_cite` → 回灌 fetch 队列
+- [ ] 记录 session_id / transcript / result_path
+- [ ] 处理结果 JSON 丢失 / 损坏 / 校验为空
+- [ ] 单元测试 `tests/unit/test_analyse_queue.py`（mock analyse_paper）
+- [ ] Git commit: `feat(analyse): add Analyse Queue worker`
+
+> ⚠️ **注意**：`analyse_paper()` 需要真实 OpenClaw 环境（spawn paper-analyst sub-agent），
+> 单测必须完整 mock，不能真实调用。
 
 ---
 
@@ -43,6 +45,7 @@
 | Phase 0: 对齐现状 | ✅ 完成 | 2026-03-15 | `paper_analyst_v3.py` 已存在 |
 | 架构文档 v3.1 | ✅ 完成 | 2026-03-15 | `docs/ARCHITECTURE_v3.md` |
 | Phase 1: 队列 Schema | ✅ 完成 | 2026-03-15 02:30 | `d1e5dcb` |
+| Phase 2: Fetch Queue | ✅ 完成 | 2026-03-15 03:05 | `d208b28` |
 
 ---
 
@@ -125,3 +128,4 @@ CREATE INDEX idx_queue_runs_job ON queue_runs(job_id, started_at);
 
 - **2026-03-15 01:56**: 初始化项目状态，spawn Codex session，Phase 1 开始
 - **2026-03-15 02:30**: [cron 触发] Phase 1 完成 —— 实现 queue_jobs/queue_runs 表、6个队列CRUD方法、23个单元测试全绿。commit: d1e5dcb。进入 Phase 2（Fetch Queue Worker）。
+- **2026-03-15 03:05**: [cron 触发] Phase 2 完成 —— fetch_queue.py (process_fetch_job + run_fetch_batch)，14个单元测试全绿。CITES边写入、ref自动入队、seed/core_cite自动入analyse队列。commit: d208b28。进入 Phase 3（Analyse Queue Worker）。
