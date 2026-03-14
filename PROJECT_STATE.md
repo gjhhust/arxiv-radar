@@ -19,22 +19,20 @@
 
 ## 当前阶段
 
-**Phase 3: Analyse Queue Worker**
+**Phase 5: End-to-End Smoke Test**
 
 状态: `🟡 进行中`
 
-### Phase 3 任务清单
+### Phase 5 任务清单
 
-- [ ] 新建 `scripts/analyse_queue.py`：Analyse Queue worker 实现
-- [ ] 集成 `paper_analyst_v3.py`（唯一 LLM 分析入口）
-- [ ] 解析分析结果中的 `core_cite` → 回灌 fetch 队列
-- [ ] 记录 session_id / transcript / result_path
-- [ ] 处理结果 JSON 丢失 / 损坏 / 校验为空
-- [ ] 单元测试 `tests/unit/test_analyse_queue.py`（mock analyse_paper）
-- [ ] Git commit: `feat(analyse): add Analyse Queue worker`
+- [ ] `tests/integration/test_e2e_pipeline.py`：真实 S2 API + mock LLM
+- [ ] seed 2-3 个已知 arxiv ID，运行 fetch → analyse
+- [ ] 验证：papers 表写入 / CITES 边写入 / 发现论文入 fetch 队列 / analyse 结果路径记录
+- [ ] 确认 `python pipeline.py --seed 2406.07550 --dry-run` 输出正确
+- [ ] Git commit: `test(e2e): add end-to-end pipeline smoke test`
 
-> ⚠️ **注意**：`analyse_paper()` 需要真实 OpenClaw 环境（spawn paper-analyst sub-agent），
-> 单测必须完整 mock，不能真实调用。
+> ⚠️ 注意：Phase 5 集成测试需要真实 S2 API 网络访问（慢），放在 `tests/integration/`
+> 单测继续放 `tests/unit/`
 
 ---
 
@@ -46,6 +44,8 @@
 | 架构文档 v3.1 | ✅ 完成 | 2026-03-15 | `docs/ARCHITECTURE_v3.md` |
 | Phase 1: 队列 Schema | ✅ 完成 | 2026-03-15 02:30 | `d1e5dcb` |
 | Phase 2: Fetch Queue | ✅ 完成 | 2026-03-15 03:05 | `d208b28` |
+| Phase 3: Analyse Queue | ✅ 完成 | 2026-03-15 03:50 | `383c364` |
+| Phase 4: Pipeline Entry | ✅ 完成 | 2026-03-15 04:00 | `39a3d25` |
 
 ---
 
@@ -129,3 +129,5 @@ CREATE INDEX idx_queue_runs_job ON queue_runs(job_id, started_at);
 - **2026-03-15 01:56**: 初始化项目状态，spawn Codex session，Phase 1 开始
 - **2026-03-15 02:30**: [cron 触发] Phase 1 完成 —— 实现 queue_jobs/queue_runs 表、6个队列CRUD方法、23个单元测试全绿。commit: d1e5dcb。进入 Phase 2（Fetch Queue Worker）。
 - **2026-03-15 03:05**: [cron 触发] Phase 2 完成 —— fetch_queue.py (process_fetch_job + run_fetch_batch)，14个单元测试全绿。CITES边写入、ref自动入队、seed/core_cite自动入analyse队列。commit: d208b28。进入 Phase 3（Analyse Queue Worker）。
+- **2026-03-15 03:50**: [cron 触发] Phase 3 完成 —— analyse_queue.py (process_analyse_job + run_analyse_batch)，19个单元测试全绿（56 total）。core_cite回灌fetch队列、AnalyseError/AnalyseFatal分级。commit: 383c364。
+- **2026-03-15 04:00**: [同 cron] Phase 4 完成 —— pipeline.py (seed_papers + run_pipeline + CLI)，9个单元测试全绿（65 total）。commit: 39a3d25。进入 Phase 5（E2E Smoke Test）。
