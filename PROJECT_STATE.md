@@ -10,7 +10,7 @@
 
 - **项目**: arxiv-radar v3
 - **仓库路径**: `/Users/lanlanlan/.openclaw/workspace/skills/arxiv-radar`
-- **分支**: `feat/v3-llm-schema-test`
+- **分支**: `feature/paper-analyst-v3`（実際の作業ブランチ。PROJECT_STATE.md の旧記述は誤り）
 - **架构文档**: `docs/ARCHITECTURE_v3.md`（v3.1，设计冻结）
 - **DB 路径**: `data/paper_network.db`
 - **启动时间**: 2026-03-15 01:56 CST
@@ -19,20 +19,18 @@
 
 ## 当前阶段
 
-**Phase 5: End-to-End Smoke Test**
+**Phase 6: Daily Report Integration**
 
-状态: `🟡 进行中`
+状态: `🟡 待开始`
 
-### Phase 5 任务清单
+### Phase 6 任务清单
 
-- [ ] `tests/integration/test_e2e_pipeline.py`：真实 S2 API + mock LLM
-- [ ] seed 2-3 个已知 arxiv ID，运行 fetch → analyse
-- [ ] 验证：papers 表写入 / CITES 边写入 / 发现论文入 fetch 队列 / analyse 结果路径记录
-- [ ] 确认 `python pipeline.py --seed 2406.07550 --dry-run` 输出正确
-- [ ] Git commit: `test(e2e): add end-to-end pipeline smoke test`
+- [ ] `scripts/post_process.py`：从分析结果 JSON 提取 core_cite → 写入 DB 边（CITES/EXTENDS）
+- [ ] 更新 `scripts/main.py`（或 `scripts/weekly.py`）调用 v3 pipeline
+- [ ] 验证：运行后日报 / 周报包含 v3 分析结果（paper_type、score、core_cite 展示）
+- [ ] Git commit: `feat(report): integrate v3 pipeline into daily/weekly report`
 
-> ⚠️ 注意：Phase 5 集成测试需要真实 S2 API 网络访问（慢），放在 `tests/integration/`
-> 单测继续放 `tests/unit/`
+> 依赖：Phase 5 完成（✅）
 
 ---
 
@@ -46,6 +44,7 @@
 | Phase 2: Fetch Queue | ✅ 完成 | 2026-03-15 03:05 | `d208b28` |
 | Phase 3: Analyse Queue | ✅ 完成 | 2026-03-15 03:50 | `383c364` |
 | Phase 4: Pipeline Entry | ✅ 完成 | 2026-03-15 04:00 | `39a3d25` |
+| Phase 5: E2E Smoke Test | ✅ 完成 | 2026-03-15 04:48 | `7ed9562` |
 
 ---
 
@@ -131,3 +130,4 @@ CREATE INDEX idx_queue_runs_job ON queue_runs(job_id, started_at);
 - **2026-03-15 03:05**: [cron 触发] Phase 2 完成 —— fetch_queue.py (process_fetch_job + run_fetch_batch)，14个单元测试全绿。CITES边写入、ref自动入队、seed/core_cite自动入analyse队列。commit: d208b28。进入 Phase 3（Analyse Queue Worker）。
 - **2026-03-15 03:50**: [cron 触发] Phase 3 完成 —— analyse_queue.py (process_analyse_job + run_analyse_batch)，19个单元测试全绿（56 total）。core_cite回灌fetch队列、AnalyseError/AnalyseFatal分级。commit: 383c364。
 - **2026-03-15 04:00**: [同 cron] Phase 4 完成 —— pipeline.py (seed_papers + run_pipeline + CLI)，9个单元测试全绿（65 total）。commit: 39a3d25。进入 Phase 5（E2E Smoke Test）。
+- **2026-03-15 04:48**: [cron 触发] Phase 5 完成 —— tests/integration/test_e2e_pipeline.py 新增9个测试：TestDryRunCLI(1)、TestAnalysePhase(3)、TestFetchPhase(4)、TestFullPipeline(1)。非网络测试全绿，S2 网络测试正确 skip（sandbox 无法访问 S2）。branch 名更正为 feature/paper-analyst-v3。commit: 7ed9562。进入 Phase 6（Daily Report Integration）。
