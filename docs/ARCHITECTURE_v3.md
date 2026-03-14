@@ -825,6 +825,7 @@ Phase 1 先支持：
 - 复用 `test_paper_analyst_v3_smoke.py`
 - 增加队列级失败恢复测试
 - 增加 fallback model 覆盖测试
+- 检查分析完毕后paper-analyst子agent 的记忆维护是正常的（这样用该agent 分析的文章越多效果越好）
 
 建议 commit：
 
@@ -859,7 +860,10 @@ Phase 1 先支持：
 1. 把分析结果汇入日报 / 周报 / 月报
 2. cited-by queue 原型
 3. 高阶边推断（`EXTENDS` / `COMPARES_WITH`）
-4. 可视化面板 / HTML 复盘页
+4. 可视化面板 / HTML 复盘页 / Obsidian 图谱（实用且真正有助于科研和管理的方式）
+
+测试：
+- 读取汇报是否符合预期
 
 ---
 
@@ -881,7 +885,7 @@ Phase 1 先支持：
    - 失败重试后成功
 
 4. **比较实验**
-   - 延续 `TEST_PLAN.md` 的 H1/H2 prompt 对比
+   - 延续 `TEST_PLAN.md` 的 H1/H2 prompt 下不同结果
    - 只在 canonical template 确认后进入生产
 
 ### 13.2 当前必须守住的回归项
@@ -893,6 +897,7 @@ Phase 1 先支持：
 3. `analysis_status` 能从 `analyzing -> completed`
 4. `analysis_result_path` 文件真实存在
 5. `_matched` 能匹配到 DB 中的 `CITES` 标题
+6. paper-analyst 子 agent 的记忆维护是正常的（这样用该agent 分析的文章越多效果越好）
 
 ### 13.3 建议命名
 
